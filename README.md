@@ -1,0 +1,3 @@
+# Shinobu
+
+iOS MPD client
