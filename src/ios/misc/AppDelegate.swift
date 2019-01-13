@@ -1,5 +1,7 @@
 import UIKit
 
+func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
