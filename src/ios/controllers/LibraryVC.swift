@@ -5,9 +5,9 @@ final class LibraryVC : UIViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Albums view
-	@IBOutlet private var collectionView: MusicalCollectionView!
+	private var collectionView: MusicalCollectionView!
 	// Top constraint for collection view
-	@IBOutlet private var topConstraint: NSLayoutConstraint!
+	private var topConstraint: NSLayoutConstraint!
 	// Search view
 	private var searchView: UIView! = nil
 	// Search bar
@@ -77,6 +77,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		navigationItem.titleView = titleView
 
 		// Collection view
+		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
 		collectionView.myDelegate = self
 		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
 

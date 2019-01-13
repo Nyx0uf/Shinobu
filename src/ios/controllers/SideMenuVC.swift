@@ -14,9 +14,9 @@ final class SideMenuVC : UIViewController
 	weak var menuDelegate: SideMenuVCDelegate? = nil
 	// MARK: - Private properties
 	// Table view
-	@IBOutlet private var tableView: UITableView!
+	private var tableView: UITableView!
 	// Number of table rows
-	private let numberOfRows = 4
+	private let numberOfRows = 3
 
 	override func viewDidLoad()
 	{
@@ -55,10 +55,6 @@ extension SideMenuVC : UITableViewDataSource
 			cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
 			image = #imageLiteral(resourceName: "img-settings")
 			selected = menuDelegate?.getSelectedController() == .settings
-		case 3:
-			cell.accessibilityLabel = NYXLocalizedString("lbl_section_stats")
-			image = #imageLiteral(resourceName: "img-stats")
-			selected = menuDelegate?.getSelectedController() == .stats
 		default:
 			break
 		}
@@ -102,8 +98,6 @@ extension SideMenuVC : UITableViewDelegate
 				selectedVC = .server
 			case 2:
 				selectedVC = .settings
-			case 3:
-				selectedVC = .stats
 			case numberOfRows:
 				return
 			default:

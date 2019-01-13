@@ -19,7 +19,6 @@ enum SelectedVCType
 	case library
 	case settings
 	case server
-	case stats
 }
 
 final class ContainerVC : UIViewController
@@ -122,27 +121,29 @@ final class ContainerVC : UIViewController
 			case .library:
 				if libraryViewController == nil
 				{
-					libraryViewController = UIStoryboard.libraryVC()
+					let vc = LibraryVC()
+					let nvc = NYXNavigationController(rootViewController: vc)
+					libraryViewController = nvc//UIStoryboard.libraryVC()
 				}
 				mainViewController = libraryViewController
 			case .server:
 				if serverViewController == nil
 				{
-					serverViewController = UIStoryboard.serverTVC()
+					let vc = ServerVC()
+					let nvc = NYXNavigationController(rootViewController: vc)
+					serverViewController = nvc
+					//serverViewController = UIStoryboard.serverTVC()
 				}
 				mainViewController = serverViewController
 			case .settings:
 				if settingsViewController == nil
 				{
-					settingsViewController = UIStoryboard.settingsTVC()
+					let vc = SettingsVC()
+					let nvc = NYXNavigationController(rootViewController: vc)
+					settingsViewController = nvc
+					//settingsViewController = UIStoryboard.settingsTVC()
 				}
 				mainViewController = settingsViewController
-			case .stats:
-				if statsViewController == nil
-				{
-					statsViewController = UIStoryboard.statsTVC()
-				}
-				mainViewController = statsViewController
 		}
 		self.add(mainViewController)
 
@@ -156,7 +157,7 @@ final class ContainerVC : UIViewController
 	{
 		guard menuViewController == nil else { return }
 
-		if let vc = UIStoryboard.leftViewController()
+		/*if let vc = UIStoryboard.leftViewController()
 		{
 			vc.menuDelegate = self
 			view.insertSubview(vc.view, at: 0)
@@ -165,7 +166,15 @@ final class ContainerVC : UIViewController
 			vc.didMove(toParent: self)
 
 			menuViewController = vc
-		}
+		}*/
+		let vc = SideMenuVC()
+		vc.menuDelegate = self
+		view.insertSubview(vc.view, at: 0)
+		
+		addChild(vc)
+		vc.didMove(toParent: self)
+		
+		menuViewController = vc
 	}
 
 	private func showMenu(expand: Bool)
@@ -271,7 +280,7 @@ extension ContainerVC : UIGestureRecognizerDelegate
 	}
 }
 
-private extension UIStoryboard
+/*private extension UIStoryboard
 {
 	static func main() -> UIStoryboard
 	{
@@ -302,4 +311,4 @@ private extension UIStoryboard
 	{
 		return main().instantiateViewController(withIdentifier: "SettingsNVC") as? NYXNavigationController
 	}
-}
+}*/

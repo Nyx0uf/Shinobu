@@ -41,20 +41,8 @@ final class TableFlowLayout: UICollectionViewFlowLayout
 
 	private func itemWidth() -> CGFloat
 	{
-		return collectionView!.frame.width
+		return UIScreen.main.bounds.width
 	}
-
-	/*override var itemSize: CGSize
-	{
-		set
-		{
-			self.itemSize = CGSize(itemWidth(), itemHeight)
-		}
-		get
-		{
-			return CGSize(itemWidth(), itemHeight)
-		}
-	}*/
 
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint
 	{
@@ -91,18 +79,6 @@ final class CollectionFlowLayout : UICollectionViewFlowLayout
 		return ceil((UIScreen.main.bounds.width / CGFloat(columns)) - (2 * sideSpan))
 	}
 
-	/*override var itemSize: CGSize
-	{
-		set
-		{
-			self.itemSize = CGSize(itemWidth(), itemWidth() + 20.0)
-		}
-		get
-		{
-			return CGSize(itemWidth(), itemWidth() + 20.0)
-		}
-	}*/
-
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint
 	{
 		return collectionView!.contentOffset
@@ -131,9 +107,23 @@ final class MusicalCollectionView : UICollectionView
 	// Cover download operations
 	private var _downloadOperations = [String : Operation]()
 
+	override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout)
+	{
+		super.init(frame: frame, collectionViewLayout: layout)
+		
+		self.dataSource = self
+		self.delegate = self
+		self.isPrefetchingEnabled = true
+		self.prefetchDataSource = self
+		self.layoutType = .collection
+		
+		self.setCollectionLayout(animated: false)
+	}
+	
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
+		fatalError("not implemented")
+		/*super.init(coder: aDecoder)
 
 		self.dataSource = self
 		self.delegate = self
@@ -141,7 +131,7 @@ final class MusicalCollectionView : UICollectionView
 		self.prefetchDataSource = self
 		self.layoutType = .collection
 
-		self.setCollectionLayout(animated: false)
+		self.setCollectionLayout(animated: false)*/
 	}
 
 	// MARK: - Private

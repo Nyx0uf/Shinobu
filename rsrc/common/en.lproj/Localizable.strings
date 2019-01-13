@@ -1,0 +1,116 @@
+"lbl_cancel" = "Cancel";
+"lbl_ok" = "OK";
+"lbl_optional" = "Optional";
+"lbl_by" = "by";
+"lbl_played" = "played";
+"lbl_megabytes" = "MB";
+"lbl_error" = "Error";
+"lbl_enabled" = "Enabled";
+"lbl_disabled" = "Disabled";
+"lbl_is" = "is";
+"lbl_save" = "Save";
+
+"lbl_track" = "track";
+"lbl_tracks" = "tracks";
+"lbl_minute" = "minute";
+"lbl_minutes" = "minutes";
+"lbl_second" = "second";
+"lbl_seconds" = "seconds";
+"lbl_play" = "Play";
+"lbl_pause" = "Pause";
+"lbl_next_track" = "Next track";
+"lbl_previous_track" = "Previous track";
+"lbl_volume" = "Volume";
+"lbl_track_position" = "Track position";
+"lbl_random_enable" = "Enable random";
+"lbl_random_disable" = "Disable random";
+"lbl_repeat_enable" = "Enable repeat";
+"lbl_repeat_disable" = "Disable repeat";
+"lbl_header_server_cfg" = "Server configuration";
+"lbl_header_server_zeroconf" = "Nearby servers";
+"lbl_search_zeroconf" = "Search nearby servers";
+"lbl_appearance" = "Appearance";
+"lbl_version" = "Version";
+"lbl_behaviour" = "Behaviour";
+"lbl_search" = "Search";
+"lbl_fuzzysearch" = "Fuzzy search";
+"lbl_ui" = "User Interface";
+"lbl_troubleshoot" = "Troubleshooting";
+"lbl_enable_logging" = "Enable logging";
+"lbl_send_logs" = "Send logs";
+"lbl_volume_control_disabled" = "Volume control is disabled";
+"lbl_update_db" = "Update database";
+"lbl_show_songs_stats" = "Show technical track informations";
+
+"lbl_alert_playalbum_shuffle" = "Shuffle";
+"lbl_alert_playalbum_addqueue" = "Add to queue";
+"lbl_alert_servercfg_error" = "Server configuration error";
+"lbl_alert_servercfg_error_msg" = "Invalid parameters";
+"lbl_alert_servercfg_error_host" = "Server parameter invalid";
+"lbl_alert_purge_cache_title" = "Images cache deletion";
+"lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
+"lbl_alert_server_need_check" = "Check your configuration";
+"lbl_alert_logsexport_fail_msg" = "Exporting logs failed";
+"lbl_alert_nomailaccount_msg" = "No email account configured";
+"lbl_alert_update_mpd_failed" = "Failed to update MPD database";
+"lbl_alert_update_mpd_succeeded" = "Successfully updated MPD database";
+
+"lbl_server_name" = "Name";
+"lbl_server_host" = "Server";
+"lbl_server_port" = "Port";
+"lbl_server_password" = "Password";
+"lbl_server_output" = "Outputs";
+"lbl_server_no_output_enabled" = "No outputs enabled";
+"lbl_server_no_output_available" = "No outputs available";
+"lbl_server_defaultname" = "My MPD Server";
+"lbl_server_coverurl" = "URL";
+"lbl_server_covername" = "Cover filename";
+"lbl_server_coverclearcache" = "Clear cache";
+"lbl_server_section_cover" = "Cover Art";
+"lbl_server_section_server" = "MPD server";
+"lbl_stats_section_db" = "Database (MPD)";
+"lbl_stats_section_server" = "Server (MPD)";
+
+"lbl_section_home" = "Library";
+"lbl_section_server" = "MPD Server";
+"lbl_section_stats" = "Statistics";
+"lbl_section_settings" = "Settings";
+"lbl_section_database" = "Database";
+
+"lbl_pref_shaketoplayrandom" = "Shake to play random album";
+"lbl_pref_layoutastable" = "Layout as table";
+"lbl_pref_layoutascollection" = "Layout as collection";
+
+"lbl_album" = "Album";
+"lbl_albums" = "Albums";
+"lbl_genre" = "Genre";
+"lbl_genres" = "Genres";
+"lbl_artist" = "Artist";
+"lbl_artists" = "Artists";
+"lbl_albumartist" = "Album artist";
+"lbl_albumartists" = "Albums artists";
+"lbl_playlist" = "Playlist";
+"lbl_playlists" = "Playlists";
+"lbl_song" = "Song";
+"lbl_songs" = "Songs";
+"lbl_total_playtime" = "Total playtime";
+"lbl_server_uptime" = "Uptime";
+"lbl_server_playtime" = "Playtime";
+"lbl_server_lastdbupdate" = "Last update";
+"lbl_add_to_playlist" = "Add to playlist";
+"lbl_remove_from_playlist" = "Remove from the playlist";
+"lbl_create_playlist" = "Create a new playlist";
+"lbl_create_playlist_name" = "Name of the playlist :";
+"lbl_playlist_create_emptyname" = "The name of the playlist can't be empty";
+"lbl_create_playlist_placeholder" = "New playlist";
+"lbl_delete_playlist" = "Delete playlist";
+"lbl_rename_playlist" = "Rename playlist";
+"lbl_rename_playlist_placeholder" = "New playlist name";
+"lbl_playlist_track_added" = "added to";
+
+"lbl_message_no_mpd_server" = "No MPD server configured";
+
+/* accessibility */
+"vo_displaymenu" = "Display navigation menu";
+"vo_hidemenu" = "Hide navigation menu";
+

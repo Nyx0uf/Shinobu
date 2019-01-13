@@ -8,32 +8,32 @@ final class ServerVC : UITableViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// MPD Server name
-	@IBOutlet private var tfMPDName: UITextField!
+	private var tfMPDName: UITextField!
 	// MPD Server hostname
-	@IBOutlet private var tfMPDHostname: UITextField!
+	private var tfMPDHostname: UITextField!
 	// MPD Server port
-	@IBOutlet private var tfMPDPort: UITextField!
+	private var tfMPDPort: UITextField!
 	// MPD Server password
-	@IBOutlet private var tfMPDPassword: UITextField!
+	private var tfMPDPassword: UITextField!
 	// MPD Output
-	@IBOutlet private var lblMPDOutput: UILabel!
+	private var lblMPDOutput: UILabel!
 	// WEB Server hostname
-	@IBOutlet private var tfWEBHostname: UITextField!
+	private var tfWEBHostname: UITextField!
 	// WEB Server port
-	@IBOutlet private var tfWEBPort: UITextField!
+	private var tfWEBPort: UITextField!
 	// Cover name
-	@IBOutlet private var tfWEBCoverName: UITextField!
+	private var tfWEBCoverName: UITextField!
 	// Cell Labels
-	@IBOutlet private var lblCellMPDName: UILabel! = nil
-	@IBOutlet private var lblCellMPDHostname: UILabel! = nil
-	@IBOutlet private var lblCellMPDPort: UILabel! = nil
-	@IBOutlet private var lblCellMPDPassword: UILabel! = nil
-	@IBOutlet private var lblCellMPDOutput: UILabel! = nil
-	@IBOutlet private var lblCellWEBHostname: UILabel! = nil
-	@IBOutlet private var lblCellWEBPort: UILabel! = nil
-	@IBOutlet private var lblCellWEBCoverName: UILabel! = nil
-	@IBOutlet private var lblClearCache: UILabel! = nil
-	@IBOutlet private var lblUpdateDatabase: UILabel! = nil
+	private var lblCellMPDName: UILabel! = nil
+	private var lblCellMPDHostname: UILabel! = nil
+	private var lblCellMPDPort: UILabel! = nil
+	private var lblCellMPDPassword: UILabel! = nil
+	private var lblCellMPDOutput: UILabel! = nil
+	private var lblCellWEBHostname: UILabel! = nil
+	private var lblCellWEBPort: UILabel! = nil
+	private var lblCellWEBCoverName: UILabel! = nil
+	private var lblClearCache: UILabel! = nil
+	private var lblUpdateDatabase: UILabel! = nil
 	// MPD Server
 	private var mpdServer: AudioServer?
 	// WEB Server for covers
@@ -60,13 +60,36 @@ final class ServerVC : UITableViewController, CenterViewController
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
 		navigationItem.titleView = titleView
 
-		if let buttons = self.navigationItem.rightBarButtonItems
+		/*if let buttons = self.navigationItem.rightBarButtonItems
 		{
 			if let search = buttons.filter({$0.tag == 10}).first
 			{
 				search.accessibilityLabel = NYXLocalizedString("lbl_search_zeroconf")
 			}
-		}
+		}*/
+		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+		let search = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(browserZeroConfServers(_:)))
+		let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.save, target: self, action: #selector(validateSettingsAction(_:)))
+		self.navigationItem.rightBarButtonItems = [save, search]
+		
+		lblCellMPDName = UILabel()
+		lblCellMPDHostname = UILabel()
+		lblCellMPDPort = UILabel()
+		lblCellMPDPassword = UILabel()
+		lblCellMPDOutput = UILabel()
+		lblCellWEBHostname = UILabel()
+		lblCellWEBPort = UILabel()
+		lblCellWEBCoverName = UILabel()
+		lblClearCache = UILabel()
+		lblUpdateDatabase = UILabel()
+		tfMPDName = UITextField()
+		tfMPDHostname = UITextField()
+		tfMPDPort = UITextField()
+		tfMPDPassword = UITextField()
+		tfWEBHostname = UITextField()
+		tfWEBPort = UITextField()
+		tfWEBCoverName = UITextField()
+		lblMPDOutput = UILabel()
 
 		lblCellMPDName.text = NYXLocalizedString("lbl_server_name")
 		lblCellMPDHostname.text = NYXLocalizedString("lbl_server_host")
@@ -140,7 +163,7 @@ final class ServerVC : UITableViewController, CenterViewController
 	}
 
 	// MARK: - Buttons actions
-	@IBAction func validateSettingsAction(_ sender: Any?)
+	@objc func validateSettingsAction(_ sender: Any?)
 	{
 		view.endEditing(true)
 
@@ -247,7 +270,7 @@ final class ServerVC : UITableViewController, CenterViewController
 		Settings.shared.synchronize()
 	}
 
-	@IBAction func browserZeroConfServers(_ sender: Any?)
+	@objc func browserZeroConfServers(_ sender: Any?)
 	{
 		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
 		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
@@ -256,7 +279,7 @@ final class ServerVC : UITableViewController, CenterViewController
 		self.navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
-	@objc @IBAction func showLeftViewAction(_ sender: Any?)
+	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		containerDelegate?.toggleMenu()
 	}
@@ -426,6 +449,57 @@ extension ServerVC : ZeroConfBrowserTVCDelegate
 	func audioServerDidChange()
 	{
 		clearCache(confirm: false)
+	}
+}
+
+// MARK: - UITableViewDataSource
+extension ServerVC
+{
+	override func numberOfSections(in tableView: UITableView) -> Int
+	{
+		return 2
+	}
+	
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	{
+		return section == 0 ? 6 : 4
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+	{
+		let cell = UITableViewCell()
+		if indexPath.section == 0
+		{
+			if indexPath.row == 0
+			{
+				cell.textLabel?.text = "Name"
+			}
+			else if indexPath.row == 1
+			{
+				
+			}
+			else if indexPath.row == 2
+			{
+				
+			}
+			else if indexPath.row == 3
+			{
+				
+			}
+			else if indexPath.row == 4
+			{
+				
+			}
+			else if indexPath.row == 5
+			{
+				
+			}
+		}
+		else
+		{
+			
+		}
+		return cell
 	}
 }
 
