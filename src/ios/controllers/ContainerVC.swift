@@ -129,7 +129,7 @@ final class ContainerVC : UIViewController
 			case .server:
 				if serverViewController == nil
 				{
-					let vc = ServerVC()
+					let vc = ServerListTVC()
 					let nvc = NYXNavigationController(rootViewController: vc)
 					serverViewController = nvc
 					//serverViewController = UIStoryboard.serverTVC()

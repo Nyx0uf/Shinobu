@@ -131,7 +131,7 @@ final class SettingsVC : UITableViewController, CenterViewController
 			{
 				do
 				{
-					let server = try JSONDecoder().decode(AudioServer.self, from: mpdServerAsData)
+					let server = try JSONDecoder().decode(MPDServer.self, from: mpdServerAsData)
 					message += "MPD server:\n\(server.publicDescription())\n\n"
 				}
 				catch

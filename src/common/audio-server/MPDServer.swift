@@ -1,10 +1,10 @@
 import Foundation
 
 
-struct AudioServer : Codable, Equatable
+struct MPDServer : Codable, Equatable
 {
 	// Coding keys
-	private enum AudioServerCodingKeys: String, CodingKey
+	private enum MPDServerCodingKeys: String, CodingKey
 	{
 		case name
 		case hostname
@@ -33,7 +33,7 @@ struct AudioServer : Codable, Equatable
 
 	init(from decoder: Decoder) throws
 	{
-		let values = try decoder.container(keyedBy: AudioServerCodingKeys.self)
+		let values = try decoder.container(keyedBy: MPDServerCodingKeys.self)
 		let na = try values.decode(String.self, forKey: .name)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
@@ -49,7 +49,7 @@ struct AudioServer : Codable, Equatable
 }
 
 // MARK: - Operators
-func == (lhs: AudioServer, rhs: AudioServer) -> Bool
+func == (lhs: MPDServer, rhs: MPDServer) -> Bool
 {
 	return (lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
 }

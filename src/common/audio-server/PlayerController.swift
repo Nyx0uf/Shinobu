@@ -7,7 +7,7 @@ final class PlayerController
 	// Singletion instance
 	static let shared = PlayerController()
 	// MPD server
-	var server: AudioServer! = nil
+	var server: MPDServer! = nil
 	// Player status (playing, paused, stopped)
 	private(set) var currentStatus: PlayerStatus = .unknown
 	// Current playing track
@@ -413,7 +413,7 @@ final class PlayerController
 	// MARK: - Notifications
 	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
-		if let server = aNotification.object as? AudioServer
+		if let server = aNotification.object as? MPDServer
 		{
 			self.server = server
 			_ = self.reinitialize()

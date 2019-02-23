@@ -3,7 +3,7 @@ import Foundation
 
 protocol ZeroConfExplorerDelegate : class
 {
-	func didFindServer(_ server: AudioServer)
+	func didFindServer(_ server: MPDServer)
 }
 
 
@@ -13,7 +13,7 @@ final class ZeroConfExplorer : NSObject
 	// Is searching flag
 	private(set) var isSearching = false
 	// Services list
-	private(set) var services = [NetService : AudioServer]()
+	private(set) var services = [NetService : MPDServer]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
 
@@ -65,7 +65,7 @@ final class ZeroConfExplorer : NSObject
 		service.resolve(withTimeout: 5)
 	}
 
-	private func isResolved(_ server: AudioServer) -> Bool
+	private func isResolved(_ server: MPDServer) -> Bool
 	{
 		return String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}
@@ -91,7 +91,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
-		services[service] = AudioServer(name: service.name, hostname: "", port: 0)
+		services[service] = MPDServer(name: service.name, hostname: "", port: 0)
 		resolvZeroconfService(service: service)
 	}
 
@@ -143,7 +143,7 @@ extension ZeroConfExplorer : NetServiceDelegate
 
 			if found
 			{
-				let server = AudioServer(name: sender.name, hostname: tmpIP, port: UInt16(sender.port))
+				let server = MPDServer(name: sender.name, hostname: tmpIP, port: UInt16(sender.port))
 				services[sender] = server
 				delegate?.didFindServer(server)
 			}

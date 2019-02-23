@@ -22,8 +22,10 @@ final class SideMenuVC : UIViewController
 	{
 		super.viewDidLoad()
 
-		tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.menu")
+		tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
+		tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.menu")
 		tableView.scrollsToTop = false
+		self.view.addSubview(tableView)
 	}
 }
 
@@ -37,7 +39,7 @@ extension SideMenuVC : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.menu", for: indexPath) as! MenuViewTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.menu", for: indexPath) as! MenuViewTableViewCell
 
 		var selected = false
 		var image: UIImage! = nil
@@ -68,8 +70,8 @@ extension SideMenuVC : UITableViewDataSource
 
 		if selected
 		{
-			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-			cell.lblSection.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			cell.ivLogo.tintColor = Colors.main
+			cell.lblSection.textColor = Colors.main
 			cell.lblSection.font = UIFont.boldSystemFont(ofSize: 13.0)
 		}
 		else

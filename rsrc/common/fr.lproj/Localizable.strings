@@ -113,3 +113,6 @@
 /* accessibility */
 "vo_displaymenu" = "Afficher le menu de navigation";
 "vo_hidemenu" = "Masquer le menu de navigation";
+
+/* NEW */
+"lbl_header_server_list" = "Liste des serveurs";

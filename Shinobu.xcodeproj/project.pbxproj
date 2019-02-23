@@ -31,7 +31,7 @@
 		4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */; };
 		4358B02921EB42B4009A3BBF /* AudioServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */; };
 		4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
-		4358B02B21EB42B4009A3BBF /* AudioServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* AudioServer.swift */; };
+		4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		4358B02C21EB42B4009A3BBF /* CoverWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverWebServer.swift */; };
 		4358B02D21EB42B4009A3BBF /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MusicDataSource.swift */; };
 		4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01A21EB42B4009A3BBF /* PlayerController.swift */; };
@@ -80,6 +80,9 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
+		43DBD7FC22203501009B3B68 /* ServerListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServerListVC.swift */; };
+		43DBD7FE22203977009B3B68 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FD22203977009B3B68 /* Colors.swift */; };
+		43DBD80022203C01009B3B68 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* Server.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -158,7 +161,7 @@
 		4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServerConnection.swift; sourceTree = "<group>"; };
 		4358B01621EB42B4009A3BBF /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
-		4358B01721EB42B4009A3BBF /* AudioServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServer.swift; sourceTree = "<group>"; };
+		4358B01721EB42B4009A3BBF /* MPDServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDServer.swift; sourceTree = "<group>"; };
 		4358B01821EB42B4009A3BBF /* CoverWebServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverWebServer.swift; sourceTree = "<group>"; };
 		4358B01921EB42B4009A3BBF /* MusicDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicDataSource.swift; sourceTree = "<group>"; };
 		4358B01A21EB42B4009A3BBF /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
@@ -208,6 +211,9 @@
 		4358B08221EB47C2009A3BBF /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43DBD7FB22203501009B3B68 /* ServerListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListVC.swift; sourceTree = "<group>"; };
+		43DBD7FD22203977009B3B68 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		43DBD7FF22203C01009B3B68 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -312,6 +318,7 @@
 			children = (
 				434E517521D56CF000CD88F7 /* AppDelegate.swift */,
 				434E517421D56CF000CD88F7 /* NetworkActivityIndicator.swift */,
+				43DBD7FD22203977009B3B68 /* Colors.swift */,
 			);
 			path = misc;
 			sourceTree = "<group>";
@@ -363,20 +370,21 @@
 		4358AFF721EB41E2009A3BBF /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
 				4358B06321EB47A7009A3BBF /* AlbumsVC.swift */,
 				4358B06A21EB47A7009A3BBF /* ArtistsVC.swift */,
 				4358B06421EB47A7009A3BBF /* AudioOutputsTVC.swift */,
+				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
 				4358B06B21EB47A8009A3BBF /* PlayerVC.swift */,
 				4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */,
 				4358B06621EB47A7009A3BBF /* PlaylistsTVC.swift */,
 				4358B06721EB47A7009A3BBF /* ServerVC.swift */,
 				4358B06921EB47A7009A3BBF /* SettingsVC.swift */,
-				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */,
-				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
-				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
+				43DBD7FB22203501009B3B68 /* ServerListVC.swift */,
 				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
+				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -419,10 +427,11 @@
 			children = (
 				4358B01521EB42B4009A3BBF /* mpd */,
 				4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */,
-				4358B01721EB42B4009A3BBF /* AudioServer.swift */,
 				4358B01821EB42B4009A3BBF /* CoverWebServer.swift */,
+				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
 				4358B01921EB42B4009A3BBF /* MusicDataSource.swift */,
 				4358B01A21EB42B4009A3BBF /* PlayerController.swift */,
+				43DBD7FF22203C01009B3B68 /* Server.swift */,
 			);
 			path = "audio-server";
 			sourceTree = "<group>";
@@ -610,6 +619,7 @@
 				4358B05321EB44E2009A3BBF /* CoreImageUtilities.swift in Sources */,
 				4358B08921EB47C2009A3BBF /* TopAlignedLabel.swift in Sources */,
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
+				43DBD7FC22203501009B3B68 /* ServerListVC.swift in Sources */,
 				4358B07721EB47A8009A3BBF /* ZeroConfBrowserTVC.swift in Sources */,
 				4358B02921EB42B4009A3BBF /* AudioServerConnection.swift in Sources */,
 				4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */,
@@ -627,6 +637,7 @@
 				4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */,
 				4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */,
 				4358B01E21EB42B4009A3BBF /* UIView+Extensions.swift in Sources */,
+				43DBD7FE22203977009B3B68 /* Colors.swift in Sources */,
 				4358B03821EB44C5009A3BBF /* MusicalEntity.swift in Sources */,
 				4358B04E21EB44E2009A3BBF /* ActionResult.swift in Sources */,
 				4358B08821EB47C2009A3BBF /* InteractableImageView.swift in Sources */,
@@ -641,7 +652,7 @@
 				4358B05421EB44E2009A3BBF /* CountedObject.swift in Sources */,
 				4358B08721EB47C2009A3BBF /* MiniPlayerView.swift in Sources */,
 				4358B02621EB42B4009A3BBF /* NotificationCenter+Extensions.swift in Sources */,
-				4358B02B21EB42B4009A3BBF /* AudioServer.swift in Sources */,
+				4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */,
 				4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */,
 				4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */,
 				4358B02121EB42B4009A3BBF /* UIColor+Extensions.swift in Sources */,
@@ -661,6 +672,7 @@
 				4358B04F21EB44E2009A3BBF /* KawaiiColors.swift in Sources */,
 				4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */,
 				4358B05721EB44E2009A3BBF /* AlbumCoverGenerator.swift in Sources */,
+				43DBD80022203C01009B3B68 /* Server.swift in Sources */,
 				4358B04C21EB44E2009A3BBF /* CoverOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -866,6 +878,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NYX_DEBUG";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 4.2;

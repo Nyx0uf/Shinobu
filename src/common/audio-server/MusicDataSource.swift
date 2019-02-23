@@ -7,7 +7,7 @@ final class MusicDataSource
 	// Singletion instance
 	static let shared = MusicDataSource()
 	// MPD server
-	var server: AudioServer! = nil
+	var server: MPDServer! = nil
 	// Selected display type
 	private(set) var displayType = DisplayType.albums
 	// Albums list
@@ -454,7 +454,7 @@ final class MusicDataSource
 	// MARK: - Notifications
 	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
-		if let server = aNotification.object as? AudioServer
+		if let server = aNotification.object as? MPDServer
 		{
 			self.server = server
 			_ = self.reinitialize()

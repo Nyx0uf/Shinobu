@@ -17,7 +17,7 @@ final class ZeroConfBrowserTVC : UITableViewController
 	// Zeroconf explorer
 	private var _explorer: ZeroConfExplorer! = nil
 	// List of servers found
-	private var _servers = [AudioServer]()
+	private var _servers = [MPDServer]()
 
 	// MARK: - Initializer
 	required init?(coder aDecoder: NSCoder)
@@ -73,14 +73,14 @@ final class ZeroConfBrowserTVC : UITableViewController
 	}
 
 	// MARK: - Private
-	private func currentAudioServer() -> AudioServer?
+	private func currentAudioServer() -> MPDServer?
 	{
 		if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 		{
-			var server: AudioServer? = nil
+			var server: MPDServer? = nil
 			do
 			{
-				server = try JSONDecoder().decode(AudioServer.self, from: serverAsData)
+				server = try JSONDecoder().decode(MPDServer.self, from: serverAsData)
 			}
 			catch
 			{
@@ -147,7 +147,7 @@ extension ZeroConfBrowserTVC
 		do
 		{
 			let encoder = JSONEncoder()
-			let mpdServer = AudioServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "")
+			let mpdServer = MPDServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "")
 			let serverAsData = try encoder.encode(mpdServer)
 			Settings.shared.set(serverAsData, forKey: kNYXPrefMPDServer)
 			Settings.shared.synchronize()
@@ -165,7 +165,7 @@ extension ZeroConfBrowserTVC
 
 extension ZeroConfBrowserTVC : ZeroConfExplorerDelegate
 {
-	internal func didFindServer(_ server: AudioServer)
+	internal func didFindServer(_ server: MPDServer)
 	{
 		_servers = _explorer.services.map({$0.value})
 		self.tableView.reloadData()

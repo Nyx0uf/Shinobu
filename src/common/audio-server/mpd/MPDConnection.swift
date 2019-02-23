@@ -6,7 +6,7 @@ final class MPDConnection : AudioServerConnection
 {
 	// MARK: - Public properties
 	// mpd server
-	let server: AudioServer
+	let server: MPDServer
 	// Delegate
 	weak var delegate: AudioServerConnectionDelegate?
 	// Connected flag
@@ -19,7 +19,7 @@ final class MPDConnection : AudioServerConnection
 	private let _timeout = UInt32(10)
 
 	// MARK: - Initializers
-	init(_ server: AudioServer)
+	init(_ server: MPDServer)
 	{
 		self.server = server
 	}

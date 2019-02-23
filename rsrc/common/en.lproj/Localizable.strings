@@ -114,3 +114,6 @@
 "vo_displaymenu" = "Display navigation menu";
 "vo_hidemenu" = "Hide navigation menu";
 
+
+/* NEW */
+"lbl_header_server_list" = "Servers list";

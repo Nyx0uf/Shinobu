@@ -111,7 +111,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			{
 				do
 				{
-					let server = try JSONDecoder().decode(AudioServer.self, from: serverAsData)
+					let server = try JSONDecoder().decode(MPDServer.self, from: serverAsData)
 					// Data source
 					MusicDataSource.shared.server = server
 					let resultDataSource = MusicDataSource.shared.initialize()

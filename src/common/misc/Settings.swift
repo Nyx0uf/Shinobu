@@ -17,6 +17,8 @@ public let kNYXPrefLayoutLibraryCollection = "app-layout-library-collection"
 public let kNYXPrefLayoutArtistsCollection = "app-layout-artists-collection"
 public let kNYXPrefLayoutAlbumsCollection = "app-layout-albums-collection"
 
+public let kNYXPrefServers = "servers"
+
 
 final class Settings
 {
@@ -28,20 +30,18 @@ final class Settings
 	// MARK: - Initializers
 	init()
 	{
-		self.defaults = UserDefaults(suiteName: "group.mpdremote.settings")!
+		self.defaults = UserDefaults(suiteName: "group.shinobu.settings")!
 	}
 
 	// MARK: - Public
 	func initialize()
 	{
 		_registerDefaultPreferences()
-		_iCloudInit()
 	}
 
 	func synchronize()
 	{
 		defaults.synchronize()
-		NSUbiquitousKeyValueStore.default.synchronize()
 	}
 
 	func bool(forKey: String) -> Bool
@@ -67,25 +67,21 @@ final class Settings
 	func set(_ value: Bool, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
-		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func set(_ value: Data, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
-		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func set(_ value: Int, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
-		NSUbiquitousKeyValueStore.default.set(value, forKey: forKey)
 	}
 
 	func removeObject(forKey: String)
 	{
 		defaults.removeObject(forKey: forKey)
-		NSUbiquitousKeyValueStore.default.removeObject(forKey: forKey)
 	}
 
 	// MARK: - Private
@@ -125,62 +121,6 @@ final class Settings
 		{
 			Logger.shared.log(error: error)
 			fatalError("Failed to create covers directory")
-		}
-	}
-
-	private func _iCloudInit()
-	{
-		let store = NSUbiquitousKeyValueStore.default
-		NotificationCenter.default.addObserver(self, selector: #selector(_updateKVStoreItems(_:)), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: store)
-		store.synchronize()
-
-		_checkIntegrity()
-	}
-
-	private func _checkIntegrity()
-	{
-		let keys = defaults.dictionaryRepresentation().keys
-		for key in keys
-		{
-			let localValue = defaults.object(forKey: key)
-			if NSUbiquitousKeyValueStore.default.object(forKey: key) == nil
-			{
-				NSUbiquitousKeyValueStore.default.set(localValue, forKey: key)
-			}
-		}
-	}
-
-	// MARK: - Notifications
-	@objc private func _updateKVStoreItems(_ aNotification: Notification)
-	{
-		guard let userInfo = aNotification.userInfo else
-		{
-			return
-		}
-
-		guard let reason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as! Int? else
-		{
-			return
-		}
-
-		if reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange
-		{
-			guard let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]? else
-			{
-				return
-			}
-
-			for key in changedKeys
-			{
-				guard let value = NSUbiquitousKeyValueStore.default.object(forKey: key) else
-				{
-					continue
-				}
-
-				defaults.set(value, forKey: key);
-			}
-
-			defaults.synchronize()
 		}
 	}
 }

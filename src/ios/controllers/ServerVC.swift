@@ -4,7 +4,7 @@ import UIKit
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class ServerVC : UITableViewController, CenterViewController
+final class ServerVC : UITableViewController
 {
 	// MARK: - Private properties
 	// MPD Server name
@@ -35,15 +35,13 @@ final class ServerVC : UITableViewController, CenterViewController
 	private var lblClearCache: UILabel! = nil
 	private var lblUpdateDatabase: UILabel! = nil
 	// MPD Server
-	private var mpdServer: AudioServer?
+	public var server: Server?
 	// WEB Server for covers
-	private var webServer: CoverWebServer?
+	//private var webServer: CoverWebServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
 	// Navigation title
 	private var titleView: UILabel!
-	// Delegate
-	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -56,7 +54,7 @@ final class ServerVC : UITableViewController, CenterViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		titleView.textColor = Colors.main
 		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
 		navigationItem.titleView = titleView
 
@@ -67,7 +65,7 @@ final class ServerVC : UITableViewController, CenterViewController
 				search.accessibilityLabel = NYXLocalizedString("lbl_search_zeroconf")
 			}
 		}*/
-		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+		
 		let search = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(browserZeroConfServers(_:)))
 		let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.save, target: self, action: #selector(validateSettingsAction(_:)))
 		self.navigationItem.rightBarButtonItems = [save, search]
@@ -113,42 +111,6 @@ final class ServerVC : UITableViewController, CenterViewController
 	{
 		super.viewWillAppear(animated)
 
-		let decoder = JSONDecoder()
-
-		if let mpdServerAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
-		{
-			do
-			{
-				let server = try decoder.decode(AudioServer.self, from: mpdServerAsData)
-				mpdServer = server
-			}
-			catch let error
-			{
-				Logger.shared.log(type: .debug, message: "Failed to decode mpd server: \(error.localizedDescription)")
-			}
-		}
-		else
-		{
-			Logger.shared.log(type: .debug, message: "No audio server registered yet")
-		}
-
-		if let webServerAsData = Settings.shared.data(forKey: kNYXPrefWEBServer)
-		{
-			do
-			{
-				let server = try decoder.decode(CoverWebServer.self, from: webServerAsData)
-				webServer = server
-			}
-			catch let error
-			{
-				Logger.shared.log(type: .debug, message: "Failed to decode web server: \(error.localizedDescription)")
-			}
-		}
-		else
-		{
-			Logger.shared.log(type: .debug, message: "No web server registered yet")
-		}
-
 		updateFields()
 	}
 
@@ -159,7 +121,7 @@ final class ServerVC : UITableViewController, CenterViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	// MARK: - Buttons actions
@@ -200,35 +162,62 @@ final class ServerVC : UITableViewController, CenterViewController
 		}
 
 		let encoder = JSONEncoder()
-		let mpdServer = AudioServer(name: serverName, hostname: ip, port: port, password: password)
+		let mpdServer = MPDServer(name: serverName, hostname: ip, port: port, password: password)
 		let cnn = MPDConnection(mpdServer)
 		if cnn.connect().succeeded
 		{
-			self.mpdServer = mpdServer
+			if var server = self.server
+			{
+				server.mpd = mpdServer
+			}
+			else
+			{
+				self.server = Server(mpd: mpdServer)
+			}
+
 			do
 			{
-				let serverAsData = try encoder.encode(mpdServer)
-				Settings.shared.set(serverAsData, forKey: kNYXPrefMPDServer)
+				let decoder = JSONDecoder()
+				var servers = [Server]()
+				if let serversAsData = Settings.shared.data(forKey: kNYXPrefServers)
+				{
+					do
+					{
+						servers = try decoder.decode([Server].self, from: serversAsData)
+					}
+					catch let error
+					{
+						Logger.shared.log(type: .debug, message: "Failed to decode servers: \(error.localizedDescription)")
+					}
+				}
+
+				let exist = servers.firstIndex{$0.id == server?.id}
+				if let index = exist
+				{
+					servers[index] = server!
+				}
+				else
+				{
+					servers.append(server!)
+				}
+				
+				let newServersAsData = try encoder.encode(servers)
+				
+				Settings.shared.set(newServersAsData, forKey: kNYXPrefServers)
 			}
 			catch let error
 			{
 				Logger.shared.log(error: error)
 			}
-
-			NotificationCenter.default.post(name: .audioServerConfigurationDidChange, object: mpdServer)
-
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-				self.updateOutputsLabel()
-			})
 		}
 		else
 		{
-			Settings.shared.removeObject(forKey: kNYXPrefMPDServer)
+			/*Settings.shared.removeObject(forKey: kNYXPrefMPDServer)
 			let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
 			}
 			alertController.addAction(cancelAction)
-			present(alertController, animated: true, completion: nil)
+			present(alertController, animated: true, completion: nil)*/
 		}
 		cnn.disconnect()
 
@@ -250,12 +239,37 @@ final class ServerVC : UITableViewController, CenterViewController
 				}
 			}
 			let webServer = CoverWebServer(name: "CoverServer", hostname: strURL, port: port, coverName: coverName)
-			self.webServer = webServer
+			server?.covers = webServer
 
 			do
 			{
-				let serverAsData = try encoder.encode(webServer)
-				Settings.shared.set(serverAsData, forKey: kNYXPrefWEBServer)
+				let decoder = JSONDecoder()
+				var servers = [Server]()
+				if let serversAsData = Settings.shared.data(forKey: kNYXPrefServers)
+				{
+					do
+					{
+						servers = try decoder.decode([Server].self, from: serversAsData)
+					}
+					catch let error
+					{
+						Logger.shared.log(type: .debug, message: "Failed to decode servers: \(error.localizedDescription)")
+					}
+				}
+
+				let exist = servers.firstIndex{$0.id == server?.id}
+				if let index = exist
+				{
+					servers[index] = server!
+				}
+				else
+				{
+					servers.append(server!)
+				}
+
+				let newServersAsData = try encoder.encode(servers)
+
+				Settings.shared.set(newServersAsData, forKey: kNYXPrefServers)
 			}
 			catch let error
 			{
@@ -264,7 +278,7 @@ final class ServerVC : UITableViewController, CenterViewController
 		}
 		else
 		{
-			Settings.shared.removeObject(forKey: kNYXPrefWEBServer)
+			//Settings.shared.removeObject(forKey: kNYXPrefWEBServer)
 		}
 
 		Settings.shared.synchronize()
@@ -277,11 +291,6 @@ final class ServerVC : UITableViewController, CenterViewController
 		let vc = nvc.topViewController as! ZeroConfBrowserTVC
 		vc.delegate = self
 		self.navigationController?.present(nvc, animated: true, completion: nil)
-	}
-
-	@objc func showLeftViewAction(_ sender: Any?)
-	{
-		containerDelegate?.toggleMenu()
 	}
 
 	// MARK: - Notifications
@@ -337,12 +346,17 @@ final class ServerVC : UITableViewController, CenterViewController
 	// MARK: - Private
 	private func updateFields()
 	{
-		if let server = mpdServer
+		if let server = server
 		{
-			tfMPDName.text = server.name
-			tfMPDHostname.text = server.hostname
-			tfMPDPort.text = String(server.port)
-			tfMPDPassword.text = server.password
+			tfMPDName.text = server.mpd.name
+			tfMPDHostname.text = server.mpd.hostname
+			tfMPDPort.text = String(server.mpd.port)
+			tfMPDPassword.text = server.mpd.password
+
+			tfWEBHostname.text = server.covers?.name ?? ""
+			tfWEBPort.text = String(server.covers?.port ?? 80)
+			tfWEBCoverName.text = server.covers?.coverName ?? ""
+
 			updateOutputsLabel()
 		}
 		else
@@ -352,16 +366,7 @@ final class ServerVC : UITableViewController, CenterViewController
 			tfMPDPort.text = "6600"
 			tfMPDPassword.text = ""
 			lblMPDOutput.text = ""
-		}
 
-		if let server = webServer
-		{
-			tfWEBHostname.text = server.hostname
-			tfWEBPort.text = String(server.port)
-			tfWEBCoverName.text = server.coverName
-		}
-		else
-		{
 			tfWEBHostname.text = ""
 			tfWEBPort.text = "80"
 			tfWEBCoverName.text = "cover.jpg"
