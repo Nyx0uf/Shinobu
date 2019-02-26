@@ -18,20 +18,16 @@ final class ZeroConfBrowserTVC : UITableViewController
 	private var _explorer: ZeroConfExplorer! = nil
 	// List of servers found
 	private var _servers = [MPDServer]()
-
-	// MARK: - Initializer
-	required init?(coder aDecoder: NSCoder)
-	{
-		super.init(coder: aDecoder)
-
-		self._explorer = ZeroConfExplorer()
-		self._explorer.delegate = self
-	}
+	//
+	private let cellIdentifier = "fr.whine.shinobu.cell.zeroconf"
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
+		let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(done(_:)))
+		self.navigationItem.leftBarButtonItem = save
 
 		// Navigation bar title
 		let titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
@@ -39,9 +35,16 @@ final class ZeroConfBrowserTVC : UITableViewController
 		titleView.numberOfLines = 2
 		titleView.textAlignment = .center
 		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		titleView.textColor = Colors.main
 		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
 		navigationItem.titleView = titleView
+
+		tableView.register(ZeroConfServerTableViewCell.classForCoder(), forCellReuseIdentifier: cellIdentifier)
+		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+
+		self._explorer = ZeroConfExplorer()
+		self._explorer.delegate = self
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -63,11 +66,11 @@ final class ZeroConfBrowserTVC : UITableViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	// MARK: - IBActions
-	@IBAction private func done(_ sender: Any?)
+	@objc private func done(_ sender: Any?)
 	{
 		self.dismiss(animated: true, completion: nil)
 	}
@@ -102,7 +105,7 @@ extension ZeroConfBrowserTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.zeroconf", for: indexPath) as! ZeroConfServerTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ZeroConfServerTableViewCell
 
 		let server = _servers[indexPath.row]
 		cell.lblName.text = server.name

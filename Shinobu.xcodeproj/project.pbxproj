@@ -380,9 +380,9 @@
 				4358B06B21EB47A8009A3BBF /* PlayerVC.swift */,
 				4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */,
 				4358B06621EB47A7009A3BBF /* PlaylistsTVC.swift */,
+				43DBD7FB22203501009B3B68 /* ServerListVC.swift */,
 				4358B06721EB47A7009A3BBF /* ServerVC.swift */,
 				4358B06921EB47A7009A3BBF /* SettingsVC.swift */,
-				43DBD7FB22203501009B3B68 /* ServerListVC.swift */,
 				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
 				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */,
 			);

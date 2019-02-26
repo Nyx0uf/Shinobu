@@ -17,11 +17,13 @@ public let kNYXPrefLayoutLibraryCollection = "app-layout-library-collection"
 public let kNYXPrefLayoutArtistsCollection = "app-layout-artists-collection"
 public let kNYXPrefLayoutAlbumsCollection = "app-layout-albums-collection"
 
-public let kNYXPrefServers = "servers"
-
 
 final class Settings
 {
+	enum keys
+	{
+		static let servers = "servers"
+	}
 	// Singletion instance
 	static let shared = Settings()
 	//

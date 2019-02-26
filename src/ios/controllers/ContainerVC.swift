@@ -59,7 +59,7 @@ final class ContainerVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .default
+		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .lightContent
 	}
 
 	// MARK: - Gestures

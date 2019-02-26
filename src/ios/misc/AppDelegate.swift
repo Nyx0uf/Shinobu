@@ -15,7 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		appearance.barStyle = .blackTranslucent
 
 		let tableViewAppearance = UITableView.appearance()
-		tableViewAppearance.backgroundColor = UIColor.black
+		tableViewAppearance.backgroundColor = Colors.background
+
+		UITextField.appearance().tintColor = Colors.main
 
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = ContainerVC()

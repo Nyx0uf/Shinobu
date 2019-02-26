@@ -40,6 +40,6 @@ final class NYXNavigationController : UINavigationController
 		{
 			return topViewController.preferredStatusBarStyle
 		}
-		return .default
+		return .lightContent
 	}
 }

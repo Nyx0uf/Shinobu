@@ -23,25 +23,14 @@ final class ServerVC : UITableViewController
 	private var tfWEBPort: UITextField!
 	// Cover name
 	private var tfWEBCoverName: UITextField!
-	// Cell Labels
-	private var lblCellMPDName: UILabel! = nil
-	private var lblCellMPDHostname: UILabel! = nil
-	private var lblCellMPDPort: UILabel! = nil
-	private var lblCellMPDPassword: UILabel! = nil
-	private var lblCellMPDOutput: UILabel! = nil
-	private var lblCellWEBHostname: UILabel! = nil
-	private var lblCellWEBPort: UILabel! = nil
-	private var lblCellWEBCoverName: UILabel! = nil
-	private var lblClearCache: UILabel! = nil
-	private var lblUpdateDatabase: UILabel! = nil
 	// MPD Server
 	public var server: Server?
-	// WEB Server for covers
-	//private var webServer: CoverWebServer?
 	// Indicate that the keyboard is visible, flag
 	private var _keyboardVisible = false
 	// Navigation title
 	private var titleView: UILabel!
+	// Zero conf VC
+	private var zeroConfVC: ZeroConfBrowserTVC!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -69,37 +58,68 @@ final class ServerVC : UITableViewController
 		let search = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(browserZeroConfServers(_:)))
 		let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.save, target: self, action: #selector(validateSettingsAction(_:)))
 		self.navigationItem.rightBarButtonItems = [save, search]
-		
-		lblCellMPDName = UILabel()
-		lblCellMPDHostname = UILabel()
-		lblCellMPDPort = UILabel()
-		lblCellMPDPassword = UILabel()
-		lblCellMPDOutput = UILabel()
-		lblCellWEBHostname = UILabel()
-		lblCellWEBPort = UILabel()
-		lblCellWEBCoverName = UILabel()
-		lblClearCache = UILabel()
-		lblUpdateDatabase = UILabel()
-		tfMPDName = UITextField()
-		tfMPDHostname = UITextField()
-		tfMPDPort = UITextField()
-		tfMPDPassword = UITextField()
-		tfWEBHostname = UITextField()
-		tfWEBPort = UITextField()
-		tfWEBCoverName = UITextField()
-		lblMPDOutput = UILabel()
 
-		lblCellMPDName.text = NYXLocalizedString("lbl_server_name")
-		lblCellMPDHostname.text = NYXLocalizedString("lbl_server_host")
-		lblCellMPDPort.text = NYXLocalizedString("lbl_server_port")
-		lblCellMPDPassword.text = NYXLocalizedString("lbl_server_password")
-		lblCellMPDOutput.text = NYXLocalizedString("lbl_server_output")
-		lblCellWEBHostname.text = NYXLocalizedString("lbl_server_coverurl")
-		lblCellWEBPort.text = NYXLocalizedString("lbl_server_port")
-		lblCellWEBCoverName.text = NYXLocalizedString("lbl_server_covername")
-		lblClearCache.text = NYXLocalizedString("lbl_server_coverclearcache")
-		lblUpdateDatabase.text = NYXLocalizedString("lbl_update_db")
-		tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
+		tfMPDName = UITextField()
+		tfMPDName.translatesAutoresizingMaskIntoConstraints = false
+		tfMPDName.textAlignment = .right
+		tfMPDName.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfMPDName.backgroundColor = Colors.background
+		tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)])
+
+		tfMPDHostname = UITextField()
+		tfMPDHostname.translatesAutoresizingMaskIntoConstraints = false
+		tfMPDHostname.textAlignment = .right
+		tfMPDHostname.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfMPDHostname.backgroundColor = Colors.background
+		tfMPDHostname.attributedPlaceholder = NSAttributedString(string: "mpd.local", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)])
+
+		tfMPDPort = UITextField()
+		tfMPDPort.translatesAutoresizingMaskIntoConstraints = false
+		tfMPDPort.textAlignment = .right
+		tfMPDPort.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfMPDPort.backgroundColor = Colors.background
+		tfMPDPort.text = "6600"
+		tfMPDPort.keyboardType = .decimalPad
+
+		tfMPDPassword = UITextField()
+		tfMPDPassword.translatesAutoresizingMaskIntoConstraints = false
+		tfMPDPassword.textAlignment = .right
+		tfMPDPassword.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfMPDPassword.backgroundColor = Colors.background
+		tfMPDPassword.isSecureTextEntry = true
+		tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)])
+
+		tfWEBHostname = UITextField()
+		tfWEBHostname.translatesAutoresizingMaskIntoConstraints = false
+		tfWEBHostname.textAlignment = .right
+		tfWEBHostname.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfWEBHostname.backgroundColor = Colors.background
+		tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)])
+
+		tfWEBPort = UITextField()
+		tfWEBPort.translatesAutoresizingMaskIntoConstraints = false
+		tfWEBPort.textAlignment = .right
+		tfWEBPort.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfWEBPort.backgroundColor = Colors.background
+		tfWEBPort.text = "80"
+		tfWEBPort.keyboardType = .decimalPad
+
+		tfWEBCoverName = UITextField()
+		tfWEBCoverName.translatesAutoresizingMaskIntoConstraints = false
+		tfWEBCoverName.textAlignment = .right
+		tfWEBCoverName.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		tfWEBCoverName.backgroundColor = Colors.background
+		tfWEBCoverName.attributedPlaceholder = NSAttributedString(string: "cover.jpg", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)])
+
+		lblMPDOutput = UILabel()
+		lblMPDOutput.translatesAutoresizingMaskIntoConstraints = false
+		lblMPDOutput.textAlignment = .right
+		lblMPDOutput.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		lblMPDOutput.backgroundColor = Colors.background
+
+		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.tableFooterView = UIView()
 
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
@@ -179,7 +199,7 @@ final class ServerVC : UITableViewController
 			{
 				let decoder = JSONDecoder()
 				var servers = [Server]()
-				if let serversAsData = Settings.shared.data(forKey: kNYXPrefServers)
+				if let serversAsData = Settings.shared.data(forKey: Settings.keys.servers)
 				{
 					do
 					{
@@ -203,7 +223,7 @@ final class ServerVC : UITableViewController
 				
 				let newServersAsData = try encoder.encode(servers)
 				
-				Settings.shared.set(newServersAsData, forKey: kNYXPrefServers)
+				Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)
 			}
 			catch let error
 			{
@@ -245,7 +265,7 @@ final class ServerVC : UITableViewController
 			{
 				let decoder = JSONDecoder()
 				var servers = [Server]()
-				if let serversAsData = Settings.shared.data(forKey: kNYXPrefServers)
+				if let serversAsData = Settings.shared.data(forKey: Settings.keys.servers)
 				{
 					do
 					{
@@ -269,7 +289,7 @@ final class ServerVC : UITableViewController
 
 				let newServersAsData = try encoder.encode(servers)
 
-				Settings.shared.set(newServersAsData, forKey: kNYXPrefServers)
+				Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)
 			}
 			catch let error
 			{
@@ -286,10 +306,12 @@ final class ServerVC : UITableViewController
 
 	@objc func browserZeroConfServers(_ sender: Any?)
 	{
-		let sb = UIStoryboard(name: "main-iphone", bundle: nil)
-		let nvc = sb.instantiateViewController(withIdentifier: "ZeroConfBrowserNVC") as! NYXNavigationController
-		let vc = nvc.topViewController as! ZeroConfBrowserTVC
-		vc.delegate = self
+		if zeroConfVC == nil
+		{
+			zeroConfVC = ZeroConfBrowserTVC()
+		}
+		zeroConfVC.delegate = self
+		let nvc = NYXNavigationController(rootViewController: zeroConfVC)
 		self.navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
@@ -415,13 +437,13 @@ final class ServerVC : UITableViewController
 
 	private func updateCacheLabel()
 	{
-		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return}
+		/*guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return}
 		DispatchQueue.global().async {
 			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 			DispatchQueue.main.async {
 				self.lblClearCache.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(size) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
 			}
-		}
+		}*/
 	}
 
 	private func updateOutputsLabel()
@@ -467,43 +489,129 @@ extension ServerVC
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return section == 0 ? 6 : 4
+		return section == 0 ? 7 : 4
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = UITableViewCell()
+		cell.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.backgroundColor = Colors.background
+
 		if indexPath.section == 0
 		{
 			if indexPath.row == 0
 			{
-				cell.textLabel?.text = "Name"
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_name")
+				cell.selectionStyle = .none
+
+				if tfMPDName.superview == nil
+				{
+					cell.contentView.addSubview(tfMPDName)
+				}
+				tfMPDName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 			else if indexPath.row == 1
 			{
-				
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_host")
+				cell.selectionStyle = .none
+
+				if tfMPDHostname.superview == nil
+				{
+					cell.addSubview(tfMPDHostname)
+				}
+				tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 			else if indexPath.row == 2
 			{
-				
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
+				cell.selectionStyle = .none
+
+				if tfMPDPort.superview == nil
+				{
+					cell.addSubview(tfMPDPort)
+				}
+				tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 			else if indexPath.row == 3
 			{
-				
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_password")
+				cell.selectionStyle = .none
+
+				if tfMPDPassword.superview == nil
+				{
+					cell.addSubview(tfMPDPassword)
+				}
+				tfMPDPassword.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 			else if indexPath.row == 4
 			{
-				
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_output")
+				cell.selectionStyle = .none
+
+				if lblMPDOutput.superview == nil
+				{
+					cell.addSubview(lblMPDOutput)
+				}
+				lblMPDOutput.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 			else if indexPath.row == 5
 			{
-				
+				cell.textLabel?.text = NYXLocalizedString("lbl_update_db")
+				cell.textLabel?.textAlignment = .center
+				cell.textLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+				cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+			}
+			else if indexPath.row == 6
+			{
+				// Dummy
+				cell.selectionStyle = .none
 			}
 		}
 		else
 		{
-			
+			if indexPath.row == 0
+			{
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_host")
+				cell.selectionStyle = .none
+
+				if tfWEBHostname.superview == nil
+				{
+					cell.addSubview(tfWEBHostname)
+				}
+				tfWEBHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+			}
+			else if indexPath.row == 1
+			{
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_port")
+				cell.selectionStyle = .none
+
+				if tfWEBPort.superview == nil
+				{
+					cell.addSubview(tfWEBPort)
+				}
+				tfWEBPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+			}
+			else if indexPath.row == 2
+			{
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_covername")
+				cell.selectionStyle = .none
+
+				if tfWEBCoverName.superview == nil
+				{
+					cell.addSubview(tfWEBCoverName)
+				}
+				tfWEBCoverName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+			}
+			else if indexPath.row == 3
+			{
+				cell.textLabel?.text = NYXLocalizedString("lbl_server_coverclearcache")
+				cell.textLabel?.textAlignment = .center
+				cell.textLabel?.textColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
+				cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+			}
 		}
+
 		return cell
 	}
 }
@@ -564,8 +672,9 @@ extension ServerVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		label.font = UIFont.systemFont(ofSize: 15.0)
+		label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		label.font = UIFont.boldSystemFont(ofSize: 16.0)
+		label.textAlignment = .center
 		dummy.addSubview(label)
 
 		if section == 0

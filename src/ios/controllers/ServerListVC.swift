@@ -38,6 +38,8 @@ final class ServerListTVC : UITableViewController, CenterViewController
 		
 		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.rowHeight = 64
 	}
 	
 	override func viewWillAppear(_ animated: Bool)
@@ -75,7 +77,7 @@ final class ServerListTVC : UITableViewController, CenterViewController
 	private func refreshServers()
 	{
 		let decoder = JSONDecoder()
-		if let serversAsData = Settings.shared.data(forKey: kNYXPrefServers)
+		if let serversAsData = Settings.shared.data(forKey: Settings.keys.servers)
 		{
 			do
 			{
