@@ -37,7 +37,7 @@ final class ServersManager
 		return servers
 	}
 
-	func addServer(_ server: ShinobuServer)
+	func handleServer(_ server: ShinobuServer)
 	{
 		var servers = self.getServersList()
 		let exist = servers.firstIndex{$0 == server}

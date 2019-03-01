@@ -163,7 +163,6 @@ final class ServerVC : NYXTableViewController
 			password = strPassword
 		}
 
-		let encoder = JSONEncoder()
 		let mpdServer = MPDServer(hostname: ip, port: port, password: password)
 		let cnn = MPDConnection(mpdServer)
 		if cnn.connect().succeeded
@@ -181,7 +180,7 @@ final class ServerVC : NYXTableViewController
 				self.selectedServer = ShinobuServer(name: serverName, mpd: mpdServer)
 			}
 
-			ServersManager.shared.addServer(self.selectedServer!)
+			ServersManager.shared.handleServer(self.selectedServer!)
 		}
 		cnn.disconnect()
 
@@ -205,31 +204,8 @@ final class ServerVC : NYXTableViewController
 			let webServer = CoverServer(hostname: strURL, port: port, coverName: coverName)
 			selectedServer?.covers = webServer
 
-			do
-			{
-				var servers = ServersManager.shared.getServersList()
-
-				let exist = servers.firstIndex{$0 == self.selectedServer}
-				if let index = exist
-				{
-					servers[index] = selectedServer!
-				}
-				else
-				{
-					servers.append(selectedServer!)
-				}
-
-				let newServersAsData = try encoder.encode(servers)
-
-				Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)
-			}
-			catch let error
-			{
-				Logger.shared.log(error: error)
-			}
+			ServersManager.shared.handleServer(selectedServer!)
 		}
-
-		Settings.shared.synchronize()
 	}
 
 	@objc func browserZeroConfAction(_ sender: Any?)
