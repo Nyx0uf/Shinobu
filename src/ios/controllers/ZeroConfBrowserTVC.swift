@@ -3,95 +3,59 @@ import UIKit
 
 protocol ZeroConfBrowserTVCDelegate : class
 {
-	func audioServerDidChange()
+	func audioServerDidChange(with server: ShinobuServer)
 }
 
 
-final class ZeroConfBrowserTVC : UITableViewController
+final class ZeroConfBrowserTVC : NYXTableViewController
 {
 	// MARK: - Public properties
 	// Delegate
 	weak var delegate: ZeroConfBrowserTVCDelegate? = nil
+	// Currently selectd server on the add vc
+	var selectedServer: ShinobuServer? = nil
 
 	// MARK: - Private properties
 	// Zeroconf explorer
-	private var _explorer: ZeroConfExplorer! = nil
+	private var zeroConfExplorer: ZeroConfExplorer! = nil
 	// List of servers found
-	private var _servers = [MPDServer]()
-	//
-	private let cellIdentifier = "fr.whine.shinobu.cell.zeroconf"
+	private var servers = [ShinobuServer]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		let save = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(done(_:)))
-		self.navigationItem.leftBarButtonItem = save
+		let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction(_:)))
+		self.navigationItem.leftBarButtonItem = done
 
 		// Navigation bar title
-		let titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = Colors.main
 		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
-		navigationItem.titleView = titleView
 
-		tableView.register(ZeroConfServerTableViewCell.classForCoder(), forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.rowHeight = 64
 
-		self._explorer = ZeroConfExplorer()
-		self._explorer.delegate = self
+		self.zeroConfExplorer = ZeroConfExplorer()
+		self.zeroConfExplorer.delegate = self
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-		self._explorer.searchForServices(type: "_mpd._tcp.")
+		self.zeroConfExplorer.searchForServices(type: "_mpd._tcp.")
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
 	{
 		super.viewWillDisappear(animated)
-		self._explorer.stopSearch()
+		self.zeroConfExplorer.stopSearch()
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
-	// MARK: - IBActions
-	@objc private func done(_ sender: Any?)
+	// MARK: - Buttons actions
+	@objc private func doneAction(_ sender: Any?)
 	{
 		self.dismiss(animated: true, completion: nil)
-	}
-
-	// MARK: - Private
-	private func currentAudioServer() -> MPDServer?
-	{
-		if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
-		{
-			var server: MPDServer? = nil
-			do
-			{
-				server = try JSONDecoder().decode(MPDServer.self, from: serverAsData)
-			}
-			catch
-			{
-				Logger.shared.log(type: .error, message: "Failed to decode mpd server")
-			}
-			return server
-		}
-		return nil
 	}
 }
 
@@ -100,17 +64,26 @@ extension ZeroConfBrowserTVC
 {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return _servers.count
+		return servers.count
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ZeroConfServerTableViewCell
+		let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "fr.whine.shinobu.cell.zeroconf")
+		cell.backgroundColor = Colors.background
+		cell.contentView.backgroundColor = Colors.background
+		let backgroundView = UIView()
+		backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+		cell.selectedBackgroundView = backgroundView
 
-		let server = _servers[indexPath.row]
-		cell.lblName.text = server.name
-		cell.lblHostname.text = server.hostname + ":" + String(server.port)
-		if let currentServer = currentAudioServer()
+		let server = servers[indexPath.row]
+		cell.textLabel?.text = server.name
+		cell.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+		cell.detailTextLabel?.text = server.mpd.hostname + ":" + String(server.mpd.port)
+		cell.detailTextLabel?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+
+		if let currentServer = selectedServer
 		{
 			if currentServer == server
 			{
@@ -136,41 +109,30 @@ extension ZeroConfBrowserTVC
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		// Check if same server
-		tableView.deselectRow(at: indexPath, animated: true)
-		let selectedServer = _servers[indexPath.row]
-		if let currentServer = currentAudioServer()
+		let selected = servers[indexPath.row]
+		if let currentServer = selectedServer
 		{
-			if selectedServer == currentServer
+			if selected == currentServer
 			{
 				return
 			}
 		}
 
 		// Different server, update
-		do
-		{
-			let encoder = JSONEncoder()
-			let mpdServer = MPDServer(name: selectedServer.name, hostname: selectedServer.hostname, port: selectedServer.port, password: "")
-			let serverAsData = try encoder.encode(mpdServer)
-			Settings.shared.set(serverAsData, forKey: kNYXPrefMPDServer)
-			Settings.shared.synchronize()
-		}
-		catch let error
-		{
-			Logger.shared.log(type: .error, message: "Failed to encode mpd server: \(error.localizedDescription)")
-			return
-		}
+		self.selectedServer = selected
 
-		self.tableView.reloadData()
-		delegate?.audioServerDidChange()
+		delegate?.audioServerDidChange(with: selected)
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: {
+			tableView.reloadData()
+		})
 	}
 }
 
 extension ZeroConfBrowserTVC : ZeroConfExplorerDelegate
 {
-	internal func didFindServer(_ server: MPDServer)
+	internal func didFindServer(_ server: ShinobuServer)
 	{
-		_servers = _explorer.services.map({$0.value})
+		servers = zeroConfExplorer.services.map({$0.value})
 		self.tableView.reloadData()
 	}
 }

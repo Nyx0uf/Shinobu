@@ -3,7 +3,7 @@ import Foundation
 
 protocol ZeroConfExplorerDelegate : class
 {
-	func didFindServer(_ server: MPDServer)
+	func didFindServer(_ server: ShinobuServer)
 }
 
 
@@ -13,7 +13,7 @@ final class ZeroConfExplorer : NSObject
 	// Is searching flag
 	private(set) var isSearching = false
 	// Services list
-	private(set) var services = [NetService : MPDServer]()
+	private(set) var services = [NetService : ShinobuServer]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
 
@@ -56,7 +56,7 @@ final class ZeroConfExplorer : NSObject
 	// MARK: - Private
 	private func resolvZeroconfService(service: NetService)
 	{
-		if let server = services[service] , isResolved(server)
+		if let server = services[service] , isResolved(server.mpd)
 		{
 			return
 		}
@@ -91,7 +91,8 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool)
 	{
-		services[service] = MPDServer(name: service.name, hostname: "", port: 0)
+		let mpdServer = MPDServer(hostname: "", port: 0)
+		services[service] = ShinobuServer(name: "", mpd: mpdServer)
 		resolvZeroconfService(service: service)
 	}
 
@@ -123,7 +124,6 @@ extension ZeroConfExplorer : NetServiceDelegate
 					tmpIP = ip
 					found = true
 				}
-				//ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
 				ipStringBuffer.deallocate()
 			}
 			else if inetAddress.sin_family == sa_family_t(AF_INET6)
@@ -138,12 +138,12 @@ extension ZeroConfExplorer : NetServiceDelegate
 					found = true
 				}
 				ipStringBuffer.deallocate()
-				//ipStringBuffer.deallocate(capacity: Int(INET6_ADDRSTRLEN))
 			}
 
 			if found
 			{
-				let server = MPDServer(name: sender.name, hostname: tmpIP, port: UInt16(sender.port))
+				let mpdServer = MPDServer(hostname: tmpIP, port: UInt16(sender.port))
+				let server = ShinobuServer(name: sender.name, mpd: mpdServer)
 				services[sender] = server
 				delegate?.didFindServer(server)
 			}

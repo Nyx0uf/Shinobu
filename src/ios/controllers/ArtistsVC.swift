@@ -69,7 +69,7 @@ final class ArtistsVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)

@@ -1,20 +1,17 @@
 import Foundation
 
 
-struct CoverWebServer : Codable, Equatable
+struct CoverServer : Codable, Equatable
 {
 	// Coding keys
 	private enum CoverServerCodingKeys: String, CodingKey
 	{
-		case name
 		case hostname
 		case port
 		case coverName
 	}
 
 	// MARK: - Public properties
-	// Server name
-	let name: String
 	// Server IP / hostname
 	let hostname: String
 	// Server port
@@ -23,10 +20,9 @@ struct CoverWebServer : Codable, Equatable
 	let coverName: String
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16, coverName: String)
+	init(hostname: String, port: UInt16, coverName: String)
 	{
-		self.name = name
-		self.hostname = CoverWebServer.sanitizeHostname(hostname, port)
+		self.hostname = CoverServer.sanitizeHostname(hostname, port)
 		self.port = port
 		self.coverName = coverName
 	}
@@ -34,12 +30,11 @@ struct CoverWebServer : Codable, Equatable
 	init(from decoder: Decoder) throws
 	{
 		let values = try decoder.container(keyedBy: CoverServerCodingKeys.self)
-		let na = try values.decode(String.self, forKey: .name)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
 		let co = try values.decode(String.self, forKey: .coverName)
 
-		self.init(name: na, hostname: ho, port: po, coverName: co)
+		self.init(hostname: ho, port: po, coverName: co)
 	}
 
 	// MARK: - Public
@@ -144,7 +139,7 @@ struct CoverWebServer : Codable, Equatable
 }
 
 // MARK: - Operators
-func == (lhs: CoverWebServer, rhs: CoverWebServer) -> Bool
+func == (lhs: CoverServer, rhs: CoverServer) -> Bool
 {
-	return (lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)
+	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)
 }

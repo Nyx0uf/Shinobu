@@ -131,7 +131,7 @@ final class AlbumDetailVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	// MARK: - Private

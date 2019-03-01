@@ -67,7 +67,7 @@ final class SettingsVC : UITableViewController, CenterViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	// MARK: - IBActions
@@ -144,7 +144,7 @@ final class SettingsVC : UITableViewController, CenterViewController
 			{
 				do
 				{
-					let server = try JSONDecoder().decode(CoverWebServer.self, from: webServerAsData)
+					let server = try JSONDecoder().decode(CoverServer.self, from: webServerAsData)
 					message += "Cover server:\n\(server.publicDescription())\n\n"
 				}
 				catch

@@ -150,7 +150,7 @@ final class ContainerVC : UIViewController
 		var vc = mainViewController.topViewController as! CenterViewController
 		vc.containerDelegate = self
 
-		mainViewController.view.addGestureRecognizer(panGestureRecognizer)
+		//mainViewController.view.addGestureRecognizer(panGestureRecognizer)
 	}
 
 	private func addMenuViewController()

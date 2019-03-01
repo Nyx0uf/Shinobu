@@ -23,10 +23,11 @@ final class Settings
 	enum keys
 	{
 		static let servers = "servers"
+		static let selectedServerName = "selectedServerName"
 	}
 	// Singletion instance
 	static let shared = Settings()
-	//
+	// Prefs
 	private var defaults: UserDefaults
 
 	// MARK: - Initializers
@@ -77,6 +78,11 @@ final class Settings
 	}
 
 	func set(_ value: Int, forKey: String)
+	{
+		defaults.set(value, forKey: forKey)
+	}
+
+	func set(_ value: String, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
 	}

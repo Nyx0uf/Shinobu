@@ -117,3 +117,5 @@
 
 /* NEW */
 "lbl_header_server_list" = "Servers list";
+"lbl_current_selected_server" = "the current selected server";
+"lbl_current_selected_server_not" = "not the current selected server";

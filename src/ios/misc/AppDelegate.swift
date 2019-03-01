@@ -9,19 +9,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
-		let appearance = UINavigationBar.appearance()
-		appearance.tintColor = Colors.main
-		appearance.isTranslucent = true
-		appearance.barStyle = .blackTranslucent
+		self._setAppearances()
 
-		let tableViewAppearance = UITableView.appearance()
-		tableViewAppearance.backgroundColor = Colors.background
-
-		UITextField.appearance().tintColor = Colors.main
+		Settings.shared.initialize()
 
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = ContainerVC()
 		window?.makeKeyAndVisible()
 		return true
+	}
+
+	private func _setAppearances()
+	{
+		let navigationBarAppearance = UINavigationBar.appearance()
+		navigationBarAppearance.tintColor = Colors.main
+		navigationBarAppearance.isTranslucent = true
+		navigationBarAppearance.barStyle = .blackTranslucent
+
+		let tableViewAppearance = UITableView.appearance()
+		tableViewAppearance.backgroundColor = Colors.background
+		tableViewAppearance.tintColor = Colors.main
+
+		let textFieldAppearance = UITextField.appearance()
+		textFieldAppearance.tintColor = Colors.main
 	}
 }

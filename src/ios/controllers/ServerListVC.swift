@@ -1,42 +1,46 @@
 import UIKit
 
 
-final class ServerListTVC : UITableViewController, CenterViewController
+private struct ServerData
+{
+	// Server name
+	let name: String
+	// Is this the active server?
+	let selected: Bool
+}
+
+final class ServerListTVC : NYXTableViewController, CenterViewController
 {
 	// MARK: - Public properties
-	// List of MPD servers
-	var servers = [Server]()
+	// List of servers
+	private var servers = [ServerData]()
 	// Delegate
 	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - Private properties
 	// Tableview cell identifier
-	private let cellIdentifier = "fr.whine.shinobu.cell.mpdserver"
-	// Navigation title
-	private var titleView: UILabel!
-	//
+	private let cellIdentifier = "fr.whine.shinobu.cell.server"
+	// Add/Edit server VC
 	private var addServerVC: ServerVC? = nil
 	
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
+		// Remove back button label
+		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
+		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		
 		// Navigation bar title
-		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = Colors.main
 		titleView.text = NYXLocalizedString("lbl_header_server_list")
-		navigationItem.titleView = titleView
 
 		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		let add = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(addMpdServerAction(_:)))
 		self.navigationItem.rightBarButtonItem = add
 		
-		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: cellIdentifier)
+		tableView.register(ShinobuServerTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		tableView.rowHeight = 64
@@ -49,11 +53,6 @@ final class ServerListTVC : UITableViewController, CenterViewController
 		refreshServers()
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
 	// MARK: - Buttons actions
 	@objc func showLeftViewAction(_ sender: Any?)
 	{
@@ -62,6 +61,21 @@ final class ServerListTVC : UITableViewController, CenterViewController
 
 	@objc func addMpdServerAction(_ sender: Any?)
 	{
+		self.showServerVC(with: nil)
+	}
+	
+	// MARK: - Private
+	private func refreshServers()
+	{
+		let servers = ServersManager.shared.getServersList()
+
+		let enabledServerName = ServersManager.shared.getSelectedServerName()
+		self.servers = servers.compactMap({ServerData(name: $0.name, selected: ($0.name == enabledServerName)) })
+		tableView.reloadData()
+	}
+
+	private func showServerVC(with server: ShinobuServer?)
+	{
 		if addServerVC == nil
 		{
 			addServerVC = ServerVC()
@@ -69,30 +83,16 @@ final class ServerListTVC : UITableViewController, CenterViewController
 
 		if let vc = addServerVC
 		{
+			vc.selectedServer = server
 			navigationController?.pushViewController(vc, animated: true)
 		}
 	}
-	
-	// MARK: - Private
-	private func refreshServers()
+
+	@objc private func toggleServer(_ sender: UISwitch!)
 	{
-		let decoder = JSONDecoder()
-		if let serversAsData = Settings.shared.data(forKey: Settings.keys.servers)
-		{
-			do
-			{
-				let servers = try decoder.decode([Server].self, from: serversAsData)
-				self.servers = servers
-			}
-			catch let error
-			{
-				Logger.shared.log(type: .debug, message: "Failed to decode servers: \(error.localizedDescription)")
-			}
-		}
-		else
-		{
-			Logger.shared.log(type: .debug, message: "No servers registered yet")
-		}
+		guard let s = sender else { return }
+		ServersManager.shared.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
+		self.refreshServers()
 	}
 }
 
@@ -106,15 +106,16 @@ extension ServerListTVC
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! ShinobuServerTableViewCell
 		
 		let server = servers[indexPath.row]
-		
-		cell.textLabel?.text = server.mpd.name
-		//cell.accessoryType = output.enabled ? .checkmark : .none
-		cell.textLabel?.isAccessibilityElement = false
-		//cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
-		
+
+		cell.label.text = server.name
+		cell.toggle.isOn = server.selected
+		cell.toggle.tag = indexPath.row
+		cell.toggle.addTarget(self, action: #selector(toggleServer(_:)), for: .valueChanged)
+		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.selected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
+
 		return cell
 	}
 }
@@ -124,10 +125,30 @@ extension ServerListTVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-			tableView.deselectRow(at: indexPath, animated: true)
+		let serverData = servers[indexPath.row]
+		let shinobuServers = ServersManager.shared.getServersList()
+		let tmp = shinobuServers.filter({$0.name == serverData.name})
+		if tmp.count > 0
+		{
+			self.showServerVC(with: tmp[0])
+		}
+	}
+
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+	{
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
+
+			let serverData = self.servers[indexPath.row]
+			if ServersManager.shared.removeServerByName(serverData.name) == true
+			{
+				self.refreshServers()
+			}
+
+			completionHandler(true)
 		})
-		
-		//let server = servers[indexPath.row]
+		action.image = #imageLiteral(resourceName: "btn-trash")
+		action.backgroundColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
+
+		return UISwipeActionsConfiguration(actions: [action])
 	}
 }

@@ -107,7 +107,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		// Initialize the mpd connection
 		if MusicDataSource.shared.server == nil
 		{
-			if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
+			/*if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
 			{
 				do
 				{
@@ -151,10 +151,10 @@ final class LibraryVC : UIViewController, CenterViewController
 				}
 			}
 			else
-			{
+			{*/
 				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
 				containerDelegate?.showServerVC()
-			}
+			//}
 		}
 
 		// Since we are in search mode, show the bar
@@ -221,7 +221,7 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .default
+		return .lightContent
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)

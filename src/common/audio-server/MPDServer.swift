@@ -6,15 +6,12 @@ struct MPDServer : Codable, Equatable
 	// Coding keys
 	private enum MPDServerCodingKeys: String, CodingKey
 	{
-		case name
 		case hostname
 		case port
 		case password
 	}
 
 	// MARK: - Public properties
-	// Server name
-	let name: String
 	// Server IP / hostname
 	let hostname: String
 	// Server port
@@ -23,9 +20,8 @@ struct MPDServer : Codable, Equatable
 	let password: String
 
 	// MARK: - Initializers
-	init(name: String, hostname: String, port: UInt16, password: String = "")
+	init(hostname: String, port: UInt16, password: String = "")
 	{
-		self.name = name
 		self.hostname = hostname
 		self.port = port
 		self.password = password
@@ -34,12 +30,11 @@ struct MPDServer : Codable, Equatable
 	init(from decoder: Decoder) throws
 	{
 		let values = try decoder.container(keyedBy: MPDServerCodingKeys.self)
-		let na = try values.decode(String.self, forKey: .name)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
 		let pa = try values.decode(String.self, forKey: .password)
 
-		self.init(name: na, hostname: ho, port: po, password: pa)
+		self.init(hostname: ho, port: po, password: pa)
 	}
 
 	public func publicDescription() -> String
@@ -51,5 +46,5 @@ struct MPDServer : Codable, Equatable
 // MARK: - Operators
 func == (lhs: MPDServer, rhs: MPDServer) -> Bool
 {
-	return (lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
+	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
 }

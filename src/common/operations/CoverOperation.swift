@@ -84,10 +84,10 @@ final class CoverOperation : Operation
 			return
 		}
 
-		let server: CoverWebServer
+		let server: CoverServer
 		do
 		{
-			server = try JSONDecoder().decode(CoverWebServer.self, from: serverAsData)
+			server = try JSONDecoder().decode(CoverServer.self, from: serverAsData)
 		}
 		catch
 		{
