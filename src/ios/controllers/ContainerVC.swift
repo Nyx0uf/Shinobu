@@ -123,7 +123,7 @@ final class ContainerVC : UIViewController
 				{
 					let vc = LibraryVC()
 					let nvc = NYXNavigationController(rootViewController: vc)
-					libraryViewController = nvc//UIStoryboard.libraryVC()
+					libraryViewController = nvc
 				}
 				mainViewController = libraryViewController
 			case .server:
@@ -132,7 +132,6 @@ final class ContainerVC : UIViewController
 					let vc = ServerListTVC()
 					let nvc = NYXNavigationController(rootViewController: vc)
 					serverViewController = nvc
-					//serverViewController = UIStoryboard.serverTVC()
 				}
 				mainViewController = serverViewController
 			case .settings:
@@ -141,7 +140,6 @@ final class ContainerVC : UIViewController
 					let vc = SettingsVC()
 					let nvc = NYXNavigationController(rootViewController: vc)
 					settingsViewController = nvc
-					//settingsViewController = UIStoryboard.settingsTVC()
 				}
 				mainViewController = settingsViewController
 		}
@@ -157,24 +155,14 @@ final class ContainerVC : UIViewController
 	{
 		guard menuViewController == nil else { return }
 
-		/*if let vc = UIStoryboard.leftViewController()
-		{
-			vc.menuDelegate = self
-			view.insertSubview(vc.view, at: 0)
+		let sideMenuViewController = SideMenuVC()
+		sideMenuViewController.menuDelegate = self
+		view.insertSubview(sideMenuViewController.view, at: 0)
 
-			addChild(vc)
-			vc.didMove(toParent: self)
+		addChild(sideMenuViewController)
+		sideMenuViewController.didMove(toParent: self)
 
-			menuViewController = vc
-		}*/
-		let vc = SideMenuVC()
-		vc.menuDelegate = self
-		view.insertSubview(vc.view, at: 0)
-		
-		addChild(vc)
-		vc.didMove(toParent: self)
-		
-		menuViewController = vc
+		menuViewController = sideMenuViewController
 	}
 
 	private func showMenu(expand: Bool)
@@ -279,36 +267,3 @@ extension ContainerVC : UIGestureRecognizerDelegate
 		return true
 	}
 }
-
-/*private extension UIStoryboard
-{
-	static func main() -> UIStoryboard
-	{
-		return UIStoryboard(name: "main-iphone", bundle: .main)
-	}
-
-	static func leftViewController() -> SideMenuVC?
-	{
-		return main().instantiateViewController(withIdentifier: "SideMenuVC") as? SideMenuVC
-	}
-
-	static func libraryVC() -> NYXNavigationController?
-	{
-		return main().instantiateViewController(withIdentifier: "LibraryNVC") as? NYXNavigationController
-	}
-
-	static func serverTVC() -> NYXNavigationController?
-	{
-		return main().instantiateViewController(withIdentifier: "ServerNVC") as? NYXNavigationController
-	}
-
-	static func statsTVC() -> NYXNavigationController?
-	{
-		return main().instantiateViewController(withIdentifier: "StatsNVC") as? NYXNavigationController
-	}
-
-	static func settingsTVC() -> NYXNavigationController?
-	{
-		return main().instantiateViewController(withIdentifier: "SettingsNVC") as? NYXNavigationController
-	}
-}*/

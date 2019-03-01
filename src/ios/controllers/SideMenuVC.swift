@@ -7,7 +7,7 @@ protocol SideMenuVCDelegate : class
 	func getSelectedController() -> SelectedVCType
 }
 
-final class SideMenuVC : UIViewController
+final class SideMenuVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Menu delegate
@@ -23,8 +23,12 @@ final class SideMenuVC : UIViewController
 		super.viewDidLoad()
 
 		tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
-		tableView.register(MenuViewTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.menu")
+		tableView.register(MenuViewTableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.menu")
 		tableView.scrollsToTop = false
+		tableView.dataSource = self
+		tableView.delegate = self
+		tableView.backgroundColor = Colors.background
+		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.view.addSubview(tableView)
 	}
 }
@@ -76,8 +80,8 @@ extension SideMenuVC : UITableViewDataSource
 		}
 		else
 		{
-			cell.ivLogo.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-			cell.lblSection.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			cell.ivLogo.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			cell.lblSection.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 			cell.lblSection.font = UIFont.systemFont(ofSize: 13.0)
 		}
 

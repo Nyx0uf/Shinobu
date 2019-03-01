@@ -23,7 +23,6 @@ final class ShinobuServerTableViewCell : UITableViewCell
 		self.contentView.addSubview(self.label)
 
 		self.toggle = UISwitch()
-		self.toggle.onTintColor = Colors.main
 		self.contentView.addSubview(self.toggle)
 	}
 

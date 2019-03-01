@@ -32,5 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		let textFieldAppearance = UITextField.appearance()
 		textFieldAppearance.tintColor = Colors.main
+
+		let switchAppearance = UISwitch.appearance()
+		switchAppearance.onTintColor = Colors.main
 	}
 }

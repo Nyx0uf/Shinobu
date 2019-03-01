@@ -107,54 +107,43 @@ final class LibraryVC : UIViewController, CenterViewController
 		// Initialize the mpd connection
 		if MusicDataSource.shared.server == nil
 		{
-			/*if let serverAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
+			if let server = ServersManager.shared.getSelectedServer()
 			{
-				do
+				// Data source
+				MusicDataSource.shared.server = server.mpd
+				let resultDataSource = MusicDataSource.shared.initialize()
+				if resultDataSource.succeeded == false
 				{
-					let server = try JSONDecoder().decode(MPDServer.self, from: serverAsData)
-					// Data source
-					MusicDataSource.shared.server = server
-					let resultDataSource = MusicDataSource.shared.initialize()
-					if resultDataSource.succeeded == false
-					{
-						MessageView.shared.showWithMessage(message: resultDataSource.messages.first!)
-					}
-					if _displayType != .albums
-					{
-						// Always fetch the albums list
-						MusicDataSource.shared.getListForDisplayType(.albums) {}
-					}
-					MusicDataSource.shared.getListForDisplayType(_displayType) {
-						DispatchQueue.main.async {
-							self.collectionView.items = MusicDataSource.shared.selectedList()
-							self.collectionView.displayType = self._displayType
-							self.collectionView.reloadData()
-							self.updateNavigationTitle()
-							self.updateNavigationButtons()
-						}
-					}
-
-					// Player
-					PlayerController.shared.server = server
-					let resultPlayer = PlayerController.shared.initialize()
-					if resultPlayer.succeeded == false
-					{
-						MessageView.shared.showWithMessage(message: resultPlayer.messages.first!)
+					MessageView.shared.showWithMessage(message: resultDataSource.messages.first!)
+				}
+				if _displayType != .albums
+				{
+					// Always fetch the albums list
+					MusicDataSource.shared.getListForDisplayType(.albums) {}
+				}
+				MusicDataSource.shared.getListForDisplayType(_displayType) {
+					DispatchQueue.main.async {
+						self.collectionView.items = MusicDataSource.shared.selectedList()
+						self.collectionView.displayType = self._displayType
+						self.collectionView.reloadData()
+						self.updateNavigationTitle()
+						self.updateNavigationButtons()
 					}
 				}
-				catch
+
+				// Player
+				PlayerController.shared.server = server.mpd
+				let resultPlayer = PlayerController.shared.initialize()
+				if resultPlayer.succeeded == false
 				{
-					let alertController = UIAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_server_need_check"), preferredStyle: .alert)
-					let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: nil)
-					alertController.addAction(cancelAction)
-					present(alertController, animated: true, completion: nil)
+					MessageView.shared.showWithMessage(message: resultPlayer.messages.first!)
 				}
 			}
 			else
-			{*/
+			{
 				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
 				containerDelegate?.showServerVC()
-			//}
+			}
 		}
 
 		// Since we are in search mode, show the bar

@@ -122,4 +122,16 @@ final class ServersManager
 		}
 		return ""
 	}
+
+	func getSelectedServer() -> ShinobuServer?
+	{
+		let name = self.getSelectedServerName()
+		if String.isNullOrWhiteSpace(name)
+		{
+			return nil
+		}
+
+		let servers = self.getServersList()
+		return servers.filter({$0.name == name}).first
+	}
 }

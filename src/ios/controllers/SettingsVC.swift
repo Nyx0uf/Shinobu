@@ -5,27 +5,15 @@ import MessageUI
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class SettingsVC : UITableViewController, CenterViewController
+final class SettingsVC : NYXTableViewController, CenterViewController
 {
 	// MARK: - Private properties
-	// Version label
-	@IBOutlet private var lblVersion: UILabel!
-	// Shake to play label
-	@IBOutlet private var lblShake: UILabel!
 	// Shake to play switch
-	@IBOutlet private var swShake: UISwitch!
-	// Fuzzy search label
-	@IBOutlet private var lblFuzzySearch: UILabel!
+	private var swShake: UISwitch!
 	// Fuzzy search switch
-	@IBOutlet private var swFuzzySearch: UISwitch!
-	// Send logs label
-	@IBOutlet private var lblSendLogs: UILabel!
-	// Label logging
-	@IBOutlet private var lblEnableLogging: UILabel!
+	private var swFuzzySearch: UISwitch!
 	// Logging switch
-	@IBOutlet private var swLogging: UISwitch!
-	// Navigation title
-	private var titleView: UILabel!
+	private var swLogging: UISwitch!
 	// Delegate
 	var containerDelegate: ContainerVCDelegate? = nil
 
@@ -34,65 +22,50 @@ final class SettingsVC : UITableViewController, CenterViewController
 	{
 		super.viewDidLoad()
 
-		// Navigation bar title
-		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 14.0)
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-		titleView.text = NYXLocalizedString("lbl_section_settings")
-		navigationItem.titleView = titleView
+		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 
-		lblShake.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
-		lblFuzzySearch.text = NYXLocalizedString("lbl_fuzzysearch")
-		lblEnableLogging.text = NYXLocalizedString("lbl_enable_logging")
+		// Navigation bar title
+		titleView.text = NYXLocalizedString("lbl_section_settings")
+
+		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.tableFooterView = UIView()
+
+		swShake = UISwitch()
+		swFuzzySearch = UISwitch()
+		swLogging = UISwitch()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		swShake.isOn = Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
-		swFuzzySearch.isOn = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
-
-		let version = applicationVersionAndBuild()
-		lblVersion.text = "\(version.version) (\(version.build))"
-	}
-
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
+		tableView.reloadData()
 	}
 
 	// MARK: - IBActions
-	@IBAction func toggleShakeToPlay(_ sender: Any?)
+	func toggleShakeToPlay(_ sender: Any?)
 	{
 		let shake = Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum)
 		Settings.shared.set(!shake, forKey: kNYXPrefShakeToPlayRandomAlbum)
 		Settings.shared.synchronize()
 	}
 
-	@IBAction func toggleFuzzySearch(_ sender: Any?)
+	func toggleFuzzySearch(_ sender: Any?)
 	{
 		let fuzzySearch = Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: kNYXPrefFuzzySearch)
 		Settings.shared.synchronize()
 	}
 
-	@IBAction func toggleLogging(_ sender: Any?)
+	func toggleLogging(_ sender: Any?)
 	{
 		let logging = Settings.shared.bool(forKey: kNYXPrefEnableLogging)
 		Settings.shared.set(!logging, forKey: kNYXPrefEnableLogging)
 		Settings.shared.synchronize()
 	}
 
-	@objc @IBAction func showLeftViewAction(_ sender: Any?)
+	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		containerDelegate?.toggleMenu()
 	}
@@ -122,35 +95,22 @@ final class SettingsVC : UITableViewController, CenterViewController
 
 			let mailComposerVC = MFMailComposeViewController()
 			mailComposerVC.mailComposeDelegate = self
-			mailComposerVC.setToRecipients(["contact.mpdremote@gmail.com"])
-			mailComposerVC.setSubject("MPDRemote logs")
+			mailComposerVC.setToRecipients(["blabla@gmail.com"])
+			mailComposerVC.setSubject("Shinobu logs")
 			mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
 
-			var message = "MPDRemote \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
-			if let mpdServerAsData = Settings.shared.data(forKey: kNYXPrefMPDServer)
+			var message = "Shinobu \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
+			let server = ServersManager.shared.getSelectedServer()
+			if let s = server
 			{
-				do
-				{
-					let server = try JSONDecoder().decode(MPDServer.self, from: mpdServerAsData)
-					message += "MPD server:\n\(server.publicDescription())\n\n"
-				}
-				catch
-				{
-					Logger.shared.log(type: .error, message: "Failed to decode mpd server")
-				}
+				message += "MPD server:\n\(s.mpd.publicDescription())\n\n"
+				Logger.shared.log(type: .error, message: "Failed to decode mpd server")
 			}
 
-			if let webServerAsData = Settings.shared.data(forKey: kNYXPrefWEBServer)
+			if let s = server, let w = s.covers
 			{
-				do
-				{
-					let server = try JSONDecoder().decode(CoverServer.self, from: webServerAsData)
-					message += "Cover server:\n\(server.publicDescription())\n\n"
-				}
-				catch
-				{
-					Logger.shared.log(type: .error, message: "Failed to decode web server")
-				}
+				message += "Cover server:\n\(w.publicDescription())\n\n"
+				Logger.shared.log(type: .error, message: "Failed to decode web server")
 			}
 			mailComposerVC.setMessageBody(message, isHTML: false)
 
@@ -159,12 +119,131 @@ final class SettingsVC : UITableViewController, CenterViewController
 		}
 		else
 		{
-			let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_nomailaccount_msg"), preferredStyle: .alert)
+			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_nomailaccount_msg"), preferredStyle: .alert)
 			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
 			}
 			alertController.addAction(okAction)
 			present(alertController, animated: true, completion: nil)
 		}
+	}
+}
+
+// MARK: - UITableViewDataSource
+extension SettingsVC
+{
+	override func numberOfSections(in tableView: UITableView) -> Int
+	{
+		return 4
+	}
+
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+	{
+		switch section
+		{
+			case 0:
+				return 2
+			case 1:
+				return 2
+			case 2:
+				return 3
+			case 3:
+				return 1
+			default:
+				return 0
+		}
+	}
+
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+	{
+		let cellIdentifier = "\(indexPath.section):\(indexPath.row)"
+		var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+		if cell == nil
+		{
+			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+			cell?.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+			cell?.backgroundColor = Colors.background
+
+			if indexPath.section == 0
+			{
+				if indexPath.row == 0
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swShake)
+				}
+				if indexPath.row == 1
+				{
+					cell?.selectionStyle = .none
+				}
+			}
+			else if indexPath.section == 1
+			{
+				if indexPath.row == 0
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swFuzzySearch)
+				}
+				if indexPath.row == 1
+				{
+					cell?.selectionStyle = .none
+				}
+			}
+			else if indexPath.section == 2
+			{
+				if indexPath.row == 0
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_enable_logging")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swLogging)
+				}
+				else if indexPath.row == 1
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_send_logs")
+					cell?.textLabel?.textAlignment = .center
+					cell?.textLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+					cell?.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+					let backgroundView = UIView()
+					backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+					cell?.selectedBackgroundView = backgroundView
+				}
+			}
+			else
+			{
+				if indexPath.row == 0
+				{
+					let version = applicationVersionAndBuild()
+					cell?.textLabel?.text = "\(version.version) (\(version.build))"
+					cell?.textLabel?.font = UIFont(name: "Courier", size: 16.0)
+					cell?.textLabel?.textAlignment = .center
+					cell?.selectionStyle = .none
+				}
+			}
+		}
+
+		if indexPath.section == 0
+		{
+			if indexPath.row == 0
+			{
+				swShake.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
+			}
+		}
+		else if indexPath.section == 1
+		{
+			if indexPath.row == 0
+			{
+				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
+			}
+		}
+		else if indexPath.section == 2
+		{
+			if indexPath.row == 0
+			{
+				swLogging.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swLogging.width, (cell!.height - swLogging.height) / 2, swLogging.size)
+			}
+		}
+
+		return cell!
 	}
 }
 
@@ -188,8 +267,9 @@ extension SettingsVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
-		label.font = UIFont.systemFont(ofSize: 15.0)
+		label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		label.font = UIFont.systemFont(ofSize: 18.0, weight: .black)
+		label.textAlignment = .center
 		dummy.addSubview(label)
 
 		switch section

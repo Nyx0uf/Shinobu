@@ -206,6 +206,11 @@ final class ServerVC : NYXTableViewController
 
 			ServersManager.shared.handleServer(selectedServer!)
 		}
+		else
+		{
+			selectedServer?.covers = nil
+			ServersManager.shared.handleServer(selectedServer!)
+		}
 	}
 
 	@objc func browserZeroConfAction(_ sender: Any?)

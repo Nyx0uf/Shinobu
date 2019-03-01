@@ -312,7 +312,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 
 		// Get local URL for cover
-		guard let _ = Settings.shared.data(forKey: kNYXPrefWEBServer) else { return }
+		guard let _ = ServersManager.shared.getSelectedServer()?.covers else { return }
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.shared.log(type: .error, message: "No cover file URL for \(album)") // should not happen

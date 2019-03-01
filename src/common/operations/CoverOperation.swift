@@ -77,21 +77,9 @@ final class CoverOperation : Operation
 		}
 
 		// No mpd server configured, abort
-		guard let serverAsData = Settings.shared.data(forKey: kNYXPrefWEBServer) else
+		guard let server = ServersManager.shared.getSelectedServer()?.covers else
 		{
-			Logger.shared.log(type: .error, message: "No value for kNYXPrefWEBServer")
-			isFinished = true
-			return
-		}
-
-		let server: CoverServer
-		do
-		{
-			server = try JSONDecoder().decode(CoverServer.self, from: serverAsData)
-		}
-		catch
-		{
-			Logger.shared.log(type: .error, message: "Failed to unarchive web server object")
+			Logger.shared.log(type: .error, message: "No cover server")
 			isFinished = true
 			return
 		}
