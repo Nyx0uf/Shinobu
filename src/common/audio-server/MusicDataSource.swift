@@ -32,7 +32,7 @@ final class MusicDataSource
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "fr.whine.mpdremote.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
+		self._queue = DispatchQueue(label: "fr.whine.shinobu.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object:nil)

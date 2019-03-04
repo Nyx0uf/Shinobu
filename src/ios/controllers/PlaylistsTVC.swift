@@ -29,7 +29,7 @@ final class PlaylistsTVC : UITableViewController
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)]
 		self.navigationItem.title = NYXLocalizedString("lbl_playlists")
 
-		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.playlist")
+		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.playlist")
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
 		// Create playlist button
@@ -112,7 +112,7 @@ extension PlaylistsTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.playlist", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.playlist", for: indexPath)
 
 		let playlist = playlists[indexPath.row]
 

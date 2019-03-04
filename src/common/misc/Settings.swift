@@ -1,27 +1,25 @@
 import UIKit
 
 
-public let kNYXPrefCoversDirectory = "app-covers-directory"
-public let kNYXPrefCoversSize = "app-covers-size"
-public let kNYXPrefCoversSizeTVOS = "app-covers-size-tvos"
-public let kNYXPrefDisplayType = "app-display-type"
-public let kNYXPrefFuzzySearch = "app-search-fuzzy"
-public let kNYXPrefShakeToPlayRandomAlbum = "app-shake-to-play"
-public let kNYXPrefMPDShuffle = "mpd-shuffle"
-public let kNYXPrefMPDRepeat = "mpd-repeat"
-public let kNYXPrefEnableLogging = "app-enable-logging"
-public let kNYXPrefLastKnownVersion = "app-last-version"
-public let kNYXPrefLayoutLibraryCollection = "app-layout-library-collection"
-public let kNYXPrefLayoutArtistsCollection = "app-layout-artists-collection"
-public let kNYXPrefLayoutAlbumsCollection = "app-layout-albums-collection"
-
-
 final class Settings
 {
+	// Preferences keys
 	enum keys
 	{
 		static let servers = "servers"
 		static let selectedServerName = "selectedServerName"
+		static let coversDirectory = "coversDirectory"
+		static let coversSize = "coversSize"
+		static let coversSize_TVOS = "coversSize_TVOS"
+		static let pref_fuzzySearch = "pref_fuzzySearch"
+		static let pref_shakeToPlayRandom = "pref_shakeToPlayRandom"
+		static let pref_enableLogging = "pref_enableLogging"
+		static let pref_displayType = "pref_displayType"
+		static let pref_layoutLibraryCollection = "pref_layoutLibraryCollection"
+		static let pref_layoutArtistsCollection = "pref_layoutArtistsCollection"
+		static let pref_layoutAlbumsCollection = "pref_layoutAlbumsCollection"
+		static let mpd_repeat = "mpd_repeat"
+		static let mpd_shuffle = "mpd_shuffle"
 	}
 	// Singletion instance
 	static let shared = Settings()
@@ -101,19 +99,19 @@ final class Settings
 			let columns_tvos = CGFloat(5)
 			let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
 			let defaultsValues: [String: Any] = try [
-				kNYXPrefCoversDirectory : coversDirectoryPath,
-				kNYXPrefCoversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios)), requiringSecureCoding: false),
-				kNYXPrefCoversSizeTVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos)), requiringSecureCoding: false),
-				kNYXPrefFuzzySearch : false,
-				kNYXPrefMPDShuffle : false,
-				kNYXPrefMPDRepeat : false,
-				kNYXPrefDisplayType : DisplayType.albums.rawValue,
-				kNYXPrefShakeToPlayRandomAlbum : false,
-				kNYXPrefEnableLogging : false,
-				kNYXPrefLayoutLibraryCollection : true,
-				kNYXPrefLayoutAlbumsCollection : false,
-				kNYXPrefLayoutArtistsCollection : false,
-				kNYXPrefLastKnownVersion : Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") ?? ""
+				Settings.keys.selectedServerName : "",
+				Settings.keys.coversDirectory : coversDirectoryPath,
+				Settings.keys.coversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios)), requiringSecureCoding: false),
+				Settings.keys.coversSize_TVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos)), requiringSecureCoding: false),
+				Settings.keys.pref_fuzzySearch : false,
+				Settings.keys.pref_enableLogging : false,
+				Settings.keys.pref_shakeToPlayRandom : false,
+				Settings.keys.pref_displayType : DisplayType.albums.rawValue,
+				Settings.keys.pref_layoutLibraryCollection : true,
+				Settings.keys.pref_layoutAlbumsCollection : false,
+				Settings.keys.pref_layoutArtistsCollection : false,
+				Settings.keys.mpd_repeat : false,
+				Settings.keys.mpd_shuffle : false,
 			]
 
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!

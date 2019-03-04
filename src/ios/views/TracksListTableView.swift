@@ -22,9 +22,9 @@ final class TracksListTableView : UITableView
 		super.init(frame: frame, style: style)
 
 		self.dataSource = self
-		self.register(TrackTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.track")
+		self.register(TrackTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.track")
 		self.separatorStyle = .none
-		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+		self.backgroundColor = Colors.background
 		self.rowHeight = 44.0
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
@@ -32,15 +32,7 @@ final class TracksListTableView : UITableView
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
-
-		self.dataSource = self
-		self.register(TrackTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.track")
-		self.separatorStyle = .none
-		self.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		self.rowHeight = 44.0
-
-		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
+		fatalError()
 	}
 
 	deinit
@@ -65,7 +57,7 @@ extension TracksListTableView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.track", for: indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.track", for: indexPath) as! TrackTableViewCell
 
 		// Dummy to let some space for the mini player
 		if useDummy && indexPath.row == tracks.count
@@ -79,9 +71,9 @@ extension TracksListTableView : UITableViewDataSource
 		}
 
 		cell.separator.isHidden = false
-		cell.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.lblTrack.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		cell.lblDuration.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		cell.lblTitle.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.lblTrack.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.lblDuration.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
@@ -98,9 +90,9 @@ extension TracksListTableView : UITableViewDataSource
 		}
 		else
 		{
-			cell.lblTrack.font = UIFont(name: "HelveticaNeue", size: 10)
-			cell.lblTitle.font = UIFont(name: "HelveticaNeue-Medium", size: 14)
-			cell.lblDuration.font = UIFont(name: "HelveticaNeue-Light", size: 10)
+			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+			cell.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+			cell.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .light)
 		}
 
 		// Accessibility

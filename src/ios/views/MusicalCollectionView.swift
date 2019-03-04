@@ -115,7 +115,9 @@ final class MusicalCollectionView : UICollectionView
 		self.delegate = self
 		self.isPrefetchingEnabled = true
 		self.prefetchDataSource = self
+		self.backgroundColor = Colors.background
 		self.layoutType = .collection
+		self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: "fr.whine.shinobu.cell.musicalentity")
 		
 		self.setCollectionLayout(animated: false)
 	}
@@ -123,15 +125,6 @@ final class MusicalCollectionView : UICollectionView
 	required init?(coder aDecoder: NSCoder)
 	{
 		fatalError("not implemented")
-		/*super.init(coder: aDecoder)
-
-		self.dataSource = self
-		self.delegate = self
-		self.isPrefetchingEnabled = true
-		self.prefetchDataSource = self
-		self.layoutType = .collection
-
-		self.setCollectionLayout(animated: false)*/
 	}
 
 	// MARK: - Private
@@ -198,10 +191,10 @@ extension MusicalCollectionView : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.mpdremote.cell.musicalentity", for: indexPath) as! MusicalEntityBaseCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.shinobu.cell.musicalentity", for: indexPath) as! MusicalEntityBaseCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = #colorLiteral(red: 0.2605174184, green: 0.2605243921, blue: 0.260520637, alpha: 1)
+		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
 		cell.layoutList = self.layoutType == .table
 
@@ -337,7 +330,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				return
 			}
 
-			let sizeAsData = Settings.shared.data(forKey: kNYXPrefCoversSize)!
+			let sizeAsData = Settings.shared.data(forKey: Settings.keys.coversSize)!
 			//let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: sizeAsData) as? NSValue
 			if album.path != nil

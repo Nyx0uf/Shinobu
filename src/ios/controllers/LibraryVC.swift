@@ -6,8 +6,6 @@ final class LibraryVC : UIViewController, CenterViewController
 	// MARK: - Private properties
 	// Albums view
 	private var collectionView: MusicalCollectionView!
-	// Top constraint for collection view
-	private var topConstraint: NSLayoutConstraint!
 	// Search view
 	private var searchView: UIView! = nil
 	// Search bar
@@ -23,7 +21,7 @@ final class LibraryVC : UIViewController, CenterViewController
 	// View to change the type of items in the collection view
 	private var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: kNYXPrefDisplayType))!
+	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: Settings.keys.pref_displayType))!
 	// Audio server changed
 	private var _serverChanged = false
 	// Previewing context for peek & pop
@@ -52,7 +50,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		menuButton.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: kNYXPrefLayoutLibraryCollection)
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutLibraryCollection)
 		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
 		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 		navigationItem.leftBarButtonItems = [menuButton, displayButton]
@@ -61,12 +59,12 @@ final class LibraryVC : UIViewController, CenterViewController
 		let navigationBar = (navigationController?.navigationBar)!
 		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, navigationBar.bottom))
 		searchBar = UISearchBar(frame: CGRect(0.0, navigationBar.y, navigationBar.width, navigationBar.height))
-		searchView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		searchView.backgroundColor = Colors.background
 		searchView.alpha = 0.0
 		searchBar.searchBarStyle = .minimal
 		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		searchBar.tintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		searchBar.tintColor = Colors.main
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = Colors.main
 		searchBar.showsCancelButton = true
 		searchBar.delegate = self
 		searchView.addSubview(searchBar)
@@ -80,6 +78,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
 		collectionView.myDelegate = self
 		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
+		self.view.addSubview(collectionView)
 
 		// Longpress
 		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -261,13 +260,13 @@ final class LibraryVC : UIViewController, CenterViewController
 			{
 				case .albums:
 					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
 				case .artists:
 					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
 						}
 					}
 				case .albumsartists:
@@ -275,7 +274,7 @@ final class LibraryVC : UIViewController, CenterViewController
 					MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
 						}
 					}
 				case .genres:
@@ -283,12 +282,12 @@ final class LibraryVC : UIViewController, CenterViewController
 					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
 						}
 					}
 				case .playlists:
 					let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
-					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat))
+					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
 			}
 		}
 	}
@@ -308,7 +307,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
 			cell.longPressed = true
 
-			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				cell.longPressed = false
@@ -516,11 +515,9 @@ final class LibraryVC : UIViewController, CenterViewController
 
 		if _typeChoiceView.superview != nil
 		{ // Is visible
-			//self.collectionView.contentInset = UIEdgeInsets(top: (self.navigationController?.navigationBar.bottom)!, left: 0.0, bottom: 0.0, right: 0.0)
-			topConstraint.constant = 0.0
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
-				self.view.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-				self.view.layoutIfNeeded()
+				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
+				//self.view.layoutIfNeeded()
 				if MusicDataSource.shared.selectedList().count == 0
 				{
 					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
@@ -528,6 +525,7 @@ final class LibraryVC : UIViewController, CenterViewController
 				else
 				{
 					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+					self.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
 				}
 			}, completion: { finished in
 				self._typeChoiceView.removeFromSuperview()
@@ -537,9 +535,9 @@ final class LibraryVC : UIViewController, CenterViewController
 		{ // Is hidden
 			_typeChoiceView.tableView.reloadData()
 			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
-			topConstraint.constant = _typeChoiceView.bottom;
 
 			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
+				self.collectionView.frame = CGRect(0, self._typeChoiceView.height, self.collectionView.size)
 				self.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 			}, completion:nil)
@@ -563,9 +561,9 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	@objc func changeCollectionLayoutType(_ sender: Any?)
 	{
-		var b = Settings.shared.bool(forKey: kNYXPrefLayoutLibraryCollection)
+		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutLibraryCollection)
 		b = !b
-		Settings.shared.set(b, forKey: kNYXPrefLayoutLibraryCollection)
+		Settings.shared.set(b, forKey: Settings.keys.pref_layoutLibraryCollection)
 		Settings.shared.synchronize()
 
 		collectionView.layoutType = b ? .collection : .table
@@ -582,14 +580,14 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	@objc func createPlaylistAction(_ sender: Any?)
 	{
-		let alertController = UIAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
+		let alertController = NYXAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
 			{
-				let errorAlert = UIAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
 				}))
 				self.present(errorAlert, animated: true, completion: nil)
@@ -661,9 +659,9 @@ final class LibraryVC : UIViewController, CenterViewController
 				let n = MusicDataSource.shared.playlists.count
 				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_playlist") : NYXLocalizedString("lbl_playlists"))"
 		}
-		let astr1 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1), NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSAttributedString.Key.paragraphStyle : p])
+		let astr1 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1), NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!, NSAttributedString.Key.paragraphStyle : p])
+		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
 	}
 
@@ -707,14 +705,14 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	private func renamePlaylistAction(playlist: Playlist)
 	{
-		let alertController = UIAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
+		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
 			{
-				let errorAlert = UIAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
 				}))
 				self.present(errorAlert, animated: true, completion: nil)
@@ -784,7 +782,10 @@ extension LibraryVC : MusicalCollectionViewDelegate
 		switch _displayType
 		{
 			case .albums:
-				performSegue(withIdentifier: "root-albums-to-detail-album", sender: self)
+				let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+				let vc = AlbumDetailVC(album: album)
+				self.navigationController?.pushViewController(vc, animated: true)
+				//performSegue(withIdentifier: "root-albums-to-detail-album", sender: self)
 			case .artists:
 				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
 			case .albumsartists:
@@ -834,7 +835,7 @@ extension LibraryVC : UISearchBarDelegate
 				return
 			}
 
-			if Settings.shared.bool(forKey: kNYXPrefFuzzySearch)
+			if Settings.shared.bool(forKey: Settings.keys.pref_fuzzySearch)
 			{
 				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
 			}
@@ -861,7 +862,7 @@ extension LibraryVC : TypeChoiceViewDelegate
 		}
 		_displayType = type
 
-		Settings.shared.set(type.rawValue, forKey: kNYXPrefDisplayType)
+		Settings.shared.set(type.rawValue, forKey: Settings.keys.pref_displayType)
 		Settings.shared.synchronize()
 
 		// Longpress / peek & pop
@@ -903,7 +904,7 @@ extension LibraryVC
 	{
 		if motion == .motionShake
 		{
-			if Settings.shared.bool(forKey: kNYXPrefShakeToPlayRandomAlbum) == false || MusicDataSource.shared.albums.count == 0
+			if Settings.shared.bool(forKey: Settings.keys.pref_shakeToPlayRandom) == false || MusicDataSource.shared.albums.count == 0
 			{
 				return
 			}

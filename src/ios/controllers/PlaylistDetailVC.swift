@@ -49,7 +49,7 @@ final class PlaylistDetailVC : UIViewController
 
 		// Album header view
 		//let coverSize = NSKeyedUnarchiver.unarchiveObject(with: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as! NSValue
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as? NSValue
+		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
 		headerHeightConstraint.constant = (coverSize?.cgSizeValue)!.height
 
 		// Dummy tableview host, to create a nice shadow effect
@@ -77,12 +77,12 @@ final class PlaylistDetailVC : UIViewController
 			navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
 			navigationBar.layer.masksToBounds = false
 
-			let loop = Settings.shared.bool(forKey: kNYXPrefMPDRepeat)
+			let loop = Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
 			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
 			btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-			let rand = Settings.shared.bool(forKey: kNYXPrefMPDShuffle)
+			let rand = Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
 			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
 			btnRandom.tintColor = rand ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
@@ -207,12 +207,12 @@ final class PlaylistDetailVC : UIViewController
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = Settings.shared
-		let random = !prefs.bool(forKey: kNYXPrefMPDShuffle)
+		let random = !prefs.bool(forKey: Settings.keys.mpd_shuffle)
 
 		btnRandom.tintColor = random ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey: kNYXPrefMPDShuffle)
+		prefs.set(random, forKey: Settings.keys.mpd_shuffle)
 		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
@@ -221,12 +221,12 @@ final class PlaylistDetailVC : UIViewController
 	@objc func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = Settings.shared
-		let loop = !prefs.bool(forKey: kNYXPrefMPDRepeat)
+		let loop = !prefs.bool(forKey: Settings.keys.mpd_repeat)
 
 		btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey: kNYXPrefMPDRepeat)
+		prefs.set(loop, forKey: Settings.keys.mpd_repeat)
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
@@ -260,10 +260,9 @@ extension PlaylistDetailVC : UITableViewDelegate
 			}
 		}
 
-		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: kNYXPrefMPDShuffle), loop: Settings.shared.bool(forKey: kNYXPrefMPDRepeat), position: UInt32(indexPath.row))
+		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat), position: UInt32(indexPath.row))
 	}
 
-	@available(iOS 11.0, *)
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
 	{
 		// Dummy cell

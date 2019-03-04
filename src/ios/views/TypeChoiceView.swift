@@ -19,14 +19,14 @@ final class TypeChoiceView : UIView
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
-		self.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
-		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.type")
+		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.tableView.backgroundColor = self.backgroundColor
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
@@ -51,9 +51,9 @@ extension TypeChoiceView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.type", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.type", for: indexPath)
 		cell.selectionStyle = .none
-		cell.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		cell.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		cell.textLabel?.textAlignment = .center
 		var title = ""
 		var selected = false
@@ -61,19 +61,19 @@ extension TypeChoiceView : UITableViewDataSource
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_albums")
-				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.albums.rawValue
+				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.albums.rawValue
 			case 1:
 				title = NYXLocalizedString("lbl_artists")
-				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.artists.rawValue
+				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.artists.rawValue
 			case 2:
 				title = NYXLocalizedString("lbl_albumartist")
-				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.albumsartists.rawValue
+				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.albumsartists.rawValue
 			case 3:
 				title = NYXLocalizedString("lbl_genres")
-				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.genres.rawValue
+				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.genres.rawValue
 			case 4:
 				title = NYXLocalizedString("lbl_playlists")
-				selected = Settings.shared.integer(forKey: kNYXPrefDisplayType) == DisplayType.playlists.rawValue
+				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.playlists.rawValue
 			default:
 				break
 		}
@@ -81,12 +81,12 @@ extension TypeChoiceView : UITableViewDataSource
 		if selected
 		{
 			cell.textLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
-			cell.textLabel?.textColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			cell.textLabel?.textColor = Colors.main
 		}
 		else
 		{
 			cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 15.0)
-			cell.textLabel?.textColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		return cell
 	}

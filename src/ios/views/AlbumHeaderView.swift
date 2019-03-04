@@ -7,20 +7,45 @@ final class AlbumHeaderView : UIView
 	// Album cover
 	private(set) var image: UIImage!
 	// Album title
-	@IBOutlet private(set) var lblTitle: TopAlignedLabel!
+	private(set) var lblTitle: UILabel!
 	// Album artist
-	@IBOutlet private(set) var lblArtist: UILabel!
+	private(set) var lblArtist: UILabel!
 	// Album genre
-	@IBOutlet private(set) var lblGenre: UILabel!
+	private(set) var lblGenre: UILabel!
 	// Album year
-	@IBOutlet private(set) var lblYear: UILabel!
+	private(set) var lblYear: UILabel!
 	// Size of the cover
-	var coverSize: CGSize!
+	var coverSize: CGSize
 
 	// MARK: - Initializers
+	init(frame: CGRect, coverSize: CGSize)
+	{
+		self.coverSize = coverSize
+
+		super.init(frame: frame)
+
+		lblTitle = UILabel(frame: .zero)
+		lblTitle.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+		lblTitle.numberOfLines = 2
+		self.addSubview(lblTitle)
+
+		lblArtist = UILabel(frame: .zero)
+		lblArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+		self.addSubview(lblArtist)
+
+		lblGenre = UILabel(frame: CGRect(coverSize.width + 4, frame.height - 16 - 4, 100, 16))
+		lblGenre.font = UIFont.systemFont(ofSize: 12, weight: .light)
+		self.addSubview(lblGenre)
+
+		lblYear = UILabel(frame: CGRect(frame.width - 48 - 4, frame.height - 16 - 4, 48, 16))
+		lblYear.textAlignment = .right
+		lblYear.font = UIFont.systemFont(ofSize: 12, weight: .light)
+		self.addSubview(lblYear)
+	}
+
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
+		fatalError()
 	}
 
 	// MARK: - Drawing
@@ -57,15 +82,13 @@ final class AlbumHeaderView : UIView
 			}
 			else
 			{
-				//let coverSize = NSKeyedUnarchiver.unarchiveObject(with: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as! NSValue
-				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as? NSValue
+				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
 				image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 			}
 		}
 		else
 		{
-			//let coverSize = NSKeyedUnarchiver.unarchiveObject(with: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as! NSValue
-			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as? NSValue
+			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
 			image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 		}
 		self.image = image

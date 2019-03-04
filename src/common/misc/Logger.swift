@@ -61,7 +61,7 @@ final class Logger
 		print(message)
 #endif
 
-		if Settings.shared.bool(forKey: kNYXPrefEnableLogging) == false
+		if Settings.shared.bool(forKey: Settings.keys.pref_enableLogging) == false
 		{
 			return
 		}

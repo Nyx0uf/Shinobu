@@ -90,6 +90,11 @@ final class ServersManager
 			{
 				shinobuServers.remove(at: idx)
 
+				if self.getSelectedServerName() == serverNameToRemove
+				{
+					self.setSelectedServerName("")
+				}
+
 				let encoder = JSONEncoder()
 				let newServersAsData = try encoder.encode(shinobuServers)
 				Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)

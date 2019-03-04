@@ -44,7 +44,7 @@ final class AlbumsVC : UIViewController
 		navigationItem.titleView = titleView
 
 		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: kNYXPrefLayoutAlbumsCollection)
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutAlbumsCollection)
 		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
 		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 		navigationItem.leftBarButtonItems = [displayButton]
@@ -161,9 +161,9 @@ final class AlbumsVC : UIViewController
 	// MARK: - Actions
 	@objc func changeCollectionLayoutType(_ sender: Any?)
 	{
-		var b = Settings.shared.bool(forKey: kNYXPrefLayoutAlbumsCollection)
+		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutAlbumsCollection)
 		b = !b
-		Settings.shared.set(b, forKey: kNYXPrefLayoutAlbumsCollection)
+		Settings.shared.set(b, forKey: Settings.keys.pref_layoutAlbumsCollection)
 		Settings.shared.synchronize()
 
 		collectionView.layoutType = b ? .collection : .table

@@ -22,7 +22,7 @@ final class AudioOutputsTVC : UITableViewController
 	{
 		super.viewDidLoad()
 
-		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.mpdremote.cell.audiooutput")
+		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.audiooutput")
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 	}
 
@@ -55,7 +55,7 @@ extension AudioOutputsTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.mpdremote.cell.audiooutput", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.audiooutput", for: indexPath)
 
 		let output = outputs[indexPath.row]
 
