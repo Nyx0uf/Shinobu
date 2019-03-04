@@ -5,7 +5,7 @@ final class ArtistsVC : UIViewController
 {
 	// MARK: - Public properties
 	// Collection View
-	@IBOutlet var collectionView: MusicalCollectionView!
+	var collectionView: MusicalCollectionView!
 	// Selected genre
 	var genre: Genre! = nil
 
@@ -14,9 +14,15 @@ final class ArtistsVC : UIViewController
 	private var titleView: UILabel! = nil
 
 	// MARK: - Initializers
+	init(genre: Genre)
+	{
+		self.genre = genre
+		super.init(nibName: nil, bundle: nil)
+	}
+
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - UIViewController

@@ -106,6 +106,8 @@ final class MusicalCollectionView : UICollectionView
 	weak var myDelegate: MusicalCollectionViewDelegate!
 	// Cover download operations
 	private var _downloadOperations = [String : Operation]()
+	private let cellIdentifier_table = "fr.whine.shinobu.cell.musicalentity.table"
+	private let cellIdentifier_collection = "fr.whine.shinobu.cell.musicalentity.collection"
 
 	override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout)
 	{
@@ -117,8 +119,7 @@ final class MusicalCollectionView : UICollectionView
 		self.prefetchDataSource = self
 		self.backgroundColor = Colors.background
 		self.layoutType = .collection
-		self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: "fr.whine.shinobu.cell.musicalentity")
-		
+
 		self.setCollectionLayout(animated: false)
 	}
 	
@@ -161,10 +162,12 @@ final class MusicalCollectionView : UICollectionView
 
 			if self.layoutType == .collection
 			{
+				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_collection)
 				self.setCollectionViewLayout(CollectionFlowLayout(), animated: animated)
 			}
 			else
 			{
+				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_table)
 				self.setCollectionViewLayout(TableFlowLayout(), animated: animated)
 			}
 		}
@@ -191,7 +194,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "fr.whine.shinobu.cell.musicalentity", for: indexPath) as! MusicalEntityBaseCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.layoutType == .table ? cellIdentifier_table : cellIdentifier_collection, for: indexPath) as! MusicalEntityBaseCell
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)

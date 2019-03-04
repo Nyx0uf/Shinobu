@@ -1,17 +1,15 @@
 import UIKit
 
 
-final class AlbumsVC : UIViewController
+final class AlbumsVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Collection View
-	@IBOutlet var collectionView: MusicalCollectionView!
+	var collectionView: MusicalCollectionView!
 	// Selected artist
 	var artist: Artist!
 
 	// MARK: - Private properties
-	// Label in the navigationbar
-	private var titleView: UILabel! = nil
 	// Previewing context for peek & pop
 	private var _previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
@@ -20,10 +18,15 @@ final class AlbumsVC : UIViewController
 	private var longPressRecognized = false
 
 	// MARK: - Initializers
+	init(artist: Artist)
+	{
+		self.artist = artist
+		super.init(nibName: nil, bundle: nil)
+	}
+
 	required init?(coder aDecoder: NSCoder)
 	{
-		self.artist = nil
-		super.init(coder: aDecoder)
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - UIViewController
@@ -34,14 +37,6 @@ final class AlbumsVC : UIViewController
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-
-		// Navigation bar title
-		titleView = UILabel(frame: CGRect(.zero, 100.0, 44.0))
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-		navigationItem.titleView = titleView
 
 		// Display layout button
 		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutAlbumsCollection)
@@ -84,16 +79,6 @@ final class AlbumsVC : UIViewController
 				self.updateNavigationTitle()
 			}
 		}
-	}
-
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?)

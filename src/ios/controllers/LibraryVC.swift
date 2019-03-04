@@ -188,8 +188,6 @@ final class LibraryVC : UIViewController, CenterViewController
 
 			_serverChanged = false
 		}
-
-		MessageView.shared.showWithMessage(message: Message(content: "sdjgndf;hg,fhk,gf;hizejioreg", type: .error), animated: true)
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
@@ -214,7 +212,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		return .lightContent
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+	/*override func prepare(for segue: UIStoryboardSegue, sender: Any?)
 	{
 		super.prepare(for: segue, sender: sender)
 		
@@ -246,7 +244,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			let vc = segue.destination as! PlaylistDetailVC
 			vc.playlist = playlist
 		}
-	}
+	}*/
 
 	// MARK: - Gestures
 	@objc func doubleTap(_ gest: UITapGestureRecognizer)
@@ -539,7 +537,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
 
 			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, self._typeChoiceView.height, self.collectionView.size)
+				self.collectionView.frame = CGRect(0, self._typeChoiceView.bottom, self.collectionView.size)
 				self.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 			}, completion:nil)
@@ -786,9 +784,11 @@ extension LibraryVC : MusicalCollectionViewDelegate
 				let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 				let vc = AlbumDetailVC(album: album)
 				self.navigationController?.pushViewController(vc, animated: true)
-				//performSegue(withIdentifier: "root-albums-to-detail-album", sender: self)
 			case .artists:
-				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
+				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+				let vc = AlbumsVC(artist: artist)
+				self.navigationController?.pushViewController(vc, animated: true)
+				//performSegue(withIdentifier: "root-artists-to-albums", sender: self)
 			case .albumsartists:
 				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
 			case .genres:
