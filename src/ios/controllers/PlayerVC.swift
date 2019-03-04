@@ -71,7 +71,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
 
-		let loop = Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
+		let loop = Settings.shared.bool(forKey: .mpd_repeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
@@ -80,7 +80,7 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		let random = Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
+		let random = Settings.shared.bool(forKey: .mpd_shuffle)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
@@ -278,24 +278,24 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 	// MARK: - Buttons actions
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
-		let random = !Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
+		let random = !Settings.shared.bool(forKey: .mpd_shuffle)
 
 		btnRandom.isSelected = random
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		Settings.shared.set(random, forKey: Settings.keys.mpd_shuffle)
+		Settings.shared.set(random, forKey: .mpd_shuffle)
 
 		PlayerController.shared.setRandom(random)
 	}
 
 	@objc func toggleRepeatAction(_ sender: Any?)
 	{
-		let loop = !Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
+		let loop = !Settings.shared.bool(forKey: .mpd_repeat)
 
 		btnRepeat.isSelected = loop
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		Settings.shared.set(loop, forKey: Settings.keys.mpd_repeat)
+		Settings.shared.set(loop, forKey: .mpd_repeat)
 
 		PlayerController.shared.setRepeat(loop)
 	}
@@ -477,7 +477,7 @@ extension PlayerVC : UITableViewDelegate
 		}
 
 		let b = trackListView.tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 	}
 }
 

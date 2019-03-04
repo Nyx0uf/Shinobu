@@ -21,7 +21,7 @@ final class LibraryVC : UIViewController, CenterViewController
 	// View to change the type of items in the collection view
 	private var _typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: Settings.keys.pref_displayType))!
+	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: .pref_displayType))!
 	// Audio server changed
 	private var _serverChanged = false
 	// Previewing context for peek & pop
@@ -50,7 +50,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		menuButton.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutLibraryCollection)
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutLibraryCollection)
 		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
 		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 		navigationItem.leftBarButtonItems = [menuButton, displayButton]
@@ -260,13 +260,13 @@ final class LibraryVC : UIViewController, CenterViewController
 			{
 				case .albums:
 					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				case .artists:
 					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .albumsartists:
@@ -274,7 +274,7 @@ final class LibraryVC : UIViewController, CenterViewController
 					MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .genres:
@@ -282,12 +282,12 @@ final class LibraryVC : UIViewController, CenterViewController
 					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
-							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .playlists:
 					let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
-					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 			}
 		}
 	}
@@ -561,9 +561,9 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	@objc func changeCollectionLayoutType(_ sender: Any?)
 	{
-		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutLibraryCollection)
+		var b = Settings.shared.bool(forKey: .pref_layoutLibraryCollection)
 		b = !b
-		Settings.shared.set(b, forKey: Settings.keys.pref_layoutLibraryCollection)
+		Settings.shared.set(b, forKey: .pref_layoutLibraryCollection)
 
 		collectionView.layoutType = b ? .collection : .table
 		if let buttons = navigationItem.leftBarButtonItems
@@ -660,8 +660,9 @@ final class LibraryVC : UIViewController, CenterViewController
 		}
 		let astr1 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
 		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
+		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : Colors.mainEnabled, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
 		titleView.setAttributedTitle(astr2, for: .highlighted)
+		titleView.setAttributedTitle(astr2, for: .selected)
 	}
 
 	private func updateLongpressState()
@@ -788,13 +789,18 @@ extension LibraryVC : MusicalCollectionViewDelegate
 				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 				let vc = AlbumsVC(artist: artist)
 				self.navigationController?.pushViewController(vc, animated: true)
-				//performSegue(withIdentifier: "root-artists-to-albums", sender: self)
 			case .albumsartists:
-				performSegue(withIdentifier: "root-artists-to-albums", sender: self)
+				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+				let vc = AlbumsVC(artist: artist)
+				self.navigationController?.pushViewController(vc, animated: true)
 			case .genres:
-				performSegue(withIdentifier: "root-genres-to-artists", sender: self)
+				let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+				let vc = ArtistsVC(genre: genre)
+				self.navigationController?.pushViewController(vc, animated: true)
 			case .playlists:
-				performSegue(withIdentifier: "root-playlists-to-detail-playlist", sender: self)
+				let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+				let vc = PlaylistDetailVC(playlist: playlist)
+				self.navigationController?.pushViewController(vc, animated: true)
 		}
 	}
 }
@@ -836,7 +842,7 @@ extension LibraryVC : UISearchBarDelegate
 				return
 			}
 
-			if Settings.shared.bool(forKey: Settings.keys.pref_fuzzySearch)
+			if Settings.shared.bool(forKey: .pref_fuzzySearch)
 			{
 				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
 			}
@@ -863,7 +869,7 @@ extension LibraryVC : TypeChoiceViewDelegate
 		}
 		_displayType = type
 
-		Settings.shared.set(type.rawValue, forKey: Settings.keys.pref_displayType)
+		Settings.shared.set(type.rawValue, forKey: .pref_displayType)
 
 		// Longpress / peek & pop
 		updateLongpressState()
@@ -904,7 +910,7 @@ extension LibraryVC
 	{
 		if motion == .motionShake
 		{
-			if Settings.shared.bool(forKey: Settings.keys.pref_shakeToPlayRandom) == false || MusicDataSource.shared.albums.count == 0
+			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false || MusicDataSource.shared.albums.count == 0
 			{
 				return
 			}

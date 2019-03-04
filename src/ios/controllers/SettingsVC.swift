@@ -46,20 +46,20 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 	// MARK: - IBActions
 	func toggleShakeToPlay(_ sender: Any?)
 	{
-		let shake = Settings.shared.bool(forKey: Settings.keys.pref_shakeToPlayRandom)
-		Settings.shared.set(!shake, forKey: Settings.keys.pref_shakeToPlayRandom)
+		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
+		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
 	}
 
 	func toggleFuzzySearch(_ sender: Any?)
 	{
-		let fuzzySearch = Settings.shared.bool(forKey: Settings.keys.pref_fuzzySearch)
-		Settings.shared.set(!fuzzySearch, forKey: Settings.keys.pref_fuzzySearch)
+		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
+		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
 	}
 
 	func toggleLogging(_ sender: Any?)
 	{
-		let logging = Settings.shared.bool(forKey: Settings.keys.pref_enableLogging)
-		Settings.shared.set(!logging, forKey: Settings.keys.pref_enableLogging)
+		let logging = Settings.shared.bool(forKey: .pref_enableLogging)
+		Settings.shared.set(!logging, forKey: .pref_enableLogging)
 	}
 
 	@objc func showLeftViewAction(_ sender: Any?)
@@ -82,7 +82,7 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 		{
 			guard let data = Logger.shared.export() else
 			{
-				let alertController = UIAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_logsexport_fail_msg"), preferredStyle: .alert)
+				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_logsexport_fail_msg"), preferredStyle: .alert)
 				let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
 				}
 				alertController.addAction(okAction)

@@ -333,7 +333,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 				return
 			}
 
-			let sizeAsData = Settings.shared.data(forKey: Settings.keys.coversSize)!
+			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{

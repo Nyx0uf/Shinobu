@@ -1,17 +1,13 @@
 import UIKit
 
 
-final class ArtistsVC : UIViewController
+final class ArtistsVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Collection View
 	var collectionView: MusicalCollectionView!
 	// Selected genre
-	var genre: Genre! = nil
-
-	// MARK: - Private properties
-	// Label in the navigationbar
-	private var titleView: UILabel! = nil
+	var genre: Genre
 
 	// MARK: - Initializers
 	init(genre: Genre)
@@ -34,25 +30,19 @@ final class ArtistsVC : UIViewController
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
-		// Navigation bar title
-		titleView = UILabel(frame: CGRect(.zero, 100.0, 44.0))
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-		navigationItem.titleView = titleView
-
 		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutArtistsCollection)
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutArtistsCollection)
 		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
 		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 		navigationItem.leftBarButtonItems = [displayButton]
 		navigationItem.leftItemsSupplementBackButton = true
 
 		// CollectionView
+		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
 		collectionView.myDelegate = self
 		collectionView.displayType = .artists
 		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
+		self.view.addSubview(collectionView)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -68,39 +58,12 @@ final class ArtistsVC : UIViewController
 		}
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-	{
-		if segue.identifier == "artists-to-albums"
-		{
-			guard let indexes = collectionView.indexPathsForSelectedItems else
-			{
-				return
-			}
-
-			if let indexPath = indexes.first
-			{
-				let vc = segue.destination as! AlbumsVC
-				vc.artist = collectionView.items[indexPath.row] as? Artist
-			}
-		}
-	}
-
 	// MARK: - Actions
 	@objc func changeCollectionLayoutType(_ sender: Any?)
 	{
-		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutArtistsCollection)
+		var b = Settings.shared.bool(forKey: .pref_layoutArtistsCollection)
 		b = !b
-		Settings.shared.set(b, forKey: Settings.keys.pref_layoutArtistsCollection)
+		Settings.shared.set(b, forKey: .pref_layoutArtistsCollection)
 
 		collectionView.layoutType = b ? .collection : .table
 		if let buttons = navigationItem.leftBarButtonItems
@@ -133,7 +96,9 @@ extension ArtistsVC : MusicalCollectionViewDelegate
 
 	func didSelectItem(indexPath: IndexPath)
 	{
-		performSegue(withIdentifier: "artists-to-albums", sender: self)
+		let artist = collectionView.items[indexPath.row] as! Artist
+		let vc = AlbumsVC(artist: artist)
+		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }
 

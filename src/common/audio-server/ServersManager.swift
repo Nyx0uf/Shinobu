@@ -18,7 +18,7 @@ final class ServersManager
 	{
 		let decoder = JSONDecoder()
 		var servers = [ShinobuServer]()
-		if let serversAsData = Settings.shared.data(forKey: Settings.keys.servers)
+		if let serversAsData = Settings.shared.data(forKey: .servers)
 		{
 			do
 			{
@@ -71,7 +71,7 @@ final class ServersManager
 		do
 		{
 			let newServersAsData = try encoder.encode(servers)
-			Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)
+			Settings.shared.set(newServersAsData, forKey: .servers)
 		}
 		catch let error
 		{
@@ -96,7 +96,7 @@ final class ServersManager
 
 				let encoder = JSONEncoder()
 				let newServersAsData = try encoder.encode(shinobuServers)
-				Settings.shared.set(newServersAsData, forKey: Settings.keys.servers)
+				Settings.shared.set(newServersAsData, forKey: .servers)
 			}
 			else
 			{
@@ -113,12 +113,12 @@ final class ServersManager
 
 	func setSelectedServerName(_ serverName: String)
 	{
-		Settings.shared.set(serverName, forKey: Settings.keys.selectedServerName)
+		Settings.shared.set(serverName, forKey: .selectedServerName)
 	}
 
 	func getSelectedServerName() -> String
 	{
-		if let name = Settings.shared.string(forKey: Settings.keys.selectedServerName)
+		if let name = Settings.shared.string(forKey: .selectedServerName)
 		{
 			return name
 		}

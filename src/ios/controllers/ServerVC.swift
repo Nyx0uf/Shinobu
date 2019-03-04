@@ -311,7 +311,7 @@ final class ServerVC : NYXTableViewController
 	{
 		let clearBlock = { () -> Void in
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-			let coversDirectoryName = Settings.shared.string(forKey: Settings.keys.coversDirectory)!
+			let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory)!
 			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
 			do

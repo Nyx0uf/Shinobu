@@ -7,7 +7,7 @@ final class AlbumsVC : NYXViewController
 	// Collection View
 	var collectionView: MusicalCollectionView!
 	// Selected artist
-	var artist: Artist!
+	var artist: Artist
 
 	// MARK: - Private properties
 	// Previewing context for peek & pop
@@ -39,16 +39,18 @@ final class AlbumsVC : NYXViewController
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: Settings.keys.pref_layoutAlbumsCollection)
+		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutAlbumsCollection)
 		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
 		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 		navigationItem.leftBarButtonItems = [displayButton]
 		navigationItem.leftItemsSupplementBackButton = true
 
 		// CollectionView
+		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
 		collectionView.myDelegate = self
 		collectionView.displayType = .albums
 		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
+		self.view.addSubview(collectionView)
 
 		// Longpress
 		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
@@ -81,23 +83,6 @@ final class AlbumsVC : NYXViewController
 		}
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-	{
-		if segue.identifier == "albums-to-albumdetail"
-		{
-			guard let indexes = collectionView.indexPathsForSelectedItems else
-			{
-				return
-			}
-
-			if let indexPath = indexes.first
-			{
-				let vc = segue.destination as! AlbumDetailVC
-				vc.album = artist.albums[indexPath.row]
-			}
-		}
-	}
-
 	// MARK: - Gestures
 	@objc func longPress(_ gest: UILongPressGestureRecognizer)
 	{
@@ -112,7 +97,7 @@ final class AlbumsVC : NYXViewController
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
 
-			let alertController = UIAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				MiniPlayerView.shared.stayHidden = false
@@ -146,9 +131,9 @@ final class AlbumsVC : NYXViewController
 	// MARK: - Actions
 	@objc func changeCollectionLayoutType(_ sender: Any?)
 	{
-		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutAlbumsCollection)
+		var b = Settings.shared.bool(forKey: .pref_layoutAlbumsCollection)
 		b = !b
-		Settings.shared.set(b, forKey: Settings.keys.pref_layoutAlbumsCollection)
+		Settings.shared.set(b, forKey: .pref_layoutAlbumsCollection)
 
 		collectionView.layoutType = b ? .collection : .table
 		if let buttons = navigationItem.leftBarButtonItems
@@ -196,7 +181,9 @@ extension AlbumsVC : MusicalCollectionViewDelegate
 
 	func didSelectItem(indexPath: IndexPath)
 	{
-		performSegue(withIdentifier: "albums-to-albumdetail", sender: self)
+		let album = artist.albums[indexPath.row]
+		let vc = AlbumDetailVC(album: album)
+		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }
 

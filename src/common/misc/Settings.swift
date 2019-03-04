@@ -4,23 +4,26 @@ import UIKit
 final class Settings
 {
 	// Preferences keys
-	enum keys
+	public struct Key : RawRepresentable, Equatable, Hashable, Comparable
 	{
-		static let servers = "servers"
-		static let selectedServerName = "selectedServerName"
-		static let coversDirectory = "coversDirectory"
-		static let coversSize = "coversSize"
-		static let coversSize_TVOS = "coversSize_TVOS"
-		static let pref_fuzzySearch = "pref_fuzzySearch"
-		static let pref_shakeToPlayRandom = "pref_shakeToPlayRandom"
-		static let pref_enableLogging = "pref_enableLogging"
-		static let pref_displayType = "pref_displayType"
-		static let pref_layoutLibraryCollection = "pref_layoutLibraryCollection"
-		static let pref_layoutArtistsCollection = "pref_layoutArtistsCollection"
-		static let pref_layoutAlbumsCollection = "pref_layoutAlbumsCollection"
-		static let mpd_repeat = "mpd_repeat"
-		static let mpd_shuffle = "mpd_shuffle"
+		public var rawValue: String
+
+		public static func < (lhs: Settings.Key, rhs: Settings.Key) -> Bool
+		{
+			return lhs.rawValue < rhs.rawValue
+		}
+
+		public init(rawValue: String)
+		{
+			self.rawValue = rawValue
+		}
+
+		public init(_ rawValue: String)
+		{
+			self.init(rawValue: rawValue)
+		}
 	}
+
 	// Singletion instance
 	static let shared = Settings()
 	// Prefs
@@ -43,53 +46,53 @@ final class Settings
 		defaults.synchronize()
 	}
 
-	func bool(forKey: String) -> Bool
+	func bool(forKey: Settings.Key) -> Bool
 	{
-		return defaults.bool(forKey: forKey)
+		return defaults.bool(forKey: forKey.rawValue)
 	}
 
-	func data(forKey: String) -> Data?
+	func data(forKey: Settings.Key) -> Data?
 	{
-		return defaults.data(forKey: forKey)
+		return defaults.data(forKey: forKey.rawValue)
 	}
 
-	func integer(forKey: String) -> Int
+	func integer(forKey: Settings.Key) -> Int
 	{
-		return defaults.integer(forKey: forKey)
+		return defaults.integer(forKey: forKey.rawValue)
 	}
 
-	func string(forKey: String) -> String?
+	func string(forKey: Settings.Key) -> String?
 	{
-		return defaults.string(forKey: forKey)
+		return defaults.string(forKey: forKey.rawValue)
 	}
 
-	func set(_ value: Bool, forKey: String)
+	func set(_ value: Bool, forKey: Settings.Key)
 	{
-		defaults.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey.rawValue)
 		defaults.synchronize()
 	}
 
-	func set(_ value: Data, forKey: String)
+	func set(_ value: Data, forKey: Settings.Key)
 	{
-		defaults.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey.rawValue)
 		defaults.synchronize()
 	}
 
-	func set(_ value: Int, forKey: String)
+	func set(_ value: Int, forKey: Settings.Key)
 	{
-		defaults.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey.rawValue)
 		defaults.synchronize()
 	}
 
-	func set(_ value: String, forKey: String)
+	func set(_ value: String, forKey: Settings.Key)
 	{
-		defaults.set(value, forKey: forKey)
+		defaults.set(value, forKey: forKey.rawValue)
 		defaults.synchronize()
 	}
 
-	func removeObject(forKey: String)
+	func removeObject(forKey: Settings.Key)
 	{
-		defaults.removeObject(forKey: forKey)
+		defaults.removeObject(forKey: forKey.rawValue)
 		defaults.synchronize()
 	}
 
@@ -104,19 +107,19 @@ final class Settings
 			let columns_tvos = CGFloat(5)
 			let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
 			let defaultsValues: [String: Any] = try [
-				Settings.keys.selectedServerName : "",
-				Settings.keys.coversDirectory : coversDirectoryPath,
-				Settings.keys.coversSize : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios)), requiringSecureCoding: false),
-				Settings.keys.coversSize_TVOS : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos)), requiringSecureCoding: false),
-				Settings.keys.pref_fuzzySearch : false,
-				Settings.keys.pref_enableLogging : false,
-				Settings.keys.pref_shakeToPlayRandom : false,
-				Settings.keys.pref_displayType : DisplayType.albums.rawValue,
-				Settings.keys.pref_layoutLibraryCollection : true,
-				Settings.keys.pref_layoutAlbumsCollection : false,
-				Settings.keys.pref_layoutArtistsCollection : false,
-				Settings.keys.mpd_repeat : false,
-				Settings.keys.mpd_shuffle : false,
+				Settings.Key.selectedServerName.rawValue : "",
+				Settings.Key.coversDirectory.rawValue : coversDirectoryPath,
+				Settings.Key.coversSize.rawValue : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios)), requiringSecureCoding: false),
+				Settings.Key.coversSize_TVOS.rawValue : NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos)), requiringSecureCoding: false),
+				Settings.Key.pref_fuzzySearch.rawValue : false,
+				Settings.Key.pref_enableLogging.rawValue : false,
+				Settings.Key.pref_shakeToPlayRandom.rawValue : false,
+				Settings.Key.pref_displayType.rawValue : DisplayType.albums.rawValue,
+				Settings.Key.pref_layoutLibraryCollection.rawValue : true,
+				Settings.Key.pref_layoutAlbumsCollection.rawValue : false,
+				Settings.Key.pref_layoutArtistsCollection.rawValue : false,
+				Settings.Key.mpd_repeat.rawValue : false,
+				Settings.Key.mpd_shuffle.rawValue : false,
 			]
 
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
@@ -132,4 +135,22 @@ final class Settings
 			fatalError("Failed to create covers directory")
 		}
 	}
+}
+
+extension Settings.Key
+{
+	static let servers = Settings.Key("servers")
+	static let selectedServerName = Settings.Key("selectedServerName")
+	static let coversDirectory = Settings.Key("coversDirectory")
+	static let coversSize = Settings.Key("coversSize")
+	static let coversSize_TVOS = Settings.Key("coversSize_TVOS")
+	static let pref_fuzzySearch = Settings.Key("pref_fuzzySearch")
+	static let pref_shakeToPlayRandom = Settings.Key("pref_shakeToPlayRandom")
+	static let pref_enableLogging = Settings.Key("pref_enableLogging")
+	static let pref_displayType = Settings.Key("pref_displayType")
+	static let pref_layoutLibraryCollection = Settings.Key("pref_layoutLibraryCollection")
+	static let pref_layoutArtistsCollection = Settings.Key("pref_layoutArtistsCollection")
+	static let pref_layoutAlbumsCollection = Settings.Key("pref_layoutAlbumsCollection")
+	static let mpd_repeat = Settings.Key("mpd_repeat")
+	static let mpd_shuffle = Settings.Key("mpd_shuffle")
 }

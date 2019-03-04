@@ -26,7 +26,7 @@ final class Album : MusicalEntity
 	// Local URL for the cover
 	private(set) lazy var localCoverURL: URL? = {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return nil}
-		guard let coverDirectoryPath = Settings.shared.string(forKey: Settings.keys.coversDirectory) else {return nil}
+		guard let coverDirectoryPath = Settings.shared.string(forKey: .coversDirectory) else {return nil}
 		if CoreImageUtilities.shared.isHeicCapable == true
 		{
 			return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".heic")

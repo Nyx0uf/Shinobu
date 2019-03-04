@@ -61,19 +61,19 @@ extension TypeChoiceView : UITableViewDataSource
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_albums")
-				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.albums.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.albums.rawValue
 			case 1:
 				title = NYXLocalizedString("lbl_artists")
-				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.artists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.artists.rawValue
 			case 2:
 				title = NYXLocalizedString("lbl_albumartist")
-				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.albumsartists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.albumsartists.rawValue
 			case 3:
 				title = NYXLocalizedString("lbl_genres")
-				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.genres.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.genres.rawValue
 			case 4:
 				title = NYXLocalizedString("lbl_playlists")
-				selected = Settings.shared.integer(forKey: Settings.keys.pref_displayType) == DisplayType.playlists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.playlists.rawValue
 			default:
 				break
 		}

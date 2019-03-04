@@ -82,13 +82,13 @@ final class AlbumHeaderView : UIView
 			}
 			else
 			{
-				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
+				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 				image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 			}
 		}
 		else
 		{
-			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
+			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 			image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 		}
 		self.image = image

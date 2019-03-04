@@ -41,7 +41,7 @@ final class AlbumDetailVC : NYXViewController
 		self.view.addSubview(colorView)
 
 		// Album header view
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
+		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88), coverSize: (coverSize?.cgSizeValue)!)
 		self.view.addSubview(headerView)
 
@@ -60,12 +60,12 @@ final class AlbumDetailVC : NYXViewController
 		// Add navbar shadow
 		if let _ = navigationController?.navigationBar
 		{
-			let loop = Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
+			let loop = Settings.shared.bool(forKey: .mpd_repeat)
 			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
 			btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
 			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-			let rand = Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
+			let rand = Settings.shared.bool(forKey: .mpd_shuffle)
 			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
 			btnRandom.tintColor = rand ? Colors.mainEnabled : Colors.main
 			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
@@ -126,24 +126,24 @@ final class AlbumDetailVC : NYXViewController
 	// MARK: - Buttons actions
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
-		let random = !Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
+		let random = !Settings.shared.bool(forKey: .mpd_shuffle)
 
 		btnRandom.tintColor = random ? Colors.mainEnabled : Colors.main
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		Settings.shared.set(random, forKey: Settings.keys.mpd_shuffle)
+		Settings.shared.set(random, forKey: .mpd_shuffle)
 
 		PlayerController.shared.setRandom(random)
 	}
 
 	@objc func toggleRepeatAction(_ sender: Any?)
 	{
-		let loop = !Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
+		let loop = !Settings.shared.bool(forKey: .mpd_repeat)
 
 		btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		Settings.shared.set(loop, forKey: Settings.keys.mpd_repeat)
+		Settings.shared.set(loop, forKey: .mpd_repeat)
 
 		PlayerController.shared.setRepeat(loop)
 	}
@@ -177,7 +177,7 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let b = tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat))
+		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?

@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class PlaylistDetailVC : UIViewController
+final class PlaylistDetailVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Selected album
@@ -9,29 +9,26 @@ final class PlaylistDetailVC : UIViewController
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
-	@IBOutlet private var headerView: UIImageView! = nil
-	// Header height constraint
-	@IBOutlet private var headerHeightConstraint: NSLayoutConstraint! = nil
-	// Dummy view for shadow
-	@IBOutlet private var dummyView: UIView! = nil
+	private var headerView: UIImageView! = nil
 	// Tableview for song list
-	@IBOutlet private var tableView: TracksListTableView! = nil
+	private var tableView: TracksListTableView! = nil
 	// Underlaying color view
-	@IBOutlet private var colorView: UIView! = nil
-	// Label in the navigationbar
-	private var titleView: UILabel! = nil
+	private var colorView: UIView! = nil
 	// Random button
 	private var btnRandom: UIBarButtonItem! = nil
 	// Repeat button
 	private var btnRepeat: UIBarButtonItem! = nil
 
 	// MARK: - Initializers
+	init(playlist: Playlist)
+	{
+		self.playlist = playlist
+		super.init(nibName: nil, bundle: nil)
+	}
+
 	required init?(coder aDecoder: NSCoder)
 	{
-		// Dummy
-		self.playlist = Playlist(name: "")
-
-		super.init(coder: aDecoder)
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - UIViewController
@@ -39,29 +36,21 @@ final class PlaylistDetailVC : UIViewController
 	{
 		super.viewDidLoad()
 
-		// Navigation bar title
-		titleView = UILabel(frame: CGRect(.zero, 100.0, 44.0))
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-		navigationItem.titleView = titleView
+		// Color under navbar
+		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? 88))
+		self.view.addSubview(colorView)
 
 		// Album header view
-		//let coverSize = NSKeyedUnarchiver.unarchiveObject(with: Settings.shared.data(forKey: kNYXPrefCoversSize)!) as! NSValue
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: Settings.keys.coversSize)!) as? NSValue
-		headerHeightConstraint.constant = (coverSize?.cgSizeValue)!.height
-
-		// Dummy tableview host, to create a nice shadow effect
-		dummyView.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, view.width + 4.0, 4.0)).cgPath
-		dummyView.layer.shadowRadius = 3.0
-		dummyView.layer.shadowOpacity = 1.0
-		dummyView.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-		dummyView.layer.masksToBounds = false
+		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
+		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88))
+		self.view.addSubview(headerView)
 
 		// Tableview
+		tableView = TracksListTableView(frame: CGRect(0, headerView.bottom, self.view.width, self.view.height - headerView.bottom), style: .plain)
 		tableView.useDummy = true
+		tableView.delegate = self
 		tableView.tableFooterView = UIView()
+		self.view.addSubview(tableView)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -69,22 +58,16 @@ final class PlaylistDetailVC : UIViewController
 		super.viewWillAppear(animated)
 
 		// Add navbar shadow
-		if let navigationBar = navigationController?.navigationBar
+		if let _ = navigationController?.navigationBar
 		{
-			navigationBar.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, navigationBar.frame.height - 2.0, navigationBar.frame.width + 4.0, 4.0)).cgPath
-			navigationBar.layer.shadowRadius = 3.0
-			navigationBar.layer.shadowOpacity = 1.0
-			navigationBar.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-			navigationBar.layer.masksToBounds = false
-
-			let loop = Settings.shared.bool(forKey: Settings.keys.mpd_repeat)
+			let loop = Settings.shared.bool(forKey: .mpd_repeat)
 			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
-			btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
 			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-			let rand = Settings.shared.bool(forKey: Settings.keys.mpd_shuffle)
+			let rand = Settings.shared.bool(forKey: .mpd_shuffle)
 			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
-			btnRandom.tintColor = rand ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+			btnRandom.tintColor = rand ? Colors.mainEnabled : Colors.main
 			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
 
 			navigationItem.rightBarButtonItems = [btnRandom, btnRepeat]
@@ -108,29 +91,6 @@ final class PlaylistDetailVC : UIViewController
 				}
 			}
 		}
-	}
-
-	override func viewWillDisappear(_ animated: Bool)
-	{
-		super.viewWillDisappear(animated)
-
-		// Remove navbar shadow
-		if let navigationBar = navigationController?.navigationBar
-		{
-			navigationBar.layer.shadowPath = nil
-			navigationBar.layer.shadowRadius = 0.0
-			navigationBar.layer.shadowOpacity = 0.0
-		}
-	}
-
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
 	}
 
 	// MARK: - Private
@@ -161,14 +121,14 @@ final class PlaylistDetailVC : UIViewController
 
 	private func renamePlaylistAction()
 	{
-		let alertController = UIAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
+		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
 			{
-				let errorAlert = UIAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
 				}))
 				self.present(errorAlert, animated: true, completion: nil)
@@ -207,12 +167,12 @@ final class PlaylistDetailVC : UIViewController
 	@objc func toggleRandomAction(_ sender: Any?)
 	{
 		let prefs = Settings.shared
-		let random = !prefs.bool(forKey: Settings.keys.mpd_shuffle)
+		let random = !prefs.bool(forKey: .mpd_shuffle)
 
-		btnRandom.tintColor = random ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		btnRandom.tintColor = random ? Colors.mainEnabled : Colors.main
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
-		prefs.set(random, forKey: Settings.keys.mpd_shuffle)
+		prefs.set(random, forKey: .mpd_shuffle)
 		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
@@ -221,12 +181,12 @@ final class PlaylistDetailVC : UIViewController
 	@objc func toggleRepeatAction(_ sender: Any?)
 	{
 		let prefs = Settings.shared
-		let loop = !prefs.bool(forKey: Settings.keys.mpd_repeat)
+		let loop = !prefs.bool(forKey: .mpd_repeat)
 
-		btnRepeat.tintColor = loop ? #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1) : #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
-		prefs.set(loop, forKey: Settings.keys.mpd_repeat)
+		prefs.set(loop, forKey: .mpd_repeat)
 		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
@@ -260,7 +220,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 			}
 		}
 
-		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: Settings.keys.mpd_shuffle), loop: Settings.shared.bool(forKey: Settings.keys.mpd_repeat), position: UInt32(indexPath.row))
+		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat), position: UInt32(indexPath.row))
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
@@ -294,7 +254,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 			completionHandler(true)
 		})
 		action.image = #imageLiteral(resourceName: "btn-trash")
-		action.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+		action.backgroundColor = Colors.main
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}
