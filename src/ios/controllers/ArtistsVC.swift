@@ -95,7 +95,6 @@ final class ArtistsVC : UIViewController
 		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutArtistsCollection)
 		b = !b
 		Settings.shared.set(b, forKey: Settings.keys.pref_layoutArtistsCollection)
-		Settings.shared.synchronize()
 
 		collectionView.layoutType = b ? .collection : .table
 		if let buttons = navigationItem.leftBarButtonItems

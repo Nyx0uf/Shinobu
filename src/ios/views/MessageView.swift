@@ -20,21 +20,15 @@ final class MessageView : UIView
 	override init(frame f: CGRect)
 	{
 		let statusHeight: CGFloat
-		if #available(iOS 11, *)
+		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
 		{
-			if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
-			{
-				statusHeight = top < 20 ? 20 : top
-			}
-			else
-			{
-				statusHeight = 20.0
-			}
+			statusHeight = top < 20 ? 20 : top
 		}
 		else
 		{
-			statusHeight = 20.0
+			statusHeight = 20
 		}
+
 		let height = statusHeight + 44.0;
 		let frame = CGRect(0.0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
 

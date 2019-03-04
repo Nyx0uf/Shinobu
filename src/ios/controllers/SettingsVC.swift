@@ -48,21 +48,18 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 	{
 		let shake = Settings.shared.bool(forKey: Settings.keys.pref_shakeToPlayRandom)
 		Settings.shared.set(!shake, forKey: Settings.keys.pref_shakeToPlayRandom)
-		Settings.shared.synchronize()
 	}
 
 	func toggleFuzzySearch(_ sender: Any?)
 	{
 		let fuzzySearch = Settings.shared.bool(forKey: Settings.keys.pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: Settings.keys.pref_fuzzySearch)
-		Settings.shared.synchronize()
 	}
 
 	func toggleLogging(_ sender: Any?)
 	{
 		let logging = Settings.shared.bool(forKey: Settings.keys.pref_enableLogging)
 		Settings.shared.set(!logging, forKey: Settings.keys.pref_enableLogging)
-		Settings.shared.synchronize()
 	}
 
 	@objc func showLeftViewAction(_ sender: Any?)

@@ -66,26 +66,31 @@ final class Settings
 	func set(_ value: Bool, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
+		defaults.synchronize()
 	}
 
 	func set(_ value: Data, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
+		defaults.synchronize()
 	}
 
 	func set(_ value: Int, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
+		defaults.synchronize()
 	}
 
 	func set(_ value: String, forKey: String)
 	{
 		defaults.set(value, forKey: forKey)
+		defaults.synchronize()
 	}
 
 	func removeObject(forKey: String)
 	{
 		defaults.removeObject(forKey: forKey)
+		defaults.synchronize()
 	}
 
 	// MARK: - Private

@@ -284,7 +284,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		Settings.shared.set(random, forKey: Settings.keys.mpd_shuffle)
-		Settings.shared.synchronize()
 
 		PlayerController.shared.setRandom(random)
 	}
@@ -297,7 +296,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		Settings.shared.set(loop, forKey: Settings.keys.mpd_repeat)
-		Settings.shared.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
 	}

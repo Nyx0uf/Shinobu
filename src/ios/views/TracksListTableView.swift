@@ -84,9 +84,9 @@ extension TracksListTableView : UITableViewDataSource
 
 		if PlayerController.shared.currentTrack == track
 		{
-			cell.lblTrack.font = UIFont(name: "HelveticaNeue-Bold", size: 10)
-			cell.lblTitle.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: 14)
-			cell.lblDuration.font = UIFont(name: "HelveticaNeue-Medium", size: 10)
+			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .bold)
+			cell.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
+			cell.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .regular)
 		}
 		else
 		{

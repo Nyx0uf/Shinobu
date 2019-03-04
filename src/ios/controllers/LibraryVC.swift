@@ -188,6 +188,8 @@ final class LibraryVC : UIViewController, CenterViewController
 
 			_serverChanged = false
 		}
+
+		MessageView.shared.showWithMessage(message: Message(content: "sdjgndf;hg,fhk,gf;hizejioreg", type: .error), animated: true)
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
@@ -564,7 +566,6 @@ final class LibraryVC : UIViewController, CenterViewController
 		var b = Settings.shared.bool(forKey: Settings.keys.pref_layoutLibraryCollection)
 		b = !b
 		Settings.shared.set(b, forKey: Settings.keys.pref_layoutLibraryCollection)
-		Settings.shared.synchronize()
 
 		collectionView.layoutType = b ? .collection : .table
 		if let buttons = navigationItem.leftBarButtonItems
@@ -863,7 +864,6 @@ extension LibraryVC : TypeChoiceViewDelegate
 		_displayType = type
 
 		Settings.shared.set(type.rawValue, forKey: Settings.keys.pref_displayType)
-		Settings.shared.synchronize()
 
 		// Longpress / peek & pop
 		updateLongpressState()

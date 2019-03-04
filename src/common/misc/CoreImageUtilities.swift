@@ -18,14 +18,7 @@ final class CoreImageUtilities
 	}()
 	//
 	private(set) lazy var isHeicCapable: Bool = {
-		if #available(iOS 11.0, *)
-		{
-			let types = CGImageDestinationCopyTypeIdentifiers() as! [String]
-			return types.contains("public.heic")
-		}
-		else
-		{
-			return false
-		}
+		let types = CGImageDestinationCopyTypeIdentifiers() as! [String]
+		return types.contains("public.heic")
 	}()
 }

@@ -97,10 +97,7 @@ extension UIImage
 		var destination: CGImageDestination? = nil
 		if CoreImageUtilities.shared.isHeicCapable == true
 		{
-			if #available(iOS 11.0, *)
-			{
-				destination = CGImageDestinationCreateWithURL(url as CFURL, AVFileType.heic as CFString as CFString, 1, nil)
-			}
+			destination = CGImageDestinationCreateWithURL(url as CFURL, AVFileType.heic as CFString as CFString, 1, nil)
 			if destination == nil
 			{
 				return false

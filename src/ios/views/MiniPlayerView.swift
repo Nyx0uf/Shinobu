@@ -37,18 +37,10 @@ final class MiniPlayerView : UIView
 	{
 		let headerHeight: CGFloat
 		let marginTop: CGFloat
-		if #available(iOS 11, *)
+		if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
 		{
-			if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
-			{
-				headerHeight = baseHeight + bottom
-				marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! < 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
-			}
-			else
-			{
-				headerHeight = baseHeight
-				marginTop = 20.0
-			}
+			headerHeight = baseHeight + bottom
+			marginTop = (UIApplication.shared.keyWindow?.safeAreaInsets.top)! < 20 ? 20 : (UIApplication.shared.keyWindow?.safeAreaInsets.top)!
 		}
 		else
 		{
