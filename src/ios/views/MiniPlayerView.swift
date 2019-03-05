@@ -129,7 +129,7 @@ final class MiniPlayerView : UIView
 		}
 		else
 		{
-			self.addGestureRecognizer(singleTap)
+			self.blurEffectView.addGestureRecognizer(singleTap)
 		}
 
 		let doubleTap = UITapGestureRecognizer()
@@ -142,7 +142,7 @@ final class MiniPlayerView : UIView
 		}
 		else
 		{
-			self.addGestureRecognizer(doubleTap)
+			self.blurEffectView.addGestureRecognizer(doubleTap)
 		}
 		singleTap.require(toFail: doubleTap)
 
