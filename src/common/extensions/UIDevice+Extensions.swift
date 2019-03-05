@@ -15,6 +15,11 @@ extension UIDevice
 
 	func isiPhoneX() -> Bool
 	{
-		return isPhone() && Int(UIScreen.main.nativeBounds.height) == 2436
+		if isPhone()
+		{
+			let height = Int(UIScreen.main.nativeBounds.height)
+			return height == 2436 || height == 2688 || height == 1792
+		}
+		return false
 	}
 }

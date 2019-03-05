@@ -54,12 +54,12 @@ final class MiniPlayerView : UIView
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 
 		// Top shadow
-		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
-		self.layer.shadowRadius = 3.0
-		self.layer.shadowOpacity = 1.0
-		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-		self.layer.masksToBounds = false
-		self.isAccessibilityElement = false
+//		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
+//		self.layer.shadowRadius = 3.0
+//		self.layer.shadowOpacity = 1.0
+//		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
+//		self.layer.masksToBounds = false
+//		self.isAccessibilityElement = false
 
 		// Blur background
 		let blurEffect = UIBlurEffect(style: .light)
