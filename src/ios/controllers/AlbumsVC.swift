@@ -150,8 +150,8 @@ final class AlbumsVC : NYXViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSAttributedString.Key.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .medium)])
+		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
 		titleView.attributedText = attrs
 	}
 

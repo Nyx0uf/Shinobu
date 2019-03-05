@@ -23,7 +23,7 @@ final class MusicDataSource
 
 	// MARK: - Private properties
 	// MPD Connection
-	private var _connection: AudioServerConnection! = nil
+	private var _connection: MPDConnection! = nil
 	// Serial queue for the connection
 	private let _queue: DispatchQueue
 	// Timer (1sec)
@@ -472,7 +472,7 @@ final class MusicDataSource
 	}
 }
 
-extension MusicDataSource : AudioServerConnectionDelegate
+extension MusicDataSource : MPDConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{

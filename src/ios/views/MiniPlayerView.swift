@@ -95,7 +95,7 @@ final class MiniPlayerView : UIView
 		// Title
 		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
 		self.lblTitle.textAlignment = .center
-		self.lblTitle.font = UIFont(name: "GillSans-Bold", size: 14.0)
+		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
 		self.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		self.lblTitle.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblTitle)
@@ -103,7 +103,7 @@ final class MiniPlayerView : UIView
 		// Artist
 		self.lblArtist = UILabel(frame: CGRect(self.imageView.right + 5.0, self.lblTitle.bottom + 2.0, self.lblTitle.width, 16.0))
 		self.lblArtist.textAlignment = .center
-		self.lblArtist.font = UIFont(name: "GillSans", size: 12.0)
+		self.lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .regular)
 		self.lblArtist.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 		self.lblArtist.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblArtist)

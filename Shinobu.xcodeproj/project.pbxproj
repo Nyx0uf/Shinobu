@@ -31,7 +31,6 @@
 		4358B02621EB42B4009A3BBF /* NotificationCenter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01021EB42B4009A3BBF /* NotificationCenter+Extensions.swift */; };
 		4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01121EB42B4009A3BBF /* Number+Extensions.swift */; };
 		4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */; };
-		4358B02921EB42B4009A3BBF /* AudioServerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */; };
 		4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
 		4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		4358B02C21EB42B4009A3BBF /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
@@ -161,7 +160,6 @@
 		4358B01021EB42B4009A3BBF /* NotificationCenter+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Extensions.swift"; sourceTree = "<group>"; };
 		4358B01121EB42B4009A3BBF /* Number+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
 		4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
-		4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioServerConnection.swift; sourceTree = "<group>"; };
 		4358B01621EB42B4009A3BBF /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		4358B01721EB42B4009A3BBF /* MPDServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDServer.swift; sourceTree = "<group>"; };
 		4358B01821EB42B4009A3BBF /* CoverServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverServer.swift; sourceTree = "<group>"; };
@@ -425,24 +423,15 @@
 		4358B01321EB42B4009A3BBF /* audio-server */ = {
 			isa = PBXGroup;
 			children = (
-				4358B01521EB42B4009A3BBF /* mpd */,
-				4358B01421EB42B4009A3BBF /* AudioServerConnection.swift */,
 				4358B01821EB42B4009A3BBF /* CoverServer.swift */,
 				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
+				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
 				4358B01921EB42B4009A3BBF /* MusicDataSource.swift */,
 				4358B01A21EB42B4009A3BBF /* PlayerController.swift */,
 				430141E12229307300C68075 /* ServersManager.swift */,
 				43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */,
 			);
 			path = "audio-server";
-			sourceTree = "<group>";
-		};
-		4358B01521EB42B4009A3BBF /* mpd */ = {
-			isa = PBXGroup;
-			children = (
-				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
-			);
-			path = mpd;
 			sourceTree = "<group>";
 		};
 		4358B02F21EB44C4009A3BBF /* model */ = {
@@ -620,7 +609,6 @@
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
 				43DBD7FC22203501009B3B68 /* ServerListVC.swift in Sources */,
 				4358B07721EB47A8009A3BBF /* ZeroConfBrowserTVC.swift in Sources */,
-				4358B02921EB42B4009A3BBF /* AudioServerConnection.swift in Sources */,
 				4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */,
 				4358B02421EB42B4009A3BBF /* FileManager+Extensions.swift in Sources */,
 				4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */,

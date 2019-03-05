@@ -117,8 +117,8 @@ final class AlbumDetailVC : NYXViewController
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSAttributedString.Key.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .medium)])
+			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
 			titleView.attributedText = attrs
 		}
 	}

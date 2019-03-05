@@ -21,7 +21,7 @@ final class PlayerController
 
 	// MARK: - Private properties
 	// MPD Connection
-	private var _connection: AudioServerConnection! = nil
+	private var _connection: MPDConnection! = nil
 	// Internal queue
 	private let _queue: DispatchQueue
 	// Timer (1sec)
@@ -330,23 +330,6 @@ final class PlayerController
 		}
 	}
 
-	func getTrackInformation(_ track: Track, callback: @escaping ([String : String]) -> Void)
-	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
-
-		_queue.async { [weak self] in
-			guard let strongSelf = self else { return }
-			let ret = strongSelf._connection.getAudioFormat()
-			if ret.succeeded
-			{
-				callback(ret.entity!)
-			}
-		}
-	}
-
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{
@@ -431,7 +414,7 @@ final class PlayerController
 	}
 }
 
-extension PlayerController : AudioServerConnectionDelegate
+extension PlayerController : MPDConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{

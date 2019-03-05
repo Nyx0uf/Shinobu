@@ -80,12 +80,12 @@ extension TypeChoiceView : UITableViewDataSource
 		cell.textLabel?.text = title
 		if selected
 		{
-			cell.textLabel?.font = UIFont(name: "HelveticaNeue-Medium", size: 16.0)
+			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			cell.textLabel?.textColor = Colors.main
 		}
 		else
 		{
-			cell.textLabel?.font = UIFont(name: "HelveticaNeue", size: 15.0)
+			cell.textLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
 			cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		}
 		return cell

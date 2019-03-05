@@ -133,7 +133,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		// Previous button
 		btnPrevious = UIButton(frame: CGRect(32, sliderPosition.bottom + 16, 48, 48))
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .highlighted)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .selected)
 		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnPrevious)
 
@@ -145,7 +146,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		// Next button
 		btnNext = UIButton(frame: CGRect(self.view.width - 48 - 32, sliderPosition.bottom + 16, 48, 48))
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .highlighted)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .selected)
 		btnNext.addTarget(PlayerController.shared, action: #selector(PlayerController.requestNextTrack), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnNext)
 
@@ -155,7 +157,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		btnVolumeLo = UIButton(frame: vev_volm.bounds)
 		btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
 		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: Colors.mainEnabled), for: .highlighted)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: Colors.mainEnabled), for: .selected)
 		vev_volm.contentView.addSubview(btnVolumeLo)
 		self.blurEffectView.contentView.addSubview(vev_volm)
 
@@ -165,13 +168,16 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		btnVolumeHi = UIButton(frame: vev_volp.bounds)
 		btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
 		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: Colors.mainEnabled), for: .highlighted)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: Colors.mainEnabled), for: .selected)
 		vev_volp.contentView.addSubview(btnVolumeHi)
 		self.blurEffectView.contentView.addSubview(vev_volp)
 
 		// Slider volume
 		sliderVolume = UISlider(frame: CGRect(32, vev_volp.bottom + 2, tframe.width, 31))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
+		sliderVolume.minimumValue = 0
+		sliderVolume.maximumValue = 100
 		self.blurEffectView.contentView.addSubview(sliderVolume)
 
 		// Repeat button
@@ -179,8 +185,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat = UIButton(frame: CGRect(32, self.view.height - 44, 44, 44))
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRepeat.setImage(imageRepeat.tinted(withColor: Colors.mainEnabled)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
@@ -191,8 +196,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom = UIButton(frame: CGRect(self.view.width - 44 - 32, self.view.height - 44, 44, 44))
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
+		btnRandom.setImage(imageRandom.tinted(withColor: Colors.mainEnabled)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -463,8 +467,6 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 				OperationManager.shared.addOperation(op)
 			}
 		}
-
-		self.updateCurrentTrackInformation()
 	}
 
 	@objc func playerStatusChangedNotification(_ aNotification: Notification?)
@@ -479,14 +481,16 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+			btnPlay.setImage(imgPlay.tinted(withColor: Colors.mainEnabled), for: .highlighted)
+			btnPlay.setImage(imgPlay.tinted(withColor: Colors.mainEnabled), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
 			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+			btnPlay.setImage(imgPause.tinted(withColor: Colors.mainEnabled), for: .highlighted)
+			btnPlay.setImage(imgPause.tinted(withColor: Colors.mainEnabled), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 	}
@@ -506,23 +510,6 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 					self.btnVolumeHi.isEnabled = valueToSet < 100
 				}
 			}
-		}
-	}
-
-	func updateCurrentTrackInformation()
-	{
-		if let track = PlayerController.shared.currentTrack
-		{
-			PlayerController.shared.getTrackInformation(track, callback: { (infos: [String : String]) in
-				let channels = Int(infos["channels"]!)!
-				let bits = Int(infos["bits"]!)!
-				let samplerate = Int(infos["samplerate"]!)!
-				let formatted = "\(bits)Bits / \(samplerate)Hz (\(channels == 1 ? "Mono" : "Stereo"))"
-				DispatchQueue.main.async {
-					self.lblTrackInformation.text = formatted
-					self.lblTrackInformation.isHidden = false
-				}
-			})
 		}
 	}
 }

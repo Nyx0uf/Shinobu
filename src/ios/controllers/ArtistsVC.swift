@@ -80,8 +80,8 @@ final class ArtistsVC : NYXViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSAttributedString.Key.font : UIFont(name: "HelveticaNeue-Medium", size: 14.0)!])
-		attrs.append(NSAttributedString(string: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSAttributedString.Key.font : UIFont(name: "HelveticaNeue", size: 13.0)!]))
+		let attrs = NSMutableAttributedString(string: genre.name + "\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .medium)])
+		attrs.append(NSAttributedString(string: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
 		titleView.attributedText = attrs
 	}
 }

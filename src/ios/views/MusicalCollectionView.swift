@@ -155,20 +155,22 @@ final class MusicalCollectionView : UICollectionView
 
 	private func setCollectionLayout(animated: Bool)
 	{
-		UIView.animate(withDuration: animated ? 0.2 : 0) { () -> Void in
+		UIView.animate(withDuration: animated ? 0.2 : 0, delay: 0.0, options: .curveEaseInOut, animations: {
 			self.collectionViewLayout.invalidateLayout()
 
 			if self.layoutType == .collection
 			{
-				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_collection)
 				self.setCollectionViewLayout(CollectionFlowLayout(), animated: animated)
+				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_collection)
 			}
 			else
 			{
-				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_table)
 				self.setCollectionViewLayout(TableFlowLayout(), animated: animated)
+				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_table)
 			}
-		}
+			self.reloadItems(at: self.indexPathsForVisibleItems)
+		}, completion: { finished in
+		})
 	}
 }
 
