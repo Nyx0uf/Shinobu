@@ -17,13 +17,15 @@ final class SideMenuVC : NYXViewController
 	private var tableView: UITableView!
 	// Number of table rows
 	private let numberOfRows = 3
+	//
+	private let cellIdentifier = "fr.whine.shinobu.cell.menu"
 
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
 		tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
-		tableView.register(MenuViewTableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.menu")
+		tableView.register(MenuViewTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.scrollsToTop = false
 		tableView.dataSource = self
 		tableView.delegate = self
@@ -43,7 +45,7 @@ extension SideMenuVC : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.menu", for: indexPath) as! MenuViewTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! MenuViewTableViewCell
 
 		var selected = false
 		var image: UIImage! = nil

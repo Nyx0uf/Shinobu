@@ -16,13 +16,15 @@ final class TracksListTableView : UITableView
 	}
 	// Should add a dummy cell at the end
 	var useDummy = false
+	// Cell identifier
+	private let cellIdentifier = "fr.whine.shinobu.cell.track"
 
 	override init(frame: CGRect, style: UITableView.Style)
 	{
 		super.init(frame: frame, style: style)
 
 		self.dataSource = self
-		self.register(TrackTableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.track")
+		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		self.separatorStyle = .none
 		self.backgroundColor = Colors.background
 		self.rowHeight = 44.0
@@ -32,7 +34,7 @@ final class TracksListTableView : UITableView
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError()
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	deinit
@@ -57,7 +59,7 @@ extension TracksListTableView : UITableViewDataSource
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.track", for: indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrackTableViewCell
 
 		// Dummy to let some space for the mini player
 		if useDummy && indexPath.row == tracks.count

@@ -23,7 +23,7 @@ final class TypeChoiceView : UIView
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
-		self.tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.type")
+		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
 		self.tableView.backgroundColor = self.backgroundColor

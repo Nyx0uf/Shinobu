@@ -29,18 +29,6 @@ final class MenuViewTableViewCell : UITableViewCell
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder:aDecoder)
-		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
-		self.isAccessibilityElement = true
-		self.selectionStyle = .none
-		self.layoutMargins = .zero
-
-		let logoSize = CGSize(96.0, 96.0)
-		self.ivLogo = UIImageView(frame: CGRect(48.0, (128.0 - logoSize.height) * 0.5, logoSize))
-		self.contentView.addSubview(self.ivLogo)
-
-		self.lblSection = UILabel(frame: CGRect(0.0, 0.0, logoSize.width + 32.0, 32.0))
-		self.lblSection.font = UIFont.systemFont(ofSize: 14.0)
-		self.contentView.addSubview(self.lblSection)
+		fatalError("init(coder:) has not been implemented")
 	}
 }

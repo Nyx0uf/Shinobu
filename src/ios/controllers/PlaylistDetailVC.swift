@@ -41,7 +41,7 @@ final class PlaylistDetailVC : NYXViewController
 		self.view.addSubview(colorView)
 
 		// Album header view
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
+		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88))
 		self.view.addSubview(headerView)
 

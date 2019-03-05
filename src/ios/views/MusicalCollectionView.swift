@@ -27,8 +27,7 @@ final class TableFlowLayout: UICollectionViewFlowLayout
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
-		setupLayout()
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	func setupLayout()
@@ -63,8 +62,7 @@ final class CollectionFlowLayout : UICollectionViewFlowLayout
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
-		setupLayout()
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	func setupLayout()
@@ -334,7 +332,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 			}
 
 			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
-			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: sizeAsData) as? NSValue
+			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{
 				cell.associatedObject = downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in

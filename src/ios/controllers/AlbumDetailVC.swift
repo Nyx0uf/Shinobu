@@ -37,11 +37,11 @@ final class AlbumDetailVC : NYXViewController
 		super.viewDidLoad()
 
 		// Color under navbar
-		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? 64))
+		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? 88))
 		self.view.addSubview(colorView)
 
 		// Album header view
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
+		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88), coverSize: (coverSize?.cgSizeValue)!)
 		self.view.addSubview(headerView)
 

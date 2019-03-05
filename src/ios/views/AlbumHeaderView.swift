@@ -45,7 +45,7 @@ final class AlbumHeaderView : UIView
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError()
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - Drawing
@@ -82,13 +82,13 @@ final class AlbumHeaderView : UIView
 			}
 			else
 			{
-				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
+				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 				image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 			}
 		}
 		else
 		{
-			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
+			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 			image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
 		}
 		self.image = image

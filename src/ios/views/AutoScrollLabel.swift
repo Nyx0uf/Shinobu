@@ -152,26 +152,7 @@ final class AutoScrollLabel : UIView
 
 	public required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
-		self.isUserInteractionEnabled = false
-		self.clipsToBounds = true
-
-		self.scrollView = UIScrollView(frame: self.bounds)
-		self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		self.scrollView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-		self.scrollView.showsVerticalScrollIndicator = false
-		self.scrollView.showsHorizontalScrollIndicator = false
-		self.scrollView.isScrollEnabled = false
-		self.addSubview(self.scrollView)
-
-		// Create labels
-		self.mainLabel = UILabel()
-		self.mainLabel.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-		self.scrollView.addSubview(self.mainLabel)
-
-		self.secondaryLabel = UILabel()
-		self.secondaryLabel.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
-		self.scrollView.addSubview(self.secondaryLabel)
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - Private

@@ -1,12 +1,14 @@
 import UIKit
 
 
-final class PlaylistsTVC : UITableViewController
+final class PlaylistsTVC : NYXTableViewController
 {
 	// List of artists
 	var playlists = [Playlist]()
 	// Track to add
 	var trackToAdd: Track? = nil
+	// Cell identifier
+	private let cellIdentifier = "fr.whine.shinobu.cell.playlist"
 
 	// MARK: - Initializers
 	init()
@@ -16,7 +18,7 @@ final class PlaylistsTVC : UITableViewController
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		super.init(coder: aDecoder)
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	// MARK: - UIViewController
@@ -29,7 +31,7 @@ final class PlaylistsTVC : UITableViewController
 		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)]
 		self.navigationItem.title = NYXLocalizedString("lbl_playlists")
 
-		tableView.register(UITableViewCell.classForCoder(), forCellReuseIdentifier: "fr.whine.shinobu.cell.playlist")
+		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
 		// Create playlist button
@@ -50,7 +52,7 @@ final class PlaylistsTVC : UITableViewController
 	{
 		let alertController = NYXAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
 
-		alertController.addAction(UIAlertAction(title: "Save", style: .default, handler: { alert -> Void in
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
@@ -112,7 +114,7 @@ extension PlaylistsTVC
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.playlist", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 
 		let playlist = playlists[indexPath.row]
 

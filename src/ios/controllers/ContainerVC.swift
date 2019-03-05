@@ -258,7 +258,7 @@ extension ContainerVC : UIGestureRecognizerDelegate
 		{
 			if let topVC = mainViewController.topViewController
 			{
-				if topVC.isKind(of: LibraryVC.classForCoder()) == false
+				if topVC.isKind(of: LibraryVC.self) == false
 				{
 					return false
 				}

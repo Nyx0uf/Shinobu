@@ -5,7 +5,15 @@ func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! App
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
+	// Main window
 	var window: UIWindow?
+	// Container: VC + Menu
+	private var containerVC: ContainerVC! = nil
+
+	override init()
+	{
+		super.init()
+	}
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
@@ -13,9 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		Settings.shared.initialize()
 
-		window = UIWindow(frame: UIScreen.main.bounds)
-		window?.rootViewController = ContainerVC()
-		window?.makeKeyAndVisible()
+		self.containerVC = ContainerVC()
+		self.window = UIWindow(frame: UIScreen.main.bounds)
+		self.window?.rootViewController = self.containerVC
+		self.window?.makeKeyAndVisible()
 		return true
 	}
 
@@ -35,5 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 		let switchAppearance = UISwitch.appearance()
 		switchAppearance.onTintColor = Colors.main
+
+		let sliderAppearance = UISlider.appearance()
+		sliderAppearance.tintColor = Colors.main
 	}
 }

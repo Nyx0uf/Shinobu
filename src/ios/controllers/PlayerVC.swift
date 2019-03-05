@@ -1,102 +1,203 @@
 import UIKit
 
 
-final class PlayerVC : UIViewController, InteractableImageViewDelegate
+final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 {
 	// MARK: - Private properties
 	// Blur view
-	@IBOutlet private var blurEffectView: UIVisualEffectView! = nil
+	private var blurEffectView: UIVisualEffectView! = nil
 	// Cover view
-	@IBOutlet fileprivate var coverView: InteractableImageView! = nil
+	fileprivate var coverView: InteractableImageView! = nil
 	// Track title
-	@IBOutlet private var lblTrackTitle: AutoScrollLabel! = nil
+	private var lblTrackTitle: AutoScrollLabel! = nil
 	// Track artist name
-	@IBOutlet private var lblTrackArtist: UILabel! = nil
+	private var lblTrackArtist: UILabel! = nil
 	// Album name
-	@IBOutlet private var lblAlbumName: UILabel! = nil
+	private var lblAlbumName: UILabel! = nil
 	// Play/Pause button
-	@IBOutlet private var btnPlay: UIButton! = nil
+	private var btnPlay: UIButton! = nil
 	// Next button
-	@IBOutlet private var btnNext: UIButton! = nil
+	private var btnNext: UIButton! = nil
 	// Previous button
-	@IBOutlet private var btnPrevious: UIButton! = nil
+	private var btnPrevious: UIButton! = nil
 	// Random button
-	@IBOutlet private var btnRandom: UIButton! = nil
+	private var btnRandom: UIButton! = nil
 	// Repeat button
-	@IBOutlet private var btnRepeat: UIButton! = nil
-	// Song technical info button
-	@IBOutlet private var btnStats: UIButton! = nil
+	private var btnRepeat: UIButton! = nil
 	// Progress bar
-	@IBOutlet private var sliderPosition: UISlider! = nil
+	private var sliderPosition: UISlider! = nil
 	// Track title
-	@IBOutlet private var lblElapsedDuration: UILabel! = nil
+	private var lblElapsedDuration: UILabel! = nil
 	// Track artist name
-	@IBOutlet private var lblRemainingDuration: UILabel! = nil
+	private var lblRemainingDuration: UILabel! = nil
 	// Bit depth & samplerate
-	@IBOutlet private var lblTrackInformation: UILabel! = nil
+	private var lblTrackInformation: UILabel! = nil
 	// Volume control
-	@IBOutlet private var sliderVolume: UISlider! = nil
+	private var sliderVolume: UISlider! = nil
 	// Low volume image
-	@IBOutlet private var btnVolumeLo: UIButton! = nil
+	private var btnVolumeLo: UIButton! = nil
 	// High volume image
-	@IBOutlet private var btnVolumeHi: UIButton! = nil
+	private var btnVolumeHi: UIButton! = nil
 	// Album tracks view
-	@IBOutlet private var trackListView: TracksListTableView! = nil
+	private var trackListView: TracksListTableView! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
+		// Blurred background
+		self.view = UIImageView(frame: self.view.bounds)
+		self.view.isUserInteractionEnabled = true
+		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+		self.blurEffectView.frame = self.view.bounds
+		self.view.addSubview(blurEffectView)
+
+		let statusHeight: CGFloat
+		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
+		{
+			statusHeight = top < 20 ? 20 : top
+		}
+		else
+		{
+			statusHeight = 20
+		}
+
+		// Track title
+		let vev_title = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_title.frame = CGRect(0, statusHeight, self.view.width, 20)
+		lblTrackTitle = AutoScrollLabel(frame: vev_title.bounds)
+		lblTrackTitle.font = UIFont.systemFont(ofSize: 15, weight: .bold)
+		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblTrackTitle.textAlignment = .center
+		vev_title.contentView.addSubview(lblTrackTitle)
+		self.blurEffectView.contentView.addSubview(vev_title)
+
+		// Track artist
+		let vev_artist = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_artist.frame = CGRect(0, vev_title.bottom, self.view.width, 20)
+		lblTrackArtist = UILabel(frame: vev_artist.bounds)
+		lblTrackArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+		lblTrackArtist.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblTrackArtist.textAlignment = .center
+		vev_artist.contentView.addSubview(lblTrackArtist)
+		self.blurEffectView.contentView.addSubview(vev_artist)
+
+		// Album
+		let vev_album = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_album.frame = CGRect(0, vev_artist.bottom, self.view.width, 20)
+		lblAlbumName = UILabel(frame: vev_album.bounds)
+		lblAlbumName.font = UIFont.systemFont(ofSize: 13, weight: .light)
+		lblAlbumName.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblAlbumName.textAlignment = .center
+		vev_album.contentView.addSubview(lblAlbumName)
+		self.blurEffectView.contentView.addSubview(vev_album)
+
+		// Track list view
+		let theight = self.view.width - 64
+		let tframe = CGRect(32, vev_album.bottom + 20, theight, theight)
+		trackListView = TracksListTableView(frame: tframe, style: .plain)
 		trackListView.delegate = self
+		self.blurEffectView.contentView.addSubview(trackListView)
+
+		// Cover
+		coverView = InteractableImageView(frame: tframe)
+		coverView.delegate = self
+		self.blurEffectView.contentView.addSubview(coverView)
+
+		// Elapsed label
+		let vev_elapsed = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_elapsed.frame = CGRect(coverView.left, coverView.bottom + 4, 40, 16)
+		lblElapsedDuration = UILabel(frame: vev_elapsed.bounds)
+		lblElapsedDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+		lblElapsedDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblElapsedDuration.textAlignment = .left
+		vev_elapsed.contentView.addSubview(lblElapsedDuration)
+		self.blurEffectView.contentView.addSubview(vev_elapsed)
+
+		// Remaining label
+		let vev_remaining = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_remaining.frame = CGRect(self.view.width - 32 - 40, coverView.bottom + 4, 40, 16)
+		lblRemainingDuration = UILabel(frame: vev_remaining.bounds)
+		lblRemainingDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+		lblRemainingDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblRemainingDuration.textAlignment = .right
+		vev_remaining.contentView.addSubview(lblRemainingDuration)
+		self.blurEffectView.contentView.addSubview(vev_remaining)
 
 		// Slider track position
+		sliderPosition = UISlider(frame: CGRect(32, vev_remaining.bottom, tframe.width, 31))
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
+		self.blurEffectView.contentView.addSubview(sliderPosition)
 
-		// Slider volume
-		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
-		btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
-		btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
-		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
-		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
-
-		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
-
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
-		btnNext.addTarget(PlayerController.shared, action: #selector(PlayerController.requestNextTrack), for: .touchUpInside)
-
+		// Previous button
+		btnPrevious = UIButton(frame: CGRect(32, sliderPosition.bottom + 16, 48, 48))
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
 		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
+		self.blurEffectView.contentView.addSubview(btnPrevious)
 
+		// Play/Pause button
+		btnPlay = UIButton(frame: CGRect((self.view.width - 48) / 2, sliderPosition.bottom + 16, 48, 48))
+		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
+		self.blurEffectView.contentView.addSubview(btnPlay)
+
+		// Next button
+		btnNext = UIButton(frame: CGRect(self.view.width - 48 - 32, sliderPosition.bottom + 16, 48, 48))
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		btnNext.addTarget(PlayerController.shared, action: #selector(PlayerController.requestNextTrack), for: .touchUpInside)
+		self.blurEffectView.contentView.addSubview(btnNext)
+
+		// Vol- button
+		let vev_volm = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_volm.frame = CGRect(32, btnPrevious.bottom + 12, 18, 18)
+		btnVolumeLo = UIButton(frame: vev_volm.bounds)
+		btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		vev_volm.contentView.addSubview(btnVolumeLo)
+		self.blurEffectView.contentView.addSubview(vev_volm)
+
+		// Vol+ button
+		let vev_volp = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
+		vev_volp.frame = CGRect(self.view.width - 32 - 18,  btnNext.bottom + 12, 18, 18)
+		btnVolumeHi = UIButton(frame: vev_volp.bounds)
+		btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1)), for: .highlighted)
+		vev_volp.contentView.addSubview(btnVolumeHi)
+		self.blurEffectView.contentView.addSubview(vev_volp)
+
+		// Slider volume
+		sliderVolume = UISlider(frame: CGRect(32, vev_volp.bottom + 2, tframe.width, 31))
+		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
+		self.blurEffectView.contentView.addSubview(sliderVolume)
+
+		// Repeat button
 		let loop = Settings.shared.bool(forKey: .mpd_repeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
+		btnRepeat = UIButton(frame: CGRect(32, self.view.height - 44, 44, 44))
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
+		self.blurEffectView.contentView.addSubview(btnRepeat)
 
+		// Random button
 		let random = Settings.shared.bool(forKey: .mpd_shuffle)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
+		btnRandom = UIButton(frame: CGRect(self.view.width - 44 - 32, self.view.height - 44, 44, 44))
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
+		self.blurEffectView.contentView.addSubview(btnRandom)
 
-		let imageStats = #imageLiteral(resourceName: "btn-stats")
-		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 0.004859850742, green: 0.09608627111, blue: 0.5749928951, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .highlighted)
-		btnStats.setImage(imageStats.tinted(withColor: #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .selected)
-		btnStats.addTarget(self, action: #selector(toggleStats(_:)), for: .touchUpInside)
-		btnStats.accessibilityLabel = NYXLocalizedString("lbl_show_songs_stats")
-
-		coverView.delegate = self
 		// Useless motion effect
 		var motionEffect = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
 		motionEffect.minimumRelativeValue = 20.0
@@ -106,10 +207,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		motionEffect.minimumRelativeValue = 20.0
 		motionEffect.maximumRelativeValue = -20.0
 		coverView.addMotionEffect(motionEffect)
-
-		lblTrackTitle.font = UIFont(name: "GillSans-Bold", size: 15.0)
-		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		lblTrackTitle.textAlignment = .center
 
 		// Single tap, two fingers
 		let singleTapWith2Fingers1 = UITapGestureRecognizer()
@@ -203,21 +300,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		NotificationCenter.default.removeObserver(self, name: .playerStatusChanged, object: nil)
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		return .portrait
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
-	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
-	{
-		return .portrait
-	}
-
 	// MARK: - InteractableImageViewDelegate
 	func didTap()
 	{
@@ -298,17 +380,6 @@ final class PlayerVC : UIViewController, InteractableImageViewDelegate
 		Settings.shared.set(loop, forKey: .mpd_repeat)
 
 		PlayerController.shared.setRepeat(loop)
-	}
-
-	@objc func toggleStats(_ sender: Any?)
-	{
-		if lblTrackInformation.isHidden == false
-		{
-			lblTrackInformation.isHidden = true
-			return
-		}
-
-		self.updateCurrentTrackInformation()
 	}
 
 	@objc func changeTrackPositionAction(_ sender: UISlider?)

@@ -175,7 +175,7 @@ final class MiniPlayerView : UIView
 		{
 			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
 			//let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
-			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.classForCoder()], from: sizeAsData) as? NSValue
+			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)

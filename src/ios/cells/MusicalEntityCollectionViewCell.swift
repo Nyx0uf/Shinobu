@@ -101,7 +101,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError()
+		fatalError("init(coder:) has not been implemented")
 	}
 
 	override func layoutSubviews()

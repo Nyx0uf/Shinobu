@@ -212,40 +212,6 @@ final class LibraryVC : UIViewController, CenterViewController
 		return .lightContent
 	}
 
-	/*override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-	{
-		super.prepare(for: segue, sender: sender)
-		
-		if segue.identifier == "root-albums-to-detail-album"
-		{
-			let row = collectionView.indexPathsForSelectedItems![0].row
-			let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
-			let vc = segue.destination as! AlbumDetailVC
-			vc.album = album
-		}
-		else if segue.identifier == "root-genres-to-artists"
-		{
-			let row = collectionView.indexPathsForSelectedItems![0].row
-			let genre = searching ? collectionView.searchResults[row] as! Genre : MusicDataSource.shared.genres[row]
-			let vc = segue.destination as! ArtistsVC
-			vc.genre = genre
-		}
-		else if segue.identifier == "root-artists-to-albums"
-		{
-			let row = collectionView.indexPathsForSelectedItems![0].row
-			let artist = searching ? collectionView.searchResults[row] as! Artist : (_displayType == .artists ? MusicDataSource.shared.artists[row] : MusicDataSource.shared.albumsartists[row])
-			let vc = segue.destination as! AlbumsVC
-			vc.artist = artist
-		}
-		else if segue.identifier == "root-playlists-to-detail-playlist"
-		{
-			let row = collectionView.indexPathsForSelectedItems![0].row
-			let playlist = searching ? collectionView.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
-			let vc = segue.destination as! PlaylistDetailVC
-			vc.playlist = playlist
-		}
-	}*/
-
 	// MARK: - Gestures
 	@objc func doubleTap(_ gest: UITapGestureRecognizer)
 	{
@@ -757,7 +723,11 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
-		self.navigationController?.performSegue(withIdentifier: "root-to-player", sender: self.navigationController)
+		//self.navigationController?.performSegue(withIdentifier: "root-to-player", sender: self.navigationController)
+		let vc = PlayerVC()
+		vc.transitioningDelegate = self.navigationController as! NYXNavigationController
+		vc.modalPresentationStyle = .custom
+		self.navigationController?.present(vc, animated: true, completion: nil)
 	}
 }
 
@@ -947,7 +917,7 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 		return c
 	}
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+	/*override func prepare(for segue: UIStoryboardSegue, sender: Any?)
 	{
 		if segue.identifier == "root-to-player"
 		{
@@ -955,7 +925,7 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 			vc.transitioningDelegate = self
 			vc.modalPresentationStyle = .custom
 		}
-	}
+	}*/
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
