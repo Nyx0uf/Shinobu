@@ -173,7 +173,6 @@ final class PlaylistDetailVC : NYXViewController
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
 
 		prefs.set(random, forKey: .mpd_shuffle)
-		prefs.synchronize()
 
 		PlayerController.shared.setRandom(random)
 	}
@@ -187,7 +186,6 @@ final class PlaylistDetailVC : NYXViewController
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
 
 		prefs.set(loop, forKey: .mpd_repeat)
-		prefs.synchronize()
 
 		PlayerController.shared.setRepeat(loop)
 	}

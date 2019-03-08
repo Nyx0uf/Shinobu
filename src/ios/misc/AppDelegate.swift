@@ -17,9 +17,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
+		// Global appearance
 		self._setAppearances()
 
+		// Init settings
 		Settings.shared.initialize()
+
+		// URL cache
+		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
 		self.containerVC = ContainerVC()
 		self.window = UIWindow(frame: UIScreen.main.bounds)

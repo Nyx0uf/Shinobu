@@ -314,27 +314,6 @@ final class MusicDataSource
 		}
 	}
 
-	func getStats(_ callback: @escaping ([String : String]) -> Void)
-	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
-
-		_queue.async { [weak self] in
-			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getStats()
-			if result.succeeded == false
-			{
-
-			}
-			else
-			{
-				callback(result.entity!)
-			}
-		}
-	}
-
 	func updateDatabase(_ callback: @escaping (Bool) -> Void)
 	{
 		if _connection == nil || _connection.isConnected == false

@@ -9,7 +9,7 @@ private struct ServerData
 	let selected: Bool
 }
 
-final class ServerListTVC : NYXTableViewController, CenterViewController
+final class ServersListVC : NYXTableViewController, CenterViewController
 {
 	// MARK: - Public properties
 	// List of servers
@@ -21,7 +21,7 @@ final class ServerListTVC : NYXTableViewController, CenterViewController
 	// Tableview cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.server"
 	// Add/Edit server VC
-	private var addServerVC: ServerVC? = nil
+	private var addServerVC: ServerAddVC? = nil
 	
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -78,7 +78,7 @@ final class ServerListTVC : NYXTableViewController, CenterViewController
 	{
 		if addServerVC == nil
 		{
-			addServerVC = ServerVC()
+			addServerVC = ServerAddVC()
 		}
 
 		if let vc = addServerVC
@@ -93,11 +93,16 @@ final class ServerListTVC : NYXTableViewController, CenterViewController
 		guard let s = sender else { return }
 		ServersManager.shared.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
 		self.refreshServers()
+
+		MusicDataSource.shared.deinitialize()
+		MusicDataSource.shared.server = nil
+		PlayerController.shared.deinitialize()
+		PlayerController.shared.server = nil
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension ServerListTVC
+extension ServersListVC
 {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -121,7 +126,7 @@ extension ServerListTVC
 }
 
 // MARK: - UITableViewDelegate
-extension ServerListTVC
+extension ServersListVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{

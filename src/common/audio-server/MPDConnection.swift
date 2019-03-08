@@ -871,33 +871,7 @@ final class MPDConnection
 		}
 	}
 
-	// MARK: - Stats
-	func getStats() -> ActionResult<[String : String]>
-	{
-		guard let ret = mpd_run_stats(_connection) else
-		{
-			return ActionResult<[String : String]>(succeeded: false, message: getLastErrorMessageForConnection())
-		}
-
-		let nalbums = mpd_stats_get_number_of_albums(ret)
-		let nartists = mpd_stats_get_number_of_artists(ret)
-		let nsongs = mpd_stats_get_number_of_songs(ret)
-		let dbplaytime = mpd_stats_get_db_play_time(ret)
-		let mpduptime = mpd_stats_get_uptime(ret)
-		let mpdplaytime = mpd_stats_get_play_time(ret)
-		let mpddbupdate = mpd_stats_get_db_update_time(ret)
-
-		var entity = [String : String]()
-		entity["albums"] = String(nalbums)
-		entity["artists"] = String(nartists)
-		entity["songs"] = String(nsongs)
-		entity["dbplaytime"] = String(dbplaytime)
-		entity["mpduptime"] = String(mpduptime)
-		entity["mpdplaytime"] = String(mpdplaytime)
-		entity["mpddbupdate"] = String(mpddbupdate)
-		return ActionResult<[String : String]>(succeeded: true, entity: entity)
-	}
-
+	// Database
 	func updateDatabase() -> ActionResult<Void>
 	{
 		let ret = mpd_run_update(_connection, nil)

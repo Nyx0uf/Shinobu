@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class ArtistsVC : NYXViewController
+final class ArtistsListVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Collection View
@@ -87,7 +87,7 @@ final class ArtistsVC : NYXViewController
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension ArtistsVC : MusicalCollectionViewDelegate
+extension ArtistsListVC : MusicalCollectionViewDelegate
 {
 	func isSearching(actively: Bool) -> Bool
 	{
@@ -97,13 +97,13 @@ extension ArtistsVC : MusicalCollectionViewDelegate
 	func didSelectItem(indexPath: IndexPath)
 	{
 		let artist = collectionView.items[indexPath.row] as! Artist
-		let vc = AlbumsVC(artist: artist)
+		let vc = AlbumsListVC(artist: artist)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }
 
 // MARK: - Peek & Pop
-extension ArtistsVC
+extension ArtistsListVC
 {
 	override var previewActionItems: [UIPreviewActionItem]
 	{

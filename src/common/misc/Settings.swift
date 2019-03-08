@@ -38,12 +38,7 @@ final class Settings
 	// MARK: - Public
 	func initialize()
 	{
-		_registerDefaultPreferences()
-	}
-
-	func synchronize()
-	{
-		defaults.synchronize()
+		registerDefaultPreferences()
 	}
 
 	func bool(forKey: Settings.Key) -> Bool
@@ -97,7 +92,7 @@ final class Settings
 	}
 
 	// MARK: - Private
-	private func _registerDefaultPreferences()
+	private func registerDefaultPreferences()
 	{
 		do
 		{

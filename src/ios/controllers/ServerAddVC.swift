@@ -4,7 +4,7 @@ import UIKit
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class ServerVC : NYXTableViewController
+final class ServerAddVC : NYXTableViewController
 {
 	// MARK: - Private properties
 	// MPD Server name
@@ -26,9 +26,9 @@ final class ServerVC : NYXTableViewController
 	// MPD Server
 	public var selectedServer: ShinobuServer?
 	// Indicate that the keyboard is visible, flag
-	private var _keyboardVisible = false
+	private var keyboardVisible = false
 	// Zero conf VC
-	private var zeroConfVC: ZeroConfBrowserTVC!
+	private var zeroConfVC: ZeroConfBrowserVC?
 	// Cache size
 	private var cacheSize: Int = 0
 
@@ -97,7 +97,7 @@ final class ServerVC : NYXTableViewController
 		tfWEBCoverName.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
 		tfWEBCoverName.backgroundColor = Colors.background
 		tfWEBCoverName.autocapitalizationType = .none
-		tfWEBCoverName.attributedPlaceholder = NSAttributedString(string: "cover.jpg", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)])
+		tfWEBCoverName.text = "cover.jpg"
 
 		lblMPDOutput = UILabel()
 		lblMPDOutput.translatesAutoresizingMaskIntoConstraints = false
@@ -112,7 +112,7 @@ final class ServerVC : NYXTableViewController
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidHideNotification(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
-		//NotificationCenter.default.addObserver(self, selector: #selector(audioOutputConfigurationDidChangeNotification(_:)), name: .audioOutputConfigurationDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(audioOutputConfigurationDidChangeNotification(_:)), name: .audioOutputConfigurationDidChange, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -181,8 +181,10 @@ final class ServerVC : NYXTableViewController
 			}
 
 			ServersManager.shared.handleServer(self.selectedServer!)
+			cnn.disconnect()
+
+			self.updateOutputsLabel()
 		}
-		cnn.disconnect()
 
 		// Check web URL (optional)
 		if let strURL = tfWEBHostname.text , String.isNullOrWhiteSpace(strURL) == false
@@ -204,12 +206,27 @@ final class ServerVC : NYXTableViewController
 			let webServer = CoverServer(hostname: strURL, port: port, coverName: coverName)
 			selectedServer?.covers = webServer
 
-			ServersManager.shared.handleServer(selectedServer!)
+			if selectedServer != nil
+			{
+				ServersManager.shared.handleServer(selectedServer!)
+			}
+			else
+			{
+				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
+				let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
+				}
+				alertController.addAction(cancelAction)
+				present(alertController, animated: true, completion: nil)
+				return
+			}
 		}
 		else
 		{
-			selectedServer?.covers = nil
-			ServersManager.shared.handleServer(selectedServer!)
+			if selectedServer != nil
+			{
+				selectedServer?.covers = nil
+				ServersManager.shared.handleServer(selectedServer!)
+			}
 		}
 	}
 
@@ -217,18 +234,18 @@ final class ServerVC : NYXTableViewController
 	{
 		if zeroConfVC == nil
 		{
-			zeroConfVC = ZeroConfBrowserTVC()
+			zeroConfVC = ZeroConfBrowserVC()
 		}
-		zeroConfVC.delegate = self
-		zeroConfVC.selectedServer = selectedServer
-		let nvc = NYXNavigationController(rootViewController: zeroConfVC)
+		zeroConfVC?.delegate = self
+		zeroConfVC?.selectedServer = selectedServer
+		let nvc = NYXNavigationController(rootViewController: zeroConfVC!)
 		self.navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	// MARK: - Notifications
 	@objc func keyboardDidShowNotification(_ aNotification: Notification)
 	{
-		if _keyboardVisible
+		if keyboardVisible
 		{
 			return
 		}
@@ -245,12 +262,12 @@ final class ServerVC : NYXTableViewController
 
 		let keyboardFrame = view.convert(value.cgRectValue, from: nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height - keyboardFrame.height)
-		_keyboardVisible = true
+		keyboardVisible = true
 	}
 
 	@objc func keyboardDidHideNotification(_ aNotification: Notification)
 	{
-		if _keyboardVisible == false
+		if keyboardVisible == false
 		{
 			return
 		}
@@ -267,13 +284,13 @@ final class ServerVC : NYXTableViewController
 
 		let keyboardFrame = view.convert(value.cgRectValue, from: nil)
 		tableView.frame = CGRect(tableView.frame.origin, tableView.frame.width, tableView.frame.height + keyboardFrame.height)
-		_keyboardVisible = false
+		keyboardVisible = false
 	}
 
-	/*@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
+	@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
 	{
 		updateOutputsLabel()
-	}*/
+	}
 
 	// MARK: - Private
 	private func updateFields()
@@ -359,9 +376,15 @@ final class ServerVC : NYXTableViewController
 
 	private func updateOutputsLabel()
 	{
-		PlayerController.shared.getAvailableOutputs {
-			DispatchQueue.main.async {
-				let outputs = PlayerController.shared.outputs
+		guard let _ = self.selectedServer else { return }
+
+		let cnn = MPDConnection(self.selectedServer!.mpd)
+		if cnn.connect().succeeded
+		{
+			let result = cnn.getAvailableOutputs()
+			if result.succeeded && result.entity != nil
+			{
+				let outputs = result.entity!
 				if outputs.count == 0
 				{
 					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
@@ -377,12 +400,13 @@ final class ServerVC : NYXTableViewController
 				let x = text[..<text.index(text.endIndex, offsetBy: -2)]
 				self.lblMPDOutput.text = String(x)
 			}
+			cnn.disconnect()
 		}
 	}
 }
 
 // MARK: - 
-extension ServerVC : ZeroConfBrowserTVCDelegate
+extension ServerAddVC : ZeroConfBrowserVCDelegate
 {
 	func audioServerDidChange(with server: ShinobuServer)
 	{
@@ -392,7 +416,7 @@ extension ServerVC : ZeroConfBrowserTVCDelegate
 }
 
 // MARK: - UITableViewDataSource
-extension ServerVC
+extension ServerAddVC
 {
 	override func numberOfSections(in tableView: UITableView) -> Int
 	{
@@ -567,7 +591,7 @@ extension ServerVC
 }
 
 // MARK: - UITableViewDelegate
-extension ServerVC
+extension ServerAddVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -582,7 +606,9 @@ extension ServerVC
 				return
 			}
 
-			let vc = AudioOutputsTVC()
+			guard let server = selectedServer else { return }
+
+			let vc = AudioOutputsListVC(mpdServer: server.mpd)
 			vc.modalPresentationStyle = .popover
 			if let popController = vc.popoverPresentationController
 			{
@@ -590,6 +616,7 @@ extension ServerVC
 				popController.sourceRect = cell.bounds
 				popController.sourceView = cell
 				popController.delegate = self
+				popController.backgroundColor = Colors.backgroundAlt
 				self.present(vc, animated: true, completion: {
 				});
 			}
@@ -650,7 +677,7 @@ extension ServerVC
 }
 
 // MARK: - UITextFieldDelegate
-extension ServerVC : UITextFieldDelegate
+extension ServerAddVC : UITextFieldDelegate
 {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool
 	{
@@ -687,7 +714,7 @@ extension ServerVC : UITextFieldDelegate
 }
 
 // MARK: - 
-extension ServerVC : UIPopoverPresentationControllerDelegate
+extension ServerAddVC : UIPopoverPresentationControllerDelegate
 {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
 	{

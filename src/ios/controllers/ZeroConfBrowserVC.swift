@@ -1,17 +1,17 @@
 import UIKit
 
 
-protocol ZeroConfBrowserTVCDelegate : class
+protocol ZeroConfBrowserVCDelegate : class
 {
 	func audioServerDidChange(with server: ShinobuServer)
 }
 
 
-final class ZeroConfBrowserTVC : NYXTableViewController
+final class ZeroConfBrowserVC : NYXTableViewController
 {
 	// MARK: - Public properties
 	// Delegate
-	weak var delegate: ZeroConfBrowserTVCDelegate? = nil
+	weak var delegate: ZeroConfBrowserVCDelegate? = nil
 	// Currently selectd server on the add vc
 	var selectedServer: ShinobuServer? = nil
 
@@ -60,7 +60,7 @@ final class ZeroConfBrowserTVC : NYXTableViewController
 }
 
 // MARK: - UITableViewDataSource
-extension ZeroConfBrowserTVC
+extension ZeroConfBrowserVC
 {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -104,7 +104,7 @@ extension ZeroConfBrowserTVC
 }
 
 // MARK: - UITableViewDelegate
-extension ZeroConfBrowserTVC
+extension ZeroConfBrowserVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -128,7 +128,7 @@ extension ZeroConfBrowserTVC
 	}
 }
 
-extension ZeroConfBrowserTVC : ZeroConfExplorerDelegate
+extension ZeroConfBrowserVC : ZeroConfExplorerDelegate
 {
 	internal func didFindServer(_ server: ShinobuServer)
 	{

@@ -53,14 +53,6 @@ final class MiniPlayerView : UIView
 		super.init(frame: frame)
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 
-		// Top shadow
-//		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, 5.0, frame.width + 4.0, 4.0)).cgPath
-//		self.layer.shadowRadius = 3.0
-//		self.layer.shadowOpacity = 1.0
-//		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-//		self.layer.masksToBounds = false
-//		self.isAccessibilityElement = false
-
 		// Blur background
 		let blurEffect = UIBlurEffect(style: .light)
 		self.blurEffectView = UIVisualEffectView(effect: blurEffect)
@@ -174,7 +166,6 @@ final class MiniPlayerView : UIView
 		else
 		{
 			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
-			//let cropSize = NSKeyedUnarchiver.unarchiveObject(with: sizeAsData) as! NSValue
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{

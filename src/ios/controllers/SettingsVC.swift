@@ -32,8 +32,11 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 		tableView.tableFooterView = UIView()
 
 		swShake = UISwitch()
+		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
 		swFuzzySearch = UISwitch()
+		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
 		swLogging = UISwitch()
+		swLogging.addTarget(self, action: #selector(toggleLogging(_:)), for: .valueChanged)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -44,19 +47,19 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 	}
 
 	// MARK: - IBActions
-	func toggleShakeToPlay(_ sender: Any?)
+	@objc func toggleShakeToPlay(_ sender: Any?)
 	{
 		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
 	}
 
-	func toggleFuzzySearch(_ sender: Any?)
+	@objc func toggleFuzzySearch(_ sender: Any?)
 	{
 		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
 	}
 
-	func toggleLogging(_ sender: Any?)
+	@objc func toggleLogging(_ sender: Any?)
 	{
 		let logging = Settings.shared.bool(forKey: .pref_enableLogging)
 		Settings.shared.set(!logging, forKey: .pref_enableLogging)

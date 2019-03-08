@@ -202,7 +202,7 @@ extension AlbumDetailVC : UITableViewDelegate
 						return
 					}
 
-					let vc = PlaylistsTVC()
+					let vc = PlaylistsAddVC()
 					let tvc = NYXNavigationController(rootViewController: vc)
 					vc.trackToAdd = tracks[indexPath.row]
 					tvc.modalPresentationStyle = .popover
@@ -212,6 +212,7 @@ extension AlbumDetailVC : UITableViewDelegate
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
 						popController.delegate = self
+						popController.backgroundColor = Colors.backgroundAlt
 						tvc.preferredContentSize = CGSize(300, 200)
 						self.present(tvc, animated: true, completion: {
 						});

@@ -18,7 +18,6 @@
 		4358B00021EB4242009A3BBF /* ContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFFF21EB4242009A3BBF /* ContainerVC.swift */; };
 		4358B00221EB4274009A3BBF /* SideMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00121EB4274009A3BBF /* SideMenuVC.swift */; };
 		4358B01B21EB42B4009A3BBF /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
-		4358B01C21EB42B4009A3BBF /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00621EB42B4009A3BBF /* Array+Extensions.swift */; };
 		4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */; };
 		4358B01E21EB42B4009A3BBF /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */; };
 		4358B01F21EB42B4009A3BBF /* CGSize+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00921EB42B4009A3BBF /* CGSize+Extensions.swift */; };
@@ -59,16 +58,16 @@
 		4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05B21EB473C009A3BBF /* MenuViewTableViewCell.swift */; };
 		4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */; };
 		4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05D21EB473C009A3BBF /* TrackTableViewCell.swift */; };
-		4358B06E21EB47A8009A3BBF /* AlbumsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06321EB47A7009A3BBF /* AlbumsVC.swift */; };
-		4358B06F21EB47A8009A3BBF /* AudioOutputsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06421EB47A7009A3BBF /* AudioOutputsTVC.swift */; };
+		4358B06E21EB47A8009A3BBF /* AlbumsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */; };
+		4358B06F21EB47A8009A3BBF /* AudioOutputsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */; };
 		4358B07021EB47A8009A3BBF /* AlbumDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */; };
-		4358B07121EB47A8009A3BBF /* PlaylistsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06621EB47A7009A3BBF /* PlaylistsTVC.swift */; };
-		4358B07221EB47A8009A3BBF /* ServerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06721EB47A7009A3BBF /* ServerVC.swift */; };
+		4358B07121EB47A8009A3BBF /* PlaylistsAddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06621EB47A7009A3BBF /* PlaylistsAddVC.swift */; };
+		4358B07221EB47A8009A3BBF /* ServerAddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06721EB47A7009A3BBF /* ServerAddVC.swift */; };
 		4358B07321EB47A8009A3BBF /* LibraryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06821EB47A7009A3BBF /* LibraryVC.swift */; };
 		4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06921EB47A7009A3BBF /* SettingsVC.swift */; };
-		4358B07521EB47A8009A3BBF /* ArtistsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06A21EB47A7009A3BBF /* ArtistsVC.swift */; };
+		4358B07521EB47A8009A3BBF /* ArtistsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */; };
 		4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06B21EB47A8009A3BBF /* PlayerVC.swift */; };
-		4358B07721EB47A8009A3BBF /* ZeroConfBrowserTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */; };
+		4358B07721EB47A8009A3BBF /* ZeroConfBrowserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */; };
 		4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */; };
 		4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B07A21EB47C2009A3BBF /* AutoScrollLabel.swift */; };
 		4358B08421EB47C2009A3BBF /* TypeChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B07B21EB47C2009A3BBF /* TypeChoiceView.swift */; };
@@ -79,7 +78,7 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
-		43DBD7FC22203501009B3B68 /* ServerListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServerListVC.swift */; };
+		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD7FE22203977009B3B68 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FD22203977009B3B68 /* Colors.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
 /* End PBXBuildFile section */
@@ -147,7 +146,6 @@
 		4358AFFF21EB4242009A3BBF /* ContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerVC.swift; sourceTree = "<group>"; };
 		4358B00121EB4274009A3BBF /* SideMenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuVC.swift; sourceTree = "<group>"; };
 		4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; };
-		4358B00621EB42B4009A3BBF /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		4358B00921EB42B4009A3BBF /* CGSize+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+Extensions.swift"; sourceTree = "<group>"; };
@@ -188,16 +186,16 @@
 		4358B05B21EB473C009A3BBF /* MenuViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewTableViewCell.swift; sourceTree = "<group>"; };
 		4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntityCollectionViewCell.swift; sourceTree = "<group>"; };
 		4358B05D21EB473C009A3BBF /* TrackTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell.swift; sourceTree = "<group>"; };
-		4358B06321EB47A7009A3BBF /* AlbumsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsVC.swift; sourceTree = "<group>"; };
-		4358B06421EB47A7009A3BBF /* AudioOutputsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioOutputsTVC.swift; sourceTree = "<group>"; };
+		4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListVC.swift; sourceTree = "<group>"; };
+		4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioOutputsListVC.swift; sourceTree = "<group>"; };
 		4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailVC.swift; sourceTree = "<group>"; };
-		4358B06621EB47A7009A3BBF /* PlaylistsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistsTVC.swift; sourceTree = "<group>"; };
-		4358B06721EB47A7009A3BBF /* ServerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerVC.swift; sourceTree = "<group>"; };
+		4358B06621EB47A7009A3BBF /* PlaylistsAddVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistsAddVC.swift; sourceTree = "<group>"; };
+		4358B06721EB47A7009A3BBF /* ServerAddVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerAddVC.swift; sourceTree = "<group>"; };
 		4358B06821EB47A7009A3BBF /* LibraryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryVC.swift; sourceTree = "<group>"; };
 		4358B06921EB47A7009A3BBF /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
-		4358B06A21EB47A7009A3BBF /* ArtistsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistsVC.swift; sourceTree = "<group>"; };
+		4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistsListVC.swift; sourceTree = "<group>"; };
 		4358B06B21EB47A8009A3BBF /* PlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerVC.swift; sourceTree = "<group>"; };
-		4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfBrowserTVC.swift; sourceTree = "<group>"; };
+		4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfBrowserVC.swift; sourceTree = "<group>"; };
 		4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC.swift; sourceTree = "<group>"; };
 		4358B07A21EB47C2009A3BBF /* AutoScrollLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoScrollLabel.swift; sourceTree = "<group>"; };
 		4358B07B21EB47C2009A3BBF /* TypeChoiceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeChoiceView.swift; sourceTree = "<group>"; };
@@ -209,7 +207,7 @@
 		4358B08221EB47C2009A3BBF /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		43DBD7FB22203501009B3B68 /* ServerListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerListVC.swift; sourceTree = "<group>"; };
+		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FD22203977009B3B68 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServer.swift; sourceTree = "<group>"; };
 		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -368,21 +366,21 @@
 		4358AFF721EB41E2009A3BBF /* controllers */ = {
 			isa = PBXGroup;
 			children = (
-				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
-				4358B06321EB47A7009A3BBF /* AlbumsVC.swift */,
-				4358B06A21EB47A7009A3BBF /* ArtistsVC.swift */,
-				4358B06421EB47A7009A3BBF /* AudioOutputsTVC.swift */,
+				4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */,
+				4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */,
+				4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */,
 				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
+				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
 				4358B06B21EB47A8009A3BBF /* PlayerVC.swift */,
 				4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */,
-				4358B06621EB47A7009A3BBF /* PlaylistsTVC.swift */,
-				43DBD7FB22203501009B3B68 /* ServerListVC.swift */,
-				4358B06721EB47A7009A3BBF /* ServerVC.swift */,
+				4358B06621EB47A7009A3BBF /* PlaylistsAddVC.swift */,
+				4358B06721EB47A7009A3BBF /* ServerAddVC.swift */,
+				43DBD7FB22203501009B3B68 /* ServersListVC.swift */,
 				4358B06921EB47A7009A3BBF /* SettingsVC.swift */,
 				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
-				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserTVC.swift */,
+				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -403,7 +401,6 @@
 			isa = PBXGroup;
 			children = (
 				4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */,
-				4358B00621EB42B4009A3BBF /* Array+Extensions.swift */,
 				4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */,
 				4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */,
 				4358B00921EB42B4009A3BBF /* CGSize+Extensions.swift */,
@@ -595,20 +592,20 @@
 				4358B03721EB44C5009A3BBF /* Genre.swift in Sources */,
 				4358B00021EB4242009A3BBF /* ContainerVC.swift in Sources */,
 				4358B03921EB44C5009A3BBF /* Album.swift in Sources */,
-				4358B06F21EB47A8009A3BBF /* AudioOutputsTVC.swift in Sources */,
+				4358B06F21EB47A8009A3BBF /* AudioOutputsListVC.swift in Sources */,
 				4358B08621EB47C2009A3BBF /* AlbumHeaderView.swift in Sources */,
 				4358B02021EB42B4009A3BBF /* String+Extensions.swift in Sources */,
 				4358B05621EB44E2009A3BBF /* OperationManager.swift in Sources */,
 				4358B07021EB47A8009A3BBF /* AlbumDetailVC.swift in Sources */,
-				4358B06E21EB47A8009A3BBF /* AlbumsVC.swift in Sources */,
+				4358B06E21EB47A8009A3BBF /* AlbumsListVC.swift in Sources */,
 				4358B08521EB47C2009A3BBF /* TracksListTableView.swift in Sources */,
 				4358B02521EB42B4009A3BBF /* CGPoint+Extensions.swift in Sources */,
 				4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */,
 				4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */,
 				4358B05321EB44E2009A3BBF /* CoreImageUtilities.swift in Sources */,
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
-				43DBD7FC22203501009B3B68 /* ServerListVC.swift in Sources */,
-				4358B07721EB47A8009A3BBF /* ZeroConfBrowserTVC.swift in Sources */,
+				43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */,
+				4358B07721EB47A8009A3BBF /* ZeroConfBrowserVC.swift in Sources */,
 				4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */,
 				4358B02421EB42B4009A3BBF /* FileManager+Extensions.swift in Sources */,
 				4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */,
@@ -619,7 +616,7 @@
 				4358B08421EB47C2009A3BBF /* TypeChoiceView.swift in Sources */,
 				4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */,
 				4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */,
-				4358B07121EB47A8009A3BBF /* PlaylistsTVC.swift in Sources */,
+				4358B07121EB47A8009A3BBF /* PlaylistsAddVC.swift in Sources */,
 				4358AFF921EB41E2009A3BBF /* NYXNavigationController.swift in Sources */,
 				4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */,
 				4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */,
@@ -631,10 +628,9 @@
 				4358B05521EB44E2009A3BBF /* Settings.swift in Sources */,
 				4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */,
 				4358B02D21EB42B4009A3BBF /* MusicDataSource.swift in Sources */,
-				4358B07521EB47A8009A3BBF /* ArtistsVC.swift in Sources */,
-				4358B01C21EB42B4009A3BBF /* Array+Extensions.swift in Sources */,
+				4358B07521EB47A8009A3BBF /* ArtistsListVC.swift in Sources */,
 				4358B03A21EB44C5009A3BBF /* Artist.swift in Sources */,
-				4358B07221EB47A8009A3BBF /* ServerVC.swift in Sources */,
+				4358B07221EB47A8009A3BBF /* ServerAddVC.swift in Sources */,
 				4358B05421EB44E2009A3BBF /* CountedObject.swift in Sources */,
 				4358B08721EB47C2009A3BBF /* MiniPlayerView.swift in Sources */,
 				4358B02621EB42B4009A3BBF /* NotificationCenter+Extensions.swift in Sources */,

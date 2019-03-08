@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class AlbumsVC : NYXViewController
+final class AlbumsListVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Collection View
@@ -172,7 +172,7 @@ final class AlbumsVC : NYXViewController
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension AlbumsVC : MusicalCollectionViewDelegate
+extension AlbumsListVC : MusicalCollectionViewDelegate
 {
 	func isSearching(actively: Bool) -> Bool
 	{
@@ -188,7 +188,7 @@ extension AlbumsVC : MusicalCollectionViewDelegate
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension AlbumsVC : UIViewControllerPreviewingDelegate
+extension AlbumsListVC : UIViewControllerPreviewingDelegate
 {
 	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
 	{
@@ -214,7 +214,7 @@ extension AlbumsVC : UIViewControllerPreviewingDelegate
 }
 
 // MARK: - Peek & Pop
-extension AlbumsVC
+extension AlbumsListVC
 {
 	override var previewActionItems: [UIPreviewActionItem]
 	{

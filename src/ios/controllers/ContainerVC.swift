@@ -129,7 +129,7 @@ final class ContainerVC : UIViewController
 			case .server:
 				if serverViewController == nil
 				{
-					let vc = ServerListTVC()
+					let vc = ServersListVC()
 					let nvc = NYXNavigationController(rootViewController: vc)
 					serverViewController = nvc
 				}
@@ -239,8 +239,8 @@ extension ContainerVC : SideMenuVCDelegate
 		{
 			selectedVCType = selectedVC
 			self._updateCenterVC()
-			self.toggleMenu()
 		}
+		self.toggleMenu()
 	}
 
 	func getSelectedController() -> SelectedVCType

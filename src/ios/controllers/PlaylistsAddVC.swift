@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class PlaylistsTVC : NYXTableViewController
+final class PlaylistsAddVC : NYXTableViewController
 {
 	// List of artists
 	var playlists = [Playlist]()
@@ -25,14 +25,16 @@ final class PlaylistsTVC : NYXTableViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
 		self.navigationController?.navigationBar.isTranslucent = false
-		self.navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-		self.navigationController?.navigationBar.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-		self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)]
-		self.navigationItem.title = NYXLocalizedString("lbl_playlists")
+		self.navigationController?.navigationBar.barTintColor = Colors.backgroundAlt
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = Colors.background
+		tableView.backgroundColor = Colors.backgroundAlt
+
+		titleView.text = NYXLocalizedString("lbl_playlists")
 
 		// Create playlist button
 		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -105,7 +107,7 @@ final class PlaylistsTVC : NYXTableViewController
 }
 
 // MARK: - UITableViewDataSource
-extension PlaylistsTVC
+extension PlaylistsAddVC
 {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -115,10 +117,13 @@ extension PlaylistsTVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+		cell.backgroundColor = Colors.backgroundAlt
+		cell.contentView.backgroundColor = Colors.backgroundAlt
 
 		let playlist = playlists[indexPath.row]
 
 		cell.textLabel?.text = playlist.name
+		cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = playlist.name
 
@@ -127,7 +132,7 @@ extension PlaylistsTVC
 }
 
 // MARK: - UITableViewDelegate
-extension PlaylistsTVC
+extension PlaylistsAddVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{

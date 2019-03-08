@@ -140,7 +140,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			}
 			else
 			{
-				Logger.shared.log(type: .debug, message: "No MPD server registered yet")
+				Logger.shared.log(type: .debug, message: "No MPD server registered or enabled yet")
 				containerDelegate?.showServerVC()
 			}
 		}
@@ -723,7 +723,6 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
-		//self.navigationController?.performSegue(withIdentifier: "root-to-player", sender: self.navigationController)
 		let vc = PlayerVC()
 		vc.transitioningDelegate = self.navigationController as! NYXNavigationController
 		vc.modalPresentationStyle = .custom
@@ -757,15 +756,15 @@ extension LibraryVC : MusicalCollectionViewDelegate
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .artists:
 				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-				let vc = AlbumsVC(artist: artist)
+				let vc = AlbumsListVC(artist: artist)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .albumsartists:
 				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
-				let vc = AlbumsVC(artist: artist)
+				let vc = AlbumsListVC(artist: artist)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .genres:
 				let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-				let vc = ArtistsVC(genre: genre)
+				let vc = ArtistsListVC(genre: genre)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .playlists:
 				let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
@@ -885,7 +884,7 @@ extension LibraryVC
 				return
 			}
 
-			let randomAlbum = MusicDataSource.shared.albums.randomItem()
+			guard let randomAlbum = MusicDataSource.shared.albums.randomElement() else { return }
 			if randomAlbum.tracks == nil
 			{
 				MusicDataSource.shared.getTracksForAlbums([randomAlbum]) {
@@ -916,16 +915,6 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 		c.presenting = false
 		return c
 	}
-
-	/*override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-	{
-		if segue.identifier == "root-to-player"
-		{
-			let vc = segue.destination as! PlayerVC
-			vc.transitioningDelegate = self
-			vc.modalPresentationStyle = .custom
-		}
-	}*/
 }
 
 // MARK: - UIViewControllerPreviewingDelegate

@@ -63,9 +63,13 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			statusHeight = 20
 		}
 
+		let width = UIScreen.main.bounds.width
+		let margin = CGFloat(32)
+		let heightTopLabels = CGFloat(20)
+
 		// Track title
 		let vev_title = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_title.frame = CGRect(0, statusHeight, self.view.width, 20)
+		vev_title.frame = CGRect(0, statusHeight, width, heightTopLabels)
 		lblTrackTitle = AutoScrollLabel(frame: vev_title.bounds)
 		lblTrackTitle.font = UIFont.systemFont(ofSize: 15, weight: .bold)
 		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -75,7 +79,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		// Track artist
 		let vev_artist = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_artist.frame = CGRect(0, vev_title.bottom, self.view.width, 20)
+		vev_artist.frame = CGRect(0, vev_title.bottom, width, heightTopLabels)
 		lblTrackArtist = UILabel(frame: vev_artist.bounds)
 		lblTrackArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
 		lblTrackArtist.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -85,7 +89,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		// Album
 		let vev_album = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_album.frame = CGRect(0, vev_artist.bottom, self.view.width, 20)
+		vev_album.frame = CGRect(0, vev_artist.bottom, width, heightTopLabels)
 		lblAlbumName = UILabel(frame: vev_album.bounds)
 		lblAlbumName.font = UIFont.systemFont(ofSize: 13, weight: .light)
 		lblAlbumName.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -94,8 +98,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(vev_album)
 
 		// Track list view
-		let theight = self.view.width - 64
-		let tframe = CGRect(32, vev_album.bottom + 20, theight, theight)
+		let theight = width - (2 * margin)
+		let tframe = CGRect(margin, vev_album.bottom + 20, theight, theight)
 		trackListView = TracksListTableView(frame: tframe, style: .plain)
 		trackListView.delegate = self
 		self.blurEffectView.contentView.addSubview(trackListView)
@@ -106,8 +110,9 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(coverView)
 
 		// Elapsed label
+		let sizeTimeLabels = CGSize(40, 16)
 		let vev_elapsed = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_elapsed.frame = CGRect(coverView.left, coverView.bottom + 4, 40, 16)
+		vev_elapsed.frame = CGRect(coverView.left, coverView.bottom + 4, sizeTimeLabels)
 		lblElapsedDuration = UILabel(frame: vev_elapsed.bounds)
 		lblElapsedDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
 		lblElapsedDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -117,7 +122,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		// Remaining label
 		let vev_remaining = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_remaining.frame = CGRect(self.view.width - 32 - 40, coverView.bottom + 4, 40, 16)
+		vev_remaining.frame = CGRect(width - margin - sizeTimeLabels.width, coverView.bottom + 4, sizeTimeLabels)
 		lblRemainingDuration = UILabel(frame: vev_remaining.bounds)
 		lblRemainingDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
 		lblRemainingDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -126,12 +131,14 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(vev_remaining)
 
 		// Slider track position
-		sliderPosition = UISlider(frame: CGRect(32, vev_remaining.bottom, tframe.width, 31))
+		sliderPosition = UISlider(frame: CGRect(margin, vev_remaining.bottom, tframe.width, 31))
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(sliderPosition)
 
 		// Previous button
-		btnPrevious = UIButton(frame: CGRect(32, sliderPosition.bottom + 16, 48, 48))
+		let sizeButtonsTracks = CGSize(48, 48)
+		let yButtonsTracks = sliderPosition.bottom + 16
+		btnPrevious = UIButton(frame: CGRect(margin, yButtonsTracks, sizeButtonsTracks))
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .highlighted)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .selected)
@@ -139,12 +146,12 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play/Pause button
-		btnPlay = UIButton(frame: CGRect((self.view.width - 48) / 2, sliderPosition.bottom + 16, 48, 48))
+		btnPlay = UIButton(frame: CGRect((width - sizeButtonsTracks.width) / 2, yButtonsTracks, sizeButtonsTracks))
 		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnPlay)
 
 		// Next button
-		btnNext = UIButton(frame: CGRect(self.view.width - 48 - 32, sliderPosition.bottom + 16, 48, 48))
+		btnNext = UIButton(frame: CGRect(width - sizeButtonsTracks.width - margin, yButtonsTracks, sizeButtonsTracks))
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .highlighted)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .selected)
@@ -152,8 +159,10 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(btnNext)
 
 		// Vol- button
+		let sizeButtonsVolume = CGSize(18, 18)
+		let yButtonsVolume = btnPrevious.bottom + 12
 		let vev_volm = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_volm.frame = CGRect(32, btnPrevious.bottom + 12, 18, 18)
+		vev_volm.frame = CGRect(margin, yButtonsVolume, sizeButtonsVolume)
 		btnVolumeLo = UIButton(frame: vev_volm.bounds)
 		btnVolumeLo.addTarget(self, action: #selector(decreaseVolumeAction(_:)), for: .touchUpInside)
 		btnVolumeLo.setImage(#imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
@@ -164,7 +173,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		// Vol+ button
 		let vev_volp = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_volp.frame = CGRect(self.view.width - 32 - 18,  btnNext.bottom + 12, 18, 18)
+		vev_volp.frame = CGRect(width - margin - sizeButtonsVolume.width, yButtonsVolume, sizeButtonsVolume)
 		btnVolumeHi = UIButton(frame: vev_volp.bounds)
 		btnVolumeHi.addTarget(self, action: #selector(increaseVolumeAction(_:)), for: .touchUpInside)
 		btnVolumeHi.setImage(#imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
@@ -174,7 +183,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		self.blurEffectView.contentView.addSubview(vev_volp)
 
 		// Slider volume
-		sliderVolume = UISlider(frame: CGRect(32, vev_volp.bottom + 2, tframe.width, 31))
+		sliderVolume = UISlider(frame: CGRect(margin, vev_volp.bottom + 2, tframe.width, 31))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
@@ -183,7 +192,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		// Repeat button
 		let loop = Settings.shared.bool(forKey: .mpd_repeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat = UIButton(frame: CGRect(32, self.view.height - 44, 44, 44))
+		let sizeButtonsRR = CGSize(44, 44)
+		btnRepeat = UIButton(frame: CGRect(margin, self.view.height - sizeButtonsRR.height, sizeButtonsRR))
 		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: Colors.mainEnabled)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRepeat.isSelected = loop
@@ -194,7 +204,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		// Random button
 		let random = Settings.shared.bool(forKey: .mpd_shuffle)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom = UIButton(frame: CGRect(self.view.width - 44 - 32, self.view.height - 44, 44, 44))
+		btnRandom = UIButton(frame: CGRect(width - margin - sizeButtonsRR.width, self.view.height - sizeButtonsRR.height, sizeButtonsRR))
 		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: Colors.mainEnabled)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRandom.isSelected = random
@@ -541,7 +551,7 @@ extension PlayerVC : UITableViewDelegate
 
 final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControllerAnimatedTransitioning
 {
-	var presenting: Bool = true
+	var presenting = true
 
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval
 	{
