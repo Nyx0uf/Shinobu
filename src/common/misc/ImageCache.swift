@@ -8,13 +8,13 @@ final class ImageCache
 	static let shared = ImageCache()
 
 	// MARK: - Private properties
-	private let _cache: NSCache<AnyObject, UIImage>
+	private let cache: NSCache<AnyObject, UIImage>
 
 	// MARK: - Initializers
 	init()
 	{
-		self._cache = NSCache()
-		self._cache.countLimit = 100
+		self.cache = NSCache()
+		self.cache.countLimit = 100
 	}
 
 	// MARK: - Subscripting
@@ -22,13 +22,13 @@ final class ImageCache
 	{
 		get
 		{
-			return _cache.object(forKey: key as AnyObject)
+			return cache.object(forKey: key as AnyObject)
 		}
 		set (newValue)
 		{
 			if let img = newValue
 			{
-				_cache.setObject(img, forKey: key as AnyObject)
+				cache.setObject(img, forKey: key as AnyObject)
 			}
 		}
 	}

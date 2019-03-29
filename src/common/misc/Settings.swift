@@ -109,7 +109,7 @@ final class Settings
 				Settings.Key.pref_fuzzySearch.rawValue : false,
 				Settings.Key.pref_enableLogging.rawValue : false,
 				Settings.Key.pref_shakeToPlayRandom.rawValue : false,
-				Settings.Key.pref_displayType.rawValue : DisplayType.albums.rawValue,
+				Settings.Key.pref_displayType.rawValue : MusicalEntityType.albums.rawValue,
 				Settings.Key.pref_layoutLibraryCollection.rawValue : true,
 				Settings.Key.pref_layoutAlbumsCollection.rawValue : false,
 				Settings.Key.pref_layoutArtistsCollection.rawValue : false,

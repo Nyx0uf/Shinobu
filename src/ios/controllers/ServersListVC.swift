@@ -34,7 +34,7 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		
 		// Navigation bar title
-		titleView.text = NYXLocalizedString("lbl_header_server_list")
+		titleView.setMainText(NYXLocalizedString("lbl_header_server_list"), detailText: nil)
 
 		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		let add = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(addMpdServerAction(_:)))
@@ -144,7 +144,7 @@ extension ServersListVC
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
 
 			let serverData = self.servers[indexPath.row]
-			if ServersManager.shared.removeServerByName(serverData.name) == true
+			if ServersManager.shared.removeServerByName(serverData.name)
 			{
 				self.refreshServers()
 			}

@@ -11,9 +11,9 @@ final class AlbumsListVC : NYXViewController
 
 	// MARK: - Private properties
 	// Previewing context for peek & pop
-	private var _previewingContext: UIViewControllerPreviewing! = nil
+	private var previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
-	private var _longPress: UILongPressGestureRecognizer! = nil
+	private var longPress: UILongPressGestureRecognizer! = nil
 	// Long press gesture is recognized, flag
 	private var longPressRecognized = false
 
@@ -53,9 +53,9 @@ final class AlbumsListVC : NYXViewController
 		self.view.addSubview(collectionView)
 
 		// Longpress
-		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		_longPress.minimumPressDuration = 0.5
-		_longPress.delaysTouchesBegan = true
+		longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+		longPress.minimumPressDuration = 0.5
+		longPress.delaysTouchesBegan = true
 		updateLongpressState()
 	}
 
@@ -150,23 +150,21 @@ final class AlbumsListVC : NYXViewController
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		let attrs = NSMutableAttributedString(string: artist.name + "\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .medium)])
-		attrs.append(NSAttributedString(string: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
-		titleView.attributedText = attrs
+		titleView.setMainText(artist.name, detailText: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())")
 	}
 
 	private func updateLongpressState()
 	{
 		if traitCollection.forceTouchCapability == .available
 		{
-			collectionView.removeGestureRecognizer(_longPress)
-			_longPress.isEnabled = false
-			_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
+			collectionView.removeGestureRecognizer(longPress)
+			longPress.isEnabled = false
+			previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
 		}
 		else
 		{
-			collectionView.addGestureRecognizer(_longPress)
-			_longPress.isEnabled = true
+			collectionView.addGestureRecognizer(longPress)
+			longPress.isEnabled = true
 		}
 	}
 }

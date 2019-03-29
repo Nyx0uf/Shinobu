@@ -29,11 +29,11 @@ extension UIColor
 	{
 		var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
 		getRed(&r, green: &g, blue: &b, alpha: &a)
-		if (r > 0.91 && g > 0.91 && b > 0.91)
+		if r > 0.91 && g > 0.91 && b > 0.91
 		{
 			return true // white
 		}
-		if (r < 0.09 && g < 0.09 && b < 0.09)
+		if r < 0.09 && g < 0.09 && b < 0.09
 		{
 			return true // black
 		}
@@ -47,7 +47,7 @@ extension UIColor
 
 		let lum = 0.2126 * r + 0.7152 * g + 0.0722 * b
 
-		if (lum < 0.5)
+		if lum < 0.5
 		{
 			return true
 		}
@@ -60,7 +60,7 @@ extension UIColor
 		var h: CGFloat = 0.0, s: CGFloat = 0.0, v: CGFloat = 0.0, a: CGFloat = 0.0
 		getHue(&h, saturation: &s, brightness: &v, alpha: &a)
 
-		if (s < minSaturation)
+		if s < minSaturation
 		{
 			return UIColor(hue: h, saturation: s, brightness: v, alpha: a)
 		}
@@ -78,12 +78,12 @@ extension UIColor
 
 		let threshold: CGFloat = 0.25
 
-		if (abs(r1 - r2) > threshold || abs(g1 - g2) > threshold || abs(b1 - b2) > threshold || abs(a1 - a2) > threshold)
+		if abs(r1 - r2) > threshold || abs(g1 - g2) > threshold || abs(b1 - b2) > threshold || abs(a1 - a2) > threshold
 		{
 			// check for grays, prevent multiple gray colors
-			if (abs(r1 - g1) < 0.03 && abs(r1 - b1) < 0.03)
+			if abs(r1 - g1) < 0.03 && abs(r1 - b1) < 0.03
 			{
-				if (abs(r2 - g2) < 0.03 && abs(r2 - b2) < 0.03)
+				if abs(r2 - g2) < 0.03 && abs(r2 - b2) < 0.03
 				{
 					return false
 				}
@@ -106,7 +106,7 @@ extension UIColor
 		let lum2 = 0.2126 * r2 + 0.7152 * g2 + 0.0722 * b2
 		var contrast: CGFloat = 0.0
 
-		if (lum1 > lum2)
+		if lum1 > lum2
 		{
 			contrast = (lum1 + 0.05) / (lum2 + 0.05)
 		}

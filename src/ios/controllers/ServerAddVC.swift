@@ -38,8 +38,8 @@ final class ServerAddVC : NYXTableViewController
 		super.viewDidLoad()
 
 		// Navigation bar title
-		titleView.text = NYXLocalizedString("lbl_header_server_cfg")
-		
+		titleView.setMainText(NYXLocalizedString("lbl_header_server_cfg"), detailText: nil)
+
 		let search = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(browserZeroConfAction(_:)))
 		search.accessibilityLabel = NYXLocalizedString("lbl_search_zeroconf")
 		let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(validateSettingsAction(_:)))
@@ -165,8 +165,12 @@ final class ServerAddVC : NYXTableViewController
 
 		let mpdServer = MPDServer(hostname: ip, port: port, password: password)
 		let cnn = MPDConnection(mpdServer)
-		if cnn.connect().succeeded
+		let result = cnn.connect()
+		switch result
 		{
+		case .failure( _):
+			break
+		case .success( _):
 			if let _ = self.selectedServer
 			{
 				self.selectedServer?.mpd = mpdServer
@@ -379,28 +383,34 @@ final class ServerAddVC : NYXTableViewController
 		guard let _ = self.selectedServer else { return }
 
 		let cnn = MPDConnection(self.selectedServer!.mpd)
-		if cnn.connect().succeeded
+		let result = cnn.connect()
+		switch result
 		{
-			let result = cnn.getAvailableOutputs()
-			if result.succeeded && result.entity != nil
-			{
-				let outputs = result.entity!
-				if outputs.count == 0
+			case .failure( _):
+				break
+			case .success( _):
+				let r = cnn.getAvailableOutputs()
+				switch r
 				{
-					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
-					return
+					case .failure( _):
+						break
+					case .success(let outputs):
+						if outputs.count == 0
+						{
+							self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
+							return
+						}
+						let enabledOutputs = outputs.filter({$0.enabled})
+						if enabledOutputs.count == 0
+						{
+							self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
+							return
+						}
+						let text = enabledOutputs.reduce("", {$0 + $1.name + ", "})
+						let x = text[..<text.index(text.endIndex, offsetBy: -2)]
+						self.lblMPDOutput.text = String(x)
 				}
-				let enabledOutputs = outputs.filter({$0.enabled})
-				if enabledOutputs.count == 0
-				{
-					self.lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
-					return
-				}
-				let text = enabledOutputs.reduce("", {$0 + $1.name + ", "})
-				let x = text[..<text.index(text.endIndex, offsetBy: -2)]
-				self.lblMPDOutput.text = String(x)
-			}
-			cnn.disconnect()
+				cnn.disconnect()
 		}
 	}
 }

@@ -294,7 +294,7 @@ final class AutoScrollLabel : UIView
 			var rightFadePoint = 1 - fadePoint
 			if !fade
 			{
-				switch (direction)
+				switch direction
 				{
 					case .left:
 						leftFadePoint = 0

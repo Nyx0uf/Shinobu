@@ -1,6 +1,9 @@
 import Foundation
 
 
+fileprivate let SLASH = Character("/")
+
+
 struct CoverServer : Codable, Equatable
 {
 	// Coding keys
@@ -58,7 +61,11 @@ struct CoverServer : Codable, Equatable
 		}
 		urlComponents.port = Int(port)
 
-		let urlHostname = URL(string: hostname)!
+		guard let urlHostname = URL(string: hostname) else
+		{
+			Logger.shared.log(type: .error, message: "Unable to create URL hostname for <\(hostname)>")
+			return nil
+		}
 		var urlPath = urlHostname.path
 		if String.isNullOrWhiteSpace(urlPath) || urlPath == "/"
 		{
@@ -66,10 +73,14 @@ struct CoverServer : Codable, Equatable
 		}
 		else
 		{
-			if urlPath[0] != "/"
+			if let first = urlPath.first, first != SLASH
 			{
 				urlPath = "/" + urlPath
 			}
+			/*if urlPath[0] != "/"
+			{
+				urlPath = "/" + urlPath
+			}*/
 			urlPath = urlPath + path
 		}
 
@@ -129,9 +140,9 @@ struct CoverServer : Codable, Equatable
 			}
 		}
 
-		if h.last == "/"
+		if let last = h.last, last == SLASH
 		{
-			h.remove(at: h.index(before: h.endIndex))
+			h.removeLast()
 		}
 
 		return h

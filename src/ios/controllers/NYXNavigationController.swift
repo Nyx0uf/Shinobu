@@ -9,7 +9,7 @@ final class NYXNavigationController : UINavigationController
 		{
 			return topViewController.shouldAutorotate
 		}
-		return false
+		return true
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -47,18 +47,14 @@ final class NYXNavigationController : UINavigationController
 class NYXTableViewController : UITableViewController
 {
 	// Navigation title
-	var titleView: UILabel! = nil
+	private(set) var titleView: NYXNavigationTitleView! = nil
 
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 120.0, 44.0))
+		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
 
@@ -69,25 +65,26 @@ class NYXTableViewController : UITableViewController
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return .portrait
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	override var shouldAutorotate: Bool
+	{
+		return true
 	}
 }
 
 class NYXViewController : UIViewController
 {
 	// Navigation title
-	var titleView: UILabel! = nil
+	private(set) var titleView: NYXNavigationTitleView! = nil
 
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		titleView = UILabel(frame: CGRect(0.0, 0.0, 100.0, 44.0))
-		titleView.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
-		titleView.numberOfLines = 2
-		titleView.textAlignment = .center
-		titleView.isAccessibilityElement = false
-		titleView.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 120.0, 44.0))
+		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
 
@@ -98,7 +95,12 @@ class NYXViewController : UIViewController
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return .portrait
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	override var shouldAutorotate: Bool
+	{
+		return true
 	}
 }
 
@@ -111,6 +113,11 @@ class NYXAlertController : UIAlertController
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return .portrait
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	override var shouldAutorotate: Bool
+	{
+		return true
 	}
 }

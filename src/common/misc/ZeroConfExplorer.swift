@@ -19,21 +19,21 @@ final class ZeroConfExplorer : NSObject
 
 	// MARK: - Private properties
 	// Zeroconf browser
-	private var _serviceBrowser: NetServiceBrowser!
+	private var serviceBrowser: NetServiceBrowser!
 
 	// MARK: - Initializer
 	override init()
 	{
 		super.init()
 
-		self._serviceBrowser = NetServiceBrowser()
-		self._serviceBrowser.delegate = self
+		self.serviceBrowser = NetServiceBrowser()
+		self.serviceBrowser.delegate = self
 	}
 
 	deinit
 	{
-		self._serviceBrowser.delegate = nil
-		self._serviceBrowser = nil
+		self.serviceBrowser.delegate = nil
+		self.serviceBrowser = nil
 	}
 
 	// MARK: - Public
@@ -45,12 +45,12 @@ final class ZeroConfExplorer : NSObject
 		}
 
 		services.removeAll()
-		_serviceBrowser.searchForServices(ofType: type, inDomain: domain)
+		serviceBrowser.searchForServices(ofType: type, inDomain: domain)
 	}
 
 	func stopSearch()
 	{
-		_serviceBrowser.stop()
+		serviceBrowser.stop()
 	}
 
 	// MARK: - Private

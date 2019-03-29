@@ -91,7 +91,7 @@ final class MusicalCollectionView : UICollectionView
 	var items = [MusicalEntity]()
 	var searchResults = [MusicalEntity]()
 	// Type of entities displayd
-	var displayType = DisplayType.albums
+	var displayType = MusicalEntityType.albums
 	// Collection view layout type
 	var layoutType = CollectionViewLayoutType.collection
 	{
@@ -103,7 +103,7 @@ final class MusicalCollectionView : UICollectionView
 	// Delegate
 	weak var myDelegate: MusicalCollectionViewDelegate!
 	// Cover download operations
-	private var _downloadOperations = [String : Operation]()
+	private var downloadOperations = [String : Operation]()
 	private let cellIdentifier_table = "fr.whine.shinobu.cell.musicalentity.table"
 	private let cellIdentifier_collection = "fr.whine.shinobu.cell.musicalentity.collection"
 
@@ -130,7 +130,7 @@ final class MusicalCollectionView : UICollectionView
 	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
 		let key = album.uniqueIdentifier
-		if let cop = _downloadOperations[key] as! CoverOperation?
+		if let cop = downloadOperations[key] as! CoverOperation?
 		{
 			return cop
 		}
@@ -139,14 +139,14 @@ final class MusicalCollectionView : UICollectionView
 		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
 			if let _ = weakOperation
 			{
-				self._downloadOperations.removeValue(forKey: key)
+				self.downloadOperations.removeValue(forKey: key)
 			}
 			if let block = callback
 			{
 				block(cover, thumbnail)
 			}
 		}
-		_downloadOperations[key] = downloadOperation
+		downloadOperations[key] = downloadOperation
 
 		OperationManager.shared.addOperation(downloadOperation)
 
@@ -200,6 +200,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
 		cell.layoutList = self.layoutType == .table
+		cell.type = displayType
 
 		// Sanity check
 		let searching = myDelegate.isSearching(actively: false)
@@ -211,13 +212,14 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		let entity = searching ? searchResults[indexPath.row] : items[indexPath.row]
 		// Init cell
 		cell.label.text = entity.name
+		cell.detailLabel.text = ""
 		cell.accessibilityLabel = entity.name
 		cell.image = nil
 		switch displayType
 		{
 			case .albums:
-				_handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
-				if String.isNullOrWhiteSpace((entity as! Album).artist) == true
+				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
+				if String.isNullOrWhiteSpace((entity as! Album).artist)
 				{
 					MusicDataSource.shared.getMetadatasForAlbum((entity as! Album), callback: {
 						DispatchQueue.main.async {
@@ -233,11 +235,11 @@ extension MusicalCollectionView : UICollectionViewDataSource
 					cell.detailLabel.text = (entity as! Album).artist
 				}
 			case .artists:
-				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+				configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
 			case .albumsartists:
-				_configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+				configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
 			case .genres:
-				_configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
+				configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
 			case .playlists:
 				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
 		}
@@ -245,11 +247,11 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		return cell
 	}
 
-	private func _configureCellForGenre(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, genre: Genre)
+	private func configureCellForGenre(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, genre: Genre)
 	{
 		if let album = genre.albums.first
 		{
-			_handleCoverForCell(cell, at: indexPath, withAlbum: album)
+			handleCoverForCell(cell, at: indexPath, withAlbum: album)
 		}
 		else
 		{
@@ -263,7 +265,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 					DispatchQueue.main.async {
 						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 						{
-							self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+							self.handleCoverForCell(c, at: indexPath, withAlbum: album)
 						}
 					}
 				}
@@ -272,11 +274,11 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 	}
 
-	private func _configureCellForArtist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, artist: Artist)
+	private func configureCellForArtist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, artist: Artist)
 	{
 		if let album = artist.albums.first
 		{
-			_handleCoverForCell(cell, at: indexPath, withAlbum: album)
+			handleCoverForCell(cell, at: indexPath, withAlbum: album)
 		}
 		else
 		{
@@ -290,7 +292,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 					DispatchQueue.main.async {
 						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 						{
-							self._handleCoverForCell(c, at: indexPath, withAlbum: album)
+							self.handleCoverForCell(c, at: indexPath, withAlbum: album)
 						}
 					}
 				}
@@ -298,7 +300,7 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		}
 	}
 
-	private func _handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
+	private func handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
 	{
 		// If image is in cache, bail out quickly
 		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
@@ -381,7 +383,7 @@ extension MusicalCollectionView : UICollectionViewDelegate
 		}
 
 		var tmpAlbum: Album? = nil
-		switch (displayType)
+		switch displayType
 		{
 			case .albums:
 				tmpAlbum = src[indexPath.row] as? Album

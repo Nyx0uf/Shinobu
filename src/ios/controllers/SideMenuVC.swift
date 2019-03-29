@@ -49,7 +49,7 @@ extension SideMenuVC : UITableViewDataSource
 
 		var selected = false
 		var image: UIImage! = nil
-		switch (indexPath.row)
+		switch indexPath.row
 		{
 		case 0:
 			cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
@@ -98,7 +98,7 @@ extension SideMenuVC : UITableViewDelegate
 	{
 		tableView.deselectRow(at: indexPath, animated: false)
 		var selectedVC = SelectedVCType.library
-		switch (indexPath.row)
+		switch indexPath.row
 		{
 			case 0:
 				selectedVC = .library

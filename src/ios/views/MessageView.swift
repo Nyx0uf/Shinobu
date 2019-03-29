@@ -14,7 +14,7 @@ final class MessageView : UIView
 	// Visible flag
 	private(set) var visible = false
 	// Timer (4sec)
-	private var _timer: DispatchSourceTimer! = nil
+	private var timer: DispatchSourceTimer! = nil
 
 	// MARK: - Initializers
 	override init(frame f: CGRect)
@@ -75,7 +75,7 @@ final class MessageView : UIView
 			return
 		}
 
-		if self.visible == true
+		if self.visible
 		{
 			stopTimer()
 		}
@@ -119,20 +119,20 @@ final class MessageView : UIView
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{
-		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
-		_timer.schedule(deadline: .now() + .seconds(interval))
-		_timer.setEventHandler {
+		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
+		timer.schedule(deadline: .now() + .seconds(interval))
+		timer.setEventHandler {
 			self.hide()
 		}
-		_timer.resume()
+		timer.resume()
 	}
 
 	private func stopTimer()
 	{
-		if _timer != nil
+		if timer != nil
 		{
-			_timer.cancel()
-			_timer = nil
+			timer.cancel()
+			timer = nil
 		}
 	}
 }

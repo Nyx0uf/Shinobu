@@ -21,16 +21,16 @@ final class PlayerController
 
 	// MARK: - Private properties
 	// MPD Connection
-	private var _connection: MPDConnection! = nil
+	private var connection: MPDConnection! = nil
 	// Internal queue
-	private let _queue: DispatchQueue
+	private let queue: DispatchQueue
 	// Timer (1sec)
-	private var _timer: DispatchSourceTimer!
+	private var timer: DispatchSourceTimer!
 
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "fr.whine.shinobu.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.player", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object:nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object:nil)
@@ -38,48 +38,47 @@ final class PlayerController
 	}
 
 	// MARK: - Public
-	func initialize() -> ActionResult<Void>
+	func initialize() -> Result<Bool, MPDConnectionError>
 	{
 		// Sanity check 1
-		if _connection != nil && _connection.isConnected
+		if MPDConnection.isValid(connection)
 		{
-			return ActionResult(succeeded: true)
+			return .success(true)
 		}
 
 		// Sanity check 2
 		guard let server = server else
 		{
-			return ActionResult(succeeded: false, message: Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error))
+			return .failure(MPDConnectionError(.invalidServerParameters, Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error)))
 		}
 
 		// Connect
-		_connection = MPDConnection(server)
-		let ret = _connection.connect()
-		if ret.succeeded
+		connection = MPDConnection(server)
+		let ret = connection.connect()
+		switch ret
 		{
-			_connection.delegate = self
-			startTimer(500)
+			case .failure(let error):
+				connection = nil
+				return .failure(MPDConnectionError(error.kind, error.message))
+			case .success( _):
+				connection.delegate = self
+				startTimer(20)
+				return .success(true)
 		}
-		else
-		{
-			_connection = nil
-			return ActionResult(succeeded: false, message: ret.messages.first!)
-		}
-		return ActionResult(succeeded: true)
 	}
 
 	func deinitialize()
 	{
 		stopTimer()
-		if _connection != nil
+		if connection != nil
 		{
-			_connection.delegate = nil
-			_connection.disconnect()
-			_connection = nil
+			connection.delegate = nil
+			connection.disconnect()
+			connection = nil
 		}
 	}
 
-	func reinitialize() -> ActionResult<Void>
+	func reinitialize() -> Result<Bool, MPDConnectionError>
 	{
 		deinitialize()
 		return initialize()
@@ -88,157 +87,123 @@ final class PlayerController
 	// MARK: - Playing
 	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.playAlbum(album, shuffle: shuffle, loop: loop)
+			_ = strongSelf.connection.playAlbum(album, shuffle: shuffle, loop: loop)
 		}
 	}
 
 	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.playTracks(tracks, shuffle: shuffle, loop: loop)
+			_ = strongSelf.connection.playTracks(tracks, shuffle: shuffle, loop: loop)
 		}
 	}
 
 	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.playPlaylist(playlist, shuffle: shuffle, loop: loop, position: position)
+			_ = strongSelf.connection.playPlaylist(playlist, shuffle: shuffle, loop: loop, position: position)
 		}
 	}
 
 	func playTrackAtPosition(_ position: UInt32)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.playTrackAtPosition(position)
+			_ = strongSelf.connection.playTrackAtPosition(position)
 		}
 	}
 
 	// MARK: - Pausing
 	@objc func togglePause()
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.togglePause()
+			_ = strongSelf.connection.togglePause()
 		}
 	}
 
 	// MARK: - Add to queue
 	func addAlbumToQueue(_ album: Album)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.addAlbumToQueue(album)
+			_ = strongSelf.connection.addAlbumToQueue(album)
 		}
 	}
 
 	// MARK: - Repeat
 	func setRepeat(_ loop: Bool)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.setRepeat(loop)
+			_ = strongSelf.connection.setRepeat(loop)
 		}
 	}
 
 	// MARK: - Random
 	func setRandom(_ random: Bool)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.setRandom(random)
+			_ = strongSelf.connection.setRandom(random)
 		}
 	}
 
 	// MARK: - Tracks navigation
 	@objc func requestNextTrack()
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.nextTrack()
+			_ = strongSelf.connection.nextTrack()
 		}
 	}
 
 	@objc func requestPreviousTrack()
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.previousTrack()
+			_ = strongSelf.connection.previousTrack()
 		}
 	}
 
 	func getSongsOfCurrentQueue(callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getSongsOfCurrentQueue()
-			if result.succeeded == false
+			let result = strongSelf.connection.getSongsOfCurrentQueue()
+			switch result
 			{
-
-			}
-			else
-			{
-				strongSelf.listTracksInQueue = result.entity!
-				callback()
+				case .failure( _):
+					break
+				case .success(let tracks):
+					strongSelf.listTracksInQueue = tracks
+					callback()
 			}
 		}
 	}
@@ -246,49 +211,45 @@ final class PlayerController
 	// MARK: - Track position
 	func setTrackPosition(_ position: Int, trackPosition: UInt32)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			_ = strongSelf._connection.setTrackPosition(position, trackPosition: trackPosition)
+			_ = strongSelf.connection.setTrackPosition(position, trackPosition: trackPosition)
 		}
 	}
 
 	// MARK: - Volume
 	func setVolume(_ volume: Int, callback: @escaping (Bool) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.setVolume(UInt32(volume))
-			callback(result.succeeded)
+			let result = strongSelf.connection.setVolume(UInt32(volume))
+			switch result
+			{
+				case .failure( _):
+					callback(false)
+				case .success( _):
+					callback(true)
+			}
 		}
 	}
 
 	func getVolume(callback: @escaping (Int) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getVolume()
-			if result.succeeded == false
+			let result = strongSelf.connection.getVolume()
+			switch result
 			{
-
-			}
-			else
-			{
-				callback(result.entity!)
+				case .failure( _):
+					break
+				case .success(let volume):
+					callback(volume)
 			}
 		}
 	}
@@ -296,100 +257,98 @@ final class PlayerController
 	// MARK: - Outputs
 	func getAvailableOutputs(callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getAvailableOutputs()
-			if result.succeeded == false
+			let result = strongSelf.connection.getAvailableOutputs()
+			switch result
 			{
-
-			}
-			else
-			{
-				strongSelf.outputs = result.entity!
-				callback()
+				case .failure( _):
+					break
+				case .success(let outputs):
+					strongSelf.outputs = outputs
+					callback()
 			}
 		}
 	}
 
-	func toggleOutput(output: AudioOutput, callback: @escaping (Bool) -> Void)
+	func toggleOutput(_ output: AudioOutput, callback: @escaping (Bool) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let ret = strongSelf._connection.toggleOutput(output: output)
-			callback(ret.succeeded)
+			let ret = strongSelf.connection.toggleOutput(output)
+			switch ret
+			{
+				case .failure( _):
+					callback(false)
+				case .success( _):
+					callback(true)
+			}
 		}
 	}
 
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{
-		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.schedule(deadline: .now(), repeating: .milliseconds(interval))
-		_timer.setEventHandler { [weak self] in
+		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: queue)
+		timer.schedule(deadline: .now(), repeating: .milliseconds(interval))
+		timer.setEventHandler { [weak self] in
 			guard let strongSelf = self else { return }
 			strongSelf.playerInformations()
 		}
-		_timer.resume()
+		timer.resume()
 	}
 
 	private func stopTimer()
 	{
-		if _timer != nil
+		if timer != nil
 		{
-			_timer.cancel()
-			_timer = nil
+			timer.cancel()
+			timer = nil
 		}
 	}
 
 	private func playerInformations()
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
 		do
 		{
-			let result = try _connection.getPlayerInfos()
-			if result.succeeded == false
+			let result = try connection.getPlayerInfos()
+			switch result
 			{
-				return
-			}
-			guard let infos = result.entity else {return}
-			let status = infos[kPlayerStatusKey] as! Int
-			let track = infos[kPlayerTrackKey] as! Track
-			let album = infos[kPlayerAlbumKey] as! Album
+				case .failure( _):
+					return
+				case .success(let result):
+					guard let infos = result else {return}
+					let status = infos[PLAYER_STATUS_KEY] as! Int
+					let track = infos[PLAYER_TRACK_KEY] as! Track
+					let album = infos[PLAYER_ALBUM_KEY] as! Album
 
-			// Track changed
-			if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
-			{
-				NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
-			}
+					// Track changed
+					if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
+					{
+						NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
+					}
 
-			// Status changed
-			if currentStatus.rawValue != status
-			{
-				NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
-			}
+					// Status changed
+					if currentStatus.rawValue != status
+					{
+						NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
+					}
 
-			self.currentStatus = PlayerStatus(rawValue: status)!
-			currentTrack = track
-			currentAlbum = album
-			NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
+					self.currentStatus = PlayerStatus(rawValue: status)!
+					currentTrack = track
+					currentAlbum = album
+					NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
+			}
 		}
-		catch
+		catch let error
 		{
-			
+			Logger.shared.log(error: error)
 		}
 	}
 

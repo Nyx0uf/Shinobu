@@ -65,16 +65,16 @@ final class CoverOperation : Operation
 		}
 
 		// No path for album, abort
-		guard var path = album.path else
+		guard let path = album.path else
 		{
 			Logger.shared.log(type: .error, message: "No path defined for album <\(album.name)>")
 			isFinished = true
 			return
 		}
-		if path[0] != "/"
+		/*if path.first != Character("/")
 		{
 			path = "/" + path
-		}
+		}*/
 
 		// No mpd server configured, abort
 		guard let server = ServersManager.shared.getSelectedServer()?.covers else
@@ -187,7 +187,7 @@ extension CoverOperation : URLSessionDataDelegate
 		isFinished = true
 	}
 
-	private func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+	internal func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
 	{
 		completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
 	}

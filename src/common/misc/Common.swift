@@ -1,28 +1,22 @@
 import UIKit
 
-
-/* RootVC display type */
-enum DisplayType : Int
-{
-	case albums
-	case artists
-	case albumsartists
-	case genres
-	case playlists
-}
-
 // MARK: - Notifications name
 extension Notification.Name
 {
-	static let currentPlayingTrack = Notification.Name("kNYXNotificationCurrentPlayingTrack")
-	static let playingTrackChanged = Notification.Name("kNYXNotificationPlayingTrackChanged")
-	static let playerStatusChanged = Notification.Name("kNYXNotificationPlayerStatusChanged")
-	static let miniPlayerViewWillShow = Notification.Name("kNYXNotificationMiniPlayerViewWillShow")
-	static let miniPlayerViewDidShow = Notification.Name("kNYXNotificationMiniPlayerViewDidShow")
-	static let miniPlayerViewWillHide = Notification.Name("kNYXNotificationMiniPlayerViewWillHide")
-	static let miniPlayerViewDidHide = Notification.Name("kNYXNotificationMiniPlayerViewDidHide")
-	static let miniPlayerShouldExpand = Notification.Name("kNYXNotificationMiniPlayerShouldExpand")
-	static let audioServerConfigurationDidChange = Notification.Name("kNYXNotificationAudioServerConfigurationDidChange")
-	static let audioOutputConfigurationDidChange = Notification.Name("kNYXNotificationAudioOutputConfigurationDidChange")
-	static let collectionViewsLayoutDidChange = Notification.Name("kNYXNotificationCollectionViewsLayoutDidChange")
+	static let currentPlayingTrack = Notification.Name("CurrentPlayingTrack")
+	static let playingTrackChanged = Notification.Name("PlayingTrackChanged")
+	static let playerStatusChanged = Notification.Name("PlayerStatusChanged")
+	static let miniPlayerViewWillShow = Notification.Name("MiniPlayerViewWillShow")
+	static let miniPlayerViewDidShow = Notification.Name("MiniPlayerViewDidShow")
+	static let miniPlayerViewWillHide = Notification.Name("MiniPlayerViewWillHide")
+	static let miniPlayerViewDidHide = Notification.Name("MiniPlayerViewDidHide")
+	static let miniPlayerShouldExpand = Notification.Name("MiniPlayerShouldExpand")
+	static let audioServerConfigurationDidChange = Notification.Name("AudioServerConfigurationDidChange")
+	static let audioOutputConfigurationDidChange = Notification.Name("AudioOutputConfigurationDidChange")
+}
+
+// MARK: - Clamp
+public func clamp<T: Comparable>(_ value: T, lower: T, upper: T) -> T
+{
+	return max(min(value, upper), lower)
 }

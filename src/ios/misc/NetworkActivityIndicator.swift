@@ -7,7 +7,7 @@ final class NetworkActivityIndicator
 	// Singletion instance
 	static let shared = NetworkActivityIndicator()
 	// Queue
-	private let _queue: DispatchQueue
+	private let queue: DispatchQueue
 	// Number of "operations"
 	private var count: Int
 	{
@@ -22,13 +22,13 @@ final class NetworkActivityIndicator
 
 	private init()
 	{
-		self._queue = DispatchQueue(label: "fr.whine.shinobu.queue.netact", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.netact", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 		self.count = 0
 	}
 
 	public func start()
 	{
-		_queue.sync { [weak self] in
+		queue.sync { [weak self] in
 			guard let strongSelf = self else { return }
 			strongSelf.count += 1
 		}
@@ -36,10 +36,10 @@ final class NetworkActivityIndicator
 
 	public func end()
 	{
-		_queue.sync { [weak self] in
+		queue.sync { [weak self] in
 			guard let strongSelf = self else { return }
 			var c = strongSelf.count - 1
-			if (c < 0)
+			if c < 0
 			{
 				c = 0
 			}
@@ -49,7 +49,7 @@ final class NetworkActivityIndicator
 
 	public func reset()
 	{
-		_queue.sync { [weak self] in
+		queue.sync { [weak self] in
 			guard let strongSelf = self else { return }
 			strongSelf.count = 0
 		}

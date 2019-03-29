@@ -44,15 +44,22 @@ final class AudioOutputsListVC : NYXTableViewController
 	private func refreshOutputs()
 	{
 		let cnn = MPDConnection(self.mpdServer)
-		if cnn.connect().succeeded
+		let result = cnn.connect()
+		switch result
 		{
-			let result = cnn.getAvailableOutputs()
-			if result.succeeded && result.entity != nil
-			{
-				self.outputs = result.entity!
-				self.tableView.reloadData()
-			}
-			cnn.disconnect()
+			case .failure( _):
+				break
+			case .success( _):
+				let r = cnn.getAvailableOutputs()
+				switch r
+				{
+					case .failure( _):
+						break
+					case .success(let outputs):
+						self.outputs = outputs
+						self.tableView.reloadData()
+				}
+				cnn.disconnect()
 		}
 	}
 }
@@ -95,15 +102,22 @@ extension AudioOutputsListVC
 		let output = outputs[indexPath.row]
 
 		let cnn = MPDConnection(self.mpdServer)
-		if cnn.connect().succeeded
+		let result = cnn.connect()
+		switch result
 		{
-			let result = cnn.toggleOutput(output: output)
-			if result.succeeded
-			{
-				self.refreshOutputs()
-				NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
-			}
-			cnn.disconnect()
+			case .failure( _):
+				break
+			case .success( _):
+				let r = cnn.toggleOutput(output)
+				switch r
+				{
+					case .failure( _):
+						break
+					case .success( _):
+						self.refreshOutputs()
+						NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
+				}
+				cnn.disconnect()
 		}
 	}
 }

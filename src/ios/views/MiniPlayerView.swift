@@ -54,7 +54,7 @@ final class MiniPlayerView : UIView
 		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 
 		// Blur background
-		let blurEffect = UIBlurEffect(style: .light)
+		let blurEffect = UIBlurEffect(style: .dark)
 		self.blurEffectView = UIVisualEffectView(effect: blurEffect)
 		self.blurEffectView.frame = CGRect(.zero, frame.size.width, headerHeight)
 		self.addSubview(self.blurEffectView)
@@ -88,7 +88,7 @@ final class MiniPlayerView : UIView
 		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-		self.lblTitle.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		self.lblTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		self.lblTitle.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblTitle)
 
@@ -96,12 +96,13 @@ final class MiniPlayerView : UIView
 		self.lblArtist = UILabel(frame: CGRect(self.imageView.right + 5.0, self.lblTitle.bottom + 2.0, self.lblTitle.width, 16.0))
 		self.lblArtist.textAlignment = .center
 		self.lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-		self.lblArtist.textColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.lblArtist.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		self.lblArtist.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblArtist)
 
 		// Progress
 		self.progressView = UIView(frame: CGRect(0.0, 0.0, 0.0, 1.0))
+		self.progressView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
@@ -158,9 +159,6 @@ final class MiniPlayerView : UIView
 		guard let url = album.localCoverURL else {return}
 		if let image = UIImage.loadFromFileURL(url)
 		{
-			let x = KawaiiColors(image: image)
-			x.analyze()
-			progressView.backgroundColor = x.dominantColor
 			imageView.image = image.scaled(toSize: CGSize(imageView.width * UIScreen.main.scale, imageView.height * UIScreen.main.scale))
 		}
 		else
@@ -280,9 +278,9 @@ final class MiniPlayerView : UIView
 				show()
 			}
 
-			let track = infos[kPlayerTrackKey] as! Track
-			let album = infos[kPlayerAlbumKey] as! Album
-			let elapsed = infos[kPlayerElapsedKey] as! Int
+			let track = infos[PLAYER_TRACK_KEY] as! Track
+			let album = infos[PLAYER_ALBUM_KEY] as! Album
+			let elapsed = infos[PLAYER_ELAPSED_KEY] as! Int
 
 			if track.name != lblTitle.text
 			{
@@ -301,7 +299,7 @@ final class MiniPlayerView : UIView
 	{
 		if let infos = aNotification.userInfo
 		{
-			let state = infos[kPlayerStatusKey] as! Int
+			let state = infos[PLAYER_STATUS_KEY] as! Int
 			if state == PlayerStatus.playing.rawValue
 			{
 				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for: .normal)

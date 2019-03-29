@@ -113,9 +113,7 @@ final class PlaylistDetailVC : NYXViewController
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
-			let attrs = NSMutableAttributedString(string: "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n", attributes:[NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .medium)])
-			attrs.append(NSAttributedString(string: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
-			titleView.attributedText = attrs
+			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
 		}
 	}
 
@@ -135,20 +133,19 @@ final class PlaylistDetailVC : NYXViewController
 			}
 			else
 			{
-				MusicDataSource.shared.renamePlaylist(playlist: self.playlist, newName: textField.text!) { (result: ActionResult<Void>) in
-					if result.succeeded
+				MusicDataSource.shared.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+					switch result
 					{
-						MusicDataSource.shared.getListForDisplayType(.playlists) {
+						case .failure(let error):
 							DispatchQueue.main.async {
-								self.updateNavigationTitle()
+								MessageView.shared.showWithMessage(message: error.message)
 							}
-						}
-					}
-					else
-					{
-						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: result.messages.first!)
-						}
+						case .success( _):
+							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+								DispatchQueue.main.async {
+									self.updateNavigationTitle()
+								}
+							}
 					}
 				}
 			}
@@ -231,21 +228,20 @@ extension PlaylistDetailVC : UITableViewDelegate
 		}
 
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
-			MusicDataSource.shared.removeTrackFromPlaylist(playlist: self.playlist, track: tracks[indexPath.row]) { (result: ActionResult<Void>) in
-				if result.succeeded == false
+			MusicDataSource.shared.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
+				switch result
 				{
-					DispatchQueue.main.async {
-						MessageView.shared.showWithMessage(message: result.messages.first!)
-					}
-				}
-				else
-				{
-					MusicDataSource.shared.getTracksForPlaylist(self.playlist) {
+					case .failure(let error):
 						DispatchQueue.main.async {
-							self.updateNavigationTitle()
-							self.tableView.tracks = self.playlist.tracks!
+							MessageView.shared.showWithMessage(message: error.message)
 						}
-					}
+					case .success( _):
+						MusicDataSource.shared.getTracksForPlaylist(self.playlist) {
+							DispatchQueue.main.async {
+								self.updateNavigationTitle()
+								self.tableView.tracks = self.playlist.tracks!
+							}
+						}
 				}
 			}
 
@@ -279,10 +275,15 @@ extension PlaylistDetailVC
 		}
 
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
-			MusicDataSource.shared.deletePlaylist(name: self.playlist.name) { (result: ActionResult<Void>) in
-				if result.succeeded == false
+			MusicDataSource.shared.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+				switch result
 				{
-					MessageView.shared.showWithMessage(message: result.messages.first!)
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success( _):
+						break
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false

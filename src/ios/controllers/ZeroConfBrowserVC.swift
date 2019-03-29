@@ -30,7 +30,7 @@ final class ZeroConfBrowserVC : NYXTableViewController
 		self.navigationItem.leftBarButtonItem = done
 
 		// Navigation bar title
-		titleView.text = NYXLocalizedString("lbl_header_server_zeroconf")
+		titleView.setMainText(NYXLocalizedString("lbl_header_server_zeroconf"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)

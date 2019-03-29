@@ -9,7 +9,7 @@ final class MusicDataSource
 	// MPD server
 	var server: MPDServer! = nil
 	// Selected display type
-	private(set) var displayType = DisplayType.albums
+	private(set) var displayType = MusicalEntityType.albums
 	// Albums list
 	private(set) var albums = [Album]()
 	// Genres list
@@ -23,16 +23,16 @@ final class MusicDataSource
 
 	// MARK: - Private properties
 	// MPD Connection
-	private var _connection: MPDConnection! = nil
+	private var connection: MPDConnection! = nil
 	// Serial queue for the connection
-	private let _queue: DispatchQueue
+	private let queue: DispatchQueue
 	// Timer (1sec)
-	private var _timer: DispatchSourceTimer!
+	private var timer: DispatchSourceTimer!
 
 	// MARK: - Initializers
 	init()
 	{
-		self._queue = DispatchQueue(label: "fr.whine.shinobu.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.datasource", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target:  nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object:nil)
@@ -40,48 +40,47 @@ final class MusicDataSource
 	}
 
 	// MARK: - Public
-	func initialize() -> ActionResult<Void>
+	func initialize() -> Result<Bool, MPDConnectionError>
 	{
 		// Sanity check 1
-		if _connection != nil && _connection.isConnected
+		if MPDConnection.isValid(connection)
 		{
-			return ActionResult(succeeded: true)
+			return .success(true)
 		}
 
 		// Sanity check 2
 		guard let server = server else
 		{
-			return ActionResult(succeeded: false, message: Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error))
+			return .failure(MPDConnectionError(.invalidServerParameters, Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error)))
 		}
 
 		// Connect
-		_connection = MPDConnection(server)
-		let ret = _connection.connect()
-		if ret.succeeded
+		connection = MPDConnection(server)
+		let ret = connection.connect()
+		switch ret
 		{
-			_connection.delegate = self
-			startTimer(20)
+			case .failure(let error):
+				connection = nil
+				return .failure(MPDConnectionError(error.kind, error.message))
+			case .success( _):
+				connection.delegate = self
+				startTimer(20)
+				return .success(true)
 		}
-		else
-		{
-			_connection = nil
-			return ActionResult(succeeded: false, message: ret.messages.first!)
-		}
-		return ActionResult(succeeded: true)
 	}
 
 	func deinitialize()
 	{
 		stopTimer()
-		if _connection != nil
+		if connection != nil
 		{
-			_connection.delegate = nil
-			_connection.disconnect()
-			_connection = nil
+			connection.delegate = nil
+			connection.disconnect()
+			connection = nil
 		}
 	}
 
-	func reinitialize() -> ActionResult<Void>
+	func reinitialize() -> Result<Bool, MPDConnectionError>
 	{
 		deinitialize()
 		return initialize()
@@ -104,146 +103,128 @@ final class MusicDataSource
 		}
 	}
 
-	func getListForDisplayType(_ displayType: DisplayType, callback: @escaping () -> Void)
+	func getListForMusicalEntityType(_ type: MusicalEntityType, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		self.displayType = displayType
+		self.displayType = type
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getListForDisplayType(displayType)
-			if result.succeeded == false
+			let result = strongSelf.connection.getListForMusicalEntityType(type)
+			switch result
 			{
-
-			}
-			else
-			{
-				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-				switch (displayType)
-				{
-					case .albums:
-						strongSelf.albums = (result.entity as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-					case .artists:
-						strongSelf.artists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-					case .albumsartists:
-						strongSelf.albumsartists = (result.entity as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-					case .genres:
-						strongSelf.genres = (result.entity as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-					case .playlists:
-						strongSelf.playlists = (result.entity as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-				}
-
-				callback()
+				case .failure( _):
+					break
+				case .success(let list):
+					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+					switch type
+					{
+						case .albums:
+							strongSelf.albums = (list as! [Album]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+						case .artists:
+							strongSelf.artists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+						case .albumsartists:
+							strongSelf.albumsartists = (list as! [Artist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+						case .genres:
+							strongSelf.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+						case .playlists:
+							strongSelf.playlists = (list as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					}
+					callback()
 			}
 		}
 	}
 
 	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getAlbumsForGenre(genre, firstOnly: firstOnly)
-			if result.succeeded == false
+			let result = strongSelf.connection.getAlbumsForGenre(genre, firstOnly: firstOnly)
+			switch result
 			{
-
-			}
-			else
-			{
-				genre.albums = result.entity!
-				callback()
+				case .failure( _):
+					break
+				case .success(let list):
+					genre.albums = list
+					callback()
 			}
 		}
 	}
 
 	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist)
-			if result.succeeded == false
+			let result = strongSelf.connection.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist)
+			switch result
 			{
-
-			}
-			else
-			{
-				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-				artist.albums = result.entity!.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-				callback()
+				case .failure( _):
+					break
+				case .success(let list):
+					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+					artist.albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					callback()
 			}
 		}
 	}
 
 	func getArtistsForGenre(_ genre: Genre, callback: @escaping ([Artist]) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getArtistsForGenre(genre)
-			if result.succeeded == false
+			let result = strongSelf.connection.getArtistsForGenre(genre)
+			switch result
 			{
-
-			}
-			else
-			{
-				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-				callback(result.entity!.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
+				case .failure( _):
+					break
+				case .success(let list):
+					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+					callback(list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
 			}
 		}
 	}
 
 	func getPathForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getPathForAlbum(album)
-			if result.succeeded == false
+			let result = strongSelf.connection.getPathForAlbum(album)
+			switch result
 			{
-
-			}
-			else
-			{
-				album.path = result.entity
-				callback()
+				case .failure( _):
+					break
+				case .success(let path):
+					album.path = path
+					callback()
 			}
 		}
 	}
 
 	func getTracksForAlbums(_ albums: [Album], callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			for album in albums
 			{
-				let result = strongSelf._connection.getTracksForAlbum(album)
-				album.tracks = result.entity
+				let result = strongSelf.connection.getTracksForAlbum(album)
+				switch result
+				{
+					case .failure( _):
+						album.tracks = nil
+					case .success(let tracks):
+						album.tracks = tracks
+				}
 				callback()
 			}
 		}
@@ -251,58 +232,50 @@ final class MusicDataSource
 
 	func getTracksForPlaylist(_ playlist: Playlist, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.getTracksForPlaylist(playlist)
-			if result.succeeded == false
+			let result = strongSelf.connection.getTracksForPlaylist(playlist)
+			switch result
 			{
-
-			}
-			else
-			{
-				playlist.tracks = result.entity
-				callback()
+				case .failure( _):
+					break
+				case .success(let tracks):
+					playlist.tracks = tracks
+					callback()
 			}
 		}
 	}
 
 	func getMetadatasForAlbum(_ album: Album, callback: @escaping () -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			do
 			{
-				let result = try strongSelf._connection.getMetadatasForAlbum(album)
-				if result.succeeded == false
+				let result = try strongSelf.connection.getMetadatasForAlbum(album)
+				switch result
 				{
-				}
-				else
-				{
-					let metadatas = result.entity!
-					if let artist = metadatas["artist"] as! String?
-					{
-						album.artist = artist
-					}
-					if let year = metadatas["year"] as! String?
-					{
-						album.year = year
-					}
-					if let genre = metadatas["genre"] as! String?
-					{
-						album.genre = genre
-					}
+					case .failure( _):
+						break
+					case .success(let metadatas):
+						if let artist = metadatas["artist"] as! String?
+						{
+							album.artist = artist
+						}
+						if let year = metadatas["year"] as! String?
+						{
+							album.year = year
+						}
+						if let genre = metadatas["genre"] as! String?
+						{
+							album.genre = genre
+						}
 
-					callback()
+						callback()
 				}
 			}
 			catch
@@ -316,90 +289,81 @@ final class MusicDataSource
 
 	func updateDatabase(_ callback: @escaping (Bool) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.updateDatabase()
-			callback(result.succeeded)
+			let result = strongSelf.connection.updateDatabase()
+			switch result
+			{
+				case .failure( _):
+					callback(false)
+				case .success( _):
+					callback(true)
+			}
 		}
 	}
 
-	func createPlaylist(name: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	func createPlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.createPlaylist(name: name)
-			if result.succeeded == false
+			let result = strongSelf.connection.createPlaylist(named: name)
+			switch result
 			{
-				DispatchQueue.main.async {
-					_ = strongSelf.reinitialize()
-				}
+				case .failure( _):
+					DispatchQueue.main.async {
+						_ = strongSelf.reinitialize()
+					}
+				case .success( _):
+					break
 			}
 			callback(result)
 		}
 	}
 
-	func deletePlaylist(name: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	func deletePlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.deletePlaylist(name: name)
+			let result = strongSelf.connection.deletePlaylist(named: name)
 			callback(result)
 		}
 	}
 
-	func renamePlaylist(playlist: Playlist, newName: String, _ callback: @escaping (ActionResult<Void>) -> Void)
+	func rename(playlist: Playlist, withNewName newName: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.renamePlaylist(playlist: playlist, newName: newName)
+			let result = strongSelf.connection.renamePlaylist(playlist, withNewName: newName)
 			callback(result)
 		}
 	}
 
-	func addTrackToPlaylist(playlist: Playlist, track: Track, _ callback: @escaping (ActionResult<Void>) -> Void)
+	func addTrack(to playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.addTrackToPlaylist(playlist: playlist, track: track)
+			let result = strongSelf.connection.addTrack(track, toPlaylist: playlist)
 			callback(result)
 		}
 	}
 
-	func removeTrackFromPlaylist(playlist: Playlist, track: Track, _ callback: @escaping (ActionResult<Void>) -> Void)
+	func removeTrack(from playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
 	{
-		if _connection == nil || _connection.isConnected == false
-		{
-			return
-		}
+		guard MPDConnection.isValid(connection) else { return }
 
-		_queue.async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf._connection.removeTrackFromPlaylist(playlist: playlist, track: track)
+			let result = strongSelf.connection.removeTrack(track, fromPlaylist: playlist)
 			callback(result)
 		}
 	}
@@ -407,27 +371,27 @@ final class MusicDataSource
 	// MARK: - Private
 	private func startTimer(_ interval: Int)
 	{
-		_timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: _queue)
-		_timer.schedule(deadline: .now(), repeating: .seconds(interval))
-		_timer.setEventHandler { [weak self] in
+		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: queue)
+		timer.schedule(deadline: .now(), repeating: .seconds(interval))
+		timer.setEventHandler { [weak self] in
 			guard let strongSelf = self else { return }
 			strongSelf.getPlayerStatus()
 		}
-		_timer.resume()
+		timer.resume()
 	}
 
 	private func stopTimer()
 	{
-		if _timer != nil
+		if timer != nil
 		{
-			_timer.cancel()
-			_timer = nil
+			timer.cancel()
+			timer = nil
 		}
 	}
 
 	private func getPlayerStatus()
 	{
-		_ = _connection.getStatus()
+		_ = connection.getStatus()
 	}
 
 	// MARK: - Notifications

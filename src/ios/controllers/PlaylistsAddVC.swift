@@ -34,7 +34,7 @@ final class PlaylistsAddVC : NYXTableViewController
 		tableView.separatorColor = Colors.background
 		tableView.backgroundColor = Colors.backgroundAlt
 
-		titleView.text = NYXLocalizedString("lbl_playlists")
+		titleView.setMainText(NYXLocalizedString("lbl_playlists"), detailText: nil)
 
 		// Create playlist button
 		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -66,20 +66,19 @@ final class PlaylistsAddVC : NYXTableViewController
 			}
 			else
 			{
-				MusicDataSource.shared.createPlaylist(name: textField.text!) { (result: ActionResult<Void>) in
-					if result.succeeded
+				MusicDataSource.shared.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+					switch result
 					{
-						MusicDataSource.shared.getListForDisplayType(.playlists) {
+						case .failure(let error):
 							DispatchQueue.main.async {
-								self.getPlaylists()
+								MessageView.shared.showWithMessage(message: error.message)
 							}
-						}
-					}
-					else
-					{
-						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: result.messages.first!)
-						}
+						case .success( _):
+							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+								DispatchQueue.main.async {
+									self.getPlaylists()
+								}
+							}
 					}
 				}
 			}
@@ -97,7 +96,7 @@ final class PlaylistsAddVC : NYXTableViewController
 	// MARK: - Private
 	private func getPlaylists()
 	{
-		MusicDataSource.shared.getListForDisplayType(.playlists) {
+		MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 			DispatchQueue.main.async {
 				self.playlists = MusicDataSource.shared.playlists
 				self.tableView.reloadData()
@@ -147,16 +146,15 @@ extension PlaylistsAddVC
 
 		let playlist = playlists[indexPath.row]
 
-		MusicDataSource.shared.addTrackToPlaylist(playlist: playlist, track: track) { (result: ActionResult<Void>) in
+		MusicDataSource.shared.addTrack(to: playlist, track: track) { (result: Result<Bool, MPDConnectionError>) in
 			DispatchQueue.main.async {
-				if result.succeeded
+				switch result
 				{
-					let str = "\(track.name) \(NYXLocalizedString("lbl_playlist_track_added")) \(playlist.name)"
-					MessageView.shared.showWithMessage(message: Message(content: str, type: .success))
-				}
-				else
-				{
-					MessageView.shared.showWithMessage(message: result.messages.first!)
+					case .failure(let error):
+						MessageView.shared.showWithMessage(message: error.message)
+					case .success( _):
+						let str = "\(track.name) \(NYXLocalizedString("lbl_playlist_track_added")) \(playlist.name)"
+						MessageView.shared.showWithMessage(message: Message(content: str, type: .success))
 				}
 			}
 		}

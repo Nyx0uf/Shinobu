@@ -3,7 +3,7 @@ import UIKit
 
 protocol TypeChoiceViewDelegate : class
 {
-	func didSelectDisplayType(_ type: DisplayType)
+	func didSelectDisplayType(_ type: MusicalEntityType)
 }
 
 
@@ -57,23 +57,23 @@ extension TypeChoiceView : UITableViewDataSource
 		cell.textLabel?.textAlignment = .center
 		var title = ""
 		var selected = false
-		switch (indexPath.row)
+		switch indexPath.row
 		{
 			case 0:
 				title = NYXLocalizedString("lbl_albums")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.albums.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.albums.rawValue
 			case 1:
 				title = NYXLocalizedString("lbl_artists")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.artists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.artists.rawValue
 			case 2:
 				title = NYXLocalizedString("lbl_albumartist")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.albumsartists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.albumsartists.rawValue
 			case 3:
 				title = NYXLocalizedString("lbl_genres")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.genres.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.genres.rawValue
 			case 4:
 				title = NYXLocalizedString("lbl_playlists")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == DisplayType.playlists.rawValue
+				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.playlists.rawValue
 			default:
 				break
 		}
@@ -97,7 +97,7 @@ extension TypeChoiceView : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		switch (indexPath.row)
+		switch indexPath.row
 		{
 			case 0:
 				delegate?.didSelectDisplayType(.albums)

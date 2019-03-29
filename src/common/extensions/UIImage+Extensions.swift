@@ -1,6 +1,5 @@
 import UIKit
 import ImageIO
-import AVKit
 import MobileCoreServices
 
 
@@ -22,7 +21,7 @@ extension UIImage
 
 		// Proportionally scale source image
 		var scalingFactor: CGFloat, scaledWidth: CGFloat, scaledHeight: CGFloat
-		if (scaleWidth)
+		if scaleWidth
 		{
 			scalingFactor = 1.0 / sourceRatio
 			scaledWidth = targetWidth
@@ -80,7 +79,7 @@ extension UIImage
 
 			draw(in: rect, blendMode: .destinationIn, alpha: 1.0)
 
-			if (opacity > 0.0)
+			if opacity > 0.0
 			{
 				draw(in: rect, blendMode: .sourceAtop, alpha: opacity)
 			}
@@ -94,33 +93,16 @@ extension UIImage
 			return false
 		}
 
-		var destination: CGImageDestination? = nil
-		if CoreImageUtilities.shared.isHeicCapable == true
+		guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypeJPEG, 1, nil) else
 		{
-			destination = CGImageDestinationCreateWithURL(url as CFURL, AVFileType.heic as CFString as CFString, 1, nil)
-			if destination == nil
-			{
-				return false
-			}
-		}
-		else
-		{
-			destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypeJPEG, 1, nil)
-			if destination == nil
-			{
-				return false
-			}
-
-			let fileProperties =
-				[
-					kCGImageDestinationLossyCompressionQuality as String : 0.7
-				] as CFDictionary
-			CGImageDestinationSetProperties(destination!, fileProperties)
+			return false
 		}
 
-		CGImageDestinationAddImage(destination!, cgImage, nil)
+		CGImageDestinationSetProperties(destination, [kCGImageDestinationLossyCompressionQuality as String : 0.75] as CFDictionary)
 
-		return CGImageDestinationFinalize(destination!)
+		CGImageDestinationAddImage(destination, cgImage, nil)
+
+		return CGImageDestinationFinalize(destination)
 	}
 
 	class func loadFromFileURL(_ url: URL) -> UIImage?

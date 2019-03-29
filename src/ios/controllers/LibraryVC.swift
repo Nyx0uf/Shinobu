@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class LibraryVC : UIViewController, CenterViewController
+final class LibraryVC : NYXViewController, CenterViewController
 {
 	// MARK: - Private properties
 	// Albums view
@@ -10,8 +10,6 @@ final class LibraryVC : UIViewController, CenterViewController
 	private var searchView: UIView! = nil
 	// Search bar
 	private var searchBar: UISearchBar! = nil
-	// Button in the navigationbar
-	private var titleView: UIButton! = nil
 	// Should show the search view, flag
 	private var searchBarVisible = false
 	// Is currently searching, flag
@@ -19,15 +17,15 @@ final class LibraryVC : UIViewController, CenterViewController
 	// Long press gesture is recognized, flag
 	private var longPressRecognized = false
 	// View to change the type of items in the collection view
-	private var _typeChoiceView: TypeChoiceView! = nil
+	private var typeChoiceView: TypeChoiceView! = nil
 	// Active display type
-	private var _displayType = DisplayType(rawValue: Settings.shared.integer(forKey: .pref_displayType))!
+	private var displayType = MusicalEntityType(rawValue: Settings.shared.integer(forKey: .pref_displayType))!
 	// Audio server changed
-	private var _serverChanged = false
+	private var serverChanged = false
 	// Previewing context for peek & pop
-	private var _previewingContext: UIViewControllerPreviewing! = nil
+	//private var previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
-	private var _longPress: UILongPressGestureRecognizer! = nil
+	private var longPress: UILongPressGestureRecognizer! = nil
 	// MARK: - Public properties
 	// Delegate
 	var containerDelegate: ContainerVCDelegate? = nil
@@ -70,9 +68,8 @@ final class LibraryVC : UIViewController, CenterViewController
 		searchView.addSubview(searchBar)
 
 		// Navigation bar title
-		titleView = UIButton(frame: CGRect(0.0, 0.0, 100.0, navigationBar.height))
+		titleView.isEnabled = true
 		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
-		navigationItem.titleView = titleView
 
 		// Collection view
 		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
@@ -81,9 +78,9 @@ final class LibraryVC : UIViewController, CenterViewController
 		self.view.addSubview(collectionView)
 
 		// Longpress
-		_longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		_longPress.minimumPressDuration = 0.5
-		_longPress.delaysTouchesBegan = true
+		longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+		longPress.minimumPressDuration = 0.5
+		longPress.delaysTouchesBegan = true
 		updateLongpressState()
 
 		// Double tap
@@ -111,19 +108,22 @@ final class LibraryVC : UIViewController, CenterViewController
 				// Data source
 				MusicDataSource.shared.server = server.mpd
 				let resultDataSource = MusicDataSource.shared.initialize()
-				if resultDataSource.succeeded == false
+				switch resultDataSource
 				{
-					MessageView.shared.showWithMessage(message: resultDataSource.messages.first!)
+					case .failure(let error):
+						MessageView.shared.showWithMessage(message: error.message)
+					case .success(_):
+						break
 				}
-				if _displayType != .albums
+				if displayType != .albums
 				{
 					// Always fetch the albums list
-					MusicDataSource.shared.getListForDisplayType(.albums) {}
+					MusicDataSource.shared.getListForMusicalEntityType(.albums) {}
 				}
-				MusicDataSource.shared.getListForDisplayType(_displayType) {
+				MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 					DispatchQueue.main.async {
 						self.collectionView.items = MusicDataSource.shared.selectedList()
-						self.collectionView.displayType = self._displayType
+						self.collectionView.displayType = self.displayType
 						self.collectionView.reloadData()
 						self.updateNavigationTitle()
 						self.updateNavigationButtons()
@@ -133,9 +133,12 @@ final class LibraryVC : UIViewController, CenterViewController
 				// Player
 				PlayerController.shared.server = server.mpd
 				let resultPlayer = PlayerController.shared.initialize()
-				if resultPlayer.succeeded == false
+				switch resultPlayer
 				{
-					MessageView.shared.showWithMessage(message: resultPlayer.messages.first!)
+					case .failure(let error):
+						MessageView.shared.showWithMessage(message: error.message)
+					case .success(_):
+						break
 				}
 			}
 			else
@@ -161,13 +164,13 @@ final class LibraryVC : UIViewController, CenterViewController
 		}
 
 		// Audio server changed
-		if _serverChanged
+		if serverChanged
 		{
 			// Refresh view
-			MusicDataSource.shared.getListForDisplayType(_displayType) {
+			MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 				DispatchQueue.main.async {
 					self.collectionView.items = MusicDataSource.shared.selectedList()
-					self.collectionView.displayType = self._displayType
+					self.collectionView.displayType = self.displayType
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
@@ -179,14 +182,17 @@ final class LibraryVC : UIViewController, CenterViewController
 			if PlayerController.shared.server == nil
 			{
 				PlayerController.shared.server = MusicDataSource.shared.server
-				let result = PlayerController.shared.reinitialize()
-				if result.succeeded == false
+				let resultPlayer = PlayerController.shared.reinitialize()
+				switch resultPlayer
 				{
-					MessageView.shared.showWithMessage(message: result.messages.first!)
+					case .failure(let error):
+						MessageView.shared.showWithMessage(message: error.message)
+					case .success(_):
+						break
 				}
 			}
 
-			_serverChanged = false
+			serverChanged = false
 		}
 	}
 
@@ -204,7 +210,12 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		return .portrait
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	override var shouldAutorotate: Bool
+	{
+		return true
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
@@ -222,7 +233,7 @@ final class LibraryVC : UIViewController, CenterViewController
 
 		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
 		{
-			switch _displayType
+			switch displayType
 			{
 				case .albums:
 					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -281,7 +292,7 @@ final class LibraryVC : UIViewController, CenterViewController
 			}
 			alertController.addAction(cancelAction)
 
-			switch _displayType
+			switch displayType
 			{
 				case .albums:
 					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -441,22 +452,21 @@ final class LibraryVC : UIViewController, CenterViewController
 					}
 					alertController.addAction(renameAction)
 					let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action) in
-						MusicDataSource.shared.deletePlaylist(name: playlist.name) { (result: ActionResult<Void>) in
-							if result.succeeded
+						MusicDataSource.shared.deletePlaylist(named: playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+							switch result
 							{
-								MusicDataSource.shared.getListForDisplayType(.playlists) {
+								case .failure(let error):
 									DispatchQueue.main.async {
-										self.collectionView.items = MusicDataSource.shared.selectedList()
-										self.collectionView.reloadData()
-										self.updateNavigationTitle()
+										MessageView.shared.showWithMessage(message: error.message)
 									}
-								}
-							}
-							else
-							{
-								DispatchQueue.main.async {
-									MessageView.shared.showWithMessage(message: result.messages.first!)
-								}
+								case .success( _):
+									MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+										DispatchQueue.main.async {
+											self.collectionView.items = MusicDataSource.shared.selectedList()
+											self.collectionView.reloadData()
+											self.updateNavigationTitle()
+										}
+									}
 							}
 						}
 						self.longPressRecognized = false
@@ -473,13 +483,13 @@ final class LibraryVC : UIViewController, CenterViewController
 	// MARK: - Buttons actions
 	@objc func changeTypeAction(_ sender: UIButton?)
 	{
-		if _typeChoiceView == nil
+		if typeChoiceView == nil
 		{
-			_typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 220.0))
-			_typeChoiceView.delegate = self
+			typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 220.0))
+			typeChoiceView.delegate = self
 		}
 
-		if _typeChoiceView.superview != nil
+		if typeChoiceView.superview != nil
 		{ // Is visible
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
@@ -494,16 +504,16 @@ final class LibraryVC : UIViewController, CenterViewController
 					self.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
 				}
 			}, completion: { finished in
-				self._typeChoiceView.removeFromSuperview()
+				self.typeChoiceView.removeFromSuperview()
 			})
 		}
 		else
 		{ // Is hidden
-			_typeChoiceView.tableView.reloadData()
-			view.insertSubview(_typeChoiceView, belowSubview:collectionView)
+			typeChoiceView.tableView.reloadData()
+			view.insertSubview(typeChoiceView, belowSubview:collectionView)
 
 			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, self._typeChoiceView.bottom, self.collectionView.size)
+				self.collectionView.frame = CGRect(0, self.typeChoiceView.bottom, self.collectionView.size)
 				self.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 			}, completion:nil)
@@ -559,22 +569,21 @@ final class LibraryVC : UIViewController, CenterViewController
 			}
 			else
 			{
-				MusicDataSource.shared.createPlaylist(name: textField.text!) { (result: ActionResult<Void>) in
-					if result.succeeded
+				MusicDataSource.shared.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+					switch result
 					{
-						MusicDataSource.shared.getListForDisplayType(.playlists) {
+						case .failure(let error):
 							DispatchQueue.main.async {
-								self.collectionView.items = MusicDataSource.shared.selectedList()
-								self.collectionView.reloadData()
-								self.updateNavigationTitle()
+								MessageView.shared.showWithMessage(message: error.message)
 							}
-						}
-					}
-					else
-					{
-						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: result.messages.first!)
-						}
+						case .success( _):
+							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+								DispatchQueue.main.async {
+									self.collectionView.items = MusicDataSource.shared.selectedList()
+									self.collectionView.reloadData()
+									self.updateNavigationTitle()
+								}
+							}
 					}
 				}
 			}
@@ -602,40 +611,34 @@ final class LibraryVC : UIViewController, CenterViewController
 
 	private func updateNavigationTitle()
 	{
-		let p = NSMutableParagraphStyle()
-		p.alignment = .center
-		p.lineBreakMode = .byWordWrapping
+		var count = 0
 		var title = ""
-		switch _displayType
+		switch displayType
 		{
 			case .albums:
-				let n = MusicDataSource.shared.albums.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_album") : NYXLocalizedString("lbl_albums"))"
+				count = MusicDataSource.shared.albums.count
+				title = NYXLocalizedString("lbl_albums")
 			case .artists:
-				let n = MusicDataSource.shared.artists.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_artist") : NYXLocalizedString("lbl_artists"))"
+				count = MusicDataSource.shared.artists.count
+				title = NYXLocalizedString("lbl_artists")
 			case .albumsartists:
-				let n = MusicDataSource.shared.albumsartists.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_albumartist") : NYXLocalizedString("lbl_albumartists"))"
+				count = MusicDataSource.shared.albumsartists.count
+				title = NYXLocalizedString("lbl_albumartists")
 			case .genres:
-				let n = MusicDataSource.shared.genres.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_genre") : NYXLocalizedString("lbl_genres"))"
+				count = MusicDataSource.shared.genres.count
+				title = NYXLocalizedString("lbl_genres")
 			case .playlists:
-				let n = MusicDataSource.shared.playlists.count
-				title = "\(n) \(n == 1 ? NYXLocalizedString("lbl_playlist") : NYXLocalizedString("lbl_playlists"))"
+				count = MusicDataSource.shared.playlists.count
+				title = NYXLocalizedString("lbl_playlists")
 		}
-		let astr1 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
-		titleView.setAttributedTitle(astr1, for: .normal)
-		let astr2 = NSAttributedString(string: title, attributes: [NSAttributedString.Key.foregroundColor : Colors.mainEnabled, NSAttributedString.Key.font : UIFont.systemFont(ofSize: 17.0, weight: .semibold), NSAttributedString.Key.paragraphStyle : p])
-		titleView.setAttributedTitle(astr2, for: .highlighted)
-		titleView.setAttributedTitle(astr2, for: .selected)
+		titleView.setMainText(title, detailText: "(\(count))")
 	}
 
 	private func updateLongpressState()
 	{
 		#if NYX_DEBUG
-			collectionView.addGestureRecognizer(_longPress)
-			_longPress.isEnabled = true
+			collectionView.addGestureRecognizer(longPress)
+			longPress.isEnabled = true
 		#else
 		if traitCollection.forceTouchCapability == .available
 		{
@@ -656,7 +659,7 @@ final class LibraryVC : UIViewController, CenterViewController
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		if _displayType == .playlists
+		if displayType == .playlists
 		{
 			// Create playlist button
 			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -685,22 +688,21 @@ final class LibraryVC : UIViewController, CenterViewController
 			}
 			else
 			{
-				MusicDataSource.shared.renamePlaylist(playlist: playlist, newName: textField.text!) { (result: ActionResult<Void>) in
-					if result.succeeded
+				MusicDataSource.shared.rename(playlist: playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+					switch result
 					{
-						MusicDataSource.shared.getListForDisplayType(.playlists) {
+						case .failure(let error):
 							DispatchQueue.main.async {
-								self.collectionView.items = MusicDataSource.shared.selectedList()
-								self.collectionView.reloadData()
-								self.updateNavigationTitle()
+								MessageView.shared.showWithMessage(message: error.message)
 							}
-						}
-					}
-					else
-					{
-						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: result.messages.first!)
-						}
+						case .success( _):
+							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+								DispatchQueue.main.async {
+									self.collectionView.items = MusicDataSource.shared.selectedList()
+									self.collectionView.reloadData()
+									self.updateNavigationTitle()
+								}
+							}
 					}
 				}
 			}
@@ -718,7 +720,7 @@ final class LibraryVC : UIViewController, CenterViewController
 	// MARK: - Notifications
 	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
 	{
-		_serverChanged = true
+		serverChanged = true
 	}
 
 	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
@@ -735,20 +737,20 @@ extension LibraryVC : MusicalCollectionViewDelegate
 {
 	func isSearching(actively: Bool) -> Bool
 	{
-		return actively ? (self.searching && searchBar.isFirstResponder == true) : self.searching
+		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
 	func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
-		if (containerDelegate?.isMenuVisible())!
+		if containerDelegate!.isMenuVisible()
 		{
 			collectionView.deselectItem(at: indexPath, animated: false)
 			showLeftViewAction(nil)
 			return
 		}
 
-		switch _displayType
+		switch displayType
 		{
 			case .albums:
 				let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -828,15 +830,15 @@ extension LibraryVC : UISearchBarDelegate
 // MARK: - TypeChoiceViewDelegate
 extension LibraryVC : TypeChoiceViewDelegate
 {
-	func didSelectDisplayType(_ type: DisplayType)
+	func didSelectDisplayType(_ type: MusicalEntityType)
 	{
 		// Ignore if type did not change
-		if _displayType == type
+		if displayType == type
 		{
 			changeTypeAction(nil)
 			return
 		}
-		_displayType = type
+		displayType = type
 
 		Settings.shared.set(type.rawValue, forKey: .pref_displayType)
 
@@ -844,7 +846,7 @@ extension LibraryVC : TypeChoiceViewDelegate
 		updateLongpressState()
 
 		// Refresh view
-		MusicDataSource.shared.getListForDisplayType(type) {
+		MusicDataSource.shared.getListForMusicalEntityType(type) {
 			DispatchQueue.main.async {
 				self.collectionView.items = MusicDataSource.shared.selectedList()
 				self.collectionView.displayType = type
@@ -932,7 +934,7 @@ extension LibraryVC : UIViewControllerPreviewingDelegate
 			previewingContext.sourceRect = cellAttributes.frame
 			let sb = UIStoryboard(name: "main-iphone", bundle: .main)
 			let row = indexPath.row
-			if _displayType == .albums
+			if displayType == .albums
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 
@@ -940,7 +942,7 @@ extension LibraryVC : UIViewControllerPreviewingDelegate
 				vc.album = album
 				return vc
 			}
-			else if _displayType == .playlists
+			else if displayType == .playlists
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
 

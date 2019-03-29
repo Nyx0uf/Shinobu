@@ -25,7 +25,7 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 
 		// Navigation bar title
-		titleView.text = NYXLocalizedString("lbl_section_settings")
+		titleView.setMainText(NYXLocalizedString("lbl_section_settings"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)

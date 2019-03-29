@@ -39,19 +39,19 @@ final class Logger
 	// Singletion instance
 	static let shared = Logger()
 	// Custom date formatter
-	private let _dateFormatter: DateFormatter
+	private let dateFormatter: DateFormatter
 	// Logs list
-	private var _logs: [Log]
+	private var logs: [Log]
 	// Maximum logs countto keep
-	private let _maxLogsCount = 4096
+	private let maxLogsCount = 4096
 
 	// MARK: - Initializers
 	init()
 	{
-		self._dateFormatter = DateFormatter()
-		self._dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
+		self.dateFormatter = DateFormatter()
+		self.dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
 
-		self._logs = [Log]()
+		self.logs = [Log]()
 	}
 
 	// MARK: - Public
@@ -68,7 +68,7 @@ final class Logger
 
 		DispatchQueue.global(qos: .background).async { [weak self] in
 			guard let strongSelf = self else { return }
-			let log = Log(type: type, date: strongSelf._dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
+			let log = Log(type: type, date: strongSelf.dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
 			strongSelf.handleLog(log)
 		}
 	}
@@ -85,18 +85,18 @@ final class Logger
 
 	public func export() -> Data?
 	{
-		let str = _logs.reduce("") { $0 + $1.description + "\n\n"}
+		let str = logs.reduce("") { $0 + $1.description + "\n\n"}
 		return str.data(using: .utf8)
 	}
 
 	// MARK: - Private
 	private func handleLog(_ log: Log)
 	{
-		_logs.append(log)
+		logs.append(log)
 
-		if _logs.count > _maxLogsCount
+		if logs.count > maxLogsCount
 		{
-			_logs.remove(at: 0)
+			logs.removeFirst()
 		}
 	}
 }

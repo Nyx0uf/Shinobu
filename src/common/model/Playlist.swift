@@ -12,15 +12,6 @@ final class Playlist : MusicalEntity
 	{
 		super.init(name: name)
 	}
-
-	// MARK: - Hashable
-	override var hashValue: Int
-	{
-		get
-		{
-			return name.hashValue
-		}
-	}
 }
 
 // MARK: - Equatable

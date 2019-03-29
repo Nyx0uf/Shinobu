@@ -4,8 +4,8 @@
 import UIKit
 
 
-private let __threshold = UInt(2)
-private let __defaultPrecision = Int(8) // 8 -> 256
+private let THRESHOLD = UInt(2)
+private let DEFAULT_PRECISION = Int(8) // 8 -> 256
 
 
 enum SamplingEdge
@@ -21,7 +21,7 @@ final class KawaiiColors
 	// Image to analyze
 	let image: UIImage
 	// Edge color precision
-	private(set) var precision = __defaultPrecision
+	private(set) var precision = DEFAULT_PRECISION
 	// Sampling edge for background color
 	private(set) var samplingEdge = SamplingEdge.right
 	// Most dominant color in the whole image
@@ -146,14 +146,14 @@ final class KawaiiColors
 				for r in 0 ..< pp
 				{
 					var count = rawImageColors[r][g][b]
-					if count > __threshold
+					if count > THRESHOLD
 					{
 						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
 						colors.append(CountedObject(object: color, count: count))
 					}
 
 					count = rawEdgeColors[r][g][b]
-					if count > __threshold
+					if count > THRESHOLD
 					{
 						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
 						edgeColors.append(CountedObject(object: color, count: count))

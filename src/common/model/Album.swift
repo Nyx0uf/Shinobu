@@ -15,7 +15,7 @@ final class Album : MusicalEntity
 		didSet {
 			if let p = self.path
 			{
-				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:").lowercased())_\(p.sha256())"
+				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:#€").lowercased())_\(p.sha256())"
 			}
 		}
 	}
@@ -27,14 +27,7 @@ final class Album : MusicalEntity
 	private(set) lazy var localCoverURL: URL? = {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return nil}
 		guard let coverDirectoryPath = Settings.shared.string(forKey: .coversDirectory) else {return nil}
-		if CoreImageUtilities.shared.isHeicCapable == true
-		{
-			return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".heic")
-		}
-		else
-		{
-			return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
-		}
+		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
 	}()
 
 	// MARK: - Initializers
@@ -44,20 +37,11 @@ final class Album : MusicalEntity
 		super.init(name: name)
 	}
 
-	convenience init(name: String, artist: String)
-	{
-		self.init(name: name)
-
-		self.artist = artist
-	}
-
 	// MARK: - Hashable
-	override var hashValue: Int
+	override public func hash(into hasher: inout Hasher)
 	{
-		get
-		{
-			return Int(name.djb2()) ^ genre.hashValue ^ year.hashValue
-		}
+		let value = name.djb2() ^ Int32(genre.hashValue) ^ Int32(year.hashValue)
+		hasher.combine(value)
 	}
 }
 

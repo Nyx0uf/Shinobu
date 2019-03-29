@@ -88,9 +88,9 @@ extension Duration : Comparable
 
 extension Duration : Hashable
 {
-	var hashValue: Int
+	public func hash(into hasher: inout Hasher)
 	{
-		return seconds.hashValue
+		hasher.combine(seconds)
 	}
 }
 

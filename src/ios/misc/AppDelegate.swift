@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
 		// Global appearance
-		self._setAppearances()
+		self.setAppearances()
 
 		// Init settings
 		Settings.shared.initialize()
@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		return true
 	}
 
-	private func _setAppearances()
+	private func setAppearances()
 	{
 		let navigationBarAppearance = UINavigationBar.appearance()
 		navigationBarAppearance.tintColor = Colors.main

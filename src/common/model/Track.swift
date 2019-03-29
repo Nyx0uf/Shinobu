@@ -26,12 +26,10 @@ final class Track : MusicalEntity
 	}
 
 	// MARK: - Hashable
-	override var hashValue: Int
+	override public func hash(into hasher: inout Hasher)
 	{
-		get
-		{
-			return Int(name.djb2()) ^ Int(duration.seconds) ^ trackNumber ^ uri.hashValue
-		}
+		let value = name.djb2() ^ Int32(duration.seconds) ^ Int32(trackNumber) ^ Int32(uri.hashValue)
+		hasher.combine(value)
 	}
 }
 

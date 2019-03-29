@@ -54,12 +54,22 @@ final class ContainerVC : UIViewController
 		panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
 		panGestureRecognizer.delegate = self
 
-		self._updateCenterVC()
+		self.updateCenterVC()
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .lightContent
+	}
+
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
+	{
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	override var shouldAutorotate: Bool
+	{
+		return true
 	}
 
 	// MARK: - Gestures
@@ -69,41 +79,41 @@ final class ContainerVC : UIViewController
 
 		switch recognizer.state
 		{
-		case .began:
-			if menuVisible == false
-			{
-				if leftToRight
+			case .began:
+				if menuVisible == false
 				{
-					self.addMenuViewController()
+					if leftToRight
+					{
+						self.addMenuViewController()
+					}
+					else
+					{
+						recognizer.isEnabled = false
+					}
+					self.toggleShadow(true)
 				}
-				else
+			case .changed:
+				if let rview = recognizer.view
 				{
-					recognizer.isEnabled = false
+					rview.center.x = rview.center.x + recognizer.translation(in: view).x
+					recognizer.setTranslation(.zero, in: view)
 				}
-				self.toggleShadow(true)
-			}
-		case .changed:
-			if let rview = recognizer.view
-			{
-				rview.center.x = rview.center.x + recognizer.translation(in: view).x
-				recognizer.setTranslation(.zero, in: view)
-			}
-		case .ended:
-			if let _ = menuViewController, let rview = recognizer.view
-			{
-				let hasMovedGreaterThanHalfway = rview.center.x > view.bounds.size.width
-				self.showMenu(expand: hasMovedGreaterThanHalfway)
-			}
-			recognizer.isEnabled = true
-		case .cancelled:
-			recognizer.isEnabled = true
-		default:
-			break
+			case .ended:
+				if let _ = menuViewController, let rview = recognizer.view
+				{
+					let hasMovedGreaterThanHalfway = rview.center.x > view.bounds.size.width
+					self.showMenu(expand: hasMovedGreaterThanHalfway)
+				}
+				recognizer.isEnabled = true
+			case .cancelled:
+				recognizer.isEnabled = true
+			default:
+				break
 		}
 	}
 
 	// MARK: - Private
-	private func _updateCenterVC()
+	private func updateCenterVC()
 	{
 		// Remove current VC
 		if let currentCenterVC = mainViewController
@@ -221,7 +231,7 @@ extension ContainerVC : ContainerVCDelegate
 		if selectedVCType != .server
 		{
 			selectedVCType = .server
-			self._updateCenterVC()
+			self.updateCenterVC()
 			if menuVisible
 			{
 				self.toggleMenu()
@@ -238,7 +248,7 @@ extension ContainerVC : SideMenuVCDelegate
 		if selectedVCType != selectedVC
 		{
 			selectedVCType = selectedVC
-			self._updateCenterVC()
+			self.updateCenterVC()
 		}
 		self.toggleMenu()
 	}

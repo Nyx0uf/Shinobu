@@ -1,6 +1,16 @@
 import Foundation
 
 
+enum MusicalEntityType : Int
+{
+	case albums
+	case artists
+	case albumsartists
+	case genres
+	case playlists
+}
+
+
 class MusicalEntity : Hashable
 {
 	// MARK: - Public properties
@@ -14,12 +24,9 @@ class MusicalEntity : Hashable
 	}
 
 	// MARK: - Hashable
-	var hashValue: Int
+	public func hash(into hasher: inout Hasher)
 	{
-		get
-		{
-			return name.hashValue
-		}
+		hasher.combine(name)
 	}
 }
 

@@ -33,7 +33,7 @@ final class AlbumHeaderView : UIView
 		lblArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
 		self.addSubview(lblArtist)
 
-		lblGenre = UILabel(frame: CGRect(coverSize.width + 4, frame.height - 16 - 4, 100, 16))
+		lblGenre = UILabel(frame: CGRect(coverSize.width + 4, frame.height - 16 - 4, 120, 16))
 		lblGenre.font = UIFont.systemFont(ofSize: 12, weight: .light)
 		self.addSubview(lblGenre)
 
@@ -111,9 +111,9 @@ final class AlbumHeaderView : UIView
 		// Update frame for title / artist
 		let s = album.name as NSString
 		let width = frame.width - (coverSize.width + 8.0)
-		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : lblTitle.font], context: nil)
+		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : lblTitle.font!], context: nil)
 		lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
-		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width - (coverSize.width + 8.0), 18.0)
+		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width, 18.0)
 
 		lblTitle.text = album.name
 		lblArtist.text = album.artist

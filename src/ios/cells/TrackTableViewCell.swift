@@ -63,7 +63,7 @@ final class TrackTableViewCell : UITableViewCell
 		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8.0).isActive = true
 		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8.0).isActive = true
 		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0.0).isActive = true
-		self.separator.heightAnchor.constraint(equalToConstant: 1.0).isActive = true
+		self.separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
 	}
 
 	required init?(coder aDecoder: NSCoder)

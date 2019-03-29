@@ -34,7 +34,7 @@ extension String
 	}
 
 	// MARK: Indexes
-	subscript (i: Int) -> Character
+/*	subscript (i: Int) -> Character
 	{
 		return self[index(startIndex, offsetBy: i)]
 	}
@@ -42,25 +42,9 @@ extension String
 	subscript (i: Int) -> String
 	{
 		return String(self[i] as Character)
-	}
+	}*/
 
 	// MARK: - Hash functions
-	func md5() -> String
-	{
-		var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-		if let data = data(using: String.Encoding.utf8)
-		{
-			CC_MD5((data as NSData).bytes, CC_LONG(data.count), &digest)
-		}
-
-		var ret = ""
-		for i in 0 ..< Int(CC_MD5_DIGEST_LENGTH)
-		{
-			ret += String(format: "%02x", digest[i])
-		}
-		return ret
-	}
-
 	func sha256() -> String
 	{
 		var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
