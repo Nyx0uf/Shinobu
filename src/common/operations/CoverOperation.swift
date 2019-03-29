@@ -71,10 +71,6 @@ final class CoverOperation : Operation
 			isFinished = true
 			return
 		}
-		/*if path.first != Character("/")
-		{
-			path = "/" + path
-		}*/
 
 		// No mpd server configured, abort
 		guard let server = ServersManager.shared.getSelectedServer()?.covers else

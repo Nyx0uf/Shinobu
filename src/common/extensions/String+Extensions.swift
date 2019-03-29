@@ -33,17 +33,6 @@ extension String
 		return String((0...length - 1).map{ _ in letters.randomElement()! })
 	}
 
-	// MARK: Indexes
-/*	subscript (i: Int) -> Character
-	{
-		return self[index(startIndex, offsetBy: i)]
-	}
-
-	subscript (i: Int) -> String
-	{
-		return String(self[i] as Character)
-	}*/
-
 	// MARK: - Hash functions
 	func sha256() -> String
 	{

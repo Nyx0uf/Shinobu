@@ -77,10 +77,6 @@ struct CoverServer : Codable, Equatable
 			{
 				urlPath = "/" + urlPath
 			}
-			/*if urlPath[0] != "/"
-			{
-				urlPath = "/" + urlPath
-			}*/
 			urlPath = urlPath + path
 		}
 
