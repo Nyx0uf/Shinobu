@@ -1,13 +1,11 @@
 import UIKit
 
 
-final class ArtistsListVC : NYXViewController
+final class ArtistsListVC : MusicalCollectionVC
 {
 	// MARK: - Public properties
-	// Collection View
-	var collectionView: MusicalCollectionView!
 	// Selected genre
-	var genre: Genre
+	let genre: Genre
 
 	// MARK: - Initializers
 	init(genre: Genre)
@@ -25,24 +23,6 @@ final class ArtistsListVC : NYXViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		// Remove back button label
-		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
-		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
-		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-
-		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutArtistsCollection)
-		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
-		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
-		navigationItem.leftBarButtonItems = [displayButton]
-		navigationItem.leftItemsSupplementBackButton = true
-
-		// CollectionView
-		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
-		collectionView.myDelegate = self
-		collectionView.displayType = .artists
-		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
-		self.view.addSubview(collectionView)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -51,28 +31,9 @@ final class ArtistsListVC : NYXViewController
 
 		MusicDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
 			DispatchQueue.main.async {
-				self.collectionView.items = artists
+				self.collectionView.setItems(artists, displayType: .artists)
 				self.collectionView.reloadData()
 				self.updateNavigationTitle()
-			}
-		}
-	}
-
-	// MARK: - Actions
-	@objc func changeCollectionLayoutType(_ sender: Any?)
-	{
-		var b = Settings.shared.bool(forKey: .pref_layoutArtistsCollection)
-		b = !b
-		Settings.shared.set(b, forKey: .pref_layoutArtistsCollection)
-
-		collectionView.layoutType = b ? .collection : .table
-		if let buttons = navigationItem.leftBarButtonItems
-		{
-			if buttons.count >= 1
-			{
-				let btn = buttons[0]
-				btn.image = b ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection")
-				btn.accessibilityLabel = NYXLocalizedString(b ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
 			}
 		}
 	}
@@ -85,14 +46,14 @@ final class ArtistsListVC : NYXViewController
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension ArtistsListVC : MusicalCollectionViewDelegate
+extension ArtistsListVC
 {
-	func isSearching(actively: Bool) -> Bool
+	override func isSearching(actively: Bool) -> Bool
 	{
-		return false
+		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
-	func didSelectItem(indexPath: IndexPath)
+	override func didSelectItem(indexPath: IndexPath)
 	{
 		let artist = collectionView.items[indexPath.row] as! Artist
 		let vc = AlbumsListVC(artist: artist)

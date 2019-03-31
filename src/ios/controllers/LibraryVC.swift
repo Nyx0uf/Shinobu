@@ -1,94 +1,32 @@
 import UIKit
 
 
-final class LibraryVC : NYXViewController, CenterViewController
+final class LibraryVC : MusicalCollectionVC, CenterViewController
 {
+	// MARK: - Public properties
+	// Delegate
+	var containerDelegate: ContainerVCDelegate? = nil
 	// MARK: - Private properties
-	// Albums view
-	private var collectionView: MusicalCollectionView!
-	// Search view
-	private var searchView: UIView! = nil
-	// Search bar
-	private var searchBar: UISearchBar! = nil
-	// Should show the search view, flag
-	private var searchBarVisible = false
-	// Is currently searching, flag
-	private var searching = false
-	// Long press gesture is recognized, flag
-	private var longPressRecognized = false
 	// View to change the type of items in the collection view
 	private var typeChoiceView: TypeChoiceView! = nil
 	// Active display type
 	private var displayType = MusicalEntityType(rawValue: Settings.shared.integer(forKey: .pref_displayType))!
 	// Audio server changed
 	private var serverChanged = false
-	// Previewing context for peek & pop
-	//private var previewingContext: UIViewControllerPreviewing! = nil
-	// Long press gesture for devices without force touch
-	private var longPress: UILongPressGestureRecognizer! = nil
-	// MARK: - Public properties
-	// Delegate
-	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		// Remove back button label
-		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
-		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
-		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-
-		// Search button
-		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
-		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		navigationItem.rightBarButtonItems = [searchButton]
 
 		// Menu button
 		let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
 		menuButton.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
-		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutLibraryCollection)
-		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
-		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
-		navigationItem.leftBarButtonItems = [menuButton, displayButton]
-
-		// Searchbar
-		let navigationBar = (navigationController?.navigationBar)!
-		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, navigationBar.bottom))
-		searchBar = UISearchBar(frame: CGRect(0.0, navigationBar.y, navigationBar.width, navigationBar.height))
-		searchView.backgroundColor = Colors.background
-		searchView.alpha = 0.0
-		searchBar.searchBarStyle = .minimal
-		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		searchBar.tintColor = Colors.main
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = Colors.main
-		searchBar.showsCancelButton = true
-		searchBar.delegate = self
-		searchView.addSubview(searchBar)
+		navigationItem.leftBarButtonItem = menuButton
 
 		// Navigation bar title
 		titleView.isEnabled = true
 		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
-
-		// Collection view
-		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
-		collectionView.myDelegate = self
-		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
-		self.view.addSubview(collectionView)
-
-		// Longpress
-		longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		longPress.minimumPressDuration = 0.5
-		longPress.delaysTouchesBegan = true
-		updateLongpressState()
-
-		// Double tap
-		let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
-		doubleTap.numberOfTapsRequired = 2
-		doubleTap.numberOfTouchesRequired = 1
-		doubleTap.delaysTouchesBegan = true
-		collectionView.addGestureRecognizer(doubleTap)
 
 		_ = MiniPlayerView.shared.visible
 
@@ -122,8 +60,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 				}
 				MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 					DispatchQueue.main.async {
-						self.collectionView.items = MusicDataSource.shared.selectedList()
-						self.collectionView.displayType = self.displayType
+						self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: self.displayType)
 						self.collectionView.reloadData()
 						self.updateNavigationTitle()
 						self.updateNavigationButtons()
@@ -147,12 +84,6 @@ final class LibraryVC : NYXViewController, CenterViewController
 				containerDelegate?.showServerVC()
 			}
 		}
-
-		// Since we are in search mode, show the bar
-		if searchView.superview == nil
-		{
-			navigationController?.view.addSubview(searchView)
-		}
 		
 		// Deselect cell
 		if let idxs = collectionView.indexPathsForSelectedItems
@@ -169,8 +100,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 			// Refresh view
 			MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 				DispatchQueue.main.async {
-					self.collectionView.items = MusicDataSource.shared.selectedList()
-					self.collectionView.displayType = self.displayType
+					self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: self.displayType)
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
@@ -201,11 +131,6 @@ final class LibraryVC : NYXViewController, CenterViewController
 		super.viewWillDisappear(animated)
 
 		OperationManager.shared.cancelAllOperations()
-
-		if searchView.superview != nil
-		{
-			searchView.removeFromSuperview()
-		}
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -224,7 +149,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 	}
 
 	// MARK: - Gestures
-	@objc func doubleTap(_ gest: UITapGestureRecognizer)
+	override func doubleTap(_ gest: UITapGestureRecognizer)
 	{
 		if gest.state != .ended
 		{
@@ -269,7 +194,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 		}
 	}
 
-	@objc func longPress(_ gest: UILongPressGestureRecognizer)
+	override func longPress(_ gest: UILongPressGestureRecognizer)
 	{
 		if longPressRecognized
 		{
@@ -462,7 +387,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 								case .success( _):
 									MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 										DispatchQueue.main.async {
-											self.collectionView.items = MusicDataSource.shared.selectedList()
+											self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
 											self.collectionView.reloadData()
 											self.updateNavigationTitle()
 										}
@@ -520,37 +445,9 @@ final class LibraryVC : NYXViewController, CenterViewController
 		}
 	}
 
-	@objc func showSearchBarAction(_ sender: Any?)
-	{
-		UIView.animate(withDuration: 0.35, delay: 0.0, options: .curveEaseOut, animations: {
-			self.searchView.alpha = 1.0
-			self.searchBar.becomeFirstResponder()
-		}, completion:{ finished in
-			self.searchBarVisible = true
-		})
-	}
-
 	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		containerDelegate?.toggleMenu()
-	}
-
-	@objc func changeCollectionLayoutType(_ sender: Any?)
-	{
-		var b = Settings.shared.bool(forKey: .pref_layoutLibraryCollection)
-		b = !b
-		Settings.shared.set(b, forKey: .pref_layoutLibraryCollection)
-
-		collectionView.layoutType = b ? .collection : .table
-		if let buttons = navigationItem.leftBarButtonItems
-		{
-			if buttons.count >= 2
-			{
-				let btn = buttons[1]
-				btn.image = b ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection")
-				btn.accessibilityLabel = NYXLocalizedString(b ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
-			}
-		}
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?)
@@ -579,7 +476,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.collectionView.items = MusicDataSource.shared.selectedList()
+									self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
 									self.collectionView.reloadData()
 									self.updateNavigationTitle()
 								}
@@ -599,16 +496,6 @@ final class LibraryVC : NYXViewController, CenterViewController
 	}
 
 	// MARK: - Private
-	private func showNavigationBar(animated: Bool = true)
-	{
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: .curveEaseOut, animations: {
-			self.searchBar.resignFirstResponder()
-			self.searchView.alpha = 0.0
-		}, completion:{ finished in
-			self.searchBarVisible = false
-		})
-	}
-
 	private func updateNavigationTitle()
 	{
 		var count = 0
@@ -632,26 +519,6 @@ final class LibraryVC : NYXViewController, CenterViewController
 				title = NYXLocalizedString("lbl_playlists")
 		}
 		titleView.setMainText(title, detailText: "(\(count))")
-	}
-
-	private func updateLongpressState()
-	{
-		#if NYX_DEBUG
-			collectionView.addGestureRecognizer(longPress)
-			longPress.isEnabled = true
-		#else
-		if traitCollection.forceTouchCapability == .available
-		{
-			collectionView.removeGestureRecognizer(_longPress)
-			_longPress.isEnabled = false
-			_previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
-		}
-		else
-		{
-			collectionView.addGestureRecognizer(_longPress)
-			_longPress.isEnabled = true
-		}
-		#endif
 	}
 
 	private func updateNavigationButtons()
@@ -698,7 +565,7 @@ final class LibraryVC : NYXViewController, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.collectionView.items = MusicDataSource.shared.selectedList()
+									self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
 									self.collectionView.reloadData()
 									self.updateNavigationTitle()
 								}
@@ -733,14 +600,14 @@ final class LibraryVC : NYXViewController, CenterViewController
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension LibraryVC : MusicalCollectionViewDelegate
+extension LibraryVC
 {
-	func isSearching(actively: Bool) -> Bool
+	override func isSearching(actively: Bool) -> Bool
 	{
 		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
-	func didSelectItem(indexPath: IndexPath)
+	override func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it
 		if containerDelegate!.isMenuVisible()
@@ -776,57 +643,6 @@ extension LibraryVC : MusicalCollectionViewDelegate
 	}
 }
 
-// MARK: - UISearchBarDelegate
-extension LibraryVC : UISearchBarDelegate
-{
-	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
-	{
-		collectionView.searchResults.removeAll()
-		searching = false
-		searchBar.text = ""
-		showNavigationBar(animated: true)
-		collectionView.reloadData()
-	}
-
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar)
-	{
-		searchBar.resignFirstResponder()
-		searchBar.endEditing(true)
-		collectionView.reloadData()
-	}
-
-	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar)
-	{
-		searching = true
-		// Copy original source to avoid crash when nothing was searched
-		collectionView.searchResults = MusicDataSource.shared.selectedList()
-	}
-
-	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
-	{
-		if MusicDataSource.shared.selectedList().count > 0
-		{
-			if String.isNullOrWhiteSpace(searchText)
-			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList()
-				collectionView.reloadData()
-				return
-			}
-
-			if Settings.shared.bool(forKey: .pref_fuzzySearch)
-			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
-			}
-			else
-			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
-			}
-
-			collectionView.reloadData()
-		}
-	}
-}
-
 // MARK: - TypeChoiceViewDelegate
 extension LibraryVC : TypeChoiceViewDelegate
 {
@@ -848,8 +664,7 @@ extension LibraryVC : TypeChoiceViewDelegate
 		// Refresh view
 		MusicDataSource.shared.getListForMusicalEntityType(type) {
 			DispatchQueue.main.async {
-				self.collectionView.items = MusicDataSource.shared.selectedList()
-				self.collectionView.displayType = type
+				self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: type)
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
 				if MusicDataSource.shared.selectedList().count == 0

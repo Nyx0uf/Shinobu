@@ -1,52 +1,10 @@
 import UIKit
 
 
-/* Collection view layout */
-enum CollectionViewLayoutType : Int
-{
-	case collection
-	case table
-}
-
-
 protocol MusicalCollectionViewDelegate : class
 {
 	func isSearching(actively: Bool) -> Bool
 	func didSelectItem(indexPath: IndexPath)
-}
-
-final class TableFlowLayout: UICollectionViewFlowLayout
-{
-	let itemHeight: CGFloat = 64
-
-	override init()
-	{
-		super.init()
-		setupLayout()
-	}
-
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
-
-	func setupLayout()
-	{
-		self.itemSize = CGSize(itemWidth(), itemHeight)
-		minimumInteritemSpacing = 0
-		minimumLineSpacing = 1
-		scrollDirection = .vertical
-	}
-
-	private func itemWidth() -> CGFloat
-	{
-		return UIScreen.main.bounds.width
-	}
-
-	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint
-	{
-		return collectionView!.contentOffset
-	}
 }
 
 final class CollectionFlowLayout : UICollectionViewFlowLayout
@@ -88,24 +46,14 @@ final class MusicalCollectionView : UICollectionView
 {
 	// MARK: - Properties
 	// Data sources
-	var items = [MusicalEntity]()
+	private(set) var items = [MusicalEntity]()
 	var searchResults = [MusicalEntity]()
 	// Type of entities displayd
 	var displayType = MusicalEntityType.albums
-	// Collection view layout type
-	var layoutType = CollectionViewLayoutType.collection
-	{
-		didSet
-		{
-			setCollectionLayout(animated: true)
-		}
-	}
 	// Delegate
 	weak var myDelegate: MusicalCollectionViewDelegate!
 	// Cover download operations
 	private var downloadOperations = [String : Operation]()
-	private let cellIdentifier_table = "fr.whine.shinobu.cell.musicalentity.table"
-	private let cellIdentifier_collection = "fr.whine.shinobu.cell.musicalentity.collection"
 
 	override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout)
 	{
@@ -113,17 +61,26 @@ final class MusicalCollectionView : UICollectionView
 		
 		self.dataSource = self
 		self.delegate = self
-		self.isPrefetchingEnabled = true
-		self.prefetchDataSource = self
+		self.isPrefetchingEnabled = false
 		self.backgroundColor = Colors.background
-		self.layoutType = .collection
 
-		self.setCollectionLayout(animated: false)
+		self.setCollectionViewLayout(CollectionFlowLayout(), animated: false)
+		self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
 	}
 	
 	required init?(coder aDecoder: NSCoder)
 	{
-		fatalError("not implemented")
+		fatalError("init(coder:) has not been implemented")
+	}
+
+	func setItems(_ items: [MusicalEntity], displayType: MusicalEntityType)
+	{
+		if displayType != self.displayType
+		{
+			self.displayType = displayType
+			self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
+		}
+		self.items = items
 	}
 
 	// MARK: - Private
@@ -153,24 +110,21 @@ final class MusicalCollectionView : UICollectionView
 		return downloadOperation
 	}
 
-	private func setCollectionLayout(animated: Bool)
+	private func cellIdentifier() -> String
 	{
-		UIView.animate(withDuration: animated ? 0.2 : 0, delay: 0.0, options: .curveEaseInOut, animations: {
-			self.collectionViewLayout.invalidateLayout()
-
-			if self.layoutType == .collection
-			{
-				self.setCollectionViewLayout(CollectionFlowLayout(), animated: animated)
-				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_collection)
-			}
-			else
-			{
-				self.setCollectionViewLayout(TableFlowLayout(), animated: animated)
-				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier_table)
-			}
-			self.reloadItems(at: self.indexPathsForVisibleItems)
-		}, completion: { finished in
-		})
+		switch displayType
+		{
+			case .albums:
+				return "fr.whine.shinobu.cell.musicalentity.album"
+			case .artists:
+				return "fr.whine.shinobu.cell.musicalentity.artist"
+			case .albumsartists:
+				return "fr.whine.shinobu.cell.musicalentity.albumartist"
+			case .genres:
+				return "fr.whine.shinobu.cell.musicalentity.genre"
+			case .playlists:
+				return "fr.whine.shinobu.cell.musicalentity.playlist"
+		}
 	}
 }
 
@@ -194,13 +148,12 @@ extension MusicalCollectionView : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.layoutType == .table ? cellIdentifier_table : cellIdentifier_collection, for: indexPath) as! MusicalEntityBaseCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
+		cell.type = displayType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
-		cell.layoutList = self.layoutType == .table
-		cell.type = displayType
 
 		// Sanity check
 		let searching = myDelegate.isSearching(actively: false)
@@ -212,92 +165,21 @@ extension MusicalCollectionView : UICollectionViewDataSource
 		let entity = searching ? searchResults[indexPath.row] : items[indexPath.row]
 		// Init cell
 		cell.label.text = entity.name
-		cell.detailLabel.text = ""
 		cell.accessibilityLabel = entity.name
 		cell.image = nil
 		switch displayType
 		{
 			case .albums:
 				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
-				if String.isNullOrWhiteSpace((entity as! Album).artist)
-				{
-					MusicDataSource.shared.getMetadatasForAlbum((entity as! Album), callback: {
-						DispatchQueue.main.async {
-							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-							{
-								c.detailLabel.text = (entity as! Album).artist
-							}
-						}
-					})
-				}
-				else
-				{
-					cell.detailLabel.text = (entity as! Album).artist
-				}
-			case .artists:
-				configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
-			case .albumsartists:
-				configureCellForArtist(cell, indexPath: indexPath, artist: entity as! Artist)
+			case .artists, .albumsartists:
+				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
 			case .genres:
-				configureCellForGenre(cell, indexPath: indexPath, genre: entity as! Genre)
+				cell.image = generateCoverFromString(entity.name[0..<2].uppercased(), size: cell.imageView.size)
 			case .playlists:
 				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
 		}
 
 		return cell
-	}
-
-	private func configureCellForGenre(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, genre: Genre)
-	{
-		if let album = genre.albums.first
-		{
-			handleCoverForCell(cell, at: indexPath, withAlbum: album)
-		}
-		else
-		{
-			if myDelegate.isSearching(actively: true)
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {
-				if let album = genre.albums.first
-				{
-					DispatchQueue.main.async {
-						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-						{
-							self.handleCoverForCell(c, at: indexPath, withAlbum: album)
-						}
-					}
-				}
-			}
-			return
-		}
-	}
-
-	private func configureCellForArtist(_ cell: MusicalEntityBaseCell, indexPath: IndexPath, artist: Artist)
-	{
-		if let album = artist.albums.first
-		{
-			handleCoverForCell(cell, at: indexPath, withAlbum: album)
-		}
-		else
-		{
-			if myDelegate.isSearching(actively: true)
-			{
-				return
-			}
-			MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: displayType == .albumsartists) {
-				if let album = artist.albums.first
-				{
-					DispatchQueue.main.async {
-						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-						{
-							self.handleCoverForCell(c, at: indexPath, withAlbum: album)
-						}
-					}
-				}
-			}
-		}
 	}
 
 	private func handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
@@ -371,84 +253,6 @@ extension MusicalCollectionView : UICollectionViewDelegate
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{
 		myDelegate.didSelectItem(indexPath: indexPath)
-	}
-
-	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
-	{
-		// When searching things can go wrong, this prevent some crashes
-		/*let src = myDelegate.isSearching(actively: false) ? searchResults : items
-		if indexPath.row >= src.count
-		{
-			return
-		}
-
-		var tmpAlbum: Album? = nil
-		switch displayType
-		{
-			case .albums:
-				tmpAlbum = src[indexPath.row] as? Album
-			case .genres:
-				let genre = src[indexPath.row] as! Genre
-				tmpAlbum = genre.albums.first
-			case .artists:
-				let artist = src[indexPath.row] as! Artist
-				tmpAlbum = artist.albums.first
-			case .playlists:
-				tmpAlbum = nil
-		}
-		guard let album = tmpAlbum else { return }
-
-		// Remove download cover operation if still in queue
-		/et key = album.uniqueIdentifier
-		if let op = _downloadOperations[key] as! CoverOperation?
-		{
-			Logger.shared.log(type: .debug, message: "canceling \(op)")
-			_downloadOperations.removeValue(forKey: key)
-			op.cancel()
-		}*/
-	}
-}
-
-// MARK: - UICollectionViewDataSourcePrefetching
-extension MusicalCollectionView : UICollectionViewDataSourcePrefetching
-{
-	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath])
-	{
-		if displayType == .albums || displayType == .playlists
-		{
-			return
-		}
-
-		let src = myDelegate.isSearching(actively: false) ? searchResults : items
-
-		if displayType == .genres
-		{
-			for indexPath in indexPaths
-			{
-				if indexPath.row < src.count
-				{
-					let genre = src[indexPath.row] as! Genre
-					if genre.albums.first == nil
-					{
-						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: true) {}
-					}
-				}
-			}
-		}
-		else if displayType == .artists || displayType == .albumsartists
-		{
-			for indexPath in indexPaths
-			{
-				if indexPath.row < src.count
-				{
-					let artist = src[indexPath.row] as! Artist
-					if artist.albums.first == nil
-					{
-						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: displayType == .albumsartists) {}
-					}
-				}
-			}
-		}
 	}
 }
 

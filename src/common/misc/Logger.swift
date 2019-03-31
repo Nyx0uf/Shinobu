@@ -57,7 +57,7 @@ final class Logger
 	// MARK: - Public
 	public func log(type: LogType, message: String, file: String = #file, function: String = #function, line: Int = #line)
 	{
-#if NYX_DEBUG
+#if DEBUG
 		print(message)
 #endif
 

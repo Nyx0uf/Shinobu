@@ -110,9 +110,6 @@ final class Settings
 				Settings.Key.pref_enableLogging.rawValue : false,
 				Settings.Key.pref_shakeToPlayRandom.rawValue : false,
 				Settings.Key.pref_displayType.rawValue : MusicalEntityType.albums.rawValue,
-				Settings.Key.pref_layoutLibraryCollection.rawValue : true,
-				Settings.Key.pref_layoutAlbumsCollection.rawValue : false,
-				Settings.Key.pref_layoutArtistsCollection.rawValue : false,
 				Settings.Key.mpd_repeat.rawValue : false,
 				Settings.Key.mpd_shuffle.rawValue : false,
 			]
@@ -143,9 +140,6 @@ extension Settings.Key
 	static let pref_shakeToPlayRandom = Settings.Key("pref_shakeToPlayRandom")
 	static let pref_enableLogging = Settings.Key("pref_enableLogging")
 	static let pref_displayType = Settings.Key("pref_displayType")
-	static let pref_layoutLibraryCollection = Settings.Key("pref_layoutLibraryCollection")
-	static let pref_layoutArtistsCollection = Settings.Key("pref_layoutArtistsCollection")
-	static let pref_layoutAlbumsCollection = Settings.Key("pref_layoutAlbumsCollection")
 	static let mpd_repeat = Settings.Key("mpd_repeat")
 	static let mpd_shuffle = Settings.Key("mpd_shuffle")
 }

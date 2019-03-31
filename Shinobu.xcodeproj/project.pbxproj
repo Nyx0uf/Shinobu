@@ -75,6 +75,7 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
+		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD7FE22203977009B3B68 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FD22203977009B3B68 /* Colors.swift */; };
@@ -256,6 +257,7 @@
 		4358B08221EB47C2009A3BBF /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FD22203977009B3B68 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -433,6 +435,7 @@
 				4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */,
 				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
+				4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */,
 				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
 				4358B06B21EB47A8009A3BBF /* PlayerVC.swift */,
 				4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */,
@@ -723,6 +726,7 @@
 				4358B07021EB47A8009A3BBF /* AlbumDetailVC.swift in Sources */,
 				4358B06E21EB47A8009A3BBF /* AlbumsListVC.swift in Sources */,
 				4358B08521EB47C2009A3BBF /* TracksListTableView.swift in Sources */,
+				4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */,
 				4358B02521EB42B4009A3BBF /* CGPoint+Extensions.swift in Sources */,
 				4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */,
 				4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */,
@@ -934,7 +938,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NYX_DEBUG";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1038,7 +1042,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NYX_DEBUG";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;

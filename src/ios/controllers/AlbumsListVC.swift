@@ -1,21 +1,11 @@
 import UIKit
 
 
-final class AlbumsListVC : NYXViewController
+final class AlbumsListVC : MusicalCollectionVC
 {
 	// MARK: - Public properties
-	// Collection View
-	var collectionView: MusicalCollectionView!
 	// Selected artist
-	var artist: Artist
-
-	// MARK: - Private properties
-	// Previewing context for peek & pop
-	private var previewingContext: UIViewControllerPreviewing! = nil
-	// Long press gesture for devices without force touch
-	private var longPress: UILongPressGestureRecognizer! = nil
-	// Long press gesture is recognized, flag
-	private var longPressRecognized = false
+	let artist: Artist
 
 	// MARK: - Initializers
 	init(artist: Artist)
@@ -33,30 +23,6 @@ final class AlbumsListVC : NYXViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
-		// Remove back button label
-		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
-		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
-		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-
-		// Display layout button
-		let layoutCollectionViewAsCollection = Settings.shared.bool(forKey: .pref_layoutAlbumsCollection)
-		let displayButton = UIBarButtonItem(image: layoutCollectionViewAsCollection ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection"), style: .plain, target: self, action: #selector(changeCollectionLayoutType(_:)))
-		displayButton.accessibilityLabel = NYXLocalizedString(layoutCollectionViewAsCollection ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
-		navigationItem.leftBarButtonItems = [displayButton]
-		navigationItem.leftItemsSupplementBackButton = true
-
-		// CollectionView
-		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
-		collectionView.myDelegate = self
-		collectionView.displayType = .albums
-		collectionView.layoutType = layoutCollectionViewAsCollection ? .collection : .table
-		self.view.addSubview(collectionView)
-
-		// Longpress
-		longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		longPress.minimumPressDuration = 0.5
-		longPress.delaysTouchesBegan = true
-		updateLongpressState()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -67,7 +33,7 @@ final class AlbumsListVC : NYXViewController
 		{
 			MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				DispatchQueue.main.async {
-					self.collectionView.items = self.artist.albums
+					self.collectionView.setItems(self.artist.albums, displayType: .albums)
 					self.collectionView.reloadData()
 					self.updateNavigationTitle()
 				}
@@ -76,7 +42,7 @@ final class AlbumsListVC : NYXViewController
 		else
 		{
 			DispatchQueue.main.async {
-				self.collectionView.items = self.artist.albums
+				self.collectionView.setItems(self.artist.albums, displayType: .albums)
 				self.collectionView.reloadData()
 				self.updateNavigationTitle()
 			}
@@ -84,7 +50,7 @@ final class AlbumsListVC : NYXViewController
 	}
 
 	// MARK: - Gestures
-	@objc func longPress(_ gest: UILongPressGestureRecognizer)
+	override func longPress(_ gest: UILongPressGestureRecognizer)
 	{
 		if longPressRecognized
 		{
@@ -128,56 +94,22 @@ final class AlbumsListVC : NYXViewController
 		}
 	}
 
-	// MARK: - Actions
-	@objc func changeCollectionLayoutType(_ sender: Any?)
-	{
-		var b = Settings.shared.bool(forKey: .pref_layoutAlbumsCollection)
-		b = !b
-		Settings.shared.set(b, forKey: .pref_layoutAlbumsCollection)
-
-		collectionView.layoutType = b ? .collection : .table
-		if let buttons = navigationItem.leftBarButtonItems
-		{
-			if buttons.count >= 1
-			{
-				let btn = buttons[0]
-				btn.image = b ? #imageLiteral(resourceName: "btn-display-list") : #imageLiteral(resourceName: "btn-display-collection")
-				btn.accessibilityLabel = NYXLocalizedString(b ? "lbl_pref_layoutastable" : "lbl_pref_layoutascollection")
-			}
-		}
-	}
-
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
 		titleView.setMainText(artist.name, detailText: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())")
 	}
-
-	private func updateLongpressState()
-	{
-		if traitCollection.forceTouchCapability == .available
-		{
-			collectionView.removeGestureRecognizer(longPress)
-			longPress.isEnabled = false
-			previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
-		}
-		else
-		{
-			collectionView.addGestureRecognizer(longPress)
-			longPress.isEnabled = true
-		}
-	}
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension AlbumsListVC : MusicalCollectionViewDelegate
+extension AlbumsListVC
 {
-	func isSearching(actively: Bool) -> Bool
+	override func isSearching(actively: Bool) -> Bool
 	{
-		return false
+		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
-	func didSelectItem(indexPath: IndexPath)
+	override func didSelectItem(indexPath: IndexPath)
 	{
 		let album = artist.albums[indexPath.row]
 		let vc = AlbumDetailVC(album: album)
