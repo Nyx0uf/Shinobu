@@ -24,7 +24,7 @@ final class ArtistsListVC : MusicalCollectionVC
 	{
 		super.viewDidLoad()
 
-		self.collectionView.displayType = .artists
+		self.collectionView.musicalEntityType = .artists
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -53,7 +53,7 @@ extension ArtistsListVC
 	override func didSelectItem(indexPath: IndexPath)
 	{
 		let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : dataSource.items[indexPath.row] as! Artist
-		let vc = AlbumsListVC(artist: artist)
+		let vc = AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }

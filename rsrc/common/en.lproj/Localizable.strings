@@ -40,7 +40,6 @@
 "lbl_send_logs" = "Send logs";
 "lbl_volume_control_disabled" = "Volume control is disabled";
 "lbl_update_db" = "Update database";
-"lbl_show_songs_stats" = "Show technical track informations";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
@@ -78,8 +77,6 @@
 "lbl_section_database" = "Database";
 
 "lbl_pref_shaketoplayrandom" = "Shake to play random album";
-"lbl_pref_layoutastable" = "Layout as table";
-"lbl_pref_layoutascollection" = "Layout as collection";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

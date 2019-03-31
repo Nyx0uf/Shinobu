@@ -9,8 +9,6 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 	// MARK: - Private properties
 	// View to change the type of items in the collection view
 	private var typeChoiceView: TypeChoiceView! = nil
-	// Active display type
-	private var displayType = MusicalEntityType(rawValue: Settings.shared.integer(forKey: .pref_displayType))!
 	// Audio server changed
 	private var serverChanged = false
 
@@ -53,16 +51,14 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					case .success(_):
 						break
 				}
-				if displayType != .albums
+				if dataSource.musicalEntityType != .albums
 				{
 					// Always fetch the albums list
 					MusicDataSource.shared.getListForMusicalEntityType(.albums) {}
 				}
-				MusicDataSource.shared.getListForMusicalEntityType(displayType) {
+				MusicDataSource.shared.getListForMusicalEntityType(dataSource.musicalEntityType) {
 					DispatchQueue.main.async {
-						self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: self.displayType)
-						self.collectionView.displayType = self.displayType
-						self.collectionView.reloadData()
+						self.setItems(MusicDataSource.shared.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
 						self.updateNavigationTitle()
 						self.updateNavigationButtons()
 					}
@@ -99,11 +95,9 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		if serverChanged
 		{
 			// Refresh view
-			MusicDataSource.shared.getListForMusicalEntityType(displayType) {
+			MusicDataSource.shared.getListForMusicalEntityType(dataSource.musicalEntityType) {
 				DispatchQueue.main.async {
-					self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: self.displayType)
-					self.collectionView.displayType = self.displayType
-					self.collectionView.reloadData()
+					self.setItems(MusicDataSource.shared.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
 					self.updateNavigationButtons()
@@ -160,7 +154,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 
 		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
 		{
-			switch displayType
+			switch dataSource.musicalEntityType
 			{
 				case .albums:
 					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -219,7 +213,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			}
 			alertController.addAction(cancelAction)
 
-			switch displayType
+			switch dataSource.musicalEntityType
 			{
 				case .albums:
 					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -389,9 +383,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 								case .success( _):
 									MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 										DispatchQueue.main.async {
-											self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
-											self.collectionView.displayType = .playlists
-											self.collectionView.reloadData()
+											self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 											self.updateNavigationTitle()
 										}
 									}
@@ -422,7 +414,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
 				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
 				//self.view.layoutIfNeeded()
-				if MusicDataSource.shared.selectedList().count == 0
+				if self.dataSource.items.count == 0
 				{
 					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
 				}
@@ -479,9 +471,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
-									self.collectionView.displayType = .playlists
-									self.collectionView.reloadData()
+									self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 									self.updateNavigationTitle()
 								}
 							}
@@ -504,7 +494,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 	{
 		var count = 0
 		var title = ""
-		switch displayType
+		switch dataSource.musicalEntityType
 		{
 			case .albums:
 				count = MusicDataSource.shared.albums.count
@@ -530,7 +520,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		if displayType == .playlists
+		if dataSource.musicalEntityType == .playlists
 		{
 			// Create playlist button
 			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -569,9 +559,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
-									self.collectionView.displayType = .playlists
-									self.collectionView.reloadData()
+									self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 									self.updateNavigationTitle()
 								}
 							}
@@ -617,7 +605,7 @@ extension LibraryVC
 			return
 		}
 
-		switch displayType
+		switch dataSource.musicalEntityType
 		{
 			case .albums:
 				let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
@@ -625,11 +613,11 @@ extension LibraryVC
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .artists:
 				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-				let vc = AlbumsListVC(artist: artist)
+				let vc = AlbumsListVC(artist: artist, isAlbumArtist: false)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .albumsartists:
 				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
-				let vc = AlbumsListVC(artist: artist)
+				let vc = AlbumsListVC(artist: artist, isAlbumArtist: true)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .genres:
 				let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
@@ -649,12 +637,12 @@ extension LibraryVC : TypeChoiceViewDelegate
 	func didSelectDisplayType(_ type: MusicalEntityType)
 	{
 		// Ignore if type did not change
-		if displayType == type
+		if dataSource.musicalEntityType == type
 		{
 			changeTypeAction(nil)
 			return
 		}
-		displayType = type
+		//dataSource.musicalEntityType = type
 
 		Settings.shared.set(type.rawValue, forKey: .pref_displayType)
 
@@ -664,11 +652,9 @@ extension LibraryVC : TypeChoiceViewDelegate
 		// Refresh view
 		MusicDataSource.shared.getListForMusicalEntityType(type) {
 			DispatchQueue.main.async {
-				self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: type)
-				self.collectionView.displayType = type
-				self.collectionView.reloadData()
+				self.setItems(MusicDataSource.shared.listForMusicalEntityType(type), forMusicalEntityType: type)
 				self.changeTypeAction(nil)
-				if MusicDataSource.shared.selectedList().count == 0
+				if self.dataSource.items.count == 0
 				{
 					self.collectionView.contentOffset = CGPoint(0, 64)
 				}
@@ -744,12 +730,12 @@ extension LibraryVC
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 			let row = indexPath.row
-			if displayType == .albums
+			if dataSource.musicalEntityType == .albums
 			{
 				let album = searching ? dataSource.searchResults[row] as! Album : dataSource.items[row] as! Album
 				return AlbumDetailVC(album: album)
 			}
-			else if displayType == .playlists
+			else if dataSource.musicalEntityType == .playlists
 			{
 				let playlist = searching ? dataSource.searchResults[row] as! Playlist : dataSource.items[row] as! Playlist
 				return PlaylistDetailVC(playlist: playlist)

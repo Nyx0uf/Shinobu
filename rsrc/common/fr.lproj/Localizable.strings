@@ -40,7 +40,6 @@
 "lbl_send_logs" = "Envoyer les logs";
 "lbl_volume_control_disabled" = "Le contrôle du volume est désactivé";
 "lbl_update_db" = "MaJ base de données";
-"lbl_show_songs_stats" = "Afficher les informations techniques de la piste en cours";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
@@ -78,8 +77,6 @@
 "lbl_section_database" = "Base de données";
 
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
-"lbl_pref_layoutastable" = "Disposition en liste";
-"lbl_pref_layoutascollection" = "Disposition en collection";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

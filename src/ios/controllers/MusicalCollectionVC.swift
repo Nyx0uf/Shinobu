@@ -6,7 +6,7 @@ class MusicalCollectionVC : NYXViewController
 	// MARK: - Public properties
 	// Collection view
 	private(set) var collectionView: MusicalCollectionView!
-	//
+	// Collection viex's data source & delegate
 	var dataSource: MusicalCollectionDataSourceAndDelegate!
 	// Search view
 	private(set) var searchView: UIView! = nil
@@ -54,7 +54,7 @@ class MusicalCollectionVC : NYXViewController
 		// Collection view
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self)
 
-		collectionView = MusicalCollectionView(frame: self.view.bounds)
+		collectionView = MusicalCollectionView(frame: self.view.bounds, musicalEntityType: dataSource.musicalEntityType)
 		collectionView.delegate = dataSource
 		collectionView.dataSource = dataSource
 		self.view.addSubview(collectionView)
@@ -77,7 +77,6 @@ class MusicalCollectionVC : NYXViewController
 	{
 		super.viewWillAppear(animated)
 
-		// Since we are in search mode, show the bar
 		if searchView.superview == nil
 		{
 			navigationController?.view.addSubview(searchView)
@@ -116,7 +115,7 @@ class MusicalCollectionVC : NYXViewController
 	}
 
 	// MARK: - Public
-	public func updateLongpressState()
+	func updateLongpressState()
 	{
 		if traitCollection.forceTouchCapability == .available
 		{
@@ -128,6 +127,16 @@ class MusicalCollectionVC : NYXViewController
 		{
 			collectionView.addGestureRecognizer(longPress)
 			longPress.isEnabled = true
+		}
+	}
+
+	func setItems(_ items: [MusicalEntity], forMusicalEntityType type: MusicalEntityType, reload: Bool = true)
+	{
+		dataSource.setItems(items, forType: type)
+		self.collectionView.musicalEntityType = type
+		if reload
+		{
+			self.collectionView.reloadData()
 		}
 	}
 
@@ -166,7 +175,7 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		dataSource.searchResults = self.dataSource.items //MusicDataSource.shared.selectedList()
+		dataSource.searchResults = self.dataSource.items
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)

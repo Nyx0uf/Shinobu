@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class CollectionFlowLayout : UICollectionViewFlowLayout
+final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 {
 	let sideSpan = CGFloat(10.0)
 	let columns = 3
@@ -40,25 +40,22 @@ final class MusicalCollectionView : UICollectionView
 {
 	// MARK: - Properties
 	// Type of entities displayed
-	var displayType = MusicalEntityType.albums
+	var musicalEntityType = MusicalEntityType.albums
 	{
 		didSet
 		{
-			if displayType != oldValue
-			{
-				self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
-			}
+			self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
 		}
 	}
 
-	init(frame: CGRect)
+	init(frame: CGRect, musicalEntityType: MusicalEntityType)
 	{
-		super.init(frame: frame, collectionViewLayout: CollectionFlowLayout())
+		super.init(frame: frame, collectionViewLayout: MusicalCollectionViewFlowLayout())
 
 		self.isPrefetchingEnabled = false
 		self.backgroundColor = Colors.background
 
-		self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
+		self.musicalEntityType = musicalEntityType
 	}
 	
 	required init?(coder aDecoder: NSCoder)
@@ -69,7 +66,7 @@ final class MusicalCollectionView : UICollectionView
 	// MARK: - Private
 	private func cellIdentifier() -> String
 	{
-		switch displayType
+		switch musicalEntityType
 		{
 			case .albums:
 				return "fr.whine.shinobu.cell.musicalentity.album"

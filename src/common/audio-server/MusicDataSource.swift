@@ -9,7 +9,7 @@ final class MusicDataSource
 	// MPD server
 	var server: MPDServer! = nil
 	// Selected display type
-	private(set) var displayType = MusicalEntityType.albums
+	//private(set) var displayType = MusicalEntityType.albums
 	// Albums list
 	private(set) var albums = [Album]()
 	// Genres list
@@ -86,9 +86,9 @@ final class MusicDataSource
 		return initialize()
 	}
 
-	func selectedList() -> [MusicalEntity]
+	func listForMusicalEntityType(_ type: MusicalEntityType) -> [MusicalEntity]
 	{
-		switch displayType
+		switch type
 		{
 			case .albums:
 				return albums
@@ -107,7 +107,7 @@ final class MusicDataSource
 	{
 		guard MPDConnection.isValid(connection) else { return }
 
-		self.displayType = type
+		//self.displayType = type
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }

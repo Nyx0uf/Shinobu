@@ -14,7 +14,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	// Data sources
 	var items = [MusicalEntity]()
 	var searchResults = [MusicalEntity]()
-	var type = MusicalEntityType.albums
+	var musicalEntityType = MusicalEntityType.albums
 	// Delegate
 	weak var delegate: MusicalCollectionDataSourceAndDelegateDelegate!
 	// Cover download operations
@@ -22,7 +22,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 
 	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate)
 	{
-		self.type = type
+		self.musicalEntityType = type
 		self.delegate = delegate
 	}
 
@@ -30,7 +30,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	func setItems(_ items: [MusicalEntity], forType type: MusicalEntityType)
 	{
 		self.items = items
-		self.type = type
+		self.musicalEntityType = type
 	}
 
 	// MARK: - Private
@@ -62,7 +62,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 
 	private func cellIdentifier() -> String
 	{
-		switch type
+		switch musicalEntityType
 		{
 			case .albums:
 				return "fr.whine.shinobu.cell.musicalentity.album"
@@ -98,7 +98,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
-		cell.type = type
+		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
@@ -116,7 +116,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		cell.label.text = entity.name
 		cell.accessibilityLabel = entity.name
 		cell.image = nil
-		switch type
+		switch musicalEntityType
 		{
 			case .albums:
 				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
