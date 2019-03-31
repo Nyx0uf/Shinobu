@@ -607,11 +607,6 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 // MARK: - MusicalCollectionViewDelegate
 extension LibraryVC
 {
-	override func isSearching(actively: Bool) -> Bool
-	{
-		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
-	}
-
 	override func didSelectItem(indexPath: IndexPath)
 	{
 		// If menu is visible ignore default behavior and hide it

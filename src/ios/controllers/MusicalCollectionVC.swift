@@ -171,31 +171,30 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		dataSource.searchResults = MusicDataSource.shared.selectedList()
+		dataSource.searchResults = self.dataSource.items //MusicDataSource.shared.selectedList()
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		if MusicDataSource.shared.selectedList().count > 0
+		guard dataSource.items.count > 0 else { return }
+
+		if String.isNullOrWhiteSpace(searchText)
 		{
-			if String.isNullOrWhiteSpace(searchText)
-			{
-				dataSource.searchResults = MusicDataSource.shared.selectedList()
-				collectionView.reloadData()
-				return
-			}
-
-			if Settings.shared.bool(forKey: .pref_fuzzySearch)
-			{
-				dataSource.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
-			}
-			else
-			{
-				dataSource.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
-			}
-
+			dataSource.searchResults = self.dataSource.items
 			collectionView.reloadData()
+			return
 		}
+
+		if Settings.shared.bool(forKey: .pref_fuzzySearch)
+		{
+			dataSource.searchResults = dataSource.items.filter({$0.name.fuzzySearch(withString: searchText)})
+		}
+		else
+		{
+			dataSource.searchResults = dataSource.items.filter({$0.name.lowercased().contains(searchText.lowercased())})
+		}
+
+		collectionView.reloadData()
 	}
 }
 
@@ -204,7 +203,7 @@ extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 {
 	@objc func isSearching(actively: Bool) -> Bool
 	{
-		return false
+		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
 	@objc func didSelectItem(indexPath: IndexPath)

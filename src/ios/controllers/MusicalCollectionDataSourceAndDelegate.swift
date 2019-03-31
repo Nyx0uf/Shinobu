@@ -64,16 +64,16 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	{
 		switch type
 		{
-		case .albums:
-			return "fr.whine.shinobu.cell.musicalentity.album"
-		case .artists:
-			return "fr.whine.shinobu.cell.musicalentity.artist"
-		case .albumsartists:
-			return "fr.whine.shinobu.cell.musicalentity.albumartist"
-		case .genres:
-			return "fr.whine.shinobu.cell.musicalentity.genre"
-		case .playlists:
-			return "fr.whine.shinobu.cell.musicalentity.playlist"
+			case .albums:
+				return "fr.whine.shinobu.cell.musicalentity.album"
+			case .artists:
+				return "fr.whine.shinobu.cell.musicalentity.artist"
+			case .albumsartists:
+				return "fr.whine.shinobu.cell.musicalentity.albumartist"
+			case .genres:
+				return "fr.whine.shinobu.cell.musicalentity.genre"
+			case .playlists:
+				return "fr.whine.shinobu.cell.musicalentity.playlist"
 		}
 	}
 }
@@ -82,7 +82,6 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-		Logger.shared.log(string: "TESTEST")
 		if delegate == nil
 		{
 			return 0
@@ -119,14 +118,14 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		cell.image = nil
 		switch type
 		{
-		case .albums:
-			handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
-		case .artists, .albumsartists:
-			cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
-		case .genres:
-			cell.image = generateCoverFromString(entity.name[0..<2].uppercased(), size: cell.imageView.size)
-		case .playlists:
-			cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
+			case .albums:
+				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
+			case .artists, .albumsartists:
+				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
+			case .genres:
+				cell.image = generateCoverFromString(entity.name[0..<2].uppercased(), size: cell.imageView.size)
+			case .playlists:
+				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
 		}
 
 		return cell

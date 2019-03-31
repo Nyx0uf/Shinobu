@@ -105,14 +105,9 @@ final class AlbumsListVC : MusicalCollectionVC
 // MARK: - MusicalCollectionViewDelegate
 extension AlbumsListVC
 {
-	override func isSearching(actively: Bool) -> Bool
-	{
-		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
-	}
-
 	override func didSelectItem(indexPath: IndexPath)
 	{
-		let album = artist.albums[indexPath.row]
+		let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
 		let vc = AlbumDetailVC(album: album)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
