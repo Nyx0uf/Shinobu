@@ -736,35 +736,23 @@ extension NYXNavigationController : UIViewControllerTransitioningDelegate
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension LibraryVC : UIViewControllerPreviewingDelegate
+extension LibraryVC
 {
-	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
-	{
-		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
-	}
-
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
 	{
 		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let sb = UIStoryboard(name: "main-iphone", bundle: .main)
 			let row = indexPath.row
 			if displayType == .albums
 			{
-				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
-
-				let album = searching ? dataSource.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
-				vc.album = album
-				return vc
+				let album = searching ? dataSource.searchResults[row] as! Album : dataSource.items[row] as! Album
+				return AlbumDetailVC(album: album)
 			}
 			else if displayType == .playlists
 			{
-				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
-
-				let playlist = searching ? dataSource.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
-				vc.playlist = playlist
-				return vc
+				let playlist = searching ? dataSource.searchResults[row] as! Playlist : dataSource.items[row] as! Playlist
+				return PlaylistDetailVC(playlist: playlist)
 			}
 		}
 		return nil

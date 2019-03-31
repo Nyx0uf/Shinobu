@@ -23,6 +23,7 @@ final class AlbumsListVC : MusicalCollectionVC
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
 		self.collectionView.displayType = .albums
 	}
 
@@ -71,7 +72,7 @@ final class AlbumsListVC : MusicalCollectionVC
 			}
 			alertController.addAction(cancelAction)
 
-			let album = artist.albums[indexPath.row]
+			let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
 			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 				PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
@@ -98,7 +99,7 @@ final class AlbumsListVC : MusicalCollectionVC
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		titleView.setMainText(artist.name, detailText: "\(artist.albums.count) \(artist.albums.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())")
+		titleView.setMainText(artist.name, detailText: "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())")
 	}
 }
 
@@ -114,26 +115,16 @@ extension AlbumsListVC
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension AlbumsListVC : UIViewControllerPreviewingDelegate
+extension AlbumsListVC
 {
-	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
-	{
-		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
-	}
-
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
 	{
 		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let sb = UIStoryboard(name: "main-iphone", bundle: .main)
 
-			let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
-
-			let row = indexPath.row
-			let album = artist.albums[row]
-			vc.album = album
-			return vc
+			let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
+			return AlbumDetailVC(album: album)
 		}
 		return nil
 	}
@@ -147,7 +138,8 @@ extension AlbumsListVC
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
 			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				MusicDataSource.shared.getTracksForAlbums(self.artist.albums) {
-					let ar = self.artist.albums.compactMap({$0.tracks}).flatMap({$0})
+					let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
 				}
 			}
@@ -157,7 +149,8 @@ extension AlbumsListVC
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
 			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				MusicDataSource.shared.getTracksForAlbums(self.artist.albums) {
-					let ar = self.artist.albums.compactMap({$0.tracks}).flatMap({$0})
+					let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
 				}
 			}
@@ -166,7 +159,8 @@ extension AlbumsListVC
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
 			MusicDataSource.shared.getAlbumsForArtist(self.artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
-				for album in self.artist.albums
+				let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+				for album in source
 				{
 					PlayerController.shared.addAlbumToQueue(album)
 				}

@@ -118,22 +118,17 @@ class MusicalCollectionVC : NYXViewController
 	// MARK: - Public
 	public func updateLongpressState()
 	{
-#if DEBUG
-		collectionView.addGestureRecognizer(longPress)
-		longPress.isEnabled = true
-#else
 		if traitCollection.forceTouchCapability == .available
 		{
-			collectionView.removeGestureRecognizer(_longPress)
+			collectionView.removeGestureRecognizer(longPress)
 			longPress.isEnabled = false
 			previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
 		}
 		else
 		{
-			collectionView.addGestureRecognizer(_longPress)
+			collectionView.addGestureRecognizer(longPress)
 			longPress.isEnabled = true
 		}
-#endif
 	}
 
 	// MARK: - Private
@@ -209,5 +204,19 @@ extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 	@objc func didSelectItem(indexPath: IndexPath)
 	{
 
+	}
+}
+
+// MARK: - UIViewControllerPreviewingDelegate
+extension MusicalCollectionVC : UIViewControllerPreviewingDelegate
+{
+	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController)
+	{
+		self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
+	}
+
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
+	{
+		return nil
 	}
 }
