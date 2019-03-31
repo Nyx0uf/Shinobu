@@ -60,7 +60,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 				}
 				MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 					DispatchQueue.main.async {
-						self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: self.displayType)
+						self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: self.displayType)
+						self.collectionView.displayType = self.displayType
 						self.collectionView.reloadData()
 						self.updateNavigationTitle()
 						self.updateNavigationButtons()
@@ -100,7 +101,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			// Refresh view
 			MusicDataSource.shared.getListForMusicalEntityType(displayType) {
 				DispatchQueue.main.async {
-					self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: self.displayType)
+					self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: self.displayType)
+					self.collectionView.displayType = self.displayType
 					self.collectionView.reloadData()
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
@@ -161,10 +163,10 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			switch displayType
 			{
 				case .albums:
-					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				case .artists:
-					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -172,7 +174,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						}
 					}
 				case .albumsartists:
-					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
 					MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
 						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -180,7 +182,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						}
 					}
 				case .genres:
-					let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -188,7 +190,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						}
 					}
 				case .playlists:
-					let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
 					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 			}
 		}
@@ -220,7 +222,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			switch displayType
 			{
 				case .albums:
-					let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -243,7 +245,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
-					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist) {
 							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
@@ -281,7 +283,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .albumsartists:
-					let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
 							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
@@ -319,7 +321,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
-					let genre = self.searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					let genre = self.searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
 							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
@@ -357,7 +359,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .playlists:
-					let playlist = self.searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = self.searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playPlaylist(playlist, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -387,7 +389,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 								case .success( _):
 									MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 										DispatchQueue.main.async {
-											self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
+											self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
+											self.collectionView.displayType = .playlists
 											self.collectionView.reloadData()
 											self.updateNavigationTitle()
 										}
@@ -476,7 +479,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
+									self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
+									self.collectionView.displayType = .playlists
 									self.collectionView.reloadData()
 									self.updateNavigationTitle()
 								}
@@ -565,7 +569,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						case .success( _):
 							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: .playlists)
+									self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: .playlists)
+									self.collectionView.displayType = .playlists
 									self.collectionView.reloadData()
 									self.updateNavigationTitle()
 								}
@@ -620,23 +625,23 @@ extension LibraryVC
 		switch displayType
 		{
 			case .albums:
-				let album = searching ? collectionView.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+				let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
 				let vc = AlbumDetailVC(album: album)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .artists:
-				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
 				let vc = AlbumsListVC(artist: artist)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .albumsartists:
-				let artist = searching ? collectionView.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
 				let vc = AlbumsListVC(artist: artist)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .genres:
-				let genre = searching ? collectionView.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+				let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
 				let vc = ArtistsListVC(genre: genre)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .playlists:
-				let playlist = searching ? collectionView.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+				let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
 				let vc = PlaylistDetailVC(playlist: playlist)
 				self.navigationController?.pushViewController(vc, animated: true)
 		}
@@ -664,7 +669,8 @@ extension LibraryVC : TypeChoiceViewDelegate
 		// Refresh view
 		MusicDataSource.shared.getListForMusicalEntityType(type) {
 			DispatchQueue.main.async {
-				self.collectionView.setItems(MusicDataSource.shared.selectedList(), displayType: type)
+				self.dataSource.setItems(MusicDataSource.shared.selectedList(), forType: type)
+				self.collectionView.displayType = type
 				self.collectionView.reloadData()
 				self.changeTypeAction(nil)
 				if MusicDataSource.shared.selectedList().count == 0
@@ -753,7 +759,7 @@ extension LibraryVC : UIViewControllerPreviewingDelegate
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "AlbumDetailVC") as! AlbumDetailVC
 
-				let album = searching ? collectionView.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
+				let album = searching ? dataSource.searchResults[row] as! Album : MusicDataSource.shared.albums[row]
 				vc.album = album
 				return vc
 			}
@@ -761,7 +767,7 @@ extension LibraryVC : UIViewControllerPreviewingDelegate
 			{
 				let vc = sb.instantiateViewController(withIdentifier: "PlaylistDetailVC") as! PlaylistDetailVC
 
-				let playlist = searching ? collectionView.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
+				let playlist = searching ? dataSource.searchResults[row] as! Playlist : MusicDataSource.shared.playlists[row]
 				vc.playlist = playlist
 				return vc
 			}

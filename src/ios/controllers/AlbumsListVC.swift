@@ -23,6 +23,7 @@ final class AlbumsListVC : MusicalCollectionVC
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+		self.collectionView.displayType = .albums
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -33,7 +34,7 @@ final class AlbumsListVC : MusicalCollectionVC
 		{
 			MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: MusicDataSource.shared.displayType == .albumsartists) {
 				DispatchQueue.main.async {
-					self.collectionView.setItems(self.artist.albums, displayType: .albums)
+					self.dataSource.setItems(self.artist.albums, forType: .albums)
 					self.collectionView.reloadData()
 					self.updateNavigationTitle()
 				}
@@ -42,7 +43,7 @@ final class AlbumsListVC : MusicalCollectionVC
 		else
 		{
 			DispatchQueue.main.async {
-				self.collectionView.setItems(self.artist.albums, displayType: .albums)
+				self.dataSource.setItems(self.artist.albums, forType: .albums)
 				self.collectionView.reloadData()
 				self.updateNavigationTitle()
 			}

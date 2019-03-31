@@ -23,6 +23,8 @@ final class ArtistsListVC : MusicalCollectionVC
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+
+		self.collectionView.displayType = .artists
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -31,7 +33,7 @@ final class ArtistsListVC : MusicalCollectionVC
 
 		MusicDataSource.shared.getArtistsForGenre(genre) { (artists: [Artist]) in
 			DispatchQueue.main.async {
-				self.collectionView.setItems(artists, displayType: .artists)
+				self.dataSource.setItems(artists, forType: .artists)
 				self.collectionView.reloadData()
 				self.updateNavigationTitle()
 			}
@@ -41,7 +43,7 @@ final class ArtistsListVC : MusicalCollectionVC
 	// MARK: - Private
 	private func updateNavigationTitle()
 	{
-		titleView.setMainText(genre.name, detailText: "\(collectionView.items.count) \(collectionView.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())")
+		titleView.setMainText(genre.name, detailText: "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())")
 	}
 }
 
@@ -55,7 +57,7 @@ extension ArtistsListVC
 
 	override func didSelectItem(indexPath: IndexPath)
 	{
-		let artist = collectionView.items[indexPath.row] as! Artist
+		let artist = dataSource.items[indexPath.row] as! Artist
 		let vc = AlbumsListVC(artist: artist)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}

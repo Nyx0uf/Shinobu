@@ -76,6 +76,7 @@
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
+		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD7FE22203977009B3B68 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FD22203977009B3B68 /* Colors.swift */; };
@@ -258,6 +259,7 @@
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
+		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FD22203977009B3B68 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -429,22 +431,17 @@
 		4358AFF721EB41E2009A3BBF /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4384ECD72250E1B000F3140C /* global */,
+				4384ECD62250E18800F3140C /* settings */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
 				4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */,
 				4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */,
-				4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */,
-				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
 				4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */,
-				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
+				4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */,
 				4358B06B21EB47A8009A3BBF /* PlayerVC.swift */,
 				4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */,
 				4358B06621EB47A7009A3BBF /* PlaylistsAddVC.swift */,
-				4358B06721EB47A7009A3BBF /* ServerAddVC.swift */,
-				43DBD7FB22203501009B3B68 /* ServersListVC.swift */,
-				4358B06921EB47A7009A3BBF /* SettingsVC.swift */,
-				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
-				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -559,6 +556,28 @@
 				4358B07B21EB47C2009A3BBF /* TypeChoiceView.swift */,
 			);
 			path = views;
+			sourceTree = "<group>";
+		};
+		4384ECD62250E18800F3140C /* settings */ = {
+			isa = PBXGroup;
+			children = (
+				4358B06421EB47A7009A3BBF /* AudioOutputsListVC.swift */,
+				4358B06721EB47A7009A3BBF /* ServerAddVC.swift */,
+				43DBD7FB22203501009B3B68 /* ServersListVC.swift */,
+				4358B06921EB47A7009A3BBF /* SettingsVC.swift */,
+				4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */,
+			);
+			path = settings;
+			sourceTree = "<group>";
+		};
+		4384ECD72250E1B000F3140C /* global */ = {
+			isa = PBXGroup;
+			children = (
+				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
+				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
+				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
+			);
+			path = global;
 			sourceTree = "<group>";
 		};
 		43E89D8E21CC36E00033E501 = {
@@ -731,6 +750,7 @@
 				4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */,
 				4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */,
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
+				4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */,
 				43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */,
 				4358B07721EB47A8009A3BBF /* ZeroConfBrowserVC.swift in Sources */,
 				4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */,

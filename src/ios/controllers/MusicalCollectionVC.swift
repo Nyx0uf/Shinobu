@@ -3,9 +3,11 @@ import UIKit
 
 class MusicalCollectionVC : NYXViewController
 {
-	// MARK: - Private properties
+	// MARK: - Public properties
 	// Collection view
 	private(set) var collectionView: MusicalCollectionView!
+	//
+	var dataSource: MusicalCollectionDataSourceAndDelegate!
 	// Search view
 	private(set) var searchView: UIView! = nil
 	// Search bar
@@ -50,8 +52,11 @@ class MusicalCollectionVC : NYXViewController
 		searchView.addSubview(searchBar)
 
 		// Collection view
-		collectionView = MusicalCollectionView(frame: self.view.bounds, collectionViewLayout: UICollectionViewLayout())
-		collectionView.myDelegate = self
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self)
+
+		collectionView = MusicalCollectionView(frame: self.view.bounds)
+		collectionView.delegate = dataSource
+		collectionView.dataSource = dataSource
 		self.view.addSubview(collectionView)
 
 		// Longpress
@@ -148,7 +153,7 @@ extension MusicalCollectionVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
 	{
-		collectionView.searchResults.removeAll()
+		dataSource.searchResults.removeAll()
 		searching = false
 		searchBar.text = ""
 		showNavigationBar(animated: true)
@@ -166,7 +171,7 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	{
 		searching = true
 		// Copy original source to avoid crash when nothing was searched
-		collectionView.searchResults = MusicDataSource.shared.selectedList()
+		dataSource.searchResults = MusicDataSource.shared.selectedList()
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
@@ -175,18 +180,18 @@ extension MusicalCollectionVC : UISearchBarDelegate
 		{
 			if String.isNullOrWhiteSpace(searchText)
 			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList()
+				dataSource.searchResults = MusicDataSource.shared.selectedList()
 				collectionView.reloadData()
 				return
 			}
 
 			if Settings.shared.bool(forKey: .pref_fuzzySearch)
 			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
+				dataSource.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.fuzzySearch(withString: searchText)})
 			}
 			else
 			{
-				collectionView.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
+				dataSource.searchResults = MusicDataSource.shared.selectedList().filter({$0.name.lowercased().contains(searchText.lowercased())})
 			}
 
 			collectionView.reloadData()
@@ -194,8 +199,8 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	}
 }
 
-// MARK: - MusicalCollectionViewDelegate
-extension MusicalCollectionVC : MusicalCollectionViewDelegate
+// MARK: - MusicalCollectionDataSourceAndDelegateDelegate
+extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 {
 	@objc func isSearching(actively: Bool) -> Bool
 	{
@@ -204,6 +209,6 @@ extension MusicalCollectionVC : MusicalCollectionViewDelegate
 
 	@objc func didSelectItem(indexPath: IndexPath)
 	{
-		
+
 	}
 }
