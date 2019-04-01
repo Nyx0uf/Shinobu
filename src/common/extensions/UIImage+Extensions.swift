@@ -158,7 +158,7 @@ extension UIImage
 		}
 	}
 
-	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, gradient: CGGradient, maxSize: CGSize) -> UIImage?
+	/*class func fromString(_ string: String, font: UIFont, fontColor: UIColor, gradient: CGGradient, maxSize: CGSize) -> UIImage?
 	{
 		// Create an attributed string with string and font information
 		let paragraphStyle = NSMutableParagraphStyle()
@@ -200,5 +200,17 @@ extension UIImage
 		{
 			return nil
 		}
-	}
+	}*/
+
+	/*private func makeLinearGradient(startColor: UIColor, endColor: UIColor) -> CGGradient?
+	{
+		let colors = [startColor.cgColor, endColor.cgColor]
+
+		let colorSpace = CGColorSpace.NYXAppropriateColorSpace()
+
+		let colorLocations: [CGFloat] = [0.0, 1.0]
+
+		let gradient = CGGradient(colorsSpace: colorSpace, colors: colors as CFArray, locations: colorLocations)
+		return gradient
+	}*/
 }

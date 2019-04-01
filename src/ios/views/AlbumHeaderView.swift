@@ -15,7 +15,7 @@ final class AlbumHeaderView : UIView
 	// Album year
 	private(set) var lblYear: UILabel!
 	// Size of the cover
-	var coverSize: CGSize
+	let coverSize: CGSize
 
 	// MARK: - Initializers
 	init(frame: CGRect, coverSize: CGSize)
@@ -83,13 +83,17 @@ final class AlbumHeaderView : UIView
 			else
 			{
 				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-				image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
+				let string = album.name
+				let bgColor = UIColor(rgb: string.djb2())
+				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
 			}
 		}
 		else
 		{
 			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-			image = generateCoverForAlbum(album, size: (coverSize?.cgSizeValue)!)
+			let string = album.name
+			let bgColor = UIColor(rgb: string.djb2())
+			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
 		}
 		self.image = image
 

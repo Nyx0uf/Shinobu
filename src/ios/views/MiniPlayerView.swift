@@ -16,6 +16,8 @@ final class MiniPlayerView : UIView
 	var stayHidden = false
 	// Album cover
 	private(set) var imageView: UIImageView!
+	// MPD Data source
+	var mpdDataSource: MPDDataSource? = nil
 
 	// MARK: - Private properties
 	private var blurEffectView: UIVisualEffectView!
@@ -177,7 +179,7 @@ final class MiniPlayerView : UIView
 			}
 			else
 			{
-				MusicDataSource.shared.getPathForAlbum(album) {
+				mpdDataSource?.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
 					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {

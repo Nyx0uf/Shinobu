@@ -18,6 +18,8 @@ final class PlayerController
 	private(set) var outputs = [AudioOutput]()
 	// List of the tracks of the current queue
 	private(set) var listTracksInQueue = [Track]()
+	// Albums list
+	var albums = [Album]()
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -377,7 +379,6 @@ extension PlayerController : MPDConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{
-		let albums = MusicDataSource.shared.albums
-		return albums.filter({$0.name == name}).first
+		return self.albums.filter({$0.name == name}).first
 	}
 }

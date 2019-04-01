@@ -36,6 +36,19 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 	private var sliderVolume: UISlider! = nil
 	// Album tracks view
 	private var trackListView: TracksListTableView! = nil
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
+
+	init(mpdDataSource: MPDDataSource)
+	{
+		self.mpdDataSource = mpdDataSource
+		super.init(nibName: nil, bundle: nil)
+	}
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -257,7 +270,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			else
 			{
 				let size = self.coverView.size
-				MusicDataSource.shared.getPathForAlbum(album) {
+				mpdDataSource.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: size)
 					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
@@ -307,7 +320,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				MusicDataSource.shared.getTracksForAlbums([PlayerController.shared.currentAlbum!], callback: {
+				mpdDataSource.getTracksForAlbums([PlayerController.shared.currentAlbum!], callback: {
 					if let tracks = PlayerController.shared.currentAlbum?.tracks
 					{
 						DispatchQueue.main.async {
@@ -424,7 +437,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		else
 		{
 			let size = self.coverView.size
-			MusicDataSource.shared.getPathForAlbum(album) {
+			mpdDataSource.getPathForAlbum(album) {
 				let op = CoverOperation(album: album, cropSize: size)
 				op.callback = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {

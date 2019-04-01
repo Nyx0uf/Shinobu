@@ -78,6 +78,8 @@ final class MusicalCollectionView : UICollectionView
 				return "fr.whine.shinobu.cell.musicalentity.genre"
 			case .playlists:
 				return "fr.whine.shinobu.cell.musicalentity.playlist"
+			default:
+				return "fr.whine.shinobu.cell.musicalentity.default"
 		}
 	}
 }

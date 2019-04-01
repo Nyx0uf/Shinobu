@@ -29,12 +29,10 @@
 "lbl_header_server_cfg" = "Server configuration";
 "lbl_header_server_zeroconf" = "Nearby servers";
 "lbl_search_zeroconf" = "Search nearby servers";
-"lbl_appearance" = "Appearance";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Behaviour";
 "lbl_search" = "Search";
 "lbl_fuzzysearch" = "Fuzzy search";
-"lbl_ui" = "User Interface";
 "lbl_troubleshoot" = "Troubleshooting";
 "lbl_enable_logging" = "Enable logging";
 "lbl_send_logs" = "Send logs";
@@ -72,7 +70,6 @@
 
 "lbl_section_home" = "Library";
 "lbl_section_server" = "MPD Server";
-"lbl_section_stats" = "Statistics";
 "lbl_section_settings" = "Settings";
 "lbl_section_database" = "Database";
 
@@ -90,10 +87,6 @@
 "lbl_playlists" = "Playlists";
 "lbl_song" = "Song";
 "lbl_songs" = "Songs";
-"lbl_total_playtime" = "Total playtime";
-"lbl_server_uptime" = "Uptime";
-"lbl_server_playtime" = "Playtime";
-"lbl_server_lastdbupdate" = "Last update";
 "lbl_add_to_playlist" = "Add to playlist";
 "lbl_remove_from_playlist" = "Remove from the playlist";
 "lbl_create_playlist" = "Create a new playlist";

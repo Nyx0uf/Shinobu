@@ -51,20 +51,20 @@ extension SideMenuVC : UITableViewDataSource
 		var image: UIImage! = nil
 		switch indexPath.row
 		{
-		case 0:
-			cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
-			image = #imageLiteral(resourceName: "img-home")
-			selected = menuDelegate?.getSelectedController() == .library
-		case 1:
-			cell.accessibilityLabel = NYXLocalizedString("lbl_section_server")
-			image = #imageLiteral(resourceName: "img-server")
-			selected = menuDelegate?.getSelectedController() == .server
-		case 2:
-			cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
-			image = #imageLiteral(resourceName: "img-settings")
-			selected = menuDelegate?.getSelectedController() == .settings
-		default:
-			break
+			case 0:
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_home")
+				image = #imageLiteral(resourceName: "img-home")
+				selected = menuDelegate?.getSelectedController() == .library
+			case 1:
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_server")
+				image = #imageLiteral(resourceName: "img-server")
+				selected = menuDelegate?.getSelectedController() == .server
+			case 2:
+				cell.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
+				image = #imageLiteral(resourceName: "img-settings")
+				selected = menuDelegate?.getSelectedController() == .settings
+			default:
+				break
 		}
 		if image != nil
 		{

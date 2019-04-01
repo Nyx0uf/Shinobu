@@ -1,15 +1,11 @@
 import UIKit
 
 
-final class MusicDataSource
+final class MPDDataSource
 {
 	// MARK: - Public properties
-	// Singletion instance
-	static let shared = MusicDataSource()
 	// MPD server
 	var server: MPDServer! = nil
-	// Selected display type
-	//private(set) var displayType = MusicalEntityType.albums
 	// Albums list
 	private(set) var albums = [Album]()
 	// Genres list
@@ -100,14 +96,14 @@ final class MusicDataSource
 				return genres
 			case .playlists:
 				return playlists
+			default:
+				return albums
 		}
 	}
 
 	func getListForMusicalEntityType(_ type: MusicalEntityType, callback: @escaping () -> Void)
 	{
 		guard MPDConnection.isValid(connection) else { return }
-
-		//self.displayType = type
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
@@ -130,13 +126,15 @@ final class MusicDataSource
 							strongSelf.genres = (list as! [Genre]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
 						case .playlists:
 							strongSelf.playlists = (list as! [Playlist]).sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+						default:
+							raise(0)
 					}
 					callback()
 			}
 		}
 	}
 
-	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping () -> Void)
+	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping ([Album]) -> Void)
 	{
 		guard MPDConnection.isValid(connection) else { return }
 
@@ -149,7 +147,7 @@ final class MusicDataSource
 					break
 				case .success(let list):
 					genre.albums = list
-					callback()
+					callback(list)
 			}
 		}
 	}
@@ -415,11 +413,10 @@ final class MusicDataSource
 	}
 }
 
-extension MusicDataSource : MPDConnectionDelegate
+extension MPDDataSource : MPDConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{
-		let albums = MusicDataSource.shared.albums
-		return albums.filter({$0.name == name}).first
+		return self.albums.filter({$0.name == name}).first
 	}
 }

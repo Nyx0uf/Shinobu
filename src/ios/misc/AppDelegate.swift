@@ -8,10 +8,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	// Main window
 	var window: UIWindow?
 	// Container: VC + Menu
-	private var containerVC: ContainerVC! = nil
+	private let containerVC: ContainerVC
+	// MPD Data source
+	let mpdDataSource: MPDDataSource
 
 	override init()
 	{
+		self.mpdDataSource = MPDDataSource()
+		self.containerVC = ContainerVC()
 		super.init()
 	}
 
@@ -26,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
-		self.containerVC = ContainerVC()
 		self.window = UIWindow(frame: UIScreen.main.bounds)
 		self.window?.rootViewController = self.containerVC
 		self.window?.makeKeyAndVisible()

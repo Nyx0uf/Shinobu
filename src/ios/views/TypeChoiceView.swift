@@ -3,7 +3,7 @@ import UIKit
 
 protocol TypeChoiceViewDelegate : class
 {
-	func didSelectDisplayType(_ type: MusicalEntityType)
+	func didSelectDisplayType(_ typeAsInt: Int)
 }
 
 
@@ -14,10 +14,16 @@ final class TypeChoiceView : UIView
 	weak var delegate: TypeChoiceViewDelegate? = nil
 	// TableView
 	private(set) var tableView: UITableView! = nil
+	// Currently active type
+	var selectedMusicalEntityType: MusicalEntityType = .albums
+
+	// MARK: - Private properties
+	private let musicalEntityTypes: [MusicalEntityType]
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
+	init(frame: CGRect, musicalEntityTypes: [MusicalEntityType])
 	{
+		self.musicalEntityTypes = musicalEntityTypes
 		super.init(frame: frame)
 		self.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 
@@ -46,7 +52,7 @@ extension TypeChoiceView : UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
-		return 5
+		return musicalEntityTypes.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -56,29 +62,25 @@ extension TypeChoiceView : UITableViewDataSource
 		cell.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		cell.textLabel?.textAlignment = .center
 		var title = ""
-		var selected = false
-		switch indexPath.row
+		let type = musicalEntityTypes[indexPath.row]
+
+		switch type
 		{
-			case 0:
+			case .albums:
 				title = NYXLocalizedString("lbl_albums")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.albums.rawValue
-			case 1:
+			case .artists:
 				title = NYXLocalizedString("lbl_artists")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.artists.rawValue
-			case 2:
+			case .albumsartists:
 				title = NYXLocalizedString("lbl_albumartist")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.albumsartists.rawValue
-			case 3:
+			case .genres:
 				title = NYXLocalizedString("lbl_genres")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.genres.rawValue
-			case 4:
+			case .playlists:
 				title = NYXLocalizedString("lbl_playlists")
-				selected = Settings.shared.integer(forKey: .pref_displayType) == MusicalEntityType.playlists.rawValue
 			default:
 				break
 		}
 		cell.textLabel?.text = title
-		if selected
+		if type == selectedMusicalEntityType
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			cell.textLabel?.textColor = Colors.main
@@ -97,21 +99,9 @@ extension TypeChoiceView : UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		switch indexPath.row
-		{
-			case 0:
-				delegate?.didSelectDisplayType(.albums)
-			case 1:
-				delegate?.didSelectDisplayType(.artists)
-			case 2:
-				delegate?.didSelectDisplayType(.albumsartists)
-			case 3:
-				delegate?.didSelectDisplayType(.genres)
-			case 4:
-				delegate?.didSelectDisplayType(.playlists)
-			default:
-				break
-		}
+		let type = musicalEntityTypes[indexPath.row]
+		self.selectedMusicalEntityType = type
+		delegate?.didSelectDisplayType(type.rawValue)
 		tableView.deselectRow(at: indexPath, animated: false)
 	}
 

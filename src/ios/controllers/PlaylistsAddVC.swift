@@ -9,10 +9,13 @@ final class PlaylistsAddVC : NYXTableViewController
 	var trackToAdd: Track? = nil
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.playlist"
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
 
 	// MARK: - Initializers
-	init()
+	init(mpdDataSource: MPDDataSource)
 	{
+		self.mpdDataSource = mpdDataSource
 		super.init(style: .plain)
 	}
 
@@ -66,7 +69,7 @@ final class PlaylistsAddVC : NYXTableViewController
 			}
 			else
 			{
-				MusicDataSource.shared.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdDataSource.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
 					switch result
 					{
 						case .failure(let error):
@@ -74,7 +77,7 @@ final class PlaylistsAddVC : NYXTableViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+							self.mpdDataSource.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
 									self.getPlaylists()
 								}
@@ -96,9 +99,9 @@ final class PlaylistsAddVC : NYXTableViewController
 	// MARK: - Private
 	private func getPlaylists()
 	{
-		MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+		mpdDataSource.getListForMusicalEntityType(.playlists) {
 			DispatchQueue.main.async {
-				self.playlists = MusicDataSource.shared.playlists
+				self.playlists = self.mpdDataSource.playlists
 				self.tableView.reloadData()
 			}
 		}
@@ -146,7 +149,7 @@ extension PlaylistsAddVC
 
 		let playlist = playlists[indexPath.row]
 
-		MusicDataSource.shared.addTrack(to: playlist, track: track) { (result: Result<Bool, MPDConnectionError>) in
+		mpdDataSource.addTrack(to: playlist, track: track) { (result: Result<Bool, MPDConnectionError>) in
 			DispatchQueue.main.async {
 				switch result
 				{

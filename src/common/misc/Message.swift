@@ -1,6 +1,6 @@
 import Foundation
 
-final class Message : CustomStringConvertible
+struct Message : CustomStringConvertible
 {
 	public enum MessageType
 	{

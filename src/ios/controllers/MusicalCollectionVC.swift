@@ -22,6 +22,27 @@ class MusicalCollectionVC : NYXViewController
 	private(set) var previewingContext: UIViewControllerPreviewing! = nil
 	// Long press gesture for devices without force touch
 	private(set) var longPress: UILongPressGestureRecognizer! = nil
+	// MPD Data source
+	let mpdDataSource: MPDDataSource
+	// Allowed display types
+	var allowedMusicalEntityTypes: [MusicalEntityType]
+	{
+		return [.albums, .artists, .albumsartists, .genres, .playlists]
+	}
+	// View to change the type of items in the collection view
+	private var typeChoiceView: TypeChoiceView! = nil
+
+	// MARK: - Initializers
+	init(mpdDataSource: MPDDataSource)
+	{
+		self.mpdDataSource = mpdDataSource
+		super.init(nibName: nil, bundle: nil)
+	}
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -38,21 +59,23 @@ class MusicalCollectionVC : NYXViewController
 		navigationItem.rightBarButtonItems = [searchButton]
 
 		// Searchbar
-		let navigationBar = (navigationController?.navigationBar)!
-		searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, navigationBar.bottom))
-		searchBar = UISearchBar(frame: CGRect(0.0, navigationBar.y, navigationBar.width, navigationBar.height))
-		searchView.backgroundColor = Colors.background
-		searchView.alpha = 0.0
-		searchBar.searchBarStyle = .minimal
-		searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
-		searchBar.tintColor = Colors.main
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = Colors.main
-		searchBar.showsCancelButton = true
-		searchBar.delegate = self
-		searchView.addSubview(searchBar)
+		if let navigationBar = navigationController?.navigationBar
+		{
+			searchView = UIView(frame: CGRect(0.0, 0.0, navigationBar.width, navigationBar.bottom))
+			searchBar = UISearchBar(frame: CGRect(0.0, navigationBar.y, navigationBar.width, navigationBar.height))
+			searchView.backgroundColor = Colors.background
+			searchView.alpha = 0.0
+			searchBar.searchBarStyle = .minimal
+			searchBar.barTintColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+			searchBar.tintColor = Colors.main
+			(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = Colors.main
+			searchBar.showsCancelButton = true
+			searchBar.delegate = self
+			searchView.addSubview(searchBar)
+		}
 
 		// Collection view
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
 
 		collectionView = MusicalCollectionView(frame: self.view.bounds, musicalEntityType: dataSource.musicalEntityType)
 		collectionView.delegate = dataSource
@@ -71,13 +94,23 @@ class MusicalCollectionVC : NYXViewController
 		doubleTap.numberOfTouchesRequired = 1
 		doubleTap.delaysTouchesBegan = true
 		collectionView.addGestureRecognizer(doubleTap)
+
+		if allowedMusicalEntityTypes.count > 1
+		{
+			typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, CGFloat(allowedMusicalEntityTypes.count * 44)), musicalEntityTypes: allowedMusicalEntityTypes)
+			typeChoiceView.delegate = self
+			typeChoiceView.selectedMusicalEntityType = dataSource.musicalEntityType
+
+			titleView.isEnabled = true
+			titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
+		}
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		if searchView.superview == nil
+		if searchView != nil && searchView.superview == nil
 		{
 			navigationController?.view.addSubview(searchView)
 		}
@@ -87,7 +120,7 @@ class MusicalCollectionVC : NYXViewController
 	{
 		super.viewWillDisappear(animated)
 
-		if searchView.superview != nil
+		if searchView != nil && searchView.superview != nil
 		{
 			searchView.removeFromSuperview()
 		}
@@ -112,6 +145,39 @@ class MusicalCollectionVC : NYXViewController
 		}, completion: { finished in
 			self.searchBarVisible = true
 		})
+	}
+
+	@objc func changeTypeAction(_ sender: UIButton?)
+	{
+		if typeChoiceView.superview != nil
+		{ // Is visible
+			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
+				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
+				//self.view.layoutIfNeeded()
+				if self.dataSource.items.count == 0
+				{
+					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
+				}
+				else
+				{
+					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+					self.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
+				}
+			}, completion: { finished in
+				self.typeChoiceView.removeFromSuperview()
+			})
+		}
+		else
+		{ // Is hidden
+			typeChoiceView.tableView.reloadData()
+			view.insertSubview(typeChoiceView, belowSubview:collectionView)
+
+			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
+				self.collectionView.frame = CGRect(0, self.typeChoiceView.bottom, self.collectionView.size)
+				self.collectionView.contentInset = .zero
+				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+			}, completion:nil)
+		}
 	}
 
 	// MARK: - Public
@@ -205,6 +271,14 @@ extension MusicalCollectionVC : UISearchBarDelegate
 // MARK: - MusicalCollectionDataSourceAndDelegateDelegate
 extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 {
+	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
+	{
+		if let c = self.collectionView.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+		{
+			c.image = cover
+		}
+	}
+
 	@objc func isSearching(actively: Bool) -> Bool
 	{
 		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
@@ -227,5 +301,13 @@ extension MusicalCollectionVC : UIViewControllerPreviewingDelegate
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
 	{
 		return nil
+	}
+}
+
+// MARK: - TypeChoiceViewDelegate
+extension MusicalCollectionVC : TypeChoiceViewDelegate
+{
+	@objc func didSelectDisplayType(_ typeAsInt: Int)
+	{
 	}
 }

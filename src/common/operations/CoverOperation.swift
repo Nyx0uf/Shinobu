@@ -37,6 +37,8 @@ final class CoverOperation : Operation
 	}
 	// URL
 	private var coverURL: URL? = nil
+	// Server manager
+	let serversManager: ServersManager
 
 	// MARK : Public properties
 	// Album
@@ -51,6 +53,7 @@ final class CoverOperation : Operation
 	{
 		self.album = album
 		self.cropSize = cropSize
+		self.serversManager = ServersManager()
 	}
 
 	// MARK: - Override
@@ -73,7 +76,7 @@ final class CoverOperation : Operation
 		}
 
 		// No mpd server configured, abort
-		guard let server = ServersManager.shared.getSelectedServer()?.covers else
+		guard let server = serversManager.getSelectedServer()?.covers else
 		{
 			Logger.shared.log(type: .error, message: "No cover server")
 			isFinished = true

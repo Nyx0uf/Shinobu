@@ -14,7 +14,7 @@
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 		434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
 		434E518621D570D400CD88F7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 434E518821D570D400CD88F7 /* LaunchScreen.storyboard */; };
-		4358AFF921EB41E2009A3BBF /* NYXNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */; };
+		4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFF821EB41E2009A3BBF /* NYXControllers.swift */; };
 		4358B00021EB4242009A3BBF /* ContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFFF21EB4242009A3BBF /* ContainerVC.swift */; };
 		4358B00221EB4274009A3BBF /* SideMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00121EB4274009A3BBF /* SideMenuVC.swift */; };
 		4358B01B21EB42B4009A3BBF /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
@@ -33,7 +33,7 @@
 		4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
 		4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		4358B02C21EB42B4009A3BBF /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
-		4358B02D21EB42B4009A3BBF /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MusicDataSource.swift */; };
+		4358B02D21EB42B4009A3BBF /* MPDDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDDataSource.swift */; };
 		4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01A21EB42B4009A3BBF /* PlayerController.swift */; };
 		4358B03621EB44C5009A3BBF /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03021EB44C4009A3BBF /* Track.swift */; };
 		4358B03721EB44C5009A3BBF /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03121EB44C4009A3BBF /* Genre.swift */; };
@@ -50,7 +50,6 @@
 		4358B05421EB44E2009A3BBF /* CountedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04621EB44E2009A3BBF /* CountedObject.swift */; };
 		4358B05521EB44E2009A3BBF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04721EB44E2009A3BBF /* Settings.swift */; };
 		4358B05621EB44E2009A3BBF /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
-		4358B05721EB44E2009A3BBF /* AlbumCoverGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04921EB44E2009A3BBF /* AlbumCoverGenerator.swift */; };
 		4358B05921EB44E2009A3BBF /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04B21EB44E2009A3BBF /* Duration.swift */; };
 		4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05B21EB473C009A3BBF /* MenuViewTableViewCell.swift */; };
 		4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */; };
@@ -62,7 +61,7 @@
 		4358B07221EB47A8009A3BBF /* ServerAddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06721EB47A7009A3BBF /* ServerAddVC.swift */; };
 		4358B07321EB47A8009A3BBF /* LibraryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06821EB47A7009A3BBF /* LibraryVC.swift */; };
 		4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06921EB47A7009A3BBF /* SettingsVC.swift */; };
-		4358B07521EB47A8009A3BBF /* ArtistsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */; };
+		4358B07521EB47A8009A3BBF /* GenreDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06A21EB47A7009A3BBF /* GenreDetailVC.swift */; };
 		4358B07621EB47A8009A3BBF /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06B21EB47A8009A3BBF /* PlayerVC.swift */; };
 		4358B07721EB47A8009A3BBF /* ZeroConfBrowserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */; };
 		4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */; };
@@ -104,7 +103,7 @@
 		43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
 		43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
-		43FAE5C0224E5F73006843E9 /* MusicDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MusicDataSource.swift */; };
+		43FAE5C0224E5F73006843E9 /* MPDDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDDataSource.swift */; };
 		43FAE5C1224E5F73006843E9 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01A21EB42B4009A3BBF /* PlayerController.swift */; };
 		43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
 		43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
@@ -196,7 +195,7 @@
 		434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "liblibmpdclient-ios.a"; sourceTree = "<group>"; };
 		434E518B21D5719700CD88F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		434E518C21D5720100CD88F7 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = fr; path = fr.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYXNavigationController.swift; sourceTree = "<group>"; };
+		4358AFF821EB41E2009A3BBF /* NYXControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYXControllers.swift; sourceTree = "<group>"; };
 		4358AFFF21EB4242009A3BBF /* ContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerVC.swift; sourceTree = "<group>"; };
 		4358B00121EB4274009A3BBF /* SideMenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuVC.swift; sourceTree = "<group>"; };
 		4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; };
@@ -215,7 +214,7 @@
 		4358B01621EB42B4009A3BBF /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		4358B01721EB42B4009A3BBF /* MPDServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDServer.swift; sourceTree = "<group>"; };
 		4358B01821EB42B4009A3BBF /* CoverServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverServer.swift; sourceTree = "<group>"; };
-		4358B01921EB42B4009A3BBF /* MusicDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicDataSource.swift; sourceTree = "<group>"; };
+		4358B01921EB42B4009A3BBF /* MPDDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDDataSource.swift; sourceTree = "<group>"; };
 		4358B01A21EB42B4009A3BBF /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
 		4358B03021EB44C4009A3BBF /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		4358B03121EB44C4009A3BBF /* Genre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
@@ -232,7 +231,6 @@
 		4358B04621EB44E2009A3BBF /* CountedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountedObject.swift; sourceTree = "<group>"; };
 		4358B04721EB44E2009A3BBF /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		4358B04821EB44E2009A3BBF /* OperationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
-		4358B04921EB44E2009A3BBF /* AlbumCoverGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumCoverGenerator.swift; sourceTree = "<group>"; };
 		4358B04B21EB44E2009A3BBF /* Duration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		4358B05B21EB473C009A3BBF /* MenuViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuViewTableViewCell.swift; sourceTree = "<group>"; };
 		4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntityCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -244,7 +242,7 @@
 		4358B06721EB47A7009A3BBF /* ServerAddVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerAddVC.swift; sourceTree = "<group>"; };
 		4358B06821EB47A7009A3BBF /* LibraryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LibraryVC.swift; sourceTree = "<group>"; };
 		4358B06921EB47A7009A3BBF /* SettingsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
-		4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistsListVC.swift; sourceTree = "<group>"; };
+		4358B06A21EB47A7009A3BBF /* GenreDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenreDetailVC.swift; sourceTree = "<group>"; };
 		4358B06B21EB47A8009A3BBF /* PlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerVC.swift; sourceTree = "<group>"; };
 		4358B06C21EB47A8009A3BBF /* ZeroConfBrowserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfBrowserVC.swift; sourceTree = "<group>"; };
 		4358B06D21EB47A8009A3BBF /* PlaylistDetailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC.swift; sourceTree = "<group>"; };
@@ -435,7 +433,7 @@
 				4384ECD62250E18800F3140C /* settings */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
 				4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */,
-				4358B06A21EB47A7009A3BBF /* ArtistsListVC.swift */,
+				4358B06A21EB47A7009A3BBF /* GenreDetailVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
 				4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */,
 				4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */,
@@ -484,7 +482,7 @@
 				4358B01821EB42B4009A3BBF /* CoverServer.swift */,
 				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
 				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
-				4358B01921EB42B4009A3BBF /* MusicDataSource.swift */,
+				4358B01921EB42B4009A3BBF /* MPDDataSource.swift */,
 				4358B01A21EB42B4009A3BBF /* PlayerController.swift */,
 				430141E12229307300C68075 /* ServersManager.swift */,
 				43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */,
@@ -516,7 +514,6 @@
 		4358B03E21EB44E2009A3BBF /* misc */ = {
 			isa = PBXGroup;
 			children = (
-				4358B04921EB44E2009A3BBF /* AlbumCoverGenerator.swift */,
 				4358B04421EB44E2009A3BBF /* Common.swift */,
 				4358B04621EB44E2009A3BBF /* CountedObject.swift */,
 				4358B04B21EB44E2009A3BBF /* Duration.swift */,
@@ -548,8 +545,8 @@
 				4358B07D21EB47C2009A3BBF /* AlbumHeaderView.swift */,
 				4358B07A21EB47C2009A3BBF /* AutoScrollLabel.swift */,
 				4358B07F21EB47C2009A3BBF /* InteractableImageView.swift */,
-				4358B07E21EB47C2009A3BBF /* MiniPlayerView.swift */,
 				4358B08221EB47C2009A3BBF /* MessageView.swift */,
+				4358B07E21EB47C2009A3BBF /* MiniPlayerView.swift */,
 				4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */,
 				43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */,
 				4358B07C21EB47C2009A3BBF /* TracksListTableView.swift */,
@@ -574,7 +571,7 @@
 			isa = PBXGroup;
 			children = (
 				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
-				4358AFF821EB41E2009A3BBF /* NYXNavigationController.swift */,
+				4358AFF821EB41E2009A3BBF /* NYXControllers.swift */,
 				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
 			);
 			path = global;
@@ -764,7 +761,7 @@
 				43A654D0224BAC860056A55A /* Message.swift in Sources */,
 				4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */,
 				4358B07121EB47A8009A3BBF /* PlaylistsAddVC.swift in Sources */,
-				4358AFF921EB41E2009A3BBF /* NYXNavigationController.swift in Sources */,
+				4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */,
 				4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */,
 				4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */,
 				4358B01E21EB42B4009A3BBF /* UIView+Extensions.swift in Sources */,
@@ -774,8 +771,8 @@
 				43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */,
 				4358B05521EB44E2009A3BBF /* Settings.swift in Sources */,
 				4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */,
-				4358B02D21EB42B4009A3BBF /* MusicDataSource.swift in Sources */,
-				4358B07521EB47A8009A3BBF /* ArtistsListVC.swift in Sources */,
+				4358B02D21EB42B4009A3BBF /* MPDDataSource.swift in Sources */,
+				4358B07521EB47A8009A3BBF /* GenreDetailVC.swift in Sources */,
 				4358B03A21EB44C5009A3BBF /* Artist.swift in Sources */,
 				4358B07221EB47A8009A3BBF /* ServerAddVC.swift in Sources */,
 				4358B05421EB44E2009A3BBF /* CountedObject.swift in Sources */,
@@ -802,7 +799,6 @@
 				4358B02321EB42B4009A3BBF /* UIDevice+Extensions.swift in Sources */,
 				4358B04F21EB44E2009A3BBF /* KawaiiColors.swift in Sources */,
 				4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */,
-				4358B05721EB44E2009A3BBF /* AlbumCoverGenerator.swift in Sources */,
 				43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */,
 				4358B04C21EB44E2009A3BBF /* CoverOperation.swift in Sources */,
 			);
@@ -817,7 +813,7 @@
 				43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */,
 				43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */,
 				43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */,
-				43FAE5C0224E5F73006843E9 /* MusicDataSource.swift in Sources */,
+				43FAE5C0224E5F73006843E9 /* MPDDataSource.swift in Sources */,
 				43FAE5C1224E5F73006843E9 /* PlayerController.swift in Sources */,
 				43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */,
 				43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */,

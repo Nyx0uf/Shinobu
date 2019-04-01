@@ -64,6 +64,11 @@ final class NYXNavigationTitleView : UIButton
 		fatalError("init(coder:) has not been implemented")
 	}
 
+	override var intrinsicContentSize: CGSize
+	{
+		return UIView.layoutFittingExpandedSize
+	}
+
 	// MARK: - Public
 	public func setMainText(_ mainText: String, detailText: String?)
 	{

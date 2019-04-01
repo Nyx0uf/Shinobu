@@ -8,15 +8,14 @@ private let THRESHOLD = UInt(2)
 private let DEFAULT_PRECISION = Int(8) // 8 -> 256
 
 
-enum SamplingEdge
-{
-	case left
-	case right
-}
-
-
 final class KawaiiColors
 {
+	enum SamplingEdge
+	{
+		case left
+		case right
+	}
+
 	// MARK: - Public properties
 	// Image to analyze
 	let image: UIImage

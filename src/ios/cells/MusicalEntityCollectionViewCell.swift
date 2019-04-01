@@ -69,6 +69,8 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 					cornerRadius = self.imageView.width
 				case .playlists:
 					cornerRadius = 0.0
+				default:
+					cornerRadius = 0.0
 			}
 			self.imageView.layer.cornerRadius = cornerRadius
 			self.imageView.contentMode = contentMode

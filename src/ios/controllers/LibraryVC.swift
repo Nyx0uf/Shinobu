@@ -6,11 +6,21 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 	// MARK: - Public properties
 	// Delegate
 	var containerDelegate: ContainerVCDelegate? = nil
+
 	// MARK: - Private properties
-	// View to change the type of items in the collection view
-	private var typeChoiceView: TypeChoiceView! = nil
 	// Audio server changed
 	private var serverChanged = false
+
+	// MARK: - Initializers
+	override init(mpdDataSource: MPDDataSource)
+	{
+		super.init(mpdDataSource: mpdDataSource)
+	}
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -22,11 +32,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		menuButton.accessibilityLabel = NYXLocalizedString("vo_displaymenu")
 		navigationItem.leftBarButtonItem = menuButton
 
-		// Navigation bar title
-		titleView.isEnabled = true
-		titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
-
-		_ = MiniPlayerView.shared.visible
+		MiniPlayerView.shared.mpdDataSource = mpdDataSource
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
@@ -37,13 +43,13 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		super.viewWillAppear(animated)
 
 		// Initialize the mpd connection
-		if MusicDataSource.shared.server == nil
+		if mpdDataSource.server == nil
 		{
-			if let server = ServersManager.shared.getSelectedServer()
+			if let server = ServersManager().getSelectedServer()
 			{
 				// Data source
-				MusicDataSource.shared.server = server.mpd
-				let resultDataSource = MusicDataSource.shared.initialize()
+				mpdDataSource.server = server.mpd
+				let resultDataSource = mpdDataSource.initialize()
 				switch resultDataSource
 				{
 					case .failure(let error):
@@ -54,11 +60,11 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 				if dataSource.musicalEntityType != .albums
 				{
 					// Always fetch the albums list
-					MusicDataSource.shared.getListForMusicalEntityType(.albums) {}
+					mpdDataSource.getListForMusicalEntityType(.albums) {}
 				}
-				MusicDataSource.shared.getListForMusicalEntityType(dataSource.musicalEntityType) {
+				mpdDataSource.getListForMusicalEntityType(dataSource.musicalEntityType) {
 					DispatchQueue.main.async {
-						self.setItems(MusicDataSource.shared.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
+						self.setItems(self.mpdDataSource.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
 						self.updateNavigationTitle()
 						self.updateNavigationButtons()
 					}
@@ -72,6 +78,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					case .failure(let error):
 						MessageView.shared.showWithMessage(message: error.message)
 					case .success(_):
+						PlayerController.shared.albums = mpdDataSource.albums
 						break
 				}
 			}
@@ -95,9 +102,9 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		if serverChanged
 		{
 			// Refresh view
-			MusicDataSource.shared.getListForMusicalEntityType(dataSource.musicalEntityType) {
+			mpdDataSource.getListForMusicalEntityType(dataSource.musicalEntityType) {
 				DispatchQueue.main.async {
-					self.setItems(MusicDataSource.shared.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
+					self.setItems(self.mpdDataSource.listForMusicalEntityType(self.dataSource.musicalEntityType), forMusicalEntityType: self.dataSource.musicalEntityType)
 					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
 					self.updateNavigationButtons()
@@ -107,7 +114,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			// First time config case
 			if PlayerController.shared.server == nil
 			{
-				PlayerController.shared.server = MusicDataSource.shared.server
+				PlayerController.shared.server = mpdDataSource.server
 				let resultPlayer = PlayerController.shared.reinitialize()
 				switch resultPlayer
 				{
@@ -157,35 +164,37 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			switch dataSource.musicalEntityType
 			{
 				case .albums:
-					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : self.mpdDataSource.albums[indexPath.row]
 					PlayerController.shared.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				case .artists:
-					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-					MusicDataSource.shared.getAlbumsForArtist(artist) {
-						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : self.mpdDataSource.artists[indexPath.row]
+					self.mpdDataSource.getAlbumsForArtist(artist) {
+						self.mpdDataSource.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .albumsartists:
-					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
-					MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
-						MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : self.mpdDataSource.albumsartists[indexPath.row]
+					self.mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: true) {
+						self.mpdDataSource.getTracksForAlbums(artist.albums) {
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .genres:
-					let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-					MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
-						MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+					let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : self.mpdDataSource.genres[indexPath.row]
+					self.mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+						self.mpdDataSource.getTracksForAlbums(genre.albums) {
 							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
 							PlayerController.shared.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .playlists:
-					let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : self.mpdDataSource.playlists[indexPath.row]
 					PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+				default:
+					break
 			}
 		}
 	}
@@ -216,7 +225,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			switch dataSource.musicalEntityType
 			{
 				case .albums:
-					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
+					let album = searching ? dataSource.searchResults[indexPath.row] as! Album : mpdDataSource.albums[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -239,10 +248,10 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
-					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : self.mpdDataSource.artists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist) {
-							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+						self.mpdDataSource.getAlbumsForArtist(artist) {
+							self.mpdDataSource.getTracksForAlbums(artist.albums) {
 								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
 							}
@@ -253,8 +262,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist) {
-							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+						self.mpdDataSource.getAlbumsForArtist(artist) {
+							self.mpdDataSource.getTracksForAlbums(artist.albums) {
 								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
 							}
@@ -265,7 +274,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist) {
+						self.mpdDataSource.getAlbumsForArtist(artist) {
 							for album in artist.albums
 							{
 								PlayerController.shared.addAlbumToQueue(album)
@@ -277,10 +286,10 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .albumsartists:
-					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
+					let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : self.mpdDataSource.albumsartists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
-							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+						self.mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: true) {
+							self.mpdDataSource.getTracksForAlbums(artist.albums) {
 								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
 							}
@@ -291,8 +300,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
-							MusicDataSource.shared.getTracksForAlbums(artist.albums) {
+						self.mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: true) {
+							self.mpdDataSource.getTracksForAlbums(artist.albums) {
 								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
 							}
@@ -303,7 +312,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForArtist(artist, isAlbumArtist: true) {
+						self.mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: true) {
 							for album in artist.albums
 							{
 								PlayerController.shared.addAlbumToQueue(album)
@@ -315,10 +324,10 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
-					let genre = self.searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
+					let genre = self.searching ? dataSource.searchResults[indexPath.row] as! Genre : self.mpdDataSource.genres[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
-							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+						self.mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+							self.mpdDataSource.getTracksForAlbums(genre.albums) {
 								let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
 							}
@@ -329,8 +338,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
-							MusicDataSource.shared.getTracksForAlbums(genre.albums) {
+						self.mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+							self.mpdDataSource.getTracksForAlbums(genre.albums) {
 								let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
 								PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
 							}
@@ -341,7 +350,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						MusicDataSource.shared.getAlbumsForGenre(genre, firstOnly: false) {
+						self.mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
 							for album in genre.albums
 							{
 								PlayerController.shared.addAlbumToQueue(album)
@@ -353,7 +362,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(addQueueAction)
 				case .playlists:
-					let playlist = self.searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
+					let playlist = self.searching ? dataSource.searchResults[indexPath.row] as! Playlist : mpdDataSource.playlists[indexPath.row]
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						PlayerController.shared.playPlaylist(playlist, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -373,7 +382,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 					}
 					alertController.addAction(renameAction)
 					let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action) in
-						MusicDataSource.shared.deletePlaylist(named: playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+						self.mpdDataSource.deletePlaylist(named: playlist.name) { (result: Result<Bool, MPDConnectionError>) in
 							switch result
 							{
 								case .failure(let error):
@@ -381,9 +390,9 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 										MessageView.shared.showWithMessage(message: error.message)
 									}
 								case .success( _):
-									MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+									self.mpdDataSource.getListForMusicalEntityType(.playlists) {
 										DispatchQueue.main.async {
-											self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
+											self.setItems(self.mpdDataSource.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 											self.updateNavigationTitle()
 										}
 									}
@@ -394,6 +403,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(deleteAction)
+				default:
+					break
 			}
 
 			present(alertController, animated: true, completion: nil)
@@ -401,45 +412,6 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 	}
 
 	// MARK: - Buttons actions
-	@objc func changeTypeAction(_ sender: UIButton?)
-	{
-		if typeChoiceView == nil
-		{
-			typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, 220.0))
-			typeChoiceView.delegate = self
-		}
-
-		if typeChoiceView.superview != nil
-		{ // Is visible
-			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
-				//self.view.layoutIfNeeded()
-				if self.dataSource.items.count == 0
-				{
-					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
-				}
-				else
-				{
-					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-					self.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
-				}
-			}, completion: { finished in
-				self.typeChoiceView.removeFromSuperview()
-			})
-		}
-		else
-		{ // Is hidden
-			typeChoiceView.tableView.reloadData()
-			view.insertSubview(typeChoiceView, belowSubview:collectionView)
-
-			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, self.typeChoiceView.bottom, self.collectionView.size)
-				self.collectionView.contentInset = .zero
-				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
-			}, completion:nil)
-		}
-	}
-
 	@objc func showLeftViewAction(_ sender: Any?)
 	{
 		containerDelegate?.toggleMenu()
@@ -461,7 +433,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			}
 			else
 			{
-				MusicDataSource.shared.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdDataSource.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
 					switch result
 					{
 						case .failure(let error):
@@ -469,9 +441,9 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+							self.mpdDataSource.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
+									self.setItems(self.mpdDataSource.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 									self.updateNavigationTitle()
 								}
 							}
@@ -489,28 +461,29 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 		self.present(alertController, animated: true, completion: nil)
 	}
 
-	// MARK: - Private
-	private func updateNavigationTitle()
+	override func updateNavigationTitle()
 	{
 		var count = 0
 		var title = ""
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
-				count = MusicDataSource.shared.albums.count
+				count = mpdDataSource.albums.count
 				title = NYXLocalizedString("lbl_albums")
 			case .artists:
-				count = MusicDataSource.shared.artists.count
+				count = mpdDataSource.artists.count
 				title = NYXLocalizedString("lbl_artists")
 			case .albumsartists:
-				count = MusicDataSource.shared.albumsartists.count
+				count = mpdDataSource.albumsartists.count
 				title = NYXLocalizedString("lbl_albumartists")
 			case .genres:
-				count = MusicDataSource.shared.genres.count
+				count = mpdDataSource.genres.count
 				title = NYXLocalizedString("lbl_genres")
 			case .playlists:
-				count = MusicDataSource.shared.playlists.count
+				count = mpdDataSource.playlists.count
 				title = NYXLocalizedString("lbl_playlists")
+			default:
+				break
 		}
 		titleView.setMainText(title, detailText: "(\(count))")
 	}
@@ -549,7 +522,7 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 			}
 			else
 			{
-				MusicDataSource.shared.rename(playlist: playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdDataSource.rename(playlist: playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
 					switch result
 					{
 						case .failure(let error):
@@ -557,9 +530,9 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+							self.mpdDataSource.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
-									self.setItems(MusicDataSource.shared.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
+									self.setItems(self.mpdDataSource.listForMusicalEntityType(.playlists), forMusicalEntityType: .playlists)
 									self.updateNavigationTitle()
 								}
 							}
@@ -585,10 +558,44 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 
 	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
-		let vc = PlayerVC()
+		let vc = PlayerVC(mpdDataSource: mpdDataSource)
 		vc.transitioningDelegate = self.navigationController as! NYXNavigationController
 		vc.modalPresentationStyle = .custom
 		self.navigationController?.present(vc, animated: true, completion: nil)
+	}
+
+	override func didSelectDisplayType(_ typeAsInt: Int)
+	{
+		// Ignore if type did not change
+		let type = MusicalEntityType(rawValue: typeAsInt)
+		if dataSource.musicalEntityType == type
+		{
+			changeTypeAction(nil)
+			return
+		}
+
+		// Longpress / peek & pop
+		updateLongpressState()
+
+		// Refresh view
+		mpdDataSource.getListForMusicalEntityType(type) {
+			DispatchQueue.main.async {
+				self.setItems(self.mpdDataSource.listForMusicalEntityType(type), forMusicalEntityType: type)
+				self.changeTypeAction(nil)
+				if self.dataSource.items.count == 0
+				{
+					self.collectionView.contentOffset = CGPoint(0, 64)
+				}
+				else
+				{
+					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+				}
+
+				self.updateNavigationTitle()
+			}
+		}
+
+		updateNavigationButtons()
 	}
 }
 
@@ -608,66 +615,28 @@ extension LibraryVC
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
-				let album = searching ? dataSource.searchResults[indexPath.row] as! Album : MusicDataSource.shared.albums[indexPath.row]
-				let vc = AlbumDetailVC(album: album)
+				let album = searching ? dataSource.searchResults[indexPath.row] as! Album : mpdDataSource.albums[indexPath.row]
+				let vc = AlbumDetailVC(album: album, mpdDataSource: mpdDataSource)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .artists:
-				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.artists[indexPath.row]
-				let vc = AlbumsListVC(artist: artist, isAlbumArtist: false)
+				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : mpdDataSource.artists[indexPath.row]
+				let vc = AlbumsListVC(artist: artist, isAlbumArtist: false, mpdDataSource: mpdDataSource)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .albumsartists:
-				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : MusicDataSource.shared.albumsartists[indexPath.row]
-				let vc = AlbumsListVC(artist: artist, isAlbumArtist: true)
+				let artist = searching ? dataSource.searchResults[indexPath.row] as! Artist : mpdDataSource.albumsartists[indexPath.row]
+				let vc = AlbumsListVC(artist: artist, isAlbumArtist: true, mpdDataSource: mpdDataSource)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .genres:
-				let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : MusicDataSource.shared.genres[indexPath.row]
-				let vc = ArtistsListVC(genre: genre)
+				let genre = searching ? dataSource.searchResults[indexPath.row] as! Genre : mpdDataSource.genres[indexPath.row]
+				let vc = GenreDetailVC(genre: genre, mpdDataSource: mpdDataSource)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .playlists:
-				let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : MusicDataSource.shared.playlists[indexPath.row]
-				let vc = PlaylistDetailVC(playlist: playlist)
+				let playlist = searching ? dataSource.searchResults[indexPath.row] as! Playlist : mpdDataSource.playlists[indexPath.row]
+				let vc = PlaylistDetailVC(playlist: playlist, mpdDataSource: mpdDataSource)
 				self.navigationController?.pushViewController(vc, animated: true)
+			default:
+				break
 		}
-	}
-}
-
-// MARK: - TypeChoiceViewDelegate
-extension LibraryVC : TypeChoiceViewDelegate
-{
-	func didSelectDisplayType(_ type: MusicalEntityType)
-	{
-		// Ignore if type did not change
-		if dataSource.musicalEntityType == type
-		{
-			changeTypeAction(nil)
-			return
-		}
-		//dataSource.musicalEntityType = type
-
-		Settings.shared.set(type.rawValue, forKey: .pref_displayType)
-
-		// Longpress / peek & pop
-		updateLongpressState()
-
-		// Refresh view
-		MusicDataSource.shared.getListForMusicalEntityType(type) {
-			DispatchQueue.main.async {
-				self.setItems(MusicDataSource.shared.listForMusicalEntityType(type), forMusicalEntityType: type)
-				self.changeTypeAction(nil)
-				if self.dataSource.items.count == 0
-				{
-					self.collectionView.contentOffset = CGPoint(0, 64)
-				}
-				else
-				{
-					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
-				}
-
-				self.updateNavigationTitle()
-			}
-		}
-
-		updateNavigationButtons()
 	}
 }
 
@@ -683,15 +652,15 @@ extension LibraryVC
 	{
 		if motion == .motionShake
 		{
-			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false || MusicDataSource.shared.albums.count == 0
+			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false || mpdDataSource.albums.count == 0
 			{
 				return
 			}
 
-			guard let randomAlbum = MusicDataSource.shared.albums.randomElement() else { return }
+			guard let randomAlbum = mpdDataSource.albums.randomElement() else { return }
 			if randomAlbum.tracks == nil
 			{
-				MusicDataSource.shared.getTracksForAlbums([randomAlbum]) {
+				mpdDataSource.getTracksForAlbums([randomAlbum]) {
 					PlayerController.shared.playAlbum(randomAlbum, shuffle: false, loop: false)
 				}
 			}
@@ -730,15 +699,22 @@ extension LibraryVC
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 			let row = indexPath.row
-			if dataSource.musicalEntityType == .albums
+			switch dataSource.musicalEntityType
 			{
-				let album = searching ? dataSource.searchResults[row] as! Album : dataSource.items[row] as! Album
-				return AlbumDetailVC(album: album)
-			}
-			else if dataSource.musicalEntityType == .playlists
-			{
-				let playlist = searching ? dataSource.searchResults[row] as! Playlist : dataSource.items[row] as! Playlist
-				return PlaylistDetailVC(playlist: playlist)
+				case .albums:
+					let album = searching ? dataSource.searchResults[row] as! Album : dataSource.items[row] as! Album
+					return AlbumDetailVC(album: album, mpdDataSource: mpdDataSource)
+				case .artists, .albumsartists:
+					let artist = searching ? dataSource.searchResults[row] as! Artist : dataSource.items[row] as! Artist
+					return AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdDataSource: mpdDataSource)
+				case .genres:
+					let genre = searching ? dataSource.searchResults[row] as! Genre : dataSource.items[row] as! Genre
+					return GenreDetailVC(genre: genre, mpdDataSource: mpdDataSource)
+				case .playlists:
+					let playlist = searching ? dataSource.searchResults[row] as! Playlist : dataSource.items[row] as! Playlist
+					return PlaylistDetailVC(playlist: playlist, mpdDataSource: mpdDataSource)
+				default:
+					break
 			}
 		}
 		return nil

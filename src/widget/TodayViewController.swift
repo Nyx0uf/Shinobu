@@ -17,8 +17,10 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	@IBOutlet private var btnPrevious: UIButton!
 	// Next track button
 	@IBOutlet private var btnNext: UIButton!
-	//
+	// Can work flag
 	private var canWork = true
+	//
+	private var mpdDataSource = MPDDataSource()
 
 	override func viewDidLoad()
 	{
@@ -27,7 +29,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		btnNext.accessibilityLabel = NYXLocalizedString("lbl_next_track")
 		btnPrevious.accessibilityLabel = NYXLocalizedString("lbl_previous_track")
 
-		guard let server = ServersManager.shared.getSelectedServer() else
+		guard let server = ServersManager().getSelectedServer() else
 		{
 			self.disableAllBecauseCantWork()
 			canWork = false
@@ -35,15 +37,16 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		}
 
 		// Data source
-		MusicDataSource.shared.server = server.mpd
-		let resultDataSource = MusicDataSource.shared.initialize()
+
+		mpdDataSource.server = server.mpd
+		let resultDataSource = mpdDataSource.initialize()
 		switch resultDataSource
 		{
 			case .failure( _):
 				self.disableAllBecauseCantWork()
 				canWork = false
 			case .success(_):
-				MusicDataSource.shared.getListForMusicalEntityType(.albums) {
+				mpdDataSource.getListForMusicalEntityType(.albums) {
 				}
 		}
 

@@ -5,6 +5,7 @@ protocol MusicalCollectionDataSourceAndDelegateDelegate : class
 {
 	func isSearching(actively: Bool) -> Bool
 	func didSelectItem(indexPath: IndexPath)
+	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
 }
 
 
@@ -19,11 +20,17 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	weak var delegate: MusicalCollectionDataSourceAndDelegateDelegate!
 	// Cover download operations
 	private var downloadOperations = [String : Operation]()
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
+	//
+	private let serversManager: ServersManager
 
-	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate)
+	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdDataSource: MPDDataSource)
 	{
+		self.mpdDataSource = mpdDataSource
 		self.musicalEntityType = type
 		self.delegate = delegate
+		self.serversManager = ServersManager()
 	}
 
 	// MARK: - Public
@@ -74,6 +81,8 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 				return "fr.whine.shinobu.cell.musicalentity.genre"
 			case .playlists:
 				return "fr.whine.shinobu.cell.musicalentity.playlist"
+			default:
+				return "fr.whine.shinobu.cell.musicalentity.default"
 		}
 	}
 }
@@ -123,9 +132,15 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			case .artists, .albumsartists:
 				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
 			case .genres:
-				cell.image = generateCoverFromString(entity.name[0..<2].uppercased(), size: cell.imageView.size)
+				let string = entity.name[0..<2].uppercased()
+				let backgroundColor = UIColor(rgb: string.djb2())
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
 			case .playlists:
-				cell.image = generateCoverForPlaylist(entity as! Playlist, size: cell.imageView.size)
+				let string = entity.name
+				let backgroundColor = UIColor(rgb: string.djb2())
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
+			default:
+				break
 		}
 
 		return cell
@@ -141,7 +156,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		}
 
 		// Get local URL for cover
-		guard let _ = ServersManager.shared.getSelectedServer()?.covers else { return }
+		guard let _ = serversManager.getSelectedServer()?.covers else { return }
 		guard let coverURL = album.localCoverURL else
 		{
 			Logger.shared.log(type: .error, message: "No cover file URL for \(album)") // should not happen
@@ -171,24 +186,18 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			if album.path != nil
 			{
 				cell.associatedObject = downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
-					/*DispatchQueue.main.async {
-						if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-						{
-							c.image = thumbnail
-						}
-					}*/
+					DispatchQueue.main.async {
+						self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+					}
 				}
 			}
 			else
 			{
-				MusicDataSource.shared.getPathForAlbum(album) {
+				mpdDataSource.getPathForAlbum(album) {
 					cell.associatedObject = self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
-						/*DispatchQueue.main.async {
-							if let c = self.cellForItem(at: indexPath) as? MusicalEntityBaseCell
-							{
-								c.image = thumbnail
-							}
-						}*/
+						DispatchQueue.main.async {
+							self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+						}
 					}
 				}
 			}

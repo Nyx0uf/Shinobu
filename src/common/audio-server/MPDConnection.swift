@@ -184,7 +184,7 @@ final class MPDConnection
 						list.append(Artist(name: name))
 					case .genres:
 						list.append(Genre(name: name))
-					case .playlists:
+					default:
 						raise(0)
 				}
 			}
@@ -1123,6 +1123,8 @@ final class MPDConnection
 			case .albumsartists:
 				return MPD_TAG_ALBUM_ARTIST
 			case .playlists:
+				return MPD_TAG_UNKNOWN
+			default:
 				return MPD_TAG_UNKNOWN
 		}
 	}

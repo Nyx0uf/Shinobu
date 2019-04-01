@@ -3,16 +3,6 @@ import Foundation
 
 final class ServersManager
 {
-	// MARK: - Public properties
-	// Singletion instance
-	static let shared = ServersManager()
-
-	// MARK: - Initializers
-	init()
-	{
-
-	}
-
 	// MARK: - Public
 	func getServersList() -> [ShinobuServer]
 	{

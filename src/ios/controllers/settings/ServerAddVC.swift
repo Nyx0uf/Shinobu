@@ -31,6 +31,23 @@ final class ServerAddVC : NYXTableViewController
 	private var zeroConfVC: ZeroConfBrowserVC?
 	// Cache size
 	private var cacheSize: Int = 0
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
+	// Servers manager
+	private let serversManager: ServersManager
+
+	// MARK: - Initializers
+	init(mpdDataSource: MPDDataSource)
+	{
+		self.mpdDataSource = mpdDataSource
+		self.serversManager = ServersManager()
+		super.init(nibName: nil, bundle: nil)
+	}
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		fatalError("init(coder:) has not been implemented")
+	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -184,7 +201,7 @@ final class ServerAddVC : NYXTableViewController
 				self.selectedServer = ShinobuServer(name: serverName, mpd: mpdServer)
 			}
 
-			ServersManager.shared.handleServer(self.selectedServer!)
+			serversManager.handleServer(self.selectedServer!)
 			cnn.disconnect()
 
 			self.updateOutputsLabel()
@@ -212,7 +229,7 @@ final class ServerAddVC : NYXTableViewController
 
 			if selectedServer != nil
 			{
-				ServersManager.shared.handleServer(selectedServer!)
+				serversManager.handleServer(selectedServer!)
 			}
 			else
 			{
@@ -229,7 +246,7 @@ final class ServerAddVC : NYXTableViewController
 			if selectedServer != nil
 			{
 				selectedServer?.covers = nil
-				ServersManager.shared.handleServer(selectedServer!)
+				serversManager.handleServer(selectedServer!)
 			}
 		}
 	}
@@ -633,7 +650,7 @@ extension ServerAddVC
 		}
 		else if indexPath.section == 1 && indexPath.row == 4
 		{
-			MusicDataSource.shared.updateDatabase() { succeeded in
+			mpdDataSource.updateDatabase() { succeeded in
 				DispatchQueue.main.async {
 					if succeeded == false
 					{

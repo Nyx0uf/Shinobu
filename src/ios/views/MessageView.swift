@@ -36,13 +36,6 @@ final class MessageView : UIView
 		self.isUserInteractionEnabled = true
 		self.isAccessibilityElement = false
 
-		// Bottom shadow
-		self.layer.shadowPath = UIBezierPath(rect: CGRect(-2.0, frame.height - 3.0, frame.width + 4.0, 4.0)).cgPath
-		self.layer.shadowRadius = 3.0
-		self.layer.shadowOpacity = 0.0
-		self.layer.shadowColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor
-		self.layer.masksToBounds = false
-
 		self.imageView = UIImageView(frame: CGRect(8.0, statusHeight + (40 - 24.0) / 2.0, 24.0, 24.0))
 		self.imageView.isAccessibilityElement = false
 		self.addSubview(self.imageView)
@@ -82,22 +75,21 @@ final class MessageView : UIView
 
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
 			self.y = 0.0
-			self.layer.shadowOpacity = 1.0
 			self.label.text = message.content
 			switch message.type
 			{
-			case .error:
-				self.backgroundColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
-				self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-			case .warning:
-				self.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
-				self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-			case .information:
-				self.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-				self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-			case .success:
-				self.backgroundColor = #colorLiteral(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
-				self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+				case .error:
+					self.backgroundColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+				case .warning:
+					self.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+				case .information:
+					self.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+				case .success:
+					self.backgroundColor = #colorLiteral(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
 			}
 			self.label.backgroundColor = self.backgroundColor
 		}, completion: { finished in
@@ -110,7 +102,6 @@ final class MessageView : UIView
 	{
 		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
 			self.y = -self.height
-			self.layer.shadowOpacity = 0.0
 		}, completion: { finished in
 			self.visible = false
 		})

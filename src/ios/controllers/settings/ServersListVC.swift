@@ -22,6 +22,23 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	private let cellIdentifier = "fr.whine.shinobu.cell.server"
 	// Add/Edit server VC
 	private var addServerVC: ServerAddVC? = nil
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
+	// Servers manager
+	private let serversManager: ServersManager
+
+	// MARK: - Initializers
+	init(mpdDataSource: MPDDataSource)
+	{
+		self.mpdDataSource = mpdDataSource
+		self.serversManager = ServersManager()
+		super.init(nibName: nil, bundle: nil)
+	}
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		fatalError("init(coder:) has not been implemented")
+	}
 	
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -67,9 +84,9 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	// MARK: - Private
 	private func refreshServers()
 	{
-		let servers = ServersManager.shared.getServersList()
+		let servers = serversManager.getServersList()
 
-		let enabledServerName = ServersManager.shared.getSelectedServerName()
+		let enabledServerName = serversManager.getSelectedServerName()
 		self.servers = servers.compactMap({ServerData(name: $0.name, selected: ($0.name == enabledServerName)) })
 		tableView.reloadData()
 	}
@@ -78,7 +95,7 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	{
 		if addServerVC == nil
 		{
-			addServerVC = ServerAddVC()
+			addServerVC = ServerAddVC(mpdDataSource: mpdDataSource)
 		}
 
 		if let vc = addServerVC
@@ -91,11 +108,11 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	@objc private func toggleServer(_ sender: UISwitch!)
 	{
 		guard let s = sender else { return }
-		ServersManager.shared.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
+		serversManager.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
 		self.refreshServers()
 
-		MusicDataSource.shared.deinitialize()
-		MusicDataSource.shared.server = nil
+		mpdDataSource.deinitialize()
+		mpdDataSource.server = nil
 		PlayerController.shared.deinitialize()
 		PlayerController.shared.server = nil
 	}
@@ -131,7 +148,7 @@ extension ServersListVC
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		let serverData = servers[indexPath.row]
-		let shinobuServers = ServersManager.shared.getServersList()
+		let shinobuServers = serversManager.getServersList()
 		let tmp = shinobuServers.filter({$0.name == serverData.name})
 		if tmp.count > 0
 		{
@@ -144,7 +161,7 @@ extension ServersListVC
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
 
 			let serverData = self.servers[indexPath.row]
-			if ServersManager.shared.removeServerByName(serverData.name)
+			if self.serversManager.removeServerByName(serverData.name)
 			{
 				self.refreshServers()
 			}

@@ -100,7 +100,7 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 			mailComposerVC.addAttachmentData(data, mimeType: "text/plain" , fileName: "logs.txt")
 
 			var message = "Shinobu \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
-			let server = ServersManager.shared.getSelectedServer()
+			let server = ServersManager().getSelectedServer()
 			if let s = server
 			{
 				message += "MPD server:\n\(s.mpd.publicDescription())\n\n"

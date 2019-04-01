@@ -32,7 +32,6 @@ final class ContainerVC : UIViewController
 	private var libraryViewController: NYXNavigationController! = nil
 	private var serverViewController: NYXNavigationController! = nil
 	private var settingsViewController: NYXNavigationController! = nil
-	private var statsViewController: NYXNavigationController! = nil
 	// Current display state
 	private var menuVisible = false
 	{
@@ -59,7 +58,7 @@ final class ContainerVC : UIViewController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return mainViewController != nil ? mainViewController.preferredStatusBarStyle : .lightContent
+		return .lightContent
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -131,7 +130,7 @@ final class ContainerVC : UIViewController
 			case .library:
 				if libraryViewController == nil
 				{
-					let vc = LibraryVC()
+					let vc = LibraryVC(mpdDataSource: APP_DELEGATE().mpdDataSource)
 					let nvc = NYXNavigationController(rootViewController: vc)
 					libraryViewController = nvc
 				}
@@ -139,7 +138,7 @@ final class ContainerVC : UIViewController
 			case .server:
 				if serverViewController == nil
 				{
-					let vc = ServersListVC()
+					let vc = ServersListVC(mpdDataSource: APP_DELEGATE().mpdDataSource)
 					let nvc = NYXNavigationController(rootViewController: vc)
 					serverViewController = nvc
 				}

@@ -18,11 +18,14 @@ final class PlaylistDetailVC : NYXViewController
 	private var btnRandom: UIBarButtonItem! = nil
 	// Repeat button
 	private var btnRepeat: UIBarButtonItem! = nil
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
 
 	// MARK: - Initializers
-	init(playlist: Playlist)
+	init(playlist: Playlist, mpdDataSource: MPDDataSource)
 	{
 		self.playlist = playlist
+		self.mpdDataSource = mpdDataSource
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -84,7 +87,7 @@ final class PlaylistDetailVC : NYXViewController
 		}
 		else
 		{
-			MusicDataSource.shared.getTracksForPlaylist(playlist) {
+			mpdDataSource.getTracksForPlaylist(playlist) {
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.tracks = self.playlist.tracks!
@@ -101,19 +104,25 @@ final class PlaylistDetailVC : NYXViewController
 		headerView.backgroundColor = backgroundColor
 		colorView.backgroundColor = backgroundColor
 
-		if let img = generateCoverFromString(playlist.name, size: headerView.size)
+		let string = playlist.name
+		let bgColor = UIColor(rgb: string.djb2())
+		if let img = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: headerView.size.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: headerView.size)
 		{
 			headerView.image = img
 		}
 	}
 
-	private func updateNavigationTitle()
+	override func updateNavigationTitle()
 	{
 		if let tracks = playlist.tracks
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
+		}
+		else
+		{
+			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
 		}
 	}
 
@@ -133,7 +142,7 @@ final class PlaylistDetailVC : NYXViewController
 			}
 			else
 			{
-				MusicDataSource.shared.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdDataSource.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
 					switch result
 					{
 						case .failure(let error):
@@ -141,7 +150,7 @@ final class PlaylistDetailVC : NYXViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
+							self.mpdDataSource.getListForMusicalEntityType(.playlists) {
 								DispatchQueue.main.async {
 									self.updateNavigationTitle()
 								}
@@ -228,7 +237,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 		}
 
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
-			MusicDataSource.shared.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
+			self.mpdDataSource.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
 				switch result
 				{
 					case .failure(let error):
@@ -236,7 +245,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 							MessageView.shared.showWithMessage(message: error.message)
 						}
 					case .success( _):
-						MusicDataSource.shared.getTracksForPlaylist(self.playlist) {
+						self.mpdDataSource.getTracksForPlaylist(self.playlist) {
 							DispatchQueue.main.async {
 								self.updateNavigationTitle()
 								self.tableView.tracks = self.playlist.tracks!
@@ -275,7 +284,7 @@ extension PlaylistDetailVC
 		}
 
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
-			MusicDataSource.shared.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+			self.mpdDataSource.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
 				switch result
 				{
 					case .failure(let error):

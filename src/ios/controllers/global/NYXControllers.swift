@@ -53,7 +53,7 @@ class NYXTableViewController : UITableViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 120.0, 44.0))
+		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 160.0, 44.0))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -71,6 +71,11 @@ class NYXTableViewController : UITableViewController
 	override var shouldAutorotate: Bool
 	{
 		return true
+	}
+
+	func updateNavigationTitle()
+	{
+
 	}
 }
 
@@ -83,7 +88,7 @@ class NYXViewController : UIViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 120.0, 44.0))
+		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 160.0, 44.0))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -101,6 +106,11 @@ class NYXViewController : UIViewController
 	override var shouldAutorotate: Bool
 	{
 		return true
+	}
+
+	func updateNavigationTitle()
+	{
+
 	}
 }
 

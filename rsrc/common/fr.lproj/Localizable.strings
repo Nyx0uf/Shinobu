@@ -29,12 +29,10 @@
 "lbl_header_server_cfg" = "Configuration serveur";
 "lbl_header_server_zeroconf" = "Serveurs découverts";
 "lbl_search_zeroconf" = "Chercher des serveurs à proximité";
-"lbl_appearance" = "Apparence";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Comportement";
 "lbl_search" = "Recherche";
 "lbl_fuzzysearch" = "Recherche approximative";
-"lbl_ui" = "Interface";
 "lbl_troubleshoot" = "Dépannage";
 "lbl_enable_logging" = "Activer les logs";
 "lbl_send_logs" = "Envoyer les logs";
@@ -72,7 +70,6 @@
 
 "lbl_section_home" = "Bibliothèque";
 "lbl_section_server" = "Serveur MPD";
-"lbl_section_stats" = "Statistiques";
 "lbl_section_settings" = "Réglages";
 "lbl_section_database" = "Base de données";
 
@@ -90,10 +87,6 @@
 "lbl_playlists" = "Listes";
 "lbl_song" = "Chanson";
 "lbl_songs" = "Chansons";
-"lbl_total_playtime" = "Durée totale";
-"lbl_server_uptime" = "Uptime";
-"lbl_server_playtime" = "Durée jouée";
-"lbl_server_lastdbupdate" = "Dernière MàJ";
 "lbl_add_to_playlist" = "Ajouter à une liste de lecture";
 "lbl_remove_from_playlist" = "Supprimer de la liste de lecture";
 "lbl_create_playlist" = "Créer une nouvele liste de lecture";

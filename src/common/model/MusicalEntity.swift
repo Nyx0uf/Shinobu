@@ -1,13 +1,20 @@
 import Foundation
 
 
-enum MusicalEntityType : Int
+struct MusicalEntityType : OptionSet
 {
-	case albums
+	let rawValue: Int
+
+	static let albums = MusicalEntityType(rawValue: 1 << 0)
+	static let artists = MusicalEntityType(rawValue: 1 << 1)
+	static let albumsartists = MusicalEntityType(rawValue: 1 << 2)
+	static let genres = MusicalEntityType(rawValue: 1 << 3)
+	static let playlists = MusicalEntityType(rawValue: 1 << 4)
+	/*case albums
 	case artists
 	case albumsartists
 	case genres
-	case playlists
+	case playlists*/
 }
 
 

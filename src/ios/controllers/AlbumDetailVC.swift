@@ -5,7 +5,7 @@ final class AlbumDetailVC : NYXViewController
 {
 	// MARK: - Public properties
 	// Selected album
-	var album: Album
+	let album: Album
 
 	// MARK: - Private properties
 	// Header view (cover + album name, artist)
@@ -18,11 +18,14 @@ final class AlbumDetailVC : NYXViewController
 	private var btnRandom: UIBarButtonItem! = nil
 	// Repeat button
 	private var btnRepeat: UIBarButtonItem! = nil
+	// MPD Data source
+	private let mpdDataSource: MPDDataSource
 
 	// MARK: - Initializers
-	init(album: Album)
+	init(album: Album, mpdDataSource: MPDDataSource)
 	{
 		self.album = album
+		self.mpdDataSource = mpdDataSource
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -84,7 +87,7 @@ final class AlbumDetailVC : NYXViewController
 		}
 		else
 		{
-			MusicDataSource.shared.getTracksForAlbums([album]) {
+			mpdDataSource.getTracksForAlbums([album]) {
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.tracks = self.album.tracks!
@@ -103,7 +106,7 @@ final class AlbumDetailVC : NYXViewController
 		// Don't have all the metadatas
 		if album.artist.count == 0
 		{
-			MusicDataSource.shared.getMetadatasForAlbum(album) {
+			mpdDataSource.getMetadatasForAlbum(album) {
 				DispatchQueue.main.async {
 					self.updateHeader()
 				}
@@ -111,13 +114,17 @@ final class AlbumDetailVC : NYXViewController
 		}
 	}
 
-	private func updateNavigationTitle()
+	override func updateNavigationTitle()
 	{
 		if let tracks = album.tracks
 		{
 			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
 			let minutes = total.seconds / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
+		}
+		else
+		{
+			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
 		}
 	}
 
@@ -188,8 +195,8 @@ extension AlbumDetailVC : UITableViewDelegate
 		}
 
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist"), handler: { (action, view, completionHandler ) in
-			MusicDataSource.shared.getListForMusicalEntityType(.playlists) {
-				if MusicDataSource.shared.playlists.count == 0
+			self.mpdDataSource.getListForMusicalEntityType(.playlists) {
+				if self.mpdDataSource.playlists.count == 0
 				{
 					return
 				}
@@ -200,7 +207,7 @@ extension AlbumDetailVC : UITableViewDelegate
 						return
 					}
 
-					let vc = PlaylistsAddVC()
+					let vc = PlaylistsAddVC(mpdDataSource: self.mpdDataSource)
 					let tvc = NYXNavigationController(rootViewController: vc)
 					vc.trackToAdd = tracks[indexPath.row]
 					tvc.modalPresentationStyle = .popover
