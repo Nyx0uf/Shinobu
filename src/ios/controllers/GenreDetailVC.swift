@@ -88,7 +88,7 @@ final class GenreDetailVC : MusicalCollectionVC
 					}
 				}
 			case .artists, .albumsartists:
-				mpdDataSource.getArtistsForGenre(genre) { artists in
+				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: type == .albumsartists) { artists in
 					DispatchQueue.main.async {
 						self.setItems(artists, forMusicalEntityType: type)
 						self.updateNavigationTitle()

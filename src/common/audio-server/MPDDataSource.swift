@@ -171,13 +171,13 @@ final class MPDDataSource
 		}
 	}
 
-	func getArtistsForGenre(_ genre: Genre, callback: @escaping ([Artist]) -> Void)
+	func getArtistsForGenre(_ genre: Genre, isAlbumArtist: Bool, callback: @escaping ([Artist]) -> Void)
 	{
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			let result = strongSelf.connection.getArtistsForGenre(genre)
+			let result = strongSelf.connection.getArtistsForGenre(genre, isAlbumArtist: isAlbumArtist)
 			switch result
 			{
 				case .failure( _):

@@ -299,9 +299,9 @@ final class MPDConnection
 		return .success(list)
 	}
 
-	func getArtistsForGenre(_ genre: Genre) -> Result<[Artist], MPDConnectionError>
+	func getArtistsForGenre(_ genre: Genre, isAlbumArtist: Bool = false) -> Result<[Artist], MPDConnectionError>
 	{
-		if mpd_search_db_tags(connection, MPD_TAG_ARTIST) == false
+		if mpd_search_db_tags(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST) == false
 		{
 			return .failure(MPDConnectionError(.searchError, getLastErrorMessageForConnection()))
 		}
@@ -315,13 +315,13 @@ final class MPDConnection
 		}
 
 		var list = [Artist]()
-		var pair = mpd_recv_pair_tag(connection, MPD_TAG_ARTIST)
+		var pair = mpd_recv_pair_tag(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST)
 		while pair != nil
 		{
 			guard let value = pair?.pointee.value else
 			{
 				mpd_return_pair(connection, pair)
-				pair = mpd_recv_pair_tag(connection, MPD_TAG_ARTIST)
+				pair = mpd_recv_pair_tag(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST)
 				continue
 			}
 			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
@@ -331,7 +331,7 @@ final class MPDConnection
 			}
 			
 			mpd_return_pair(connection, pair)
-			pair = mpd_recv_pair_tag(connection, MPD_TAG_ARTIST)
+			pair = mpd_recv_pair_tag(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST)
 		}
 
 		if mpd_connection_get_error(connection) != MPD_ERROR_SUCCESS || mpd_response_finish(connection) == false
