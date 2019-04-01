@@ -19,7 +19,10 @@ final class AlbumsListVC : MusicalCollectionVC
 	{
 		self.artist = artist
 		self.isAlbumArtist = isAlbumArtist
+
 		super.init(mpdDataSource: mpdDataSource)
+
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -28,13 +31,6 @@ final class AlbumsListVC : MusicalCollectionVC
 	}
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
-		super.viewDidLoad()
-
-		self.collectionView.musicalEntityType = .albums
-	}
-
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)

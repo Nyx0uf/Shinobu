@@ -75,8 +75,6 @@ class MusicalCollectionVC : NYXViewController
 		}
 
 		// Collection view
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
-
 		collectionView = MusicalCollectionView(frame: self.view.bounds, musicalEntityType: dataSource.musicalEntityType)
 		collectionView.delegate = dataSource
 		collectionView.dataSource = dataSource

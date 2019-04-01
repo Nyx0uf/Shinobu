@@ -480,9 +480,9 @@
 			isa = PBXGroup;
 			children = (
 				4358B01821EB42B4009A3BBF /* CoverServer.swift */,
-				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
 				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
 				4358B01921EB42B4009A3BBF /* MPDDataSource.swift */,
+				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
 				4358B01A21EB42B4009A3BBF /* PlayerController.swift */,
 				430141E12229307300C68075 /* ServersManager.swift */,
 				43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */,

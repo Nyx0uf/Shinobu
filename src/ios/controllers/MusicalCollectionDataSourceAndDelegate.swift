@@ -22,9 +22,10 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	private var downloadOperations = [String : Operation]()
 	// MPD Data source
 	private let mpdDataSource: MPDDataSource
-	//
+	// MPD servers manager
 	private let serversManager: ServersManager
 
+	// MARK: - Initializers
 	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdDataSource: MPDDataSource)
 	{
 		self.mpdDataSource = mpdDataSource
@@ -66,25 +67,6 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 
 		return downloadOperation
 	}
-
-	private func cellIdentifier() -> String
-	{
-		switch musicalEntityType
-		{
-			case .albums:
-				return "fr.whine.shinobu.cell.musicalentity.album"
-			case .artists:
-				return "fr.whine.shinobu.cell.musicalentity.artist"
-			case .albumsartists:
-				return "fr.whine.shinobu.cell.musicalentity.albumartist"
-			case .genres:
-				return "fr.whine.shinobu.cell.musicalentity.genre"
-			case .playlists:
-				return "fr.whine.shinobu.cell.musicalentity.playlist"
-			default:
-				return "fr.whine.shinobu.cell.musicalentity.default"
-		}
-	}
 }
 
 extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
@@ -106,7 +88,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale

@@ -44,7 +44,7 @@ final class MusicalCollectionView : UICollectionView
 	{
 		didSet
 		{
-			self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: self.cellIdentifier())
+			self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
 		}
 	}
 
@@ -61,26 +61,6 @@ final class MusicalCollectionView : UICollectionView
 	required init?(coder aDecoder: NSCoder)
 	{
 		fatalError("init(coder:) has not been implemented")
-	}
-
-	// MARK: - Private
-	private func cellIdentifier() -> String
-	{
-		switch musicalEntityType
-		{
-			case .albums:
-				return "fr.whine.shinobu.cell.musicalentity.album"
-			case .artists:
-				return "fr.whine.shinobu.cell.musicalentity.artist"
-			case .albumsartists:
-				return "fr.whine.shinobu.cell.musicalentity.albumartist"
-			case .genres:
-				return "fr.whine.shinobu.cell.musicalentity.genre"
-			case .playlists:
-				return "fr.whine.shinobu.cell.musicalentity.playlist"
-			default:
-				return "fr.whine.shinobu.cell.musicalentity.default"
-		}
 	}
 }
 

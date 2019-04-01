@@ -18,6 +18,8 @@ final class GenreDetailVC : MusicalCollectionVC
 		self.genre = genre
 
 		super.init(mpdDataSource: mpdDataSource)
+
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -26,26 +28,30 @@ final class GenreDetailVC : MusicalCollectionVC
 	}
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
-		super.viewDidLoad()
-
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
-		self.collectionView.musicalEntityType = dataSource.musicalEntityType
-		self.collectionView.dataSource = dataSource
-		self.collectionView.delegate = dataSource
-	}
-
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
 
-		mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
-			DispatchQueue.main.async {
-				self.setItems(albums, forMusicalEntityType: self.dataSource.musicalEntityType)
-				self.updateNavigationTitle()
-			}
+		switch dataSource.musicalEntityType
+		{
+			case .albums:
+				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+					DispatchQueue.main.async {
+						self.setItems(albums, forMusicalEntityType: self.dataSource.musicalEntityType)
+						self.updateNavigationTitle()
+					}
+				}
+			case .artists, .albumsartists:
+				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: dataSource.musicalEntityType == .albumsartists) { artists in
+					DispatchQueue.main.async {
+						self.setItems(artists, forMusicalEntityType: self.dataSource.musicalEntityType)
+						self.updateNavigationTitle()
+					}
+				}
+			default:
+				break
 		}
+
 	}
 
 	override func updateNavigationTitle()
@@ -67,16 +73,14 @@ final class GenreDetailVC : MusicalCollectionVC
 
 	override func didSelectDisplayType(_ typeAsInt: Int)
 	{
+		// Hide
+		changeTypeAction(nil)
 		// Ignore if type did not change
 		let type = MusicalEntityType(rawValue: typeAsInt)
-		if dataSource.musicalEntityType == type || allowedMusicalEntityTypes.contains(type) == false
+		if dataSource.musicalEntityType == type
 		{
-			changeTypeAction(nil)
 			return
 		}
-
-		// Longpress / peek & pop
-		updateLongpressState()
 
 		switch type
 		{
@@ -98,7 +102,6 @@ final class GenreDetailVC : MusicalCollectionVC
 				break
 		}
 
-		self.changeTypeAction(nil)
 		if self.dataSource.items.count == 0
 		{
 			self.collectionView.contentOffset = CGPoint(0, 64)

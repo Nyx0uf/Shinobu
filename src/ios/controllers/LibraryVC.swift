@@ -15,6 +15,8 @@ final class LibraryVC : MusicalCollectionVC, CenterViewController
 	override init(mpdDataSource: MPDDataSource)
 	{
 		super.init(mpdDataSource: mpdDataSource)
+
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
 	}
 
 	required init?(coder aDecoder: NSCoder)

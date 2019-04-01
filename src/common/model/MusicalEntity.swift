@@ -10,11 +10,25 @@ struct MusicalEntityType : OptionSet
 	static let albumsartists = MusicalEntityType(rawValue: 1 << 2)
 	static let genres = MusicalEntityType(rawValue: 1 << 3)
 	static let playlists = MusicalEntityType(rawValue: 1 << 4)
-	/*case albums
-	case artists
-	case albumsartists
-	case genres
-	case playlists*/
+
+	func cellIdentifier() -> String
+	{
+		switch self
+		{
+			case .albums:
+				return "fr.whine.shinobu.cell.musicalentity.album"
+			case .artists:
+				return "fr.whine.shinobu.cell.musicalentity.artist"
+			case .albumsartists:
+				return "fr.whine.shinobu.cell.musicalentity.albumartist"
+			case .genres:
+				return "fr.whine.shinobu.cell.musicalentity.genre"
+			case .playlists:
+				return "fr.whine.shinobu.cell.musicalentity.playlist"
+			default:
+				return "fr.whine.shinobu.cell.musicalentity.default"
+		}
+	}
 }
 
 
