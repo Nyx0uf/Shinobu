@@ -111,6 +111,8 @@ final class Settings
 				Settings.Key.pref_shakeToPlayRandom.rawValue : false,
 				Settings.Key.mpd_repeat.rawValue : false,
 				Settings.Key.mpd_shuffle.rawValue : false,
+				Settings.Key.lastTypeLibrary.rawValue : MusicalEntityType.albums.rawValue,
+				Settings.Key.lastTypeGenre.rawValue : MusicalEntityType.albums.rawValue,
 			]
 
 			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
@@ -140,4 +142,6 @@ extension Settings.Key
 	static let pref_enableLogging = Settings.Key("pref_enableLogging")
 	static let mpd_repeat = Settings.Key("mpd_repeat")
 	static let mpd_shuffle = Settings.Key("mpd_shuffle")
+	static let lastTypeLibrary = Settings.Key("lastTypeLibrary")
+	static let lastTypeGenre = Settings.Key("lastTypeGenre")
 }

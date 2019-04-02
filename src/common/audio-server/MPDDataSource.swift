@@ -152,7 +152,7 @@ final class MPDDataSource
 		}
 	}
 
-	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping () -> Void)
+	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping ([Album]) -> Void)
 	{
 		guard MPDConnection.isValid(connection) else { return }
 
@@ -165,8 +165,9 @@ final class MPDDataSource
 					break
 				case .success(let list):
 					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-					artist.albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
-					callback()
+					let albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					artist.albums = albums
+					callback(albums)
 			}
 		}
 	}

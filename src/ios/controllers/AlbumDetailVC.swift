@@ -3,11 +3,9 @@ import UIKit
 
 final class AlbumDetailVC : NYXViewController
 {
-	// MARK: - Public properties
-	// Selected album
-	let album: Album
-
 	// MARK: - Private properties
+	// Selected album
+	private let album: Album
 	// Header view (cover + album name, artist)
 	private var headerView: AlbumHeaderView! = nil
 	// Tableview for song list
@@ -26,6 +24,7 @@ final class AlbumDetailVC : NYXViewController
 	{
 		self.album = album
 		self.mpdDataSource = mpdDataSource
+
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -40,12 +39,17 @@ final class AlbumDetailVC : NYXViewController
 		super.viewDidLoad()
 
 		// Color under navbar
-		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? 88))
+		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
+		if navigationController == nil
+		{
+			defaultHeight = 0.0
+		}
+		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
 		self.view.addSubview(colorView)
 
 		// Album header view
 		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88), coverSize: (coverSize?.cgSizeValue)!)
+		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, self.view.width, coverSize?.cgSizeValue.height ?? defaultHeight), coverSize: (coverSize?.cgSizeValue)!)
 		self.view.addSubview(headerView)
 
 		// Tableview
@@ -61,7 +65,7 @@ final class AlbumDetailVC : NYXViewController
 		super.viewWillAppear(animated)
 
 		// Add navbar shadow
-		if let _ = navigationController?.navigationBar
+		if let navigationBar = navigationController?.navigationBar
 		{
 			let loop = Settings.shared.bool(forKey: .mpd_repeat)
 			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
@@ -74,6 +78,10 @@ final class AlbumDetailVC : NYXViewController
 			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
 
 			navigationItem.rightBarButtonItems = [btnRandom, btnRepeat]
+
+			colorView.frame = CGRect(0, 0, self.view.width, navigationBar.frame.maxY)
+			headerView.frame = CGRect(0, navigationBar.frame.maxY, headerView.width, headerView.height)
+			tableView.frame = CGRect(0, headerView.bottom, tableView.width, self.view.height - headerView.bottom)
 		}
 
 		// Update header
@@ -87,10 +95,10 @@ final class AlbumDetailVC : NYXViewController
 		}
 		else
 		{
-			mpdDataSource.getTracksForAlbums([album]) {
+			mpdDataSource.getTracksForAlbums([album]) { [weak self] in
 				DispatchQueue.main.async {
-					self.updateNavigationTitle()
-					self.tableView.tracks = self.album.tracks!
+					self?.updateNavigationTitle()
+					self?.tableView.tracks = self?.album.tracks ?? []
 				}
 			}
 		}

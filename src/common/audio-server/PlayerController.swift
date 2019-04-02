@@ -49,13 +49,13 @@ final class PlayerController
 		}
 
 		// Sanity check 2
-		guard let server = server else
+		guard let s = self.server else
 		{
 			return .failure(MPDConnectionError(.invalidServerParameters, Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error)))
 		}
 
 		// Connect
-		connection = MPDConnection(server)
+		connection = MPDConnection(s)
 		let ret = connection.connect()
 		switch ret
 		{
@@ -322,8 +322,8 @@ final class PlayerController
 			let result = try connection.getPlayerInfos()
 			switch result
 			{
-				case .failure( _):
-					return
+				case .failure(let error):
+					Logger.shared.log(message: error.message)
 				case .success(let result):
 					guard let infos = result else {return}
 					let status = infos[PLAYER_STATUS_KEY] as! Int

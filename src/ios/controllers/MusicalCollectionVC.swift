@@ -95,7 +95,8 @@ class MusicalCollectionVC : NYXViewController
 
 		if allowedMusicalEntityTypes.count > 1
 		{
-			typeChoiceView = TypeChoiceView(frame: CGRect(0.0, (self.navigationController?.navigationBar.bottom)!, collectionView.width, CGFloat(allowedMusicalEntityTypes.count * 44)), musicalEntityTypes: allowedMusicalEntityTypes)
+			let y = self.navigationController != nil ? (self.navigationController?.navigationBar.bottom)! : 0.0
+			typeChoiceView = TypeChoiceView(frame: CGRect(0.0, y, collectionView.width, CGFloat(allowedMusicalEntityTypes.count * 44)), musicalEntityTypes: allowedMusicalEntityTypes)
 			typeChoiceView.delegate = self
 			typeChoiceView.selectedMusicalEntityType = dataSource.musicalEntityType
 
@@ -221,8 +222,9 @@ extension MusicalCollectionVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
 	{
-		dataSource.searchResults.removeAll()
 		searching = false
+		dataSource.searching = false
+		dataSource.setSearchResults([])
 		searchBar.text = ""
 		showNavigationBar(animated: true)
 		collectionView.reloadData()
@@ -238,8 +240,9 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar)
 	{
 		searching = true
+		dataSource.searching = true
 		// Copy original source to avoid crash when nothing was searched
-		dataSource.searchResults = self.dataSource.items
+		dataSource.setSearchResults(dataSource.items)
 	}
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
@@ -248,18 +251,18 @@ extension MusicalCollectionVC : UISearchBarDelegate
 
 		if String.isNullOrWhiteSpace(searchText)
 		{
-			dataSource.searchResults = self.dataSource.items
+			dataSource.setSearchResults(dataSource.items)
 			collectionView.reloadData()
 			return
 		}
 
 		if Settings.shared.bool(forKey: .pref_fuzzySearch)
 		{
-			dataSource.searchResults = dataSource.items.filter({$0.name.fuzzySearch(withString: searchText)})
+			dataSource.setSearchResults(dataSource.items.filter({$0.name.fuzzySearch(withString: searchText)}))
 		}
 		else
 		{
-			dataSource.searchResults = dataSource.items.filter({$0.name.lowercased().contains(searchText.lowercased())})
+			dataSource.setSearchResults(dataSource.items.filter({$0.name.lowercased().contains(searchText.lowercased())}))
 		}
 
 		collectionView.reloadData()

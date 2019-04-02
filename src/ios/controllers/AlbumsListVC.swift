@@ -37,20 +37,17 @@ final class AlbumsListVC : MusicalCollectionVC
 
 		if artist.albums.count <= 0
 		{
-			mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist) {
+			mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist) { [weak self] (albums) in
 				DispatchQueue.main.async {
-					//self.dataSource.setItems(self.artist.albums, forType: .albums)
-					//self.collectionView.reloadData()
-					self.setItems(self.artist.albums, forMusicalEntityType: .albums)
-					self.updateNavigationTitle()
+					self?.setItems(albums, forMusicalEntityType: .albums)
+					self?.updateNavigationTitle()
 				}
 			}
 		}
 		else
 		{
 			DispatchQueue.main.async {
-				self.dataSource.setItems(self.artist.albums, forType: .albums)
-				self.collectionView.reloadData()
+				self.setItems(self.artist.albums, forMusicalEntityType: .albums)
 				self.updateNavigationTitle()
 			}
 		}
@@ -77,7 +74,7 @@ final class AlbumsListVC : MusicalCollectionVC
 			}
 			alertController.addAction(cancelAction)
 
-			let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
+			let album = dataSource.actualItems[indexPath.row] as! Album
 			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 				PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
@@ -112,8 +109,14 @@ extension AlbumsListVC
 {
 	override func didSelectItem(indexPath: IndexPath)
 	{
-		let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
-		let vc = AlbumDetailVC(album: album, mpdDataSource: mpdDataSource)
+		let entities = dataSource.actualItems
+		if indexPath.row >= entities.count
+		{
+			return
+		}
+		let entity = entities[indexPath.row]
+
+		let vc = AlbumDetailVC(album: entity as! Album, mpdDataSource: mpdDataSource)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }
@@ -127,7 +130,7 @@ extension AlbumsListVC
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 
-			let album = searching ? dataSource.searchResults[indexPath.row] as! Album : dataSource.items[indexPath.row] as! Album
+			let album = dataSource.actualItems[indexPath.row] as! Album
 			return AlbumDetailVC(album: album, mpdDataSource: mpdDataSource)
 		}
 		return nil
@@ -140,9 +143,9 @@ extension AlbumsListVC
 	override var previewActionItems: [UIPreviewActionItem]
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) {
+			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdDataSource.getTracksForAlbums(self.artist.albums) {
-					let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+					let source = self.dataSource.actualItems as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
 				}
@@ -151,9 +154,9 @@ extension AlbumsListVC
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) {
+			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdDataSource.getTracksForAlbums(self.artist.albums) {
-					let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+					let source = self.dataSource.actualItems as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
 				}
@@ -162,8 +165,8 @@ extension AlbumsListVC
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) {
-				let source = self.searching ? self.dataSource.searchResults as! [Album] : self.dataSource.items as! [Album]
+			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
+				let source = self.dataSource.actualItems as! [Album]
 				for album in source
 				{
 					PlayerController.shared.addAlbumToQueue(album)

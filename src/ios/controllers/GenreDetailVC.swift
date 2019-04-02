@@ -19,7 +19,7 @@ final class GenreDetailVC : MusicalCollectionVC
 
 		super.init(mpdDataSource: mpdDataSource)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeGenre)), delegate: self, mpdDataSource: mpdDataSource)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -35,17 +35,19 @@ final class GenreDetailVC : MusicalCollectionVC
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
-				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) {
+					[weak self] (albums) in
 					DispatchQueue.main.async {
-						self.setItems(albums, forMusicalEntityType: self.dataSource.musicalEntityType)
-						self.updateNavigationTitle()
+						self?.setItems(albums, forMusicalEntityType: self?.dataSource.musicalEntityType ?? .albums)
+						self?.updateNavigationTitle()
 					}
 				}
 			case .artists, .albumsartists:
-				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: dataSource.musicalEntityType == .albumsartists) { artists in
+				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: dataSource.musicalEntityType == .albumsartists) {
+					[weak self] (artists) in
 					DispatchQueue.main.async {
-						self.setItems(artists, forMusicalEntityType: self.dataSource.musicalEntityType)
-						self.updateNavigationTitle()
+						self?.setItems(artists, forMusicalEntityType: self?.dataSource.musicalEntityType ?? .artists)
+						self?.updateNavigationTitle()
 					}
 				}
 			default:
@@ -57,14 +59,15 @@ final class GenreDetailVC : MusicalCollectionVC
 	override func updateNavigationTitle()
 	{
 		var detailText: String?
+		let count = dataSource.items.count
 		switch self.dataSource.musicalEntityType
 		{
 			case .albums:
-				detailText = "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
+				detailText = "\(count) \(count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
 			case .artists:
-				detailText = "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())"
+				detailText = "\(count) \(count == 1 ? NYXLocalizedString("lbl_artist").lowercased() : NYXLocalizedString("lbl_artists").lowercased())"
 			case .albumsartists:
-				detailText = "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_albumartist").lowercased() : NYXLocalizedString("lbl_albumartists").lowercased())"
+				detailText = "\(count) \(count == 1 ? NYXLocalizedString("lbl_albumartist").lowercased() : NYXLocalizedString("lbl_albumartists").lowercased())"
 			default:
 				break
 		}
@@ -82,20 +85,23 @@ final class GenreDetailVC : MusicalCollectionVC
 			return
 		}
 
+		Settings.shared.set(typeAsInt, forKey: .lastTypeGenre)
 		switch type
 		{
 			case .albums:
-				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) { albums in
+				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) {
+					 [weak self] (albums) in
 					DispatchQueue.main.async {
-						self.setItems(albums, forMusicalEntityType: type)
-						self.updateNavigationTitle()
+						self?.setItems(albums, forMusicalEntityType: type)
+						self?.updateNavigationTitle()
 					}
 				}
 			case .artists, .albumsartists:
-				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: type == .albumsartists) { artists in
+				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: type == .albumsartists) {
+					 [weak self] (artists) in
 					DispatchQueue.main.async {
-						self.setItems(artists, forMusicalEntityType: type)
-						self.updateNavigationTitle()
+						self?.setItems(artists, forMusicalEntityType: type)
+						self?.updateNavigationTitle()
 					}
 				}
 			default:
@@ -118,7 +124,7 @@ extension GenreDetailVC
 {
 	override func didSelectItem(indexPath: IndexPath)
 	{
-		let entities = searching ? dataSource.searchResults : dataSource.items
+		let entities = dataSource.actualItems
 		if indexPath.row >= entities.count
 		{
 			return

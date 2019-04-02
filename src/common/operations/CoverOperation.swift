@@ -62,7 +62,7 @@ final class CoverOperation : Operation
 		// Operation is cancelled, abort
 		if isCancelled
 		{
-			Logger.shared.log(type: .debug, message: "Operation cancelled for <\(album.name)>")
+			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
@@ -141,7 +141,7 @@ extension CoverOperation : URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .debug, message: "Cancelled")
+			Logger.shared.log(type: .information, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -158,7 +158,7 @@ extension CoverOperation : URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .debug, message: "Cancelled")
+			Logger.shared.log(type: .information, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -170,7 +170,7 @@ extension CoverOperation : URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .debug, message: "Cancelled")
+			Logger.shared.log(type: .information, message: "Cancelled")
 			sessionTask?.cancel()
 			isFinished = true
 			return

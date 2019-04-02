@@ -3,10 +3,10 @@ import Foundation
 
 enum LogType : String
 {
-	case debug = "💜"
-	case success = "💚"
-	case warning = "💛"
 	case error = "❤️"
+	case warning = "💛"
+	case information = "💜"
+	case success = "💚"
 }
 
 private struct Log : CustomStringConvertible
@@ -80,7 +80,12 @@ final class Logger
 
 	public func log(string: String)
 	{
-		self.log(type: .debug, message: string)
+		self.log(type: .information, message: string)
+	}
+
+	public func log(message: Message)
+	{
+		self.log(type: .information, message: message.content)
 	}
 
 	public func export() -> Data?

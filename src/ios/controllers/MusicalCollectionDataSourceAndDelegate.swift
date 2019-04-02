@@ -11,13 +11,27 @@ protocol MusicalCollectionDataSourceAndDelegateDelegate : class
 
 final class MusicalCollectionDataSourceAndDelegate : NSObject
 {
-	// MARK: - Properties
-	// Data sources
-	var items = [MusicalEntity]()
-	var searchResults = [MusicalEntity]()
+	// MARK: - Public Properties
+	// Original data source
+	private(set) var items = [MusicalEntity]()
+	// Only search results
+	private(set) var searchResults = [MusicalEntity]()
+	// Type of entity in the data source
 	var musicalEntityType = MusicalEntityType.albums
+	// Currenlty searching flag
+	var searching = false
 	// Delegate
 	weak var delegate: MusicalCollectionDataSourceAndDelegateDelegate!
+	// Return the correct items
+	var actualItems: [MusicalEntity]
+	{
+		get
+		{
+			return searching ? searchResults : items
+		}
+	}
+
+	// MARK: - Private Properties
 	// Cover download operations
 	private var downloadOperations = [String : Operation]()
 	// MPD Data source
@@ -39,6 +53,11 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	{
 		self.items = items
 		self.musicalEntityType = type
+	}
+
+	func setSearchResults(_ searchResults: [MusicalEntity])
+	{
+		self.searchResults = searchResults
 	}
 
 	// MARK: - Private
@@ -78,31 +97,32 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			return 0
 		}
 
-		if delegate.isSearching(actively: false)
-		{
-			return searchResults.count
-		}
-
-		return items.count
+		let count = actualItems.count
+		return count >= 9 ? count + 3 : count
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
+
+		// Dummy cells
+		let entities = self.actualItems
+		if indexPath.row == entities.count || indexPath.row == entities.count + 1 || indexPath.row == entities.count + 2
+		{
+			cell.label.text = ""
+			cell.imageView.backgroundColor = collectionView.backgroundColor
+			cell.image = nil
+			return cell
+		}
+
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
 		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		cell.label.backgroundColor = collectionView.backgroundColor
+		cell.imageView.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
 
-		// Sanity check
-		let searching = delegate.isSearching(actively: false)
-		if searching && indexPath.row >= searchResults.count
-		{
-			return cell
-		}
-
-		let entity = searching ? searchResults[indexPath.row] : items[indexPath.row]
+		let entity = entities[indexPath.row]
 		// Init cell
 		cell.label.text = entity.name
 		cell.accessibilityLabel = entity.name
@@ -152,11 +172,11 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		}
 		else
 		{
-			/*if let op = cell.associatedObject as! CoverOperation?
+			if let op = cell.associatedObject as! CoverOperation?
 			{
-			Logger.shared.log(type: .debug, message: "canceling \(op)")
-			op.cancel()
-			}*/
+				Logger.shared.log(type: .information, message: "canceling \(op)")
+				op.cancel()
+			}
 
 			if delegate.isSearching(actively: true)
 			{

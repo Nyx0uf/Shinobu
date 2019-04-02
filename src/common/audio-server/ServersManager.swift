@@ -16,12 +16,12 @@ final class ServersManager
 			}
 			catch let error
 			{
-				Logger.shared.log(type: .debug, message: "Failed to decode servers: \(error.localizedDescription)")
+				Logger.shared.log(type: .information, message: "Failed to decode servers: \(error.localizedDescription)")
 			}
 		}
 		else
 		{
-			Logger.shared.log(type: .debug, message: "No servers registered yet")
+			Logger.shared.log(type: .information, message: "No servers registered yet")
 		}
 
 		return servers
