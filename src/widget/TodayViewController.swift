@@ -17,10 +17,17 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	@IBOutlet private var btnPrevious: UIButton!
 	// Next track button
 	@IBOutlet private var btnNext: UIButton!
-	// Can work flag
-	private var canWork = true
-	//
-	private var mpdDataSource = MPDDataSource()
+	// Cover view
+	@IBOutlet private var imageView: UIImageView!
+	// MPD data source
+	private var mpdBridge = MPDBridge()
+
+	required init?(coder aDecoder: NSCoder)
+	{
+		super.init(coder: aDecoder)
+
+		Settings.shared.initialize()
+	}
 
 	override func viewDidLoad()
 	{
@@ -32,69 +39,49 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		guard let server = ServersManager().getSelectedServer() else
 		{
 			self.disableAllBecauseCantWork()
-			canWork = false
 			return
 		}
 
 		// Data source
-
-		mpdDataSource.server = server.mpd
-		let resultDataSource = mpdDataSource.initialize()
+		mpdBridge.server = server.mpd
+		let resultDataSource = mpdBridge.initialize()
 		switch resultDataSource
 		{
-			case .failure( _):
+			case .failure(_):
 				self.disableAllBecauseCantWork()
-				canWork = false
 			case .success(_):
-				mpdDataSource.getListForMusicalEntityType(.albums) {
-				}
-		}
-
-		// Player
-		PlayerController.shared.server = server.mpd
-		let resultPlayer = PlayerController.shared.initialize()
-		switch resultPlayer
-		{
-			case .failure( _):
-				self.disableAllBecauseCantWork()
-				canWork = false
-			case .success(_):
-				break
-		}
-
-		if canWork
-		{
-			NotificationCenter.default.addObserver(self, selector: #selector(playingTRackNotification(_:)), name: .currentPlayingTrack, object: nil)
+				mpdBridge.entitiesForType(.albums) { (_) in }
+				NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		}
 	}
 
 	func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void))
 	{
 		let ret = updateFields()
-		completionHandler(ret == false ? NCUpdateResult.failed : NCUpdateResult.newData)
+		completionHandler(ret ? NCUpdateResult.newData : NCUpdateResult.failed)
 	}
 
 	// MARK: - Actions
 	@IBAction func togglePauseAction(_ sender: Any?)
 	{
-		PlayerController.shared.togglePause()
+		mpdBridge.togglePause()
 	}
 
 	@IBAction func nextTrackAction(_ sender: Any?)
 	{
-		PlayerController.shared.requestNextTrack()
+		mpdBridge.requestNextTrack()
 	}
 
 	@IBAction func previousTrackAction(_ sender: Any?)
 	{
-		PlayerController.shared.requestPreviousTrack()
+		mpdBridge.requestPreviousTrack()
 	}
 
 	// MARK: - Private
 	private func updateFields() -> Bool
 	{
 		var ret = true
-		if let track = PlayerController.shared.currentTrack
+		if let track = mpdBridge.getCurrentTrack()
 		{
 			lblTrackTitle.text = track.name
 			lblTrackArtist.text = track.artist
@@ -104,16 +91,17 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 			ret = false
 		}
 
-		if let album = PlayerController.shared.currentAlbum
+		if let album = mpdBridge.getCurrentAlbum()
 		{
 			lblAlbumName.text = album.name
+			handleCoverForAlbum(album)
 		}
 		else
 		{
 			ret = false
 		}
 
-		if PlayerController.shared.currentStatus == .paused
+		if mpdBridge.getCurrentStatus() == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay, for: .normal)
@@ -129,6 +117,55 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		return ret
 	}
 
+	private func handleCoverForAlbum(_ album: Album)
+	{
+		guard let coverURL = album.localCoverURL else
+		{
+			return
+		}
+
+		if let cover = UIImage.loadFromFileURL(coverURL)
+		{
+			imageView.image = cover
+		}
+		else
+		{
+			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
+			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
+			if album.path != nil
+			{
+				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
+					DispatchQueue.main.async {
+						self.imageView.image = thumbnail
+					}
+				}
+			}
+			else
+			{
+				mpdBridge.getPathForAlbum(album) {
+					self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
+						DispatchQueue.main.async {
+							self.imageView.image = thumbnail
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
+	{
+		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
+		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
+			if let block = callback
+			{
+				block(cover, thumbnail)
+			}
+		}
+
+		OperationQueue.main.addOperation(downloadOperation)
+	}
+
 	private func disableAllBecauseCantWork()
 	{
 		btnPlay.isEnabled = false
@@ -140,7 +177,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	}
 
 	// MARK: - Notification
-	@objc private func playingTRackNotification(_ notification: Notification)
+	@objc private func playingTrackNotification(_ notification: Notification)
 	{
 		_ = self.updateFields()
 	}

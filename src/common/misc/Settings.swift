@@ -38,7 +38,8 @@ final class Settings
 	// MARK: - Public
 	func initialize()
 	{
-		registerDefaultPreferences()
+		registerDefaultSettings()
+		createDirectories()
 	}
 
 	func bool(forKey: Settings.Key) -> Bool
@@ -91,8 +92,13 @@ final class Settings
 		defaults.synchronize()
 	}
 
+	func dictionaryRepresentation() -> [String : Any]
+	{
+		return defaults.dictionaryRepresentation()
+	}
+
 	// MARK: - Private
-	private func registerDefaultPreferences()
+	private func registerDefaultSettings()
 	{
 		do
 		{
@@ -114,10 +120,6 @@ final class Settings
 				Settings.Key.lastTypeLibrary.rawValue : MusicalEntityType.albums.rawValue,
 				Settings.Key.lastTypeGenre.rawValue : MusicalEntityType.albums.rawValue,
 			]
-
-			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-
-			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
 			
 			defaults.register(defaults: defaultsValues)
 			defaults.synchronize()
@@ -125,6 +127,28 @@ final class Settings
 		catch let error
 		{
 			Logger.shared.log(error: error)
+			fatalError("Failed to register default preferences")
+		}
+	}
+
+	public func createDirectories()
+	{
+		do
+		{
+			guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else
+			{
+				fatalError("Failed to get cache directory")
+			}
+
+			guard let coversDirectoryPath = self.string(forKey: .coversDirectory) else
+			{
+				fatalError("Failed to get covers directory")
+			}
+
+			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
+		}
+		catch
+		{
 			fatalError("Failed to create covers directory")
 		}
 	}

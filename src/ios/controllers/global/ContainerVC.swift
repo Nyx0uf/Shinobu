@@ -2,17 +2,17 @@ import UIKit
 import QuartzCore
 
 
-protocol ContainerVCDelegate : class
+/*protocol ContainerVCDelegate : class
 {
 	func toggleMenu()
 	func isMenuVisible() -> Bool
 	func showServerVC()
-}
+}*/
 
-protocol CenterViewController
+/*protocol CenterViewController
 {
 	var containerDelegate: ContainerVCDelegate? {get set}
-}
+}*/
 
 enum SelectedVCType
 {
@@ -27,31 +27,31 @@ final class ContainerVC : UIViewController
 	// Main VC
 	private var mainViewController: NYXNavigationController! = nil
 	// Menu VC
-	private var menuViewController: SideMenuVC? = nil
+	//private var menuViewController: SideMenuVC? = nil
 	// VCs
-	private var libraryViewController: NYXNavigationController! = nil
-	private var serverViewController: NYXNavigationController! = nil
-	private var settingsViewController: NYXNavigationController! = nil
+	//private var libraryViewController: NYXNavigationController! = nil
+	//private var serverViewController: NYXNavigationController! = nil
+	//private var settingsViewController: NYXNavigationController! = nil
 	// Current display state
-	private var menuVisible = false
+	/*private var menuVisible = false
 	{
 		didSet
 		{
 			self.toggleShadow(menuVisible)
 		}
-	}
+	}*/
 	// Current displayed VC
-	private var selectedVCType = SelectedVCType.library
+	//private var selectedVCType = SelectedVCType.library
 	// Pan gesture
-	private var panGestureRecognizer: UIPanGestureRecognizer! = nil
+	//private var panGestureRecognizer: UIPanGestureRecognizer! = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
-		panGestureRecognizer.delegate = self
+		//panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+		//panGestureRecognizer.delegate = self
 
 		self.updateCenterVC()
 	}
@@ -72,7 +72,7 @@ final class ContainerVC : UIViewController
 	}
 
 	// MARK: - Gestures
-	@objc func pan(_ recognizer: UIPanGestureRecognizer)
+	/*@objc func pan(_ recognizer: UIPanGestureRecognizer)
 	{
 		let leftToRight = (recognizer.velocity(in: view).x > 0)
 
@@ -109,7 +109,7 @@ final class ContainerVC : UIViewController
 			default:
 				break
 		}
-	}
+	}*/
 
 	// MARK: - Private
 	private func updateCenterVC()
@@ -117,20 +117,20 @@ final class ContainerVC : UIViewController
 		// Remove current VC
 		if let currentCenterVC = mainViewController
 		{
-			if let currentCenterVCView = currentCenterVC.view
+			/*if let currentCenterVCView = currentCenterVC.view
 			{
 				currentCenterVCView.removeGestureRecognizer(panGestureRecognizer)
-			}
+			}*/
 			currentCenterVC.remove()
 		}
 
 		// Add the new VC
-		switch selectedVCType
+		/*switch selectedVCType
 		{
 			case .library:
 				if libraryViewController == nil
 				{
-					let vc = LibraryVC(mpdDataSource: APP_DELEGATE().mpdDataSource)
+					let vc = LibraryVC(mpdBridge: APP_DELEGATE().mpdBridge)
 					let nvc = NYXNavigationController(rootViewController: vc)
 					libraryViewController = nvc
 				}
@@ -138,7 +138,7 @@ final class ContainerVC : UIViewController
 			case .server:
 				if serverViewController == nil
 				{
-					let vc = ServersListVC(mpdDataSource: APP_DELEGATE().mpdDataSource)
+					let vc = ServersListVC(mpdBridge: APP_DELEGATE().mpdBridge)
 					let nvc = NYXNavigationController(rootViewController: vc)
 					serverViewController = nvc
 				}
@@ -151,16 +151,20 @@ final class ContainerVC : UIViewController
 					settingsViewController = nvc
 				}
 				mainViewController = settingsViewController
-		}
-		self.add(mainViewController)
+		}*/
 
-		var vc = mainViewController.topViewController as! CenterViewController
-		vc.containerDelegate = self
+		let lvc = LibraryVC(mpdBridge: APP_DELEGATE().mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: lvc)
+		mainViewController = nvc
+		self.add(nvc)
+
+		//var vc = mainViewController.topViewController as! CenterViewController
+		//vc.containerDelegate = self
 
 		//mainViewController.view.addGestureRecognizer(panGestureRecognizer)
 	}
 
-	private func addMenuViewController()
+	/*private func addMenuViewController()
 	{
 		guard menuViewController == nil else { return }
 
@@ -204,11 +208,11 @@ final class ContainerVC : UIViewController
 	private func toggleShadow(_ showShadow: Bool)
 	{
 		mainViewController.view.layer.shadowOpacity = showShadow ? 0.8 : 0.0
-	}
+	}*/
 }
 
 // MARK: - ContainerVCDelegate
-extension ContainerVC : ContainerVCDelegate
+/*extension ContainerVC : ContainerVCDelegate
 {
 	func toggleMenu()
 	{
@@ -237,10 +241,10 @@ extension ContainerVC : ContainerVCDelegate
 			}
 		}
 	}
-}
+}*/
 
 // MARK: - SideMenuVCDelegate
-extension ContainerVC : SideMenuVCDelegate
+/*extension ContainerVC : SideMenuVCDelegate
 {
 	func didSelectMenuItem(_ selectedVC: SelectedVCType)
 	{
@@ -256,10 +260,10 @@ extension ContainerVC : SideMenuVCDelegate
 	{
 		return selectedVCType
 	}
-}
+}*/
 
 // MARK: - UIGestureRecognizerDelegate
-extension ContainerVC : UIGestureRecognizerDelegate
+/*extension ContainerVC : UIGestureRecognizerDelegate
 {
 	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool
 	{
@@ -275,4 +279,4 @@ extension ContainerVC : UIGestureRecognizerDelegate
 		}
 		return true
 	}
-}
+}*/

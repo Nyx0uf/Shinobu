@@ -10,11 +10,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 	// Container: VC + Menu
 	private let containerVC: ContainerVC
 	// MPD Data source
-	let mpdDataSource: MPDDataSource
+	let mpdBridge: MPDBridge
 
 	override init()
 	{
-		self.mpdDataSource = MPDDataSource()
+		self.mpdBridge = MPDBridge()
 		self.containerVC = ContainerVC()
 		super.init()
 	}

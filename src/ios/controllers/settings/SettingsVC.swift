@@ -5,7 +5,7 @@ import MessageUI
 private let headerSectionHeight: CGFloat = 32.0
 
 
-final class SettingsVC : NYXTableViewController, CenterViewController
+final class SettingsVC : NYXTableViewController
 {
 	// MARK: - Private properties
 	// Shake to play switch
@@ -14,15 +14,15 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 	private var swFuzzySearch: UISwitch!
 	// Logging switch
 	private var swLogging: UISwitch!
-	// Delegate
-	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
+		let libraryButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-library"), style: .plain, target: self, action: #selector(closeAction(_:)))
+		libraryButton.accessibilityLabel = NYXLocalizedString("lbl_section_home")
+		self.navigationItem.leftBarButtonItem = libraryButton
 
 		// Navigation bar title
 		titleView.setMainText(NYXLocalizedString("lbl_section_settings"), detailText: nil)
@@ -65,9 +65,9 @@ final class SettingsVC : NYXTableViewController, CenterViewController
 		Settings.shared.set(!logging, forKey: .pref_enableLogging)
 	}
 
-	@objc func showLeftViewAction(_ sender: Any?)
+	@objc func closeAction(_ sender: Any?)
 	{
-		containerDelegate?.toggleMenu()
+		self.dismiss(animated: true, completion: {})
 	}
 
 	// MARK: - Private

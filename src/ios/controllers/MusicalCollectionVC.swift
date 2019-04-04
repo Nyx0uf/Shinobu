@@ -23,7 +23,7 @@ class MusicalCollectionVC : NYXViewController
 	// Long press gesture for devices without force touch
 	private(set) var longPress: UILongPressGestureRecognizer! = nil
 	// MPD Data source
-	let mpdDataSource: MPDDataSource
+	let mpdBridge: MPDBridge
 	// Allowed display types
 	var allowedMusicalEntityTypes: [MusicalEntityType]
 	{
@@ -33,9 +33,9 @@ class MusicalCollectionVC : NYXViewController
 	private var typeChoiceView: TypeChoiceView! = nil
 
 	// MARK: - Initializers
-	init(mpdDataSource: MPDDataSource)
+	init(mpdBridge: MPDBridge)
 	{
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -198,10 +198,10 @@ class MusicalCollectionVC : NYXViewController
 	func setItems(_ items: [MusicalEntity], forMusicalEntityType type: MusicalEntityType, reload: Bool = true)
 	{
 		dataSource.setItems(items, forType: type)
-		self.collectionView.musicalEntityType = type
+		collectionView.musicalEntityType = type
 		if reload
 		{
-			self.collectionView.reloadData()
+			collectionView.reloadData()
 		}
 	}
 

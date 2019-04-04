@@ -3,29 +3,24 @@ import UIKit
 
 final class PlaylistDetailVC : NYXViewController
 {
-	// MARK: - Public properties
-	// Selected album
-	var playlist: Playlist
-
 	// MARK: - Private properties
+	// Selected playlist
+	private let playlist: Playlist
 	// Header view (cover + album name, artist)
 	private var headerView: UIImageView! = nil
 	// Tableview for song list
 	private var tableView: TracksListTableView! = nil
 	// Underlaying color view
 	private var colorView: UIView! = nil
-	// Random button
-	private var btnRandom: UIBarButtonItem! = nil
-	// Repeat button
-	private var btnRepeat: UIBarButtonItem! = nil
 	// MPD Data source
-	private let mpdDataSource: MPDDataSource
+	private let mpdBridge: MPDBridge
 
 	// MARK: - Initializers
-	init(playlist: Playlist, mpdDataSource: MPDDataSource)
+	init(playlist: Playlist, mpdBridge: MPDBridge)
 	{
 		self.playlist = playlist
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
+
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -40,18 +35,24 @@ final class PlaylistDetailVC : NYXViewController
 		super.viewDidLoad()
 
 		// Color under navbar
-		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? 88))
+		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
+		if navigationController == nil
+		{
+			defaultHeight = 0.0
+		}
+		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
 		self.view.addSubview(colorView)
 
 		// Album header view
 		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? 88, self.view.width, coverSize?.cgSizeValue.height ?? 88))
+		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, self.view.width, coverSize?.cgSizeValue.height ?? defaultHeight))
 		self.view.addSubview(headerView)
 
 		// Tableview
 		tableView = TracksListTableView(frame: CGRect(0, headerView.bottom, self.view.width, self.view.height - headerView.bottom), style: .plain)
 		tableView.useDummy = true
 		tableView.delegate = self
+		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
 		self.view.addSubview(tableView)
 	}
@@ -59,22 +60,6 @@ final class PlaylistDetailVC : NYXViewController
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-
-		// Add navbar shadow
-		if let _ = navigationController?.navigationBar
-		{
-			let loop = Settings.shared.bool(forKey: .mpd_repeat)
-			btnRepeat = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-repeat").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRepeatAction(_:)))
-			btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
-			btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-
-			let rand = Settings.shared.bool(forKey: .mpd_shuffle)
-			btnRandom = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(toggleRandomAction(_:)))
-			btnRandom.tintColor = rand ? Colors.mainEnabled : Colors.main
-			btnRandom.accessibilityLabel = NYXLocalizedString(rand ? "lbl_random_disable" : "lbl_random_enable")
-
-			navigationItem.rightBarButtonItems = [btnRandom, btnRepeat]
-		}
 
 		// Update header
 		updateHeader()
@@ -87,7 +72,7 @@ final class PlaylistDetailVC : NYXViewController
 		}
 		else
 		{
-			mpdDataSource.getTracksForPlaylist(playlist) {
+			mpdBridge.getTracksForPlaylist(playlist) { (tracks) in
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
 					self.tableView.tracks = self.playlist.tracks!
@@ -142,7 +127,7 @@ final class PlaylistDetailVC : NYXViewController
 			}
 			else
 			{
-				self.mpdDataSource.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdBridge.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
 					switch result
 					{
 						case .failure(let error):
@@ -150,7 +135,7 @@ final class PlaylistDetailVC : NYXViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							self.mpdDataSource.getListForMusicalEntityType(.playlists) {
+							self.mpdBridge.entitiesForType(.playlists) { (entities) in
 								DispatchQueue.main.async {
 									self.updateNavigationTitle()
 								}
@@ -167,33 +152,6 @@ final class PlaylistDetailVC : NYXViewController
 		})
 
 		self.present(alertController, animated: true, completion: nil)
-	}
-
-	// MARK: - Buttons actions
-	@objc func toggleRandomAction(_ sender: Any?)
-	{
-		let prefs = Settings.shared
-		let random = !prefs.bool(forKey: .mpd_shuffle)
-
-		btnRandom.tintColor = random ? Colors.mainEnabled : Colors.main
-		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-
-		prefs.set(random, forKey: .mpd_shuffle)
-
-		PlayerController.shared.setRandom(random)
-	}
-
-	@objc func toggleRepeatAction(_ sender: Any?)
-	{
-		let prefs = Settings.shared
-		let loop = !prefs.bool(forKey: .mpd_repeat)
-
-		btnRepeat.tintColor = loop ? Colors.mainEnabled : Colors.main
-		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
-
-		prefs.set(loop, forKey: .mpd_repeat)
-
-		PlayerController.shared.setRepeat(loop)
 	}
 }
 
@@ -214,17 +172,17 @@ extension PlaylistDetailVC : UITableViewDelegate
 		}
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = PlayerController.shared.currentTrack
+		if let currentPlayingTrack = mpdBridge.getCurrentTrack()
 		{
 			let selectedTrack = tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
-				PlayerController.shared.togglePause()
+				mpdBridge.togglePause()
 				return
 			}
 		}
 
-		PlayerController.shared.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat), position: UInt32(indexPath.row))
+		mpdBridge.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat), position: UInt32(indexPath.row))
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
@@ -237,7 +195,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 		}
 
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
-			self.mpdDataSource.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
+			self.mpdBridge.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
 				switch result
 				{
 					case .failure(let error):
@@ -245,7 +203,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 							MessageView.shared.showWithMessage(message: error.message)
 						}
 					case .success( _):
-						self.mpdDataSource.getTracksForPlaylist(self.playlist) {
+						self.mpdBridge.getTracksForPlaylist(self.playlist) { (tracks) in
 							DispatchQueue.main.async {
 								self.updateNavigationTitle()
 								self.tableView.tracks = self.playlist.tracks!
@@ -269,12 +227,12 @@ extension PlaylistDetailVC
 	override var previewActionItems: [UIPreviewActionItem]
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
-			PlayerController.shared.playPlaylist(self.playlist, shuffle: false, loop: false)
+			self.mpdBridge.playPlaylist(self.playlist, shuffle: false, loop: false)
 			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
-			PlayerController.shared.playPlaylist(self.playlist, shuffle: true, loop: false)
+			self.mpdBridge.playPlaylist(self.playlist, shuffle: true, loop: false)
 			MiniPlayerView.shared.stayHidden = false
 		}
 
@@ -284,7 +242,7 @@ extension PlaylistDetailVC
 		}
 
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
-			self.mpdDataSource.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+			self.mpdBridge.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
 				switch result
 				{
 					case .failure(let error):
@@ -299,5 +257,13 @@ extension PlaylistDetailVC
 		}
 
 		return [playAction, shuffleAction, renameAction, deleteAction]
+	}
+}
+
+extension PlaylistDetailVC : TracksListTableViewDelegate
+{
+	func getCurrentTrack() -> Track?
+	{
+		return self.mpdBridge.getCurrentTrack()
 	}
 }

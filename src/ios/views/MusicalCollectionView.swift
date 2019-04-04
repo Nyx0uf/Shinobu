@@ -3,12 +3,13 @@ import UIKit
 
 final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 {
-	let sideSpan = CGFloat(10.0)
-	let columns = 3
+	private let sideSpan = CGFloat(10.0)
+	private let columns = 3
 
 	override init()
 	{
 		super.init()
+
 		setupLayout()
 	}
 
@@ -19,7 +20,8 @@ final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 
 	func setupLayout()
 	{
-		self.itemSize = CGSize(itemWidth(), itemWidth() + 20.0)
+		let width = itemWidth()
+		self.itemSize = CGSize(width, width + 20.0)
 		self.sectionInset = UIEdgeInsets(top: sideSpan, left: sideSpan, bottom: sideSpan, right: sideSpan)
 		self.scrollDirection = .vertical
 	}
@@ -48,6 +50,7 @@ final class MusicalCollectionView : UICollectionView
 		}
 	}
 
+	// MARK: - Initializers
 	init(frame: CGRect, musicalEntityType: MusicalEntityType)
 	{
 		super.init(frame: frame, collectionViewLayout: MusicalCollectionViewFlowLayout())

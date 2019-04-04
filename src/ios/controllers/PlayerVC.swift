@@ -37,11 +37,11 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 	// Album tracks view
 	private var trackListView: TracksListTableView! = nil
 	// MPD Data source
-	private let mpdDataSource: MPDDataSource
+	private(set) var mpdBridge: MPDBridge
 
-	init(mpdDataSource: MPDDataSource)
+	init(mpdBridge: MPDBridge)
 	{
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -111,6 +111,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		let tframe = CGRect(margin, vev_album.bottom + 20, theight, theight)
 		trackListView = TracksListTableView(frame: tframe, style: .plain)
 		trackListView.delegate = self
+		trackListView.myDelegate = self
 		self.blurEffectView.contentView.addSubview(trackListView)
 
 		// Cover
@@ -151,12 +152,12 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .highlighted)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.mainEnabled), for: .selected)
-		btnPrevious.addTarget(PlayerController.shared, action: #selector(PlayerController.requestPreviousTrack), for: .touchUpInside)
+		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play/Pause button
 		btnPlay = UIButton(frame: CGRect((width - sizeButtonsTracks.width) / 2, yButtonsTracks, sizeButtonsTracks))
-		btnPlay.addTarget(PlayerController.shared, action: #selector(PlayerController.togglePause), for: .touchUpInside)
+		btnPlay.addTarget(mpdBridge, action: #selector(MPDBridge.togglePause), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnPlay)
 
 		// Next button
@@ -164,7 +165,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .highlighted)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.mainEnabled), for: .selected)
-		btnNext.addTarget(PlayerController.shared, action: #selector(PlayerController.requestNextTrack), for: .touchUpInside)
+		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnNext)
 
 		// Slider volume
@@ -231,7 +232,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
 
-		PlayerController.shared.getVolume { (volume: Int) in
+		mpdBridge.getVolume { (volume: Int) in
 			DispatchQueue.main.async {
 				if volume == -1
 				{
@@ -248,7 +249,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			}
 		}
 
-		if let track = PlayerController.shared.currentTrack, let album = PlayerController.shared.currentAlbum
+		if let track = mpdBridge.getCurrentTrack(), let album = mpdBridge.getCurrentAlbum()
 		{
 			lblTrackTitle.text = track.name
 			lblTrackArtist.text = track.artist
@@ -270,7 +271,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			else
 			{
 				let size = self.coverView.size
-				mpdDataSource.getPathForAlbum(album) {
+				mpdBridge.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: size)
 					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
@@ -314,16 +315,16 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		{
 			trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
 			trackListView.alpha = 0.0
-			if let tracks = PlayerController.shared.currentAlbum?.tracks
+			if let tracks = mpdBridge.getCurrentAlbum()?.tracks
 			{
 				trackListView.tracks = tracks
 			}
 			else
 			{
-				mpdDataSource.getTracksForAlbums([PlayerController.shared.currentAlbum!], callback: {
-					if let tracks = PlayerController.shared.currentAlbum?.tracks
-					{
-						DispatchQueue.main.async {
+				mpdBridge.getTracksForAlbums([mpdBridge.getCurrentAlbum()!], callback: { (tracks) in
+					DispatchQueue.main.async {
+						if let tracks = self.mpdBridge.getCurrentAlbum()?.tracks
+						{
 							self.trackListView.tracks = tracks
 						}
 					}
@@ -362,7 +363,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		Settings.shared.set(random, forKey: .mpd_shuffle)
 
-		PlayerController.shared.setRandom(random)
+		mpdBridge.setRandom(random)
 	}
 
 	@objc func toggleRepeatAction(_ sender: Any?)
@@ -374,14 +375,14 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 		Settings.shared.set(loop, forKey: .mpd_repeat)
 
-		PlayerController.shared.setRepeat(loop)
+		mpdBridge.setRepeat(loop)
 	}
 
 	@objc func changeTrackPositionAction(_ sender: UISlider?)
 	{
-		if let track = PlayerController.shared.currentTrack
+		if let track = mpdBridge.getCurrentTrack()
 		{
-			PlayerController.shared.setTrackPosition(Int(sliderPosition.value), trackPosition: track.position)
+			mpdBridge.setTrackPosition(Int(sliderPosition.value), trackPosition: track.position)
 		}
 	}
 
@@ -437,7 +438,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		else
 		{
 			let size = self.coverView.size
-			mpdDataSource.getPathForAlbum(album) {
+			mpdBridge.getPathForAlbum(album) {
 				let op = CoverOperation(album: album, cropSize: size)
 				op.callback = {(cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
@@ -458,7 +459,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 	// MARK: - Private
 	private func updatePlayPauseButton()
 	{
-		if PlayerController.shared.currentStatus == .paused
+		if mpdBridge.getCurrentStatus() == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
@@ -481,7 +482,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		let tmp = clamp(ceil(valueToSet), lower: 0.0, upper: 100.0)
 		let volume = Int(tmp)
 
-		PlayerController.shared.setVolume(volume) { (success: Bool) in
+		mpdBridge.setVolume(volume) { (success: Bool) in
 			if success
 			{
 				DispatchQueue.main.async {
@@ -503,18 +504,18 @@ extension PlayerVC : UITableViewDelegate
 		})
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = PlayerController.shared.currentTrack
+		if let currentPlayingTrack = mpdBridge.getCurrentTrack()
 		{
 			let selectedTrack = trackListView.tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
-				PlayerController.shared.togglePause()
+				mpdBridge.togglePause()
 				return
 			}
 		}
 
 		let b = trackListView.tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
-		PlayerController.shared.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+		mpdBridge.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 	}
 }
 
@@ -540,7 +541,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			let iv = UIImageView(frame: CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height))
 			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
 			iv.image = MiniPlayerView.shared.imageView.image
-			if let coverURL = PlayerController.shared.currentAlbum?.localCoverURL
+			if let coverURL = toViewController.mpdBridge.getCurrentAlbum()?.localCoverURL
 			{
 				if let cover = UIImage.loadFromFileURL(coverURL)
 				{
@@ -588,5 +589,13 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 				})
 			})
 		}
+	}
+}
+
+extension PlayerVC : TracksListTableViewDelegate
+{
+	func getCurrentTrack() -> Track?
+	{
+		return self.mpdBridge.getCurrentTrack()
 	}
 }

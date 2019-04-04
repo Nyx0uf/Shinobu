@@ -17,7 +17,7 @@ final class MiniPlayerView : UIView
 	// Album cover
 	private(set) var imageView: UIImageView!
 	// MPD Data source
-	var mpdDataSource: MPDDataSource? = nil
+	var mpdBridge: MPDBridge? = nil
 
 	// MARK: - Private properties
 	private var blurEffectView: UIVisualEffectView!
@@ -30,7 +30,7 @@ final class MiniPlayerView : UIView
 	// Track artist
 	private var lblArtist: UILabel!
 	// Play/pause button
-	private var btnPlay: UIButton!
+	private var btnPlay: NYXButton!
 	// View to indicate track progression
 	private var progressView: UIView!
 
@@ -67,27 +67,26 @@ final class MiniPlayerView : UIView
 		self.blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
-		let vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
-		vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0.0, headerHeight, headerHeight)
-		self.blurEffectView.contentView.addSubview(vibrancyEffectView)
+		//let vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
+		//vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0.0, headerHeight, headerHeight)
+		//self.blurEffectView.contentView.addSubview(vibrancyEffectView)
 
 		// Play / pause button
-		self.btnPlay = UIButton(type: .custom)
-		self.btnPlay.frame = CGRect(6.0, 6.0, 32.0, 32.0)
-		self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for: .normal)
+		self.btnPlay = NYXButton(frame: CGRect(frame.right - headerHeight, (headerHeight - 44) / 2.0, 44, 44))
+		//self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate).tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
 		self.btnPlay.addTarget(self, action: #selector(MiniPlayerView.changePlaybackAction(_:)), for: .touchUpInside)
 		self.btnPlay.tag = PlayerStatus.stopped.rawValue
 		self.btnPlay.isAccessibilityElement = true
-		vibrancyEffectView.contentView.addSubview(self.btnPlay)
+		self.blurEffectView.contentView.addSubview(self.btnPlay)
 
 		// Dummy accessibility view
-		self.accessibleView = UIView(frame: CGRect(self.imageView.right, 0.0, vibrancyEffectView.left - self.imageView.right, headerHeight))
+		self.accessibleView = UIView(frame: CGRect(self.imageView.right, 0.0, btnPlay.left - self.imageView.right, headerHeight))
 		self.accessibleView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
 		self.accessibleView.isAccessibilityElement = true
 		self.blurEffectView.contentView.addSubview(self.accessibleView)
 
 		// Title
-		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((vibrancyEffectView.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
+		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((btnPlay.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
 		self.lblTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -111,6 +110,7 @@ final class MiniPlayerView : UIView
 		// Tableview
 		self.tableView = TracksListTableView(frame: CGRect(0.0, headerHeight, frame.width, frame.height - headerHeight), style: .plain)
 		self.tableView.delegate = self
+		self.tableView.myDelegate = self
 		self.addSubview(self.tableView)
 
 		// Single tap to request full player view
@@ -179,7 +179,7 @@ final class MiniPlayerView : UIView
 			}
 			else
 			{
-				mpdDataSource?.getPathForAlbum(album) {
+				mpdBridge?.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
 					op.callback = {(cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
@@ -229,7 +229,7 @@ final class MiniPlayerView : UIView
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for: .normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
-		PlayerController.shared.togglePause()
+		mpdBridge?.togglePause()
 	}
 
 	// MARK: - Gestures
@@ -245,9 +245,9 @@ final class MiniPlayerView : UIView
 	{
 		if fullyVisible == false
 		{
-			PlayerController.shared.getSongsOfCurrentQueue {
+			mpdBridge?.getSongsOfCurrentQueue {
 				DispatchQueue.main.async {
-					self.tableView.tracks = PlayerController.shared.listTracksInQueue
+					self.tableView.tracks = self.mpdBridge?.getTracksInQueue() ?? []
 				}
 			}
 
@@ -304,12 +304,20 @@ final class MiniPlayerView : UIView
 			let state = infos[PLAYER_STATUS_KEY] as! Int
 			if state == PlayerStatus.playing.rawValue
 			{
-				btnPlay.setImage(#imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate), for: .normal)
+				let img = #imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate)
+				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .selected)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .focused)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
-				btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate), for: .normal)
+				let img = #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)
+				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .selected)
+				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .focused)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state
@@ -327,16 +335,24 @@ extension MiniPlayerView : UITableViewDelegate
 		})
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = PlayerController.shared.currentTrack
+		if let currentPlayingTrack = mpdBridge?.getCurrentTrack()
 		{
 			let selectedTrack = self.tableView.tracks[indexPath.row]
 			if selectedTrack == currentPlayingTrack
 			{
-				PlayerController.shared.togglePause()
+				mpdBridge?.togglePause()
 				return
 			}
 		}
 
-		PlayerController.shared.playTrackAtPosition(UInt32(indexPath.row))
+		mpdBridge?.playTrackAtPosition(UInt32(indexPath.row))
+	}
+}
+
+extension MiniPlayerView : TracksListTableViewDelegate
+{
+	func getCurrentTrack() -> Track?
+	{
+		return self.mpdBridge?.getCurrentTrack()
 	}
 }

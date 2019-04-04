@@ -12,7 +12,7 @@ final class CoverOperation : Operation
 			return junk
 		}
 		set (newAnswer) {
-			#if os(iOS)
+			#if os(iOS) && !WIDGET
 			NetworkActivityIndicator.shared.end()
 			#endif
 			willChangeValue(forKey: "isFinished")
@@ -147,7 +147,7 @@ extension CoverOperation : URLSessionDataDelegate
 			return
 		}
 
-		#if os(iOS)
+		#if os(iOS) && !WIDGET
 		NetworkActivityIndicator.shared.start()
 		#endif
 

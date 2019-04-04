@@ -13,13 +13,13 @@ final class GenreDetailVC : MusicalCollectionVC
 	}
 
 	// MARK: - Initializers
-	init(genre: Genre, mpdDataSource: MPDDataSource)
+	init(genre: Genre, mpdBridge: MPDBridge)
 	{
 		self.genre = genre
 
-		super.init(mpdDataSource: mpdDataSource)
+		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeGenre)), delegate: self, mpdDataSource: mpdDataSource)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeGenre)), delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -35,7 +35,7 @@ final class GenreDetailVC : MusicalCollectionVC
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
-				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) {
+				mpdBridge.getAlbumsForGenre(genre, firstOnly: false) {
 					[weak self] (albums) in
 					DispatchQueue.main.async {
 						self?.setItems(albums, forMusicalEntityType: self?.dataSource.musicalEntityType ?? .albums)
@@ -43,7 +43,7 @@ final class GenreDetailVC : MusicalCollectionVC
 					}
 				}
 			case .artists, .albumsartists:
-				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: dataSource.musicalEntityType == .albumsartists) {
+				mpdBridge.getArtistsForGenre(genre, isAlbumArtist: dataSource.musicalEntityType == .albumsartists) {
 					[weak self] (artists) in
 					DispatchQueue.main.async {
 						self?.setItems(artists, forMusicalEntityType: self?.dataSource.musicalEntityType ?? .artists)
@@ -89,7 +89,7 @@ final class GenreDetailVC : MusicalCollectionVC
 		switch type
 		{
 			case .albums:
-				mpdDataSource.getAlbumsForGenre(genre, firstOnly: false) {
+				mpdBridge.getAlbumsForGenre(genre, firstOnly: false) {
 					 [weak self] (albums) in
 					DispatchQueue.main.async {
 						self?.setItems(albums, forMusicalEntityType: type)
@@ -97,7 +97,7 @@ final class GenreDetailVC : MusicalCollectionVC
 					}
 				}
 			case .artists, .albumsartists:
-				mpdDataSource.getArtistsForGenre(genre, isAlbumArtist: type == .albumsartists) {
+				mpdBridge.getArtistsForGenre(genre, isAlbumArtist: type == .albumsartists) {
 					 [weak self] (artists) in
 					DispatchQueue.main.async {
 						self?.setItems(artists, forMusicalEntityType: type)
@@ -134,10 +134,10 @@ extension GenreDetailVC
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
-				let vc = AlbumDetailVC(album: entity as! Album, mpdDataSource: mpdDataSource)
+				let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
 				self.navigationController?.pushViewController(vc, animated: true)
 			case .artists, .albumsartists:
-				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdDataSource: mpdDataSource)
+				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
 				self.navigationController?.pushViewController(vc, animated: true)
 			default:
 				break
@@ -153,10 +153,10 @@ extension GenreDetailVC
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdDataSource.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
-				strongSelf.mpdDataSource.getTracksForAlbums(strongSelf.genre.albums) {
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
 					let allTracks = strongSelf.genre.albums.compactMap({$0.tracks}).flatMap({$0})
-					PlayerController.shared.playTracks(allTracks, shuffle: false, loop: false)
+					strongSelf.mpdBridge.playTracks(allTracks, shuffle: false, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
@@ -165,10 +165,10 @@ extension GenreDetailVC
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdDataSource.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
-				strongSelf.mpdDataSource.getTracksForAlbums(strongSelf.genre.albums) {
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
 					let allTracks = strongSelf.genre.albums.compactMap({$0.tracks}).flatMap({$0})
-					PlayerController.shared.playTracks(allTracks, shuffle: true, loop: false)
+					strongSelf.mpdBridge.playTracks(allTracks, shuffle: true, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
@@ -177,10 +177,10 @@ extension GenreDetailVC
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdDataSource.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
 				for album in strongSelf.genre.albums
 				{
-					PlayerController.shared.addAlbumToQueue(album)
+					strongSelf.mpdBridge.addAlbumToQueue(album)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false

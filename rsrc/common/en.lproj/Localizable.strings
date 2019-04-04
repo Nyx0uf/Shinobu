@@ -9,6 +9,7 @@
 "lbl_disabled" = "Disabled";
 "lbl_is" = "is";
 "lbl_save" = "Save";
+"lbl_close" = "Close";
 
 "lbl_track" = "track";
 "lbl_tracks" = "tracks";
@@ -109,3 +110,4 @@
 "lbl_header_server_list" = "Servers list";
 "lbl_current_selected_server" = "the current selected server";
 "lbl_current_selected_server_not" = "not the current selected server";
+"lbl_add_mpd_server" = "Add a server";

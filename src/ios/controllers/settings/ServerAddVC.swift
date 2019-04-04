@@ -32,14 +32,14 @@ final class ServerAddVC : NYXTableViewController
 	// Cache size
 	private var cacheSize: Int = 0
 	// MPD Data source
-	private let mpdDataSource: MPDDataSource
+	private let mpdBridge: MPDBridge
 	// Servers manager
 	private let serversManager: ServersManager
 
 	// MARK: - Initializers
-	init(mpdDataSource: MPDDataSource)
+	init(mpdBridge: MPDBridge)
 	{
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
 		self.serversManager = ServersManager()
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -650,7 +650,7 @@ extension ServerAddVC
 		}
 		else if indexPath.section == 1 && indexPath.row == 4
 		{
-			mpdDataSource.updateDatabase() { succeeded in
+			mpdBridge.updateDatabase() { succeeded in
 				DispatchQueue.main.async {
 					if succeeded == false
 					{

@@ -16,7 +16,6 @@
 		434E518621D570D400CD88F7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 434E518821D570D400CD88F7 /* LaunchScreen.storyboard */; };
 		4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFF821EB41E2009A3BBF /* NYXControllers.swift */; };
 		4358B00021EB4242009A3BBF /* ContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFFF21EB4242009A3BBF /* ContainerVC.swift */; };
-		4358B00221EB4274009A3BBF /* SideMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00121EB4274009A3BBF /* SideMenuVC.swift */; };
 		4358B01B21EB42B4009A3BBF /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
 		4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */; };
 		4358B01E21EB42B4009A3BBF /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */; };
@@ -33,8 +32,7 @@
 		4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
 		4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		4358B02C21EB42B4009A3BBF /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
-		4358B02D21EB42B4009A3BBF /* MPDDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDDataSource.swift */; };
-		4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01A21EB42B4009A3BBF /* PlayerController.swift */; };
+		4358B02D21EB42B4009A3BBF /* MPDBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDBridge.swift */; };
 		4358B03621EB44C5009A3BBF /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03021EB44C4009A3BBF /* Track.swift */; };
 		4358B03721EB44C5009A3BBF /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03121EB44C4009A3BBF /* Genre.swift */; };
 		4358B03821EB44C5009A3BBF /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03221EB44C4009A3BBF /* MusicalEntity.swift */; };
@@ -77,6 +75,10 @@
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
+		43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */; };
+		43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
+		43B8BAA92254EFBE0033EA5D /* CoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* CoverOperation.swift */; };
+		43B8BAAB22564E980033EA5D /* NYXButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAA22564E980033EA5D /* NYXButton.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD7FE22203977009B3B68 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FD22203977009B3B68 /* Colors.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
@@ -103,8 +105,7 @@
 		43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
 		43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
 		43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
-		43FAE5C0224E5F73006843E9 /* MPDDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDDataSource.swift */; };
-		43FAE5C1224E5F73006843E9 /* PlayerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01A21EB42B4009A3BBF /* PlayerController.swift */; };
+		43FAE5C0224E5F73006843E9 /* MPDBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDBridge.swift */; };
 		43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
 		43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
 		43FAE5C4224E5FB5006843E9 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Common.swift */; };
@@ -197,7 +198,6 @@
 		434E518C21D5720100CD88F7 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = fr; path = fr.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4358AFF821EB41E2009A3BBF /* NYXControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NYXControllers.swift; sourceTree = "<group>"; };
 		4358AFFF21EB4242009A3BBF /* ContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerVC.swift; sourceTree = "<group>"; };
-		4358B00121EB4274009A3BBF /* SideMenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideMenuVC.swift; sourceTree = "<group>"; };
 		4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+Extensions.swift"; sourceTree = "<group>"; };
 		4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -214,8 +214,7 @@
 		4358B01621EB42B4009A3BBF /* MPDConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDConnection.swift; sourceTree = "<group>"; };
 		4358B01721EB42B4009A3BBF /* MPDServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDServer.swift; sourceTree = "<group>"; };
 		4358B01821EB42B4009A3BBF /* CoverServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoverServer.swift; sourceTree = "<group>"; };
-		4358B01921EB42B4009A3BBF /* MPDDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDDataSource.swift; sourceTree = "<group>"; };
-		4358B01A21EB42B4009A3BBF /* PlayerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerController.swift; sourceTree = "<group>"; };
+		4358B01921EB42B4009A3BBF /* MPDBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPDBridge.swift; sourceTree = "<group>"; };
 		4358B03021EB44C4009A3BBF /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		4358B03121EB44C4009A3BBF /* Genre.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Genre.swift; sourceTree = "<group>"; };
 		4358B03221EB44C4009A3BBF /* MusicalEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntity.swift; sourceTree = "<group>"; };
@@ -259,6 +258,7 @@
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		43B8BAAA22564E980033EA5D /* NYXButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYXButton.swift; sourceTree = "<group>"; };
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FD22203977009B3B68 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServer.swift; sourceTree = "<group>"; };
@@ -480,10 +480,9 @@
 			isa = PBXGroup;
 			children = (
 				4358B01821EB42B4009A3BBF /* CoverServer.swift */,
+				4358B01921EB42B4009A3BBF /* MPDBridge.swift */,
 				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
-				4358B01921EB42B4009A3BBF /* MPDDataSource.swift */,
 				4358B01721EB42B4009A3BBF /* MPDServer.swift */,
-				4358B01A21EB42B4009A3BBF /* PlayerController.swift */,
 				430141E12229307300C68075 /* ServersManager.swift */,
 				43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */,
 			);
@@ -551,6 +550,7 @@
 				43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */,
 				4358B07C21EB47C2009A3BBF /* TracksListTableView.swift */,
 				4358B07B21EB47C2009A3BBF /* TypeChoiceView.swift */,
+				43B8BAAA22564E980033EA5D /* NYXButton.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -572,7 +572,6 @@
 			children = (
 				4358AFFF21EB4242009A3BBF /* ContainerVC.swift */,
 				4358AFF821EB41E2009A3BBF /* NYXControllers.swift */,
-				4358B00121EB4274009A3BBF /* SideMenuVC.swift */,
 			);
 			path = global;
 			sourceTree = "<group>";
@@ -625,6 +624,7 @@
 			buildPhases = (
 				43E89D9321CC36E00033E501 /* Sources */,
 				43E89D9421CC36E00033E501 /* Frameworks */,
+				43B8BAA62254E72C0033EA5D /* Script: increase build number */,
 				43E89D9521CC36E00033E501 /* Resources */,
 				43FAE5AC224E5D45006843E9 /* Embed App Extensions */,
 			);
@@ -726,6 +726,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		43B8BAA62254E72C0033EA5D /* Script: increase build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Script: increase build number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/src/widget/Info.plist\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		43E89D9321CC36E00033E501 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -745,7 +766,6 @@
 				4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */,
 				4358B02521EB42B4009A3BBF /* CGPoint+Extensions.swift in Sources */,
 				4358B05F21EB473C009A3BBF /* MenuViewTableViewCell.swift in Sources */,
-				4358B02E21EB42B4009A3BBF /* PlayerController.swift in Sources */,
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
 				4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */,
 				43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */,
@@ -771,7 +791,7 @@
 				43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */,
 				4358B05521EB44E2009A3BBF /* Settings.swift in Sources */,
 				4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */,
-				4358B02D21EB42B4009A3BBF /* MPDDataSource.swift in Sources */,
+				4358B02D21EB42B4009A3BBF /* MPDBridge.swift in Sources */,
 				4358B07521EB47A8009A3BBF /* GenreDetailVC.swift in Sources */,
 				4358B03A21EB44C5009A3BBF /* Artist.swift in Sources */,
 				4358B07221EB47A8009A3BBF /* ServerAddVC.swift in Sources */,
@@ -779,6 +799,7 @@
 				4358B08721EB47C2009A3BBF /* MiniPlayerView.swift in Sources */,
 				4358B02621EB42B4009A3BBF /* NotificationCenter+Extensions.swift in Sources */,
 				4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */,
+				43B8BAAB22564E980033EA5D /* NYXButton.swift in Sources */,
 				4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */,
 				4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */,
 				4358B02121EB42B4009A3BBF /* UIColor+Extensions.swift in Sources */,
@@ -793,7 +814,6 @@
 				4358B03621EB44C5009A3BBF /* Track.swift in Sources */,
 				4358B05021EB44E2009A3BBF /* Logger.swift in Sources */,
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
-				4358B00221EB4274009A3BBF /* SideMenuVC.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Common.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,
 				4358B02321EB42B4009A3BBF /* UIDevice+Extensions.swift in Sources */,
@@ -808,13 +828,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43B8BAA92254EFBE0033EA5D /* CoverOperation.swift in Sources */,
+				43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */,
+				43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */,
 				43FAE5C5224E5FCE006843E9 /* NotificationCenter+Extensions.swift in Sources */,
 				43FAE5C4224E5FB5006843E9 /* Common.swift in Sources */,
 				43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */,
 				43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */,
 				43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */,
-				43FAE5C0224E5F73006843E9 /* MPDDataSource.swift in Sources */,
-				43FAE5C1224E5F73006843E9 /* PlayerController.swift in Sources */,
+				43FAE5C0224E5F73006843E9 /* MPDBridge.swift in Sources */,
 				43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */,
 				43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */,
 				43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */,
@@ -1111,7 +1133,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG WIDGET";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;
@@ -1138,6 +1160,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WIDGET;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;

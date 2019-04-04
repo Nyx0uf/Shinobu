@@ -9,6 +9,7 @@
 "lbl_disabled" = "Désactivé";
 "lbl_is" = "est";
 "lbl_save" = "Enregistrer";
+"lbl_close" = "Fermer";
 
 "lbl_track" = "piste";
 "lbl_tracks" = "pistes";
@@ -108,3 +109,4 @@
 "lbl_header_server_list" = "Liste des serveurs";
 "lbl_current_selected_server" = "le serveur sélectionné actuellement";
 "lbl_current_selected_server_not" = "actuellement désélectionné";
+"lbl_add_mpd_server" = "Ajouter un serveur";

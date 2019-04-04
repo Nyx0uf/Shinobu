@@ -1,6 +1,12 @@
 import UIKit
 
 
+protocol TracksListTableViewDelegate : class
+{
+	func getCurrentTrack() -> Track?
+}
+
+
 final class TracksListTableView : UITableView
 {
 	// MARK: - Public properties
@@ -18,6 +24,8 @@ final class TracksListTableView : UITableView
 	var useDummy = false
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.track"
+	//
+	weak var myDelegate: TracksListTableViewDelegate?
 
 	override init(frame: CGRect, style: UITableView.Style)
 	{
@@ -84,7 +92,8 @@ extension TracksListTableView : UITableViewDataSource
 		let seconds = track.duration.minutesRepresentation().seconds
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
-		if PlayerController.shared.currentTrack == track
+		let currentTrack = self.myDelegate?.getCurrentTrack()
+		if currentTrack != nil && currentTrack == track
 		{
 			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .bold)
 			cell.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .heavy)

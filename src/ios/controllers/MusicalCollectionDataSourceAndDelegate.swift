@@ -35,14 +35,16 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	// Cover download operations
 	private var downloadOperations = [String : Operation]()
 	// MPD Data source
-	private let mpdDataSource: MPDDataSource
+	private let mpdBridge: MPDBridge
 	// MPD servers manager
 	private let serversManager: ServersManager
+	//
+	private var indexTitle = [String]()
 
 	// MARK: - Initializers
-	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdDataSource: MPDDataSource)
+	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdBridge: MPDBridge)
 	{
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
 		self.musicalEntityType = type
 		self.delegate = delegate
 		self.serversManager = ServersManager()
@@ -53,6 +55,10 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	{
 		self.items = items
 		self.musicalEntityType = type
+
+//		self.indexTitle = items.map({String($0.name.first!)}).reduce([], {
+//			$0.contains($1) ? $0 : $0 + [$1]
+//		})
 	}
 
 	func setSearchResults(_ searchResults: [MusicalEntity])
@@ -85,67 +91,6 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 		OperationManager.shared.addOperation(downloadOperation)
 
 		return downloadOperation
-	}
-}
-
-extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
-{
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
-	{
-		if delegate == nil
-		{
-			return 0
-		}
-
-		let count = actualItems.count
-		return count >= 9 ? count + 3 : count
-	}
-
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
-	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
-
-		// Dummy cells
-		let entities = self.actualItems
-		if indexPath.row == entities.count || indexPath.row == entities.count + 1 || indexPath.row == entities.count + 2
-		{
-			cell.label.text = ""
-			cell.imageView.backgroundColor = collectionView.backgroundColor
-			cell.image = nil
-			return cell
-		}
-
-		cell.type = musicalEntityType
-		cell.layer.shouldRasterize = true
-		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		cell.label.backgroundColor = collectionView.backgroundColor
-		cell.imageView.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-
-		let entity = entities[indexPath.row]
-		// Init cell
-		cell.label.text = entity.name
-		cell.accessibilityLabel = entity.name
-		cell.image = nil
-		switch musicalEntityType
-		{
-			case .albums:
-				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
-			case .artists, .albumsartists:
-				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
-			case .genres:
-				let string = entity.name[0..<2].uppercased()
-				let backgroundColor = UIColor(rgb: string.djb2())
-				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
-			case .playlists:
-				let string = entity.name
-				let backgroundColor = UIColor(rgb: string.djb2())
-				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
-			default:
-				break
-		}
-
-		return cell
 	}
 
 	private func handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
@@ -195,7 +140,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			}
 			else
 			{
-				mpdDataSource.getPathForAlbum(album) {
+				mpdBridge.getPathForAlbum(album) {
 					cell.associatedObject = self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
@@ -204,6 +149,74 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 				}
 			}
 		}
+	}
+}
+
+extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
+{
+//	func numberOfSections(in collectionView: UICollectionView) -> Int
+//	{
+//		return indexTitle.count
+//	}
+
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+	{
+		if delegate == nil
+		{
+			return 0
+		}
+
+		let count = actualItems.count
+		return count >= 9 ? count + 3 : count
+		//let title = indexTitle[section]
+		//return self.items.filter({String($0.name.first!) == title}).count
+	}
+
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+	{
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
+
+		// Dummy cells
+		let entities = self.actualItems
+		if indexPath.row == entities.count || indexPath.row == entities.count + 1 || indexPath.row == entities.count + 2
+		{
+			cell.label.text = ""
+			cell.imageView.backgroundColor = collectionView.backgroundColor
+			cell.image = nil
+			return cell
+		}
+
+		cell.type = musicalEntityType
+		cell.layer.shouldRasterize = true
+		cell.layer.rasterizationScale = UIScreen.main.scale
+		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.label.backgroundColor = collectionView.backgroundColor
+		cell.imageView.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+
+		let entity = entities[indexPath.row]
+		// Init cell
+		cell.label.text = entity.name
+		cell.accessibilityLabel = entity.name
+		cell.image = nil
+		switch musicalEntityType
+		{
+			case .albums:
+				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
+			case .artists, .albumsartists:
+				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
+			case .genres:
+				let string = entity.name[0..<2].uppercased()
+				let backgroundColor = UIColor(rgb: string.djb2())
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
+			case .playlists:
+				let string = entity.name
+				let backgroundColor = UIColor(rgb: string.djb2())
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
+			default:
+				break
+		}
+
+		return cell
 	}
 }
 

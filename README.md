@@ -17,6 +17,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - VoiceOver compliant
 - Automatically find MPD server with Bonjour/Zeroconf
 - MPD Audio output selection
+- Widget
 - 🇬🇧 and 🇫🇷 localized
 
 

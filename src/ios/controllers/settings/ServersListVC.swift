@@ -9,13 +9,11 @@ private struct ServerData
 	let selected: Bool
 }
 
-final class ServersListVC : NYXTableViewController, CenterViewController
+final class ServersListVC : NYXTableViewController
 {
 	// MARK: - Public properties
 	// List of servers
 	private var servers = [ServerData]()
-	// Delegate
-	var containerDelegate: ContainerVCDelegate? = nil
 
 	// MARK: - Private properties
 	// Tableview cell identifier
@@ -23,15 +21,16 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	// Add/Edit server VC
 	private var addServerVC: ServerAddVC? = nil
 	// MPD Data source
-	private let mpdDataSource: MPDDataSource
+	private let mpdBridge: MPDBridge
 	// Servers manager
 	private let serversManager: ServersManager
 
 	// MARK: - Initializers
-	init(mpdDataSource: MPDDataSource)
+	init(mpdBridge: MPDBridge)
 	{
-		self.mpdDataSource = mpdDataSource
+		self.mpdBridge = mpdBridge
 		self.serversManager = ServersManager()
+
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -53,9 +52,12 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 		// Navigation bar title
 		titleView.setMainText(NYXLocalizedString("lbl_header_server_list"), detailText: nil)
 
-		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-hamb"), style: .plain, target: self, action: #selector(showLeftViewAction(_:)))
-		let add = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(addMpdServerAction(_:)))
-		self.navigationItem.rightBarButtonItem = add
+		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
+		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
+		self.navigationItem.leftBarButtonItem = closeButton
+		let addButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(addMpdServerAction(_:)))
+		addButton.accessibilityLabel = NYXLocalizedString("lbl_add_mpd_server")
+		self.navigationItem.rightBarButtonItem = addButton
 		
 		tableView.register(ShinobuServerTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -71,9 +73,9 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	}
 
 	// MARK: - Buttons actions
-	@objc func showLeftViewAction(_ sender: Any?)
+	@objc func closeAction(_ sender: Any?)
 	{
-		containerDelegate?.toggleMenu()
+		self.dismiss(animated: true, completion: {})
 	}
 
 	@objc func addMpdServerAction(_ sender: Any?)
@@ -95,7 +97,7 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 	{
 		if addServerVC == nil
 		{
-			addServerVC = ServerAddVC(mpdDataSource: mpdDataSource)
+			addServerVC = ServerAddVC(mpdBridge: mpdBridge)
 		}
 
 		if let vc = addServerVC
@@ -111,10 +113,10 @@ final class ServersListVC : NYXTableViewController, CenterViewController
 		serversManager.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
 		self.refreshServers()
 
-		mpdDataSource.deinitialize()
-		mpdDataSource.server = nil
-		PlayerController.shared.deinitialize()
-		PlayerController.shared.server = nil
+		//mpdBridge.deinitialize()
+		//mpdBridge.server = nil
+
+		NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: serversManager.getSelectedServer()?.mpd, userInfo: nil)
 	}
 }
 

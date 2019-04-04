@@ -15,14 +15,14 @@ final class AlbumsListVC : MusicalCollectionVC
 	}
 
 	// MARK: - Initializers
-	init(artist: Artist, isAlbumArtist: Bool, mpdDataSource: MPDDataSource)
+	init(artist: Artist, isAlbumArtist: Bool, mpdBridge: MPDBridge)
 	{
 		self.artist = artist
 		self.isAlbumArtist = isAlbumArtist
 
-		super.init(mpdDataSource: mpdDataSource)
+		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdDataSource: mpdDataSource)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -37,7 +37,7 @@ final class AlbumsListVC : MusicalCollectionVC
 
 		if artist.albums.count <= 0
 		{
-			mpdDataSource.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist) { [weak self] (albums) in
+			mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist) { [weak self] (albums) in
 				DispatchQueue.main.async {
 					self?.setItems(albums, forMusicalEntityType: .albums)
 					self?.updateNavigationTitle()
@@ -76,19 +76,19 @@ final class AlbumsListVC : MusicalCollectionVC
 
 			let album = dataSource.actualItems[indexPath.row] as! Album
 			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-				PlayerController.shared.playAlbum(album, shuffle: false, loop: false)
+				self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
 				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(playAction)
 			let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-				PlayerController.shared.playAlbum(album, shuffle: true, loop: false)
+				self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
 				self.longPressRecognized = false
 				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(shuffleAction)
 			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-				PlayerController.shared.addAlbumToQueue(album)
+				self.mpdBridge.addAlbumToQueue(album)
 				self.longPressRecognized = false
 				MiniPlayerView.shared.stayHidden = false
 			}
@@ -116,7 +116,7 @@ extension AlbumsListVC
 		}
 		let entity = entities[indexPath.row]
 
-		let vc = AlbumDetailVC(album: entity as! Album, mpdDataSource: mpdDataSource)
+		let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
 }
@@ -131,7 +131,7 @@ extension AlbumsListVC
 			previewingContext.sourceRect = cellAttributes.frame
 
 			let album = dataSource.actualItems[indexPath.row] as! Album
-			return AlbumDetailVC(album: album, mpdDataSource: mpdDataSource)
+			return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
 		}
 		return nil
 	}
@@ -143,33 +143,33 @@ extension AlbumsListVC
 	override var previewActionItems: [UIPreviewActionItem]
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				self.mpdDataSource.getTracksForAlbums(self.artist.albums) {
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
+				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
 					let source = self.dataSource.actualItems as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
-					PlayerController.shared.playTracks(ar, shuffle: false, loop: false)
+					self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				self.mpdDataSource.getTracksForAlbums(self.artist.albums) {
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
+				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
 					let source = self.dataSource.actualItems as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
-					PlayerController.shared.playTracks(ar, shuffle: true, loop: false)
+					self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
-			self.mpdDataSource.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				let source = self.dataSource.actualItems as! [Album]
 				for album in source
 				{
-					PlayerController.shared.addAlbumToQueue(album)
+					self.mpdBridge.addAlbumToQueue(album)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
