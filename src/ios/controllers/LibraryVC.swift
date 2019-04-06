@@ -149,7 +149,7 @@ final class LibraryVC : MusicalCollectionVC
 			return
 		}
 
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
 		{
 			switch dataSource.musicalEntityType
 			{
@@ -197,7 +197,7 @@ final class LibraryVC : MusicalCollectionVC
 		}
 		longPressRecognized = true
 
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
