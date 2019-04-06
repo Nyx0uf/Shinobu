@@ -130,7 +130,7 @@ final class SimpleLetterView : UIView
 
 		var attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), NSAttributedString.Key.foregroundColor : Colors.background, NSAttributedString.Key.paragraphStyle : paragraphStyle]
 		letterSelected = NSAttributedString(string: letter, attributes: attributes as [NSAttributedString.Key : Any])
-		attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4), NSAttributedString.Key.paragraphStyle : paragraphStyle]
+		attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), NSAttributedString.Key.foregroundColor : Colors.mainText, NSAttributedString.Key.paragraphStyle : paragraphStyle]
 		letterUnselected = NSAttributedString(string: letter, attributes: attributes as [NSAttributedString.Key : Any])
 	}
 }

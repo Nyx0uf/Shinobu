@@ -6,16 +6,14 @@ private struct ServerData
 	// Server name
 	let name: String
 	// Is this the active server?
-	let selected: Bool
+	let isSelected: Bool
 }
 
 final class ServersListVC : NYXTableViewController
 {
-	// MARK: - Public properties
+	// MARK: - Private properties
 	// List of servers
 	private var servers = [ServerData]()
-
-	// MARK: - Private properties
 	// Tableview cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.server"
 	// Add/Edit server VC
@@ -48,9 +46,6 @@ final class ServersListVC : NYXTableViewController
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-		
-		// Navigation bar title
-		titleView.setMainText(NYXLocalizedString("lbl_header_server_list"), detailText: nil)
 
 		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
@@ -80,17 +75,20 @@ final class ServersListVC : NYXTableViewController
 
 	@objc func addMpdServerAction(_ sender: Any?)
 	{
-		self.showServerVC(with: nil)
+		showServerVC(with: nil)
 	}
 	
 	// MARK: - Private
 	private func refreshServers()
 	{
-		let servers = serversManager.getServersList()
+		let serversList = serversManager.getServersList()
 
 		let enabledServerName = serversManager.getSelectedServerName()
-		self.servers = servers.compactMap({ServerData(name: $0.name, selected: ($0.name == enabledServerName)) })
+		servers = serversList.compactMap({ServerData(name: $0.name, isSelected: ($0.name == enabledServerName))})
 		tableView.reloadData()
+
+		// Navigation bar title
+		titleView.setMainText(NYXLocalizedString("lbl_header_server_list"), detailText: "(\(servers.count))")
 	}
 
 	private func showServerVC(with server: ShinobuServer?)
@@ -111,10 +109,7 @@ final class ServersListVC : NYXTableViewController
 	{
 		guard let s = sender else { return }
 		serversManager.setSelectedServerName(s.isOn ? servers[s.tag].name : "")
-		self.refreshServers()
-
-		//mpdBridge.deinitialize()
-		//mpdBridge.server = nil
+		refreshServers()
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: serversManager.getSelectedServer()?.mpd, userInfo: nil)
 	}
@@ -135,10 +130,10 @@ extension ServersListVC
 		let server = servers[indexPath.row]
 
 		cell.label.text = server.name
-		cell.toggle.isOn = server.selected
+		cell.toggle.isOn = server.isSelected
 		cell.toggle.tag = indexPath.row
 		cell.toggle.addTarget(self, action: #selector(toggleServer(_:)), for: .valueChanged)
-		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.selected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
+		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.isSelected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
 
 		return cell
 	}
@@ -154,7 +149,7 @@ extension ServersListVC
 		let tmp = shinobuServers.filter({$0.name == serverData.name})
 		if tmp.count > 0
 		{
-			self.showServerVC(with: tmp[0])
+			showServerVC(with: tmp[0])
 		}
 	}
 

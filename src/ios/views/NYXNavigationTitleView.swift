@@ -80,7 +80,7 @@ final class NYXNavigationTitleView : UIButton
 	// MARK: - Private
 	private func updateDisplay()
 	{
-		let color = self.isHighlighted || self.isSelected ? Colors.mainEnabled : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+		let color = (self.isHighlighted || self.isSelected) ? Colors.main : #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 
 		if let detailText = self.detailText
 		{

@@ -18,11 +18,12 @@ final class ShinobuServerTableViewCell : UITableViewCell
 		self.isAccessibilityElement = true
 
 		self.label = UILabel(frame: CGRect(16.0, (64 - 32) / 2, 144.0, 32.0))
-		self.label.font = UIFont.systemFont(ofSize: 16.0)
-		self.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		self.label.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
+		self.label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		self.contentView.addSubview(self.label)
 
 		self.toggle = UISwitch()
+		self.toggle.tintColor = UITableView.colorActionItem
 		self.contentView.addSubview(self.toggle)
 	}
 

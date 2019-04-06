@@ -306,18 +306,18 @@ final class MiniPlayerView : UIView
 			{
 				let img = #imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate)
 				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .highlighted)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .selected)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .focused)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
 				let img = #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)
 				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .highlighted)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .selected)
-				btnPlay.setImage(img.tinted(withColor: Colors.mainEnabled), for: .focused)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
+				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state

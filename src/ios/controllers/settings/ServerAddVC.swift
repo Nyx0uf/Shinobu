@@ -65,66 +65,74 @@ final class ServerAddVC : NYXTableViewController
 		tfMPDName = UITextField()
 		tfMPDName.translatesAutoresizingMaskIntoConstraints = false
 		tfMPDName.textAlignment = .left
-		tfMPDName.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfMPDName.backgroundColor = Colors.background
+		tfMPDName.textColor = UITableView.colorActionItem
+		tfMPDName.backgroundColor = UITableView.colorCellBackground
+		tfMPDName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfMPDName.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_server_defaultname"), attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)])
 
 		tfMPDHostname = UITextField()
 		tfMPDHostname.translatesAutoresizingMaskIntoConstraints = false
 		tfMPDHostname.textAlignment = .right
-		tfMPDHostname.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfMPDHostname.backgroundColor = Colors.background
+		tfMPDHostname.textColor = UITableView.colorActionItem
+		tfMPDHostname.backgroundColor = UITableView.colorCellBackground
+		tfMPDHostname.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfMPDHostname.attributedPlaceholder = NSAttributedString(string: "mpd.local", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)])
 
 		tfMPDPort = UITextField()
 		tfMPDPort.translatesAutoresizingMaskIntoConstraints = false
 		tfMPDPort.textAlignment = .right
-		tfMPDPort.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfMPDPort.backgroundColor = Colors.background
+		tfMPDPort.textColor = UITableView.colorActionItem
+		tfMPDPort.backgroundColor = UITableView.colorCellBackground
 		tfMPDPort.text = "6600"
 		tfMPDPort.keyboardType = .decimalPad
+		tfMPDPort.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 
 		tfMPDPassword = UITextField()
 		tfMPDPassword.translatesAutoresizingMaskIntoConstraints = false
 		tfMPDPassword.textAlignment = .right
-		tfMPDPassword.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfMPDPassword.backgroundColor = Colors.background
+		tfMPDPassword.textColor = UITableView.colorActionItem
+		tfMPDPassword.backgroundColor = UITableView.colorCellBackground
 		tfMPDPassword.isSecureTextEntry = true
+		tfMPDPassword.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfMPDPassword.attributedPlaceholder = NSAttributedString(string: NYXLocalizedString("lbl_optional"), attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)])
 
 		tfWEBHostname = UITextField()
 		tfWEBHostname.translatesAutoresizingMaskIntoConstraints = false
 		tfWEBHostname.textAlignment = .right
-		tfWEBHostname.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfWEBHostname.backgroundColor = Colors.background
+		tfWEBHostname.textColor = UITableView.colorActionItem
+		tfWEBHostname.backgroundColor = UITableView.colorCellBackground
 		tfWEBHostname.autocapitalizationType = .none
+		tfWEBHostname.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfWEBHostname.attributedPlaceholder = NSAttributedString(string: "http://mpd.local", attributes: [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)])
 
 		tfWEBPort = UITextField()
 		tfWEBPort.translatesAutoresizingMaskIntoConstraints = false
 		tfWEBPort.textAlignment = .right
-		tfWEBPort.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfWEBPort.backgroundColor = Colors.background
+		tfWEBPort.textColor = UITableView.colorActionItem
+		tfWEBPort.backgroundColor = UITableView.colorCellBackground
 		tfWEBPort.text = "80"
+		tfWEBPort.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfWEBPort.keyboardType = .decimalPad
 
 		tfWEBCoverName = UITextField()
 		tfWEBCoverName.translatesAutoresizingMaskIntoConstraints = false
 		tfWEBCoverName.textAlignment = .right
-		tfWEBCoverName.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		tfWEBCoverName.backgroundColor = Colors.background
+		tfWEBCoverName.textColor = UITableView.colorActionItem
+		tfWEBCoverName.backgroundColor = UITableView.colorCellBackground
 		tfWEBCoverName.autocapitalizationType = .none
+		tfWEBCoverName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		tfWEBCoverName.text = "cover.jpg"
 
 		lblMPDOutput = UILabel()
 		lblMPDOutput.translatesAutoresizingMaskIntoConstraints = false
 		lblMPDOutput.textAlignment = .right
-		lblMPDOutput.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-		lblMPDOutput.backgroundColor = Colors.background
+		lblMPDOutput.textColor = UITableView.colorActionItem
+		lblMPDOutput.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+		lblMPDOutput.backgroundColor = UITableView.colorCellBackground
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		tableView.tableFooterView = UIView()
+		tableView.separatorColor = UITableView.colorSeparator
+		tableView.backgroundColor = UITableView.colorBackground
 
 		// Keyboard appearance notifications
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShowNotification(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
@@ -323,9 +331,9 @@ final class ServerAddVC : NYXTableViewController
 			tfMPDPort.text = String(server.mpd.port)
 			tfMPDPassword.text = server.mpd.password
 
-			tfWEBHostname.text = server.covers?.hostname ?? ""
+			tfWEBHostname.text = server.covers?.hostname ?? server.mpd.hostname
 			tfWEBPort.text = String(server.covers?.port ?? 80)
-			tfWEBCoverName.text = server.covers?.coverName ?? ""
+			tfWEBCoverName.text = server.covers?.coverName ?? "cover.jpg"
 
 			updateOutputsLabel()
 		}
@@ -432,7 +440,7 @@ final class ServerAddVC : NYXTableViewController
 	}
 }
 
-// MARK: - 
+// MARK: - ZeroConfBrowserVCDelegate
 extension ServerAddVC : ZeroConfBrowserVCDelegate
 {
 	func audioServerDidChange(with server: ShinobuServer)
@@ -455,9 +463,9 @@ extension ServerAddVC
 		switch section
 		{
 			case 0:
-				return 2
+				return 1
 			case 1:
-				return 6
+				return 5
 			case 2:
 				return 4
 			default:
@@ -472,8 +480,8 @@ extension ServerAddVC
 		if cell == nil
 		{
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
-			cell?.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-			cell?.backgroundColor = Colors.background
+			cell?.textLabel?.textColor = UITableView.colorMainText
+			cell?.backgroundColor = UITableView.colorCellBackground
 
 			if indexPath.section == 0
 			{
@@ -482,11 +490,6 @@ extension ServerAddVC
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(tfMPDName)
 					tfMPDName.frame = CGRect(16.0, 0, UIScreen.main.bounds.width - 32.0, 44.0)
-				}
-				else if indexPath.row == 1
-				{
-					// Dummy
-					cell?.selectionStyle = .none
 				}
 			}
 			else if indexPath.section == 1
@@ -523,16 +526,11 @@ extension ServerAddVC
 				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_update_db")
 					cell?.textLabel?.textAlignment = .center
-					cell?.textLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-					cell?.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+					cell?.textLabel?.textColor = UITableView.colorActionItem
+					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
 					let backgroundView = UIView()
 					backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
 					cell?.selectedBackgroundView = backgroundView
-				}
-				else if indexPath.row == 5
-				{
-					// Dummy
-					cell?.selectionStyle = .none
 				}
 			}
 			else
@@ -562,8 +560,8 @@ extension ServerAddVC
 				{
 					cell?.textLabel?.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(cacheSize) / 1048576.0))\(NYXLocalizedString("lbl_megabytes")))"
 					cell?.textLabel?.textAlignment = .center
-					cell?.textLabel?.textColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
-					cell?.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+					cell?.textLabel?.textColor = UITableView.colorActionItem
+					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
 					let backgroundView = UIView()
 					backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
 					cell?.selectedBackgroundView = backgroundView
@@ -676,8 +674,8 @@ extension ServerAddVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		label.font = UIFont.systemFont(ofSize: 18.0, weight: .black)
+		label.textColor = UITableView.colorHeaderTitle
+		label.font = UIFont.systemFont(ofSize: 18.0, weight: .light)
 		label.textAlignment = .center
 		dummy.addSubview(label)
 
@@ -698,6 +696,18 @@ extension ServerAddVC
 	}
 
 	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+	{
+		return headerSectionHeight
+	}
+
+	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+	{
+		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
+		dummy.backgroundColor = tableView.backgroundColor
+		return dummy
+	}
+
+	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
 	{
 		return headerSectionHeight
 	}
@@ -740,7 +750,7 @@ extension ServerAddVC : UITextFieldDelegate
 	}
 }
 
-// MARK: - 
+// MARK: - UIPopoverPresentationControllerDelegate
 extension ServerAddVC : UIPopoverPresentationControllerDelegate
 {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle

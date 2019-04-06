@@ -28,14 +28,16 @@ final class SettingsVC : NYXTableViewController
 		titleView.setMainText(NYXLocalizedString("lbl_section_settings"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		tableView.tableFooterView = UIView()
+		tableView.separatorColor = UITableView.colorSeparator
 
 		swShake = UISwitch()
+		swShake.tintColor = UITableView.colorActionItem
 		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
 		swFuzzySearch = UISwitch()
+		swFuzzySearch.tintColor = UITableView.colorActionItem
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
 		swLogging = UISwitch()
+		swLogging.tintColor = UITableView.colorActionItem
 		swLogging.addTarget(self, action: #selector(toggleLogging(_:)), for: .valueChanged)
 	}
 
@@ -141,11 +143,11 @@ extension SettingsVC
 		switch section
 		{
 			case 0:
-				return 2
+				return 1
 			case 1:
-				return 2
+				return 1
 			case 2:
-				return 3
+				return 2
 			case 3:
 				return 1
 			default:
@@ -160,8 +162,8 @@ extension SettingsVC
 		if cell == nil
 		{
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
-			cell?.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-			cell?.backgroundColor = Colors.background
+			cell?.textLabel?.textColor = UITableView.colorMainText
+			cell?.backgroundColor = UITableView.colorCellBackground
 
 			if indexPath.section == 0
 			{
@@ -171,10 +173,6 @@ extension SettingsVC
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swShake)
 				}
-				if indexPath.row == 1
-				{
-					cell?.selectionStyle = .none
-				}
 			}
 			else if indexPath.section == 1
 			{
@@ -183,10 +181,6 @@ extension SettingsVC
 					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swFuzzySearch)
-				}
-				if indexPath.row == 1
-				{
-					cell?.selectionStyle = .none
 				}
 			}
 			else if indexPath.section == 2
@@ -201,8 +195,8 @@ extension SettingsVC
 				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_send_logs")
 					cell?.textLabel?.textAlignment = .center
-					cell?.textLabel?.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-					cell?.textLabel?.font = UIFont.boldSystemFont(ofSize: 17.0)
+					cell?.textLabel?.textColor = UITableView.colorActionItem
+					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
 					let backgroundView = UIView()
 					backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
 					cell?.selectedBackgroundView = backgroundView
@@ -267,8 +261,8 @@ extension SettingsVC
 
 		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		label.font = UIFont.systemFont(ofSize: 18.0, weight: .black)
+		label.textColor = UITableView.colorHeaderTitle
+		label.font = UIFont.systemFont(ofSize: 18.0, weight: .light)
 		label.textAlignment = .center
 		dummy.addSubview(label)
 
@@ -290,6 +284,18 @@ extension SettingsVC
 	}
 
 	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
+	{
+		return headerSectionHeight
+	}
+
+	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
+	{
+		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
+		dummy.backgroundColor = tableView.backgroundColor
+		return dummy
+	}
+
+	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
 	{
 		return headerSectionHeight
 	}

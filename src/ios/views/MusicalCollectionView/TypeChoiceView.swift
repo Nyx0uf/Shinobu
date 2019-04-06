@@ -84,11 +84,16 @@ extension TypeChoiceView : UITableViewDataSource
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			cell.textLabel?.textColor = Colors.main
+			cell.textLabel?.layer.cornerRadius = 5
+			cell.textLabel?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+			cell.textLabel?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
 		}
 		else
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-			cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+			cell.textLabel?.textColor = Colors.mainText
+			cell.textLabel?.layer.cornerRadius = 0
+			cell.textLabel?.backgroundColor = cell.backgroundColor
 		}
 		return cell
 	}

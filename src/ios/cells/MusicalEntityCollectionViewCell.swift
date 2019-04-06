@@ -117,7 +117,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 	}
 
 	// MARK: - Overrides
-	override var isSelected: Bool
+	/*override var isSelected: Bool
 	{
 		didSet
 		{
@@ -149,7 +149,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 				imageView.layer.borderWidth = 0
 			}
 		}
-	}
+	}*/
 
 	var associatedObject: Any?
 	{
