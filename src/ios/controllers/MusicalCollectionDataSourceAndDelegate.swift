@@ -23,14 +23,9 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	var searching = false
 	// Delegate
 	weak var delegate: MusicalCollectionDataSourceAndDelegateDelegate!
-	// Return the correct items
-	var actualItems: [MusicalEntity]
-	{
-		get
-		{
-			return searching ? searchResults : items
-		}
-	}
+	// Sections
+	private(set) var titlesIndex = [String]()
+	private(set) var searchTitlesIndex = [String]()
 
 	// MARK: - Private Properties
 	// Cover download operations
@@ -40,9 +35,9 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	// MPD servers manager
 	private let serversManager: ServersManager
 	// Items splitted by section title
-	private(set) var splitted = [String: [MusicalEntity]]()
-	// Sections
-	private(set) var titlesIndex = [String]()
+	private(set) var orderedItems = [String: [MusicalEntity]]()
+	// Items splitted by section title
+	private(set) var orderedSearchResults = [String: [MusicalEntity]]()
 
 	// MARK: - Initializers
 	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdBridge: MPDBridge)
@@ -59,12 +54,9 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 		self.items = items
 		self.musicalEntityType = type
 
-//		let tmp = items
-//			.compactMap({$0.name.first})
-//			.map({String($0).uppercased()})
-//			.reduce([], {$0.contains($1) ? $0 : $0 + [$1]})
+		//let tmp = items.compactMap({$0.name.first}).map({String($0).uppercased()}).reduce([], {$0.contains($1) ? $0 : $0 + [$1]})
 
-		splitted.removeAll()
+		orderedItems.removeAll()
 		for item in items
 		{
 			guard let firstChar = item.name.first else
@@ -73,20 +65,53 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 			}
 
 			let letter = firstChar.isLetter ? String(firstChar).uppercased() : "#"
-			if splitted[letter] == nil
+			if orderedItems[letter] == nil
 			{
-				splitted[letter] = []
+				orderedItems[letter] = []
 			}
 
-			splitted[letter]?.append(item)
+			orderedItems[letter]?.append(item)
 		}
 
-		self.titlesIndex = splitted.keys.sorted()
+		self.titlesIndex = orderedItems.keys.sorted()
 	}
 
 	func setSearchResults(_ searchResults: [MusicalEntity])
 	{
 		self.searchResults = searchResults
+
+		orderedSearchResults.removeAll()
+		for item in searchResults
+		{
+			guard let firstChar = item.name.first else
+			{
+				continue
+			}
+
+			let letter = firstChar.isLetter ? String(firstChar).uppercased() : "#"
+			if orderedSearchResults[letter] == nil
+			{
+				orderedSearchResults[letter] = []
+			}
+
+			orderedSearchResults[letter]?.append(item)
+		}
+
+		self.searchTitlesIndex = orderedSearchResults.keys.sorted()
+	}
+
+	func currentItemAtIndexPath(_ indexPath: IndexPath) -> MusicalEntity
+	{
+		if searching
+		{
+			let title = searchTitlesIndex[indexPath.section]
+			return orderedSearchResults[title]![indexPath.row]
+		}
+		else
+		{
+			let title = titlesIndex[indexPath.section]
+			return orderedItems[title]![indexPath.row]
+		}
 	}
 
 	// MARK: - Private
@@ -179,20 +204,23 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 {
 	func numberOfSections(in collectionView: UICollectionView) -> Int
 	{
-		return splitted.keys.count
+		return searching ? orderedSearchResults.keys.count : orderedItems.keys.count
 	}
 
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-//		if delegate == nil
-//		{
-//			return 0
-//		}
-//
 //		let count = actualItems.count
 //		return count >= 9 ? count + 3 : count
-		let title = titlesIndex[section]
-		return splitted[title]?.count ?? 0
+		if searching
+		{
+			let title = searchTitlesIndex[section]
+			return orderedSearchResults[title]?.count ?? 0
+		}
+		else
+		{
+			let title = titlesIndex[section]
+			return orderedItems[title]?.count ?? 0
+		}
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -209,8 +237,8 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			return cell
 		}*/
 
-		let title = titlesIndex[indexPath.section]
-		let entities = splitted[title]!
+		let title = searching ? searchTitlesIndex[indexPath.section] : titlesIndex[indexPath.section]
+		let entities = searching ? orderedSearchResults[title]! : orderedItems[title]!
 
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
@@ -251,17 +279,16 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDelegate
 {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{
-		let title = titlesIndex[indexPath.section]
-		let entities = splitted[title]!
-		let entity = entities[indexPath.row]
-
-		delegate.didSelectEntity(entity)
+		let title = searching ? searchTitlesIndex[indexPath.section] : titlesIndex[indexPath.section]
+		let entities = searching ? orderedSearchResults[title]! : orderedItems[title]!
+		delegate.didSelectEntity(entities[indexPath.row])
 	}
 
 	func scrollViewDidScroll(_ scrollView: UIScrollView)
 	{
-		let c = scrollView as! UICollectionView
-		if let indexPath = c.indexPathForItem(at: CGPoint(20, scrollView.contentOffset.y + 84))
+		let collectionView = scrollView as! UICollectionView
+		let layout = collectionView.collectionViewLayout as! MusicalCollectionViewFlowLayout
+		if let indexPath = collectionView.indexPathForItem(at: CGPoint(20, scrollView.contentOffset.y + (layout.sectionInset.top + NavigationBarHeight())))
 		{
 			delegate.didDisplayCellAtIndexPath(indexPath)
 		}

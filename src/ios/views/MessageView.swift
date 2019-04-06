@@ -29,7 +29,7 @@ final class MessageView : UIView
 			statusHeight = 20
 		}
 
-		let height = statusHeight + 44.0;
+		let height = statusHeight + 44.0
 		let frame = CGRect(0.0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
 
 		super.init(frame: frame)

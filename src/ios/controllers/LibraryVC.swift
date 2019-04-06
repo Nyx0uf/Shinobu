@@ -154,10 +154,10 @@ final class LibraryVC : MusicalCollectionVC
 			switch dataSource.musicalEntityType
 			{
 				case .albums:
-					let album = dataSource.actualItems[indexPath.row] as! Album
+					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
 					mpdBridge.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				case .artists:
-					let artist = dataSource.actualItems[indexPath.row] as! Artist
+					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					self.mpdBridge.getAlbumsForArtist(artist) { (albums) in
 						self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -165,7 +165,7 @@ final class LibraryVC : MusicalCollectionVC
 						}
 					}
 				case .albumsartists:
-					let artist = dataSource.actualItems[indexPath.row] as! Artist
+					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
 						self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
 							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -173,7 +173,7 @@ final class LibraryVC : MusicalCollectionVC
 						}
 					}
 				case .genres:
-					let genre = dataSource.actualItems[indexPath.row] as! Genre
+					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
 					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
 						self.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
 							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
@@ -181,7 +181,7 @@ final class LibraryVC : MusicalCollectionVC
 						}
 					}
 				case .playlists:
-					let playlist = dataSource.actualItems[indexPath.row] as! Playlist
+					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
 					mpdBridge.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				default:
 					break
@@ -215,7 +215,7 @@ final class LibraryVC : MusicalCollectionVC
 			switch dataSource.musicalEntityType
 			{
 				case .albums:
-					let album = dataSource.actualItems[indexPath.row] as! Album
+					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -238,7 +238,7 @@ final class LibraryVC : MusicalCollectionVC
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
-					let artist = dataSource.actualItems[indexPath.row] as! Artist
+					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -276,7 +276,7 @@ final class LibraryVC : MusicalCollectionVC
 					}
 					alertController.addAction(addQueueAction)
 				case .albumsartists:
-					let artist = dataSource.actualItems[indexPath.row] as! Artist
+					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -314,7 +314,7 @@ final class LibraryVC : MusicalCollectionVC
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
-					let genre = self.dataSource.actualItems[indexPath.row] as! Genre
+					let genre = self.dataSource.currentItemAtIndexPath(indexPath) as! Genre
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
 							self.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
@@ -352,7 +352,7 @@ final class LibraryVC : MusicalCollectionVC
 					}
 					alertController.addAction(addQueueAction)
 				case .playlists:
-					let playlist = dataSource.actualItems[indexPath.row] as! Playlist
+					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
 						self.longPressRecognized = false
@@ -681,20 +681,19 @@ extension LibraryVC
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
-			let row = indexPath.row
 			switch dataSource.musicalEntityType
 			{
 				case .albums:
-					let album = dataSource.actualItems[row] as! Album
+					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
 					return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
 				case .artists, .albumsartists:
-					let artist = dataSource.actualItems[row] as! Artist
+					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					return AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
 				case .genres:
-					let genre = dataSource.actualItems[row] as! Genre
+					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
 					return GenreDetailVC(genre: genre, mpdBridge: mpdBridge)
 				case .playlists:
-					let playlist = dataSource.actualItems[row] as! Playlist
+					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
 					return PlaylistDetailVC(playlist: playlist, mpdBridge: mpdBridge)
 				default:
 					break

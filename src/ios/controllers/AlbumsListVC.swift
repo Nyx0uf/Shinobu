@@ -74,7 +74,7 @@ final class AlbumsListVC : MusicalCollectionVC
 			}
 			alertController.addAction(cancelAction)
 
-			let album = dataSource.actualItems[indexPath.row] as! Album
+			let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
 			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 				self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
@@ -123,7 +123,7 @@ extension AlbumsListVC
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 
-			let album = dataSource.actualItems[indexPath.row] as! Album
+			let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
 			return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
 		}
 		return nil
@@ -138,7 +138,7 @@ extension AlbumsListVC
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
-					let source = self.dataSource.actualItems as! [Album]
+					let source = self.dataSource.items as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 				}
@@ -149,7 +149,7 @@ extension AlbumsListVC
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
-					let source = self.dataSource.actualItems as! [Album]
+					let source = self.dataSource.items as! [Album]
 					let ar = source.compactMap({$0.tracks}).flatMap({$0})
 					self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 				}
@@ -159,7 +159,7 @@ extension AlbumsListVC
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				let source = self.dataSource.actualItems as! [Album]
+				let source = self.dataSource.items as! [Album]
 				for album in source
 				{
 					self.mpdBridge.addAlbumToQueue(album)

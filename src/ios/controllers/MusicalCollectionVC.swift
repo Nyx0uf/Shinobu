@@ -223,11 +223,12 @@ extension MusicalCollectionVC : UISearchBarDelegate
 {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar)
 	{
+		searchBar.text = ""
 		searching = false
 		dataSource.searching = false
 		dataSource.setSearchResults([])
-		searchBar.text = ""
 		showNavigationBar(animated: true)
+		collectionView.setIndexTitles(dataSource.titlesIndex)
 		collectionView.reloadData()
 	}
 
@@ -235,11 +236,13 @@ extension MusicalCollectionVC : UISearchBarDelegate
 	{
 		searchBar.resignFirstResponder()
 		searchBar.endEditing(true)
+		collectionView.setIndexTitles(dataSource.searchTitlesIndex)
 		collectionView.reloadData()
 	}
 
 	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar)
 	{
+		// Update flags
 		searching = true
 		dataSource.searching = true
 		// Copy original source to avoid crash when nothing was searched
@@ -248,11 +251,12 @@ extension MusicalCollectionVC : UISearchBarDelegate
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		guard dataSource.items.count > 0 else { return }
+		//guard dataSource.items.count > 0 else { return }
 
 		if String.isNullOrWhiteSpace(searchText)
 		{
 			dataSource.setSearchResults(dataSource.items)
+			collectionView.setIndexTitles(dataSource.titlesIndex)
 			collectionView.reloadData()
 			return
 		}
@@ -266,6 +270,7 @@ extension MusicalCollectionVC : UISearchBarDelegate
 			dataSource.setSearchResults(dataSource.items.filter({$0.name.lowercased().contains(searchText.lowercased())}))
 		}
 
+		collectionView.setIndexTitles(dataSource.searchTitlesIndex)
 		collectionView.reloadData()
 	}
 }

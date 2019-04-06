@@ -124,7 +124,7 @@ final class TitlesIndexView : UIView
 		guard let letterView = letterViewAtPoint(point) else { return }
 
 		self.addSubview(overlayView)
-		overlayView.frame = CGRect(-self.width - 32, point.y - (overlayView.height - LETTER_VIEW_HEIGHT), OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
+		overlayView.frame = CGRect(-self.width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
 		overlayView.letter = letterView.letter
 		overlayView.shake(removeAtEnd: true)
 
@@ -143,7 +143,7 @@ final class TitlesIndexView : UIView
 			case .changed:
 				if let letterView = letterViewAtPoint(point)
 				{
-					overlayView.frame = CGRect(-self.width - 32, point.y - (overlayView.height - LETTER_VIEW_HEIGHT), OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
+					overlayView.frame = CGRect(-self.width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
 					overlayView.letter = letterView.letter
 					delegate?.didScrollToIndex(letterView.tag)
 				}

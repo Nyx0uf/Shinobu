@@ -131,3 +131,19 @@ class NYXAlertController : UIAlertController
 		return true
 	}
 }
+
+
+public func NavigationBarHeight() -> CGFloat
+{
+	let statusHeight: CGFloat
+	if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
+	{
+		statusHeight = top < 20 ? 20 : top
+	}
+	else
+	{
+		statusHeight = 20
+	}
+
+	return statusHeight + 44.0
+}
