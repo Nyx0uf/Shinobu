@@ -4,8 +4,9 @@ import UIKit
 protocol MusicalCollectionDataSourceAndDelegateDelegate : class
 {
 	func isSearching(actively: Bool) -> Bool
-	func didSelectItem(indexPath: IndexPath)
+	func didSelectEntity(_ entity: AnyObject)
 	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
+	func didDisplayCellAtIndexPath(_ indexPath: IndexPath)
 }
 
 
@@ -38,8 +39,10 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	private let mpdBridge: MPDBridge
 	// MPD servers manager
 	private let serversManager: ServersManager
-	//
-	private var indexTitle = [String]()
+	// Items splitted by section title
+	private(set) var splitted = [String: [MusicalEntity]]()
+	// Sections
+	private(set) var titlesIndex = [String]()
 
 	// MARK: - Initializers
 	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdBridge: MPDBridge)
@@ -56,9 +59,29 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 		self.items = items
 		self.musicalEntityType = type
 
-//		self.indexTitle = items.map({String($0.name.first!)}).reduce([], {
-//			$0.contains($1) ? $0 : $0 + [$1]
-//		})
+//		let tmp = items
+//			.compactMap({$0.name.first})
+//			.map({String($0).uppercased()})
+//			.reduce([], {$0.contains($1) ? $0 : $0 + [$1]})
+
+		splitted.removeAll()
+		for item in items
+		{
+			guard let firstChar = item.name.first else
+			{
+				continue
+			}
+
+			let letter = firstChar.isLetter ? String(firstChar).uppercased() : "#"
+			if splitted[letter] == nil
+			{
+				splitted[letter] = []
+			}
+
+			splitted[letter]?.append(item)
+		}
+
+		self.titlesIndex = splitted.keys.sorted()
 	}
 
 	func setSearchResults(_ searchResults: [MusicalEntity])
@@ -154,22 +177,22 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 
 extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 {
-//	func numberOfSections(in collectionView: UICollectionView) -> Int
-//	{
-//		return indexTitle.count
-//	}
+	func numberOfSections(in collectionView: UICollectionView) -> Int
+	{
+		return splitted.keys.count
+	}
 
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-		if delegate == nil
-		{
-			return 0
-		}
-
-		let count = actualItems.count
-		return count >= 9 ? count + 3 : count
-		//let title = indexTitle[section]
-		//return self.items.filter({String($0.name.first!) == title}).count
+//		if delegate == nil
+//		{
+//			return 0
+//		}
+//
+//		let count = actualItems.count
+//		return count >= 9 ? count + 3 : count
+		let title = titlesIndex[section]
+		return splitted[title]?.count ?? 0
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -177,14 +200,17 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
 
 		// Dummy cells
-		let entities = self.actualItems
+		/*let entities = self.actualItems
 		if indexPath.row == entities.count || indexPath.row == entities.count + 1 || indexPath.row == entities.count + 2
 		{
 			cell.label.text = ""
 			cell.imageView.backgroundColor = collectionView.backgroundColor
 			cell.image = nil
 			return cell
-		}
+		}*/
+
+		let title = titlesIndex[indexPath.section]
+		let entities = splitted[title]!
 
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
@@ -225,6 +251,19 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDelegate
 {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{
-		delegate.didSelectItem(indexPath: indexPath)
+		let title = titlesIndex[indexPath.section]
+		let entities = splitted[title]!
+		let entity = entities[indexPath.row]
+
+		delegate.didSelectEntity(entity)
+	}
+
+	func scrollViewDidScroll(_ scrollView: UIScrollView)
+	{
+		let c = scrollView as! UICollectionView
+		if let indexPath = c.indexPathForItem(at: CGPoint(20, scrollView.contentOffset.y + 84))
+		{
+			delegate.didDisplayCellAtIndexPath(indexPath)
+		}
 	}
 }

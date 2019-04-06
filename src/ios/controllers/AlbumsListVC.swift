@@ -62,7 +62,7 @@ final class AlbumsListVC : MusicalCollectionVC
 		}
 		longPressRecognized = true
 
-		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView))
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
@@ -107,15 +107,8 @@ final class AlbumsListVC : MusicalCollectionVC
 // MARK: - MusicalCollectionViewDelegate
 extension AlbumsListVC
 {
-	override func didSelectItem(indexPath: IndexPath)
+	override func didSelectEntity(_ entity: AnyObject)
 	{
-		let entities = dataSource.actualItems
-		if indexPath.row >= entities.count
-		{
-			return
-		}
-		let entity = entities[indexPath.row]
-
 		let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
@@ -126,7 +119,7 @@ extension AlbumsListVC
 {
 	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
 	{
-		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 

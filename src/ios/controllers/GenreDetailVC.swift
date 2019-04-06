@@ -110,11 +110,11 @@ final class GenreDetailVC : MusicalCollectionVC
 
 		if self.dataSource.items.count == 0
 		{
-			self.collectionView.contentOffset = CGPoint(0, 64)
+			self.collectionView.collectionView.contentOffset = CGPoint(0, 64)
 		}
 		else
 		{
-			self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+			self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 		}
 	}
 }
@@ -122,15 +122,8 @@ final class GenreDetailVC : MusicalCollectionVC
 // MARK: - MusicalCollectionViewDelegate
 extension GenreDetailVC
 {
-	override func didSelectItem(indexPath: IndexPath)
+	override func didSelectEntity(_ entity: AnyObject)
 	{
-		let entities = dataSource.actualItems
-		if indexPath.row >= entities.count
-		{
-			return
-		}
-
-		let entity = entities[indexPath.row]
 		switch dataSource.musicalEntityType
 		{
 			case .albums:

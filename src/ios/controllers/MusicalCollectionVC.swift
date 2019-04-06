@@ -76,8 +76,8 @@ class MusicalCollectionVC : NYXViewController
 
 		// Collection view
 		collectionView = MusicalCollectionView(frame: self.view.bounds, musicalEntityType: dataSource.musicalEntityType)
-		collectionView.delegate = dataSource
-		collectionView.dataSource = dataSource
+		collectionView.collectionView.delegate = dataSource
+		collectionView.collectionView.dataSource = dataSource
 		self.view.addSubview(collectionView)
 
 		// Longpress
@@ -155,12 +155,12 @@ class MusicalCollectionVC : NYXViewController
 				//self.view.layoutIfNeeded()
 				if self.dataSource.items.count == 0
 				{
-					self.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
+					self.collectionView.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.bottom)!)
 				}
 				else
 				{
-					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-					self.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
+					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+					self.collectionView.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.bottom)!)
 				}
 			}, completion: { finished in
 				self.typeChoiceView.removeFromSuperview()
@@ -173,7 +173,7 @@ class MusicalCollectionVC : NYXViewController
 
 			UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
 				self.collectionView.frame = CGRect(0, self.typeChoiceView.bottom, self.collectionView.size)
-				self.collectionView.contentInset = .zero
+				self.collectionView.collectionView.contentInset = .zero
 				self.view.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
 			}, completion:nil)
 		}
@@ -201,6 +201,7 @@ class MusicalCollectionVC : NYXViewController
 		collectionView.musicalEntityType = type
 		if reload
 		{
+			collectionView.setIndexTitles(dataSource.titlesIndex)
 			collectionView.reloadData()
 		}
 	}
@@ -274,7 +275,7 @@ extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 {
 	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
 	{
-		if let c = self.collectionView.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+		if let c = self.collectionView.collectionView.cellForItem(at: indexPath) as? MusicalEntityBaseCell
 		{
 			c.image = cover
 		}
@@ -285,9 +286,14 @@ extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 		return actively ? (self.searching && searchBar.isFirstResponder) : self.searching
 	}
 
-	@objc func didSelectItem(indexPath: IndexPath)
+	@objc func didSelectEntity(_ entity: AnyObject)
 	{
 
+	}
+
+	@objc func didDisplayCellAtIndexPath(_ indexPath: IndexPath)
+	{
+		collectionView.setCurrentIndex(indexPath.section)
 	}
 }
 

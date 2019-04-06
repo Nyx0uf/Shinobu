@@ -37,9 +37,24 @@ final class LibraryVC : MusicalCollectionVC
 		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
 	}
 
+	private func findShadowImage(under view: UIView) -> UIImageView? {
+		if view is UIImageView && view.bounds.size.height <= 1 {
+			return (view as! UIImageView)
+		}
+
+		for subview in view.subviews {
+			if let imageView = findShadowImage(under: subview) {
+				return imageView
+			}
+		}
+		return nil
+	}
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
+
+		let shadowImageView = findShadowImage(under: navigationController!.navigationBar)
+		shadowImageView?.isHidden = true
 
 		// Initialize the mpd connection
 		if mpdBridge.server == nil
@@ -79,11 +94,11 @@ final class LibraryVC : MusicalCollectionVC
 		}
 
 		// Deselect cell
-		if let idxs = collectionView.indexPathsForSelectedItems
+		if let idxs = collectionView.collectionView.indexPathsForSelectedItems
 		{
 			for indexPath in idxs
 			{
-				collectionView.deselectItem(at: indexPath, animated: true)
+				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
 			}
 		}
 
@@ -94,7 +109,7 @@ final class LibraryVC : MusicalCollectionVC
 			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 				DispatchQueue.main.async {
 					self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-					self.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
+					self.collectionView.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
 					self.updateNavigationTitle()
 					self.updateNavigationButtons()
 				}
@@ -134,7 +149,7 @@ final class LibraryVC : MusicalCollectionVC
 			return
 		}
 
-		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView))
 		{
 			switch dataSource.musicalEntityType
 			{
@@ -182,11 +197,11 @@ final class LibraryVC : MusicalCollectionVC
 		}
 		longPressRecognized = true
 
-		if let indexPath = collectionView.indexPathForItem(at: gest.location(in: collectionView))
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView))
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
-			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
+			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
 			cell.longPressed = true
 
 			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
@@ -573,11 +588,11 @@ final class LibraryVC : MusicalCollectionVC
 				self.setItems(entities, forMusicalEntityType: type)
 				if self.dataSource.items.count == 0
 				{
-					self.collectionView.contentOffset = CGPoint(0, 64)
+					self.collectionView.collectionView.contentOffset = CGPoint(0, 64)
 				}
 				else
 				{
-					self.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 				}
 
 				self.updateNavigationTitle()
@@ -590,15 +605,8 @@ final class LibraryVC : MusicalCollectionVC
 // MARK: - MusicalCollectionViewDelegate
 extension LibraryVC
 {
-	override func didSelectItem(indexPath: IndexPath)
+	override func didSelectEntity(_ entity: AnyObject)
 	{
-		let entities = dataSource.actualItems
-		if indexPath.row >= entities.count
-		{
-			return
-		}
-		let entity = entities[indexPath.row]
-
 		switch dataSource.musicalEntityType
 		{
 			case .albums:
@@ -670,7 +678,7 @@ extension LibraryVC
 {
 	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
 	{
-		if let indexPath = collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath)
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath)
 		{
 			previewingContext.sourceRect = cellAttributes.frame
 			let row = indexPath.row

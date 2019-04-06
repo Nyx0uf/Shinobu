@@ -12,9 +12,6 @@ final class CoverOperation : Operation
 			return junk
 		}
 		set (newAnswer) {
-			#if os(iOS) && !WIDGET
-			NetworkActivityIndicator.shared.end()
-			#endif
 			willChangeValue(forKey: "isFinished")
 			junk = newAnswer
 			didChangeValue(forKey: "isFinished")
@@ -146,10 +143,6 @@ extension CoverOperation : URLSessionDataDelegate
 			isFinished = true
 			return
 		}
-
-		#if os(iOS) && !WIDGET
-		NetworkActivityIndicator.shared.start()
-		#endif
 
 		completionHandler(.allow)
 	}
