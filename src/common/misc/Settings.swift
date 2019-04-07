@@ -103,8 +103,8 @@ final class Settings
 		do
 		{
 			let coversDirectoryPath = "covers"
-			let columns_ios = CGFloat(3)
-			let width_ios = ceil((UIScreen.main.bounds.width / columns_ios) - (2 * 10))
+			let columns_ios = 2
+			let width_ios = CGFloat(180)
 			let columns_tvos = CGFloat(5)
 			let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
 			let defaultsValues: [String: Any] = try [
@@ -115,6 +115,7 @@ final class Settings
 				Settings.Key.pref_fuzzySearch.rawValue : false,
 				Settings.Key.pref_enableLogging.rawValue : false,
 				Settings.Key.pref_shakeToPlayRandom.rawValue : false,
+				Settings.Key.pref_numberOfColumns.rawValue : columns_ios,
 				Settings.Key.mpd_repeat.rawValue : false,
 				Settings.Key.mpd_shuffle.rawValue : false,
 				Settings.Key.lastTypeLibrary.rawValue : MusicalEntityType.albums.rawValue,
@@ -164,6 +165,7 @@ extension Settings.Key
 	static let pref_fuzzySearch = Settings.Key("pref_fuzzySearch")
 	static let pref_shakeToPlayRandom = Settings.Key("pref_shakeToPlayRandom")
 	static let pref_enableLogging = Settings.Key("pref_enableLogging")
+	static let pref_numberOfColumns = Settings.Key("pref_numberOfColumns")
 	static let mpd_repeat = Settings.Key("mpd_repeat")
 	static let mpd_shuffle = Settings.Key("mpd_shuffle")
 	static let lastTypeLibrary = Settings.Key("lastTypeLibrary")

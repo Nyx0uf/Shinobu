@@ -13,6 +13,7 @@ extension Notification.Name
 	static let miniPlayerShouldExpand = Notification.Name("MiniPlayerShouldExpand")
 	static let audioServerConfigurationDidChange = Notification.Name("AudioServerConfigurationDidChange")
 	static let audioOutputConfigurationDidChange = Notification.Name("AudioOutputConfigurationDidChange")
+	static let collectionViewLayoutShouldChange = Notification.Name("CollectionViewLayoutShouldChange")
 }
 
 // MARK: - Clamp

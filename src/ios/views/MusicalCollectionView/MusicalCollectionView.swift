@@ -3,8 +3,7 @@ import UIKit
 
 final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 {
-	private let sideSpan = CGFloat(12)
-	private let columns = 3
+	private static let margin = CGFloat(12)
 
 	override init()
 	{
@@ -21,12 +20,16 @@ final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 		super.prepare()
 
 		self.scrollDirection = .vertical
-		self.sectionInset = UIEdgeInsets(top: sideSpan, left: sideSpan, bottom: sideSpan, right: sideSpan)
+		self.sectionInset = UIEdgeInsets(top: MusicalCollectionViewFlowLayout.margin, left: MusicalCollectionViewFlowLayout.margin, bottom: MusicalCollectionViewFlowLayout.margin, right: MusicalCollectionViewFlowLayout.margin)
 
+		let columns = Settings.shared.integer(forKey: .pref_numberOfColumns)
 		guard let collectionView = collectionView else { return }
 		let marginsAndInsets = sectionInset.left + sectionInset.right + collectionView.safeAreaInsets.left + collectionView.safeAreaInsets.right + minimumInteritemSpacing * CGFloat(columns - 1)
 		let itemWidth = ((collectionView.bounds.size.width - marginsAndInsets) / CGFloat(columns)).rounded(.down)
 		self.itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
+
+		let size = try! NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(itemWidth, itemWidth)), requiringSecureCoding: false)
+		Settings.shared.set(size, forKey: .coversSize)
 	}
 
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint
@@ -85,13 +88,18 @@ final class MusicalCollectionView : UIView
 
 	func setIndexTitles(_ titles: [String], selectedIndex: Int = 0)
 	{
-		//indexView.setTitles(["#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"], selectedIndex: selectedIndex)
 		indexView.setTitles(titles, selectedIndex: selectedIndex)
 	}
 
 	func setCurrentIndex(_ index: Int)
 	{
 		indexView.setCurrentIndex(index)
+	}
+
+	func updateLayout()
+	{
+		self.collectionView.collectionViewLayout.invalidateLayout()
+		self.collectionView.collectionViewLayout = MusicalCollectionViewFlowLayout()
 	}
 }
 

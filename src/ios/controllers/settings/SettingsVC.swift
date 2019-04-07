@@ -14,6 +14,8 @@ final class SettingsVC : NYXTableViewController
 	private var swFuzzySearch: UISwitch!
 	// Logging switch
 	private var swLogging: UISwitch!
+	// Columns control
+	private var sColumns: UISegmentedControl!
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -39,6 +41,10 @@ final class SettingsVC : NYXTableViewController
 		swLogging = UISwitch()
 		swLogging.tintColor = UITableView.colorActionItem
 		swLogging.addTarget(self, action: #selector(toggleLogging(_:)), for: .valueChanged)
+		sColumns = UISegmentedControl(items: ["2", "3"])
+		sColumns.tintColor = Colors.main
+		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
+		sColumns.frame = CGRect(0, 0, 64, swLogging.height)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -65,6 +71,29 @@ final class SettingsVC : NYXTableViewController
 	{
 		let logging = Settings.shared.bool(forKey: .pref_enableLogging)
 		Settings.shared.set(!logging, forKey: .pref_enableLogging)
+	}
+
+	@objc func toggleColumns(_ sender: Any?)
+	{
+		let columns = sColumns.selectedSegmentIndex == 0 ? 2 : 3
+		Settings.shared.set(columns, forKey: .pref_numberOfColumns)
+
+		// Clear cache because covers size will change
+		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
+		let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory)!
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+		do
+		{
+			try FileManager.default.removeItem(at: coversDirectoryURL)
+			try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+			URLCache.shared.removeAllCachedResponses()
+		}
+		catch _
+		{
+			Logger.shared.log(type: .error, message: "Can't delete cover cache")
+		}
+
+		NotificationCenter.default.postOnMainThreadAsync(name: .collectionViewLayoutShouldChange, object: nil)
 	}
 
 	@objc func closeAction(_ sender: Any?)
@@ -135,7 +164,7 @@ extension SettingsVC
 {
 	override func numberOfSections(in tableView: UITableView) -> Int
 	{
-		return 4
+		return 5
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -147,8 +176,10 @@ extension SettingsVC
 			case 1:
 				return 1
 			case 2:
-				return 2
+				return 1
 			case 3:
+				return 2
+			case 4:
 				return 1
 			default:
 				return 0
@@ -169,12 +200,21 @@ extension SettingsVC
 			{
 				if indexPath.row == 0
 				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_columns")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(sColumns)
+				}
+			}
+			else if indexPath.section == 1
+			{
+				if indexPath.row == 0
+				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swShake)
 				}
 			}
-			else if indexPath.section == 1
+			else if indexPath.section == 2
 			{
 				if indexPath.row == 0
 				{
@@ -183,7 +223,7 @@ extension SettingsVC
 					cell?.contentView.addSubview(swFuzzySearch)
 				}
 			}
-			else if indexPath.section == 2
+			else if indexPath.section == 3
 			{
 				if indexPath.row == 0
 				{
@@ -219,21 +259,32 @@ extension SettingsVC
 		{
 			if indexPath.row == 0
 			{
-				swShake.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
+				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16.0 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
+				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) == 2 ? 0 : 1
 			}
 		}
 		else if indexPath.section == 1
 		{
 			if indexPath.row == 0
 			{
-				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
+				swShake.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
+				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 			}
 		}
 		else if indexPath.section == 2
 		{
 			if indexPath.row == 0
 			{
+				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
+				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
+			}
+		}
+		else if indexPath.section == 3
+		{
+			if indexPath.row == 0
+			{
 				swLogging.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swLogging.width, (cell!.height - swLogging.height) / 2, swLogging.size)
+				swLogging.isOn = Settings.shared.bool(forKey: .pref_enableLogging)
 			}
 		}
 
@@ -246,7 +297,7 @@ extension SettingsVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		if indexPath.section == 2 && indexPath.row == 1
+		if indexPath.section == 3 && indexPath.row == 1
 		{
 			sendLogs()
 		}
@@ -269,12 +320,14 @@ extension SettingsVC
 		switch section
 		{
 			case 0:
-				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
+				label.text = NYXLocalizedString("lbl_pref_appearance").uppercased()
 			case 1:
-				label.text = NYXLocalizedString("lbl_search").uppercased()
+				label.text = NYXLocalizedString("lbl_behaviour").uppercased()
 			case 2:
-				label.text = NYXLocalizedString("lbl_troubleshoot").uppercased()
+				label.text = NYXLocalizedString("lbl_search").uppercased()
 			case 3:
+				label.text = NYXLocalizedString("lbl_troubleshoot").uppercased()
+			case 4:
 				label.text = NYXLocalizedString("lbl_version").uppercased()
 			default:
 				break

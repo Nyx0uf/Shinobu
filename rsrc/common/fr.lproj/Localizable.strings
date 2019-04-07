@@ -66,8 +66,6 @@
 "lbl_server_coverclearcache" = "Vider le cache";
 "lbl_server_section_cover" = "Couverture";
 "lbl_server_section_server" = "Serveur MPD";
-"lbl_stats_section_db" = "Base de données (MPD)";
-"lbl_stats_section_server" = "Serveur (MPD)";
 
 "lbl_section_home" = "Bibliothèque";
 "lbl_section_server" = "Serveur MPD";
@@ -75,6 +73,8 @@
 "lbl_section_database" = "Base de données";
 
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
+"lbl_pref_appearance" = "Apparence";
+"lbl_pref_columns" = "Nombre de colonnes";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

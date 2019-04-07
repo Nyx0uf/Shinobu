@@ -36,7 +36,10 @@ class MusicalCollectionVC : NYXViewController
 	init(mpdBridge: MPDBridge)
 	{
 		self.mpdBridge = mpdBridge
+
 		super.init(nibName: nil, bundle: nil)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(collectionViewLayoutShouldChange(_:)), name: .collectionViewLayoutShouldChange, object: nil)
 	}
 
 	required init?(coder aDecoder: NSCoder)
@@ -215,6 +218,13 @@ class MusicalCollectionVC : NYXViewController
 		}, completion: { finished in
 			self.searchBarVisible = false
 		})
+	}
+
+	// MARK: - Notifications
+	@objc private func collectionViewLayoutShouldChange(_ aNotification: Notification)
+	{
+		self.collectionView.updateLayout()
+		self.collectionView.reloadData()
 	}
 }
 
