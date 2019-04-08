@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class ShinobuServerTableViewCell : UITableViewCell
+final class ShinobuServerTableViewCell: UITableViewCell
 {
 	// MARK: - Public properties
 	// Server name
@@ -13,13 +13,14 @@ final class ShinobuServerTableViewCell : UITableViewCell
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
 	{
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+
 		self.backgroundColor = Colors.background
 		self.contentView.backgroundColor = self.backgroundColor
 		self.isAccessibilityElement = true
 
-		self.label = UILabel(frame: CGRect(16.0, (64 - 32) / 2, 144.0, 32.0))
-		self.label.font = UIFont.systemFont(ofSize: 17.0, weight: .semibold)
-		self.label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		self.label = UILabel(frame: CGRect(16, (64 - 32) / 2, 144, 32))
+		self.label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+		self.label.textColor = .white
 		self.contentView.addSubview(self.label)
 
 		self.toggle = UISwitch()
@@ -27,17 +28,14 @@ final class ShinobuServerTableViewCell : UITableViewCell
 		self.contentView.addSubview(self.toggle)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override func layoutSubviews()
 	{
 		super.layoutSubviews()
 
-		self.label.frame = CGRect(16.0, (64 - 32) / 2, 144.0, 32.0)
-		self.toggle.frame = CGRect(UIScreen.main.bounds.width - 16.0 - self.toggle.width, (64 - self.toggle.height) / 2, self.toggle.size)
+		label.frame = CGRect(16, (64 - 32) / 2, 144, 32)
+		toggle.frame = CGRect(UIScreen.main.bounds.width - 16 - toggle.width, (64 - toggle.height) / 2, toggle.size)
 	}
 
 	override func setSelected(_ selected: Bool, animated: Bool)
@@ -46,7 +44,7 @@ final class ShinobuServerTableViewCell : UITableViewCell
 
 		if selected
 		{
-			backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+			backgroundColor = Colors.backgroundSelected
 		}
 		else
 		{
@@ -62,7 +60,7 @@ final class ShinobuServerTableViewCell : UITableViewCell
 
 		if highlighted
 		{
-			backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+			backgroundColor = Colors.backgroundSelected
 		}
 		else
 		{

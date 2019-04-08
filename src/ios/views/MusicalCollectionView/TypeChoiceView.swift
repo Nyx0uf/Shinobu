@@ -1,13 +1,13 @@
 import UIKit
 
 
-protocol TypeChoiceViewDelegate : class
+protocol TypeChoiceViewDelegate: class
 {
 	func didSelectDisplayType(_ typeAsInt: Int)
 }
 
 
-final class TypeChoiceView : UIView
+final class TypeChoiceView: UIView
 {
 	// MARK: - Public properties
 	// Delegate
@@ -25,7 +25,7 @@ final class TypeChoiceView : UIView
 	{
 		self.musicalEntityTypes = musicalEntityTypes
 		super.init(frame: frame)
-		self.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		self.backgroundColor = .black
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
@@ -37,18 +37,15 @@ final class TypeChoiceView : UIView
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
 		self.tableView.separatorStyle = .none
-		self.tableView.rowHeight = 44.0
+		self.tableView.rowHeight = 44
 		self.addSubview(self.tableView)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
 
 // MARK: - UITableViewDelegate
-extension TypeChoiceView : UITableViewDataSource
+extension TypeChoiceView: UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -59,7 +56,7 @@ extension TypeChoiceView : UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.type", for: indexPath)
 		cell.selectionStyle = .none
-		cell.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		cell.backgroundColor = .black
 		cell.textLabel?.textAlignment = .center
 		var title = ""
 		let type = musicalEntityTypes[indexPath.row]
@@ -84,9 +81,9 @@ extension TypeChoiceView : UITableViewDataSource
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			cell.textLabel?.textColor = Colors.main
-			cell.textLabel?.layer.cornerRadius = 5
-			cell.textLabel?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-			cell.textLabel?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
+			//cell.textLabel?.layer.cornerRadius = 5
+			//cell.textLabel?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+			//cell.textLabel?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
 		}
 		else
 		{
@@ -100,12 +97,12 @@ extension TypeChoiceView : UITableViewDataSource
 }
 
 // MARK: - UITableViewDelegate
-extension TypeChoiceView : UITableViewDelegate
+extension TypeChoiceView: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
 		let type = musicalEntityTypes[indexPath.row]
-		self.selectedMusicalEntityType = type
+		selectedMusicalEntityType = type
 		delegate?.didSelectDisplayType(type.rawValue)
 		tableView.deselectRow(at: indexPath, animated: false)
 	}
@@ -117,8 +114,8 @@ extension TypeChoiceView : UITableViewDelegate
 
 		cell.y = cell.y + tableView.height
 
-		UIView.animate(withDuration: 0.5, delay: 0.1 * Double(indexPath.row), usingSpringWithDamping: 0.8, initialSpringVelocity: 10.0, options: UIView.AnimationOptions(), animations: {
+		UIView.animate(withDuration: 0.5, delay: 0.1 * Double(indexPath.row), usingSpringWithDamping: 0.8, initialSpringVelocity: 10, options: UIView.AnimationOptions(), animations: {
 			cell.frame = cellRect
-		}, completion:nil)
+		}, completion: nil)
 	}
 }

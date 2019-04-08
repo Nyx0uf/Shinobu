@@ -23,7 +23,7 @@ extension UIImage
 		var scalingFactor: CGFloat, scaledWidth: CGFloat, scaledHeight: CGFloat
 		if scaleWidth
 		{
-			scalingFactor = 1.0 / sourceRatio
+			scalingFactor = 1 / sourceRatio
 			scaledWidth = targetWidth
 			scaledHeight = CGFloat(round(targetWidth * scalingFactor))
 		}
@@ -45,14 +45,14 @@ extension UIImage
 		let renderer = UIGraphicsImageRenderer(size: destRect.size)
 		return renderer.image() { rendererContext in
 			let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
-			let image = UIImage(cgImage: sourceImg!, scale: 0.0, orientation: imageOrientation)
+			let image = UIImage(cgImage: sourceImg!, scale: 0, orientation: imageOrientation)
 			image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
 		}
 	}
 
 	func scaled(toSize fitSize: CGSize) -> UIImage?
 	{
-		guard let cgImage = cgImage else {return nil}
+		guard let cgImage = cgImage else { return nil }
 
 		let width = ceil(fitSize.width * scale)
 		let height = ceil(fitSize.height * scale)
@@ -69,7 +69,7 @@ extension UIImage
 		return nil
 	}
 
-	func tinted(withColor color: UIColor, opacity: CGFloat = 0.0) -> UIImage?
+	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage?
 	{
 		let renderer = UIGraphicsImageRenderer(size: size)
 		return renderer.image() { rendererContext in
@@ -77,9 +77,9 @@ extension UIImage
 			color.set()
 			UIRectFill(rect)
 
-			draw(in: rect, blendMode: .destinationIn, alpha: 1.0)
+			draw(in: rect, blendMode: .destinationIn, alpha: 1)
 
-			if opacity > 0.0
+			if opacity > 0
 			{
 				draw(in: rect, blendMode: .sourceAtop, alpha: opacity)
 			}
@@ -88,7 +88,7 @@ extension UIImage
 
 	func save(url: URL) -> Bool
 	{
-		guard let cgImage = self.cgImage else
+		guard let cgImage = cgImage else
 		{
 			return false
 		}
@@ -107,9 +107,9 @@ extension UIImage
 
 	class func loadFromFileURL(_ url: URL) -> UIImage?
 	{
-		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else {return nil}
+		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
 		let props = [kCGImageSourceShouldCache as String : true]
-		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else {return nil}
+		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else { return nil }
 		return UIImage(cgImage: imageRef)
 	}
 
@@ -133,10 +133,7 @@ extension UIImage
 		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
 
 		// Create the context and fill it
-		guard let bmContext = CGContext.ARGBBitmapContext(width: Int(trueMaxSize.width), height: Int(trueMaxSize.height), withAlpha: true, wideGamut: true) else
-		{
-			return nil
-		}
+		guard let bmContext = CGContext.ARGBBitmapContext(width: Int(trueMaxSize.width), height: Int(trueMaxSize.height), withAlpha: true, wideGamut: true) else { return nil }
 		bmContext.setFillColor(backgroundColor.cgColor)
 		bmContext.fill(CGRect(.zero, trueMaxSize))
 
@@ -157,60 +154,4 @@ extension UIImage
 			return nil
 		}
 	}
-
-	/*class func fromString(_ string: String, font: UIFont, fontColor: UIColor, gradient: CGGradient, maxSize: CGSize) -> UIImage?
-	{
-		// Create an attributed string with string and font information
-		let paragraphStyle = NSMutableParagraphStyle()
-		paragraphStyle.lineBreakMode = .byWordWrapping
-		paragraphStyle.alignment = .center
-		let attributes = [NSAttributedString.Key.font : font, NSAttributedString.Key.foregroundColor : fontColor, NSAttributedString.Key.paragraphStyle : paragraphStyle]
-		let attrString = NSAttributedString(string: string, attributes: attributes)
-		let scale = UIScreen.main.scale
-		let trueMaxSize = maxSize * scale
-
-		// Figure out how big an image we need
-		let framesetter = CTFramesetterCreateWithAttributedString(attrString)
-		var osef = CFRange(location: 0, length: 0)
-		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceilled()
-		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
-		let path = CGPath(rect: rect, transform: nil)
-		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
-
-		// Create the context and fill it
-		guard let bmContext = CGContext.ARGBBitmapContext(width: Int(trueMaxSize.width), height: Int(trueMaxSize.height), withAlpha: true, wideGamut: true) else
-		{
-			return nil
-		}
-		bmContext.drawLinearGradient(gradient, start: CGPoint(0, trueMaxSize.height), end: .zero, options: [])
-
-		// Draw the text
-		bmContext.setAllowsAntialiasing(true)
-		bmContext.setAllowsFontSmoothing(true)
-		bmContext.interpolationQuality = .high
-		CTFrameDraw(frame, bmContext)
-
-		// Save
-		if let imageRef = bmContext.makeImage()
-		{
-			let img = UIImage(cgImage: imageRef)
-			return img
-		}
-		else
-		{
-			return nil
-		}
-	}*/
-
-	/*private func makeLinearGradient(startColor: UIColor, endColor: UIColor) -> CGGradient?
-	{
-		let colors = [startColor.cgColor, endColor.cgColor]
-
-		let colorSpace = CGColorSpace.NYXAppropriateColorSpace()
-
-		let colorLocations: [CGFloat] = [0.0, 1.0]
-
-		let gradient = CGGradient(colorsSpace: colorSpace, colors: colors as CFArray, locations: colorLocations)
-		return gradient
-	}*/
 }

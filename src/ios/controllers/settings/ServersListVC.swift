@@ -9,7 +9,7 @@ private struct ServerData
 	let isSelected: Bool
 }
 
-final class ServersListVC : NYXTableViewController
+final class ServersListVC: NYXTableViewController
 {
 	// MARK: - Private properties
 	// List of servers
@@ -32,10 +32,7 @@ final class ServersListVC : NYXTableViewController
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 	
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -49,14 +46,14 @@ final class ServersListVC : NYXTableViewController
 
 		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
-		self.navigationItem.leftBarButtonItem = closeButton
+		navigationItem.leftBarButtonItem = closeButton
 		let addButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(addMpdServerAction(_:)))
 		addButton.accessibilityLabel = NYXLocalizedString("lbl_add_mpd_server")
-		self.navigationItem.rightBarButtonItem = addButton
+		navigationItem.rightBarButtonItem = addButton
 		
 		tableView.register(ShinobuServerTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.separatorColor = .black
 		tableView.rowHeight = 64
 	}
 	
@@ -70,7 +67,7 @@ final class ServersListVC : NYXTableViewController
 	// MARK: - Buttons actions
 	@objc func closeAction(_ sender: Any?)
 	{
-		self.dismiss(animated: true, completion: {})
+		dismiss(animated: true, completion: nil)
 	}
 
 	@objc func addMpdServerAction(_ sender: Any?)
@@ -84,7 +81,7 @@ final class ServersListVC : NYXTableViewController
 		let serversList = serversManager.getServersList()
 
 		let enabledServerName = serversManager.getSelectedServerName()
-		servers = serversList.compactMap({ServerData(name: $0.name, isSelected: ($0.name == enabledServerName))})
+		servers = serversList.compactMap { ServerData(name: $0.name, isSelected: ($0.name == enabledServerName)) }
 		tableView.reloadData()
 
 		// Navigation bar title
@@ -146,7 +143,7 @@ extension ServersListVC
 	{
 		let serverData = servers[indexPath.row]
 		let shinobuServers = serversManager.getServersList()
-		let tmp = shinobuServers.filter({$0.name == serverData.name})
+		let tmp = shinobuServers.filter { $0.name == serverData.name }
 		if tmp.count > 0
 		{
 			showServerVC(with: tmp[0])
@@ -166,7 +163,7 @@ extension ServersListVC
 			completionHandler(true)
 		})
 		action.image = #imageLiteral(resourceName: "btn-trash")
-		action.backgroundColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
+		action.backgroundColor = Colors.destructiveAction
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}

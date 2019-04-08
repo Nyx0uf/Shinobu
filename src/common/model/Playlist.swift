@@ -1,7 +1,7 @@
 import Foundation
 
 
-final class Playlist : MusicalEntity
+final class Playlist: MusicalEntity
 {
 	// MARK: - Public properties
 	// Album tracks

@@ -2,10 +2,10 @@ import UIKit
 import MessageUI
 
 
-private let headerSectionHeight: CGFloat = 32.0
+private let headerSectionHeight: CGFloat = 32
 
 
-final class SettingsVC : NYXTableViewController
+final class SettingsVC: NYXTableViewController
 {
 	// MARK: - Private properties
 	// Shake to play switch
@@ -24,7 +24,7 @@ final class SettingsVC : NYXTableViewController
 
 		let libraryButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-library"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		libraryButton.accessibilityLabel = NYXLocalizedString("lbl_section_home")
-		self.navigationItem.leftBarButtonItem = libraryButton
+		navigationItem.leftBarButtonItem = libraryButton
 
 		// Navigation bar title
 		titleView.setMainText(NYXLocalizedString("lbl_section_settings"), detailText: nil)
@@ -98,7 +98,7 @@ final class SettingsVC : NYXTableViewController
 
 	@objc func closeAction(_ sender: Any?)
 	{
-		self.dismiss(animated: true, completion: {})
+		dismiss(animated: true, completion: nil)
 	}
 
 	// MARK: - Private
@@ -134,13 +134,13 @@ final class SettingsVC : NYXTableViewController
 			let server = ServersManager().getSelectedServer()
 			if let s = server
 			{
-				message += "MPD server:\n\(s.mpd.publicDescription())\n\n"
+				message += "MPD server:\n\(s.mpd)\n\n"
 				Logger.shared.log(type: .error, message: "Failed to decode mpd server")
 			}
 
 			if let s = server, let w = s.covers
 			{
-				message += "Cover server:\n\(w.publicDescription())\n\n"
+				message += "Cover server:\n\(w)\n\n"
 				Logger.shared.log(type: .error, message: "Failed to decode web server")
 			}
 			mailComposerVC.setMessageBody(message, isHTML: false)
@@ -238,7 +238,7 @@ extension SettingsVC
 					cell?.textLabel?.textColor = UITableView.colorActionItem
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
 					let backgroundView = UIView()
-					backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+					backgroundView.backgroundColor = Colors.backgroundSelected
 					cell?.selectedBackgroundView = backgroundView
 				}
 			}
@@ -248,7 +248,7 @@ extension SettingsVC
 				{
 					let version = applicationVersionAndBuild()
 					cell?.textLabel?.text = "\(version.version) (\(version.build))"
-					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17.0, weight: .ultraLight)
+					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .ultraLight)
 					cell?.textLabel?.textAlignment = .center
 					cell?.selectionStyle = .none
 				}
@@ -259,7 +259,7 @@ extension SettingsVC
 		{
 			if indexPath.row == 0
 			{
-				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16.0 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
+				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
 				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) == 2 ? 0 : 1
 			}
 		}
@@ -267,7 +267,7 @@ extension SettingsVC
 		{
 			if indexPath.row == 0
 			{
-				swShake.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
+				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
 				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 			}
 		}
@@ -275,7 +275,7 @@ extension SettingsVC
 		{
 			if indexPath.row == 0
 			{
-				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
+				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
 				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
 			}
 		}
@@ -283,7 +283,7 @@ extension SettingsVC
 		{
 			if indexPath.row == 0
 			{
-				swLogging.frame = CGRect(UIScreen.main.bounds.width - 16.0 - swLogging.width, (cell!.height - swLogging.height) / 2, swLogging.size)
+				swLogging.frame = CGRect(UIScreen.main.bounds.width - 16 - swLogging.width, (cell!.height - swLogging.height) / 2, swLogging.size)
 				swLogging.isOn = Settings.shared.bool(forKey: .pref_enableLogging)
 			}
 		}
@@ -307,13 +307,13 @@ extension SettingsVC
 
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
 	{
-		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
+		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 
-		let label = UILabel(frame: CGRect(10.0, 0.0, dummy.width - 20.0, dummy.height))
+		let label = UILabel(frame: CGRect(10, 0, dummy.width - 20, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
 		label.textColor = UITableView.colorHeaderTitle
-		label.font = UIFont.systemFont(ofSize: 18.0, weight: .light)
+		label.font = UIFont.systemFont(ofSize: 18, weight: .light)
 		label.textAlignment = .center
 		dummy.addSubview(label)
 
@@ -343,7 +343,7 @@ extension SettingsVC
 
 	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
 	{
-		let dummy = UIView(frame: CGRect(0.0, 0.0, tableView.width, headerSectionHeight))
+		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 		return dummy
 	}
@@ -354,7 +354,7 @@ extension SettingsVC
 	}
 }
 
-extension SettingsVC : MFMailComposeViewControllerDelegate
+extension SettingsVC: MFMailComposeViewControllerDelegate
 {
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
 	{

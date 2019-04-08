@@ -1,7 +1,7 @@
 import UIKit
 
 
-private let kNYXLabelSpacing = CGFloat(20.0)
+private let kNYXLabelSpacing = CGFloat(20)
 
 enum ScrollDirection
 {
@@ -10,7 +10,7 @@ enum ScrollDirection
 }
 
 
-final class AutoScrollLabel : UIView
+final class AutoScrollLabel: UIView
 {
 	/// Scroll direction
 	public var direction = ScrollDirection.left
@@ -21,7 +21,7 @@ final class AutoScrollLabel : UIView
 		}
 	}
 	/// Scroll speed (px per second)
-	public var scrollSpeed = 30.0
+	public var scrollSpeed: Double = 30
 	{
 		didSet
 		{
@@ -29,11 +29,11 @@ final class AutoScrollLabel : UIView
 		}
 	}
 	/// Pause (seconds)
-	public var pauseInterval = 4.0
+	public var pauseInterval: Double = 4
 	/// Is scrolling flag
 	private(set) var isScrolling = false
 	/// Fade length
-	public var fadeLength = CGFloat(8.0)
+	public var fadeLength: CGFloat = 8
 	{
 		didSet
 		{
@@ -121,7 +121,7 @@ final class AutoScrollLabel : UIView
 	{
 		get
 		{
-			return CGSize(width: 0.0, height: self.mainLabel.intrinsicContentSize.height)
+			return CGSize(width: 0, height: self.mainLabel.intrinsicContentSize.height)
 		}
 	}
 
@@ -134,7 +134,7 @@ final class AutoScrollLabel : UIView
 
 		self.scrollView = UIScrollView(frame: self.bounds)
 		self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		self.scrollView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+		self.scrollView.backgroundColor = .clear
 		self.scrollView.showsVerticalScrollIndicator = false
 		self.scrollView.showsHorizontalScrollIndicator = false
 		self.scrollView.isScrollEnabled = false
@@ -142,18 +142,15 @@ final class AutoScrollLabel : UIView
 
 		// Create labels
 		self.mainLabel = UILabel()
-		self.mainLabel.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+		self.mainLabel.backgroundColor = .clear
 		self.scrollView.addSubview(self.mainLabel)
 
 		self.secondaryLabel = UILabel()
-		self.secondaryLabel.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0)
+		self.secondaryLabel.backgroundColor = .clear
 		self.scrollView.addSubview(self.secondaryLabel)
 	}
 
-	public required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Private
 	private func didChangeFrame()
@@ -170,8 +167,8 @@ final class AutoScrollLabel : UIView
 			return
 		}
 
-		self.mainLabel.text = text
-		self.secondaryLabel.text = text
+		mainLabel.text = text
+		secondaryLabel.text = text
 
 		if refresh
 		{
@@ -202,7 +199,7 @@ final class AutoScrollLabel : UIView
 
 			// Scroll animation
 			let duration = Double(labelWidth) / self.scrollSpeed
-			UIView.animate(withDuration: duration, delay: self.pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: {() -> Void in
+			UIView.animate(withDuration: duration, delay: self.pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: { () -> Void in
 				self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0) : .zero
 			}) { finished in
 				self.isScrolling = false
@@ -233,7 +230,7 @@ final class AutoScrollLabel : UIView
 		mainLabel.frame = frame1
 
 		var frame2 = secondaryLabel.frame
-		frame2.origin = CGPoint(mainLabel.bounds.width + kNYXLabelSpacing, 0);
+		frame2.origin = CGPoint(mainLabel.bounds.width + kNYXLabelSpacing, 0)
 		frame2.size.height = bounds.height
 		secondaryLabel.frame = frame2
 
@@ -247,7 +244,7 @@ final class AutoScrollLabel : UIView
 
 			var size = CGSize.zero
 			size.width = mainLabel.bounds.width + bounds.width + kNYXLabelSpacing
-			size.height = self.bounds.height
+			size.height = bounds.height
 			scrollView.contentSize = size
 
 			applyGradientMaskForFadeLength(fadeLengthIn: fadeLength, fade: isScrolling)
@@ -286,7 +283,7 @@ final class AutoScrollLabel : UIView
 			gradientMask.rasterizationScale = UIScreen.main.scale
 			gradientMask.startPoint = CGPoint(x: 0, y: frame.midY)
 			gradientMask.endPoint = CGPoint(x: 1, y: frame.midY)
-			gradientMask.colors = [#colorLiteral(red: 1, green: 1, blue: 1, alpha: 0).cgColor, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1).cgColor, #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0).cgColor]
+			gradientMask.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
 
 			// Calcluate fade
 			let fadePoint = fadeLength / bounds.width

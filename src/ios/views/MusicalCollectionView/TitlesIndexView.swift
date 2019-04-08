@@ -1,7 +1,7 @@
 import UIKit
 
 
-protocol TitlesIndexViewDelegate : class
+protocol TitlesIndexViewDelegate: class
 {
 	func didSelectIndex(_ index: Int)
 	func didScrollToIndex(_ index: Int)
@@ -12,7 +12,7 @@ fileprivate let LETTER_VIEW_HEIGHT = CGFloat(16)
 fileprivate let OVERLAY_VIEW_HEIGHT = CGFloat(24)
 
 
-final class TitlesIndexView : UIView
+final class TitlesIndexView: UIView
 {
 	// MARK: - Public roperties
 	// Delegate
@@ -46,10 +46,7 @@ final class TitlesIndexView : UIView
 		overlayView.isSelected = true
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Public
 	func setTitles(_ titles: [String], selectedIndex: Int)
@@ -67,7 +64,7 @@ final class TitlesIndexView : UIView
 			let letterView = LetterView(frame: CGRect(0, y, LETTER_VIEW_HEIGHT, LETTER_VIEW_HEIGHT), letter: title)
 			letterView.isSelected = (index == selectedIndex)
 			letterView.tag = index
-			self.addSubview(letterView)
+			addSubview(letterView)
 
 			lettersView.append(letterView)
 
@@ -123,8 +120,8 @@ final class TitlesIndexView : UIView
 
 		guard let letterView = letterViewAtPoint(point) else { return }
 
-		self.addSubview(overlayView)
-		overlayView.frame = CGRect(-self.width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
+		addSubview(overlayView)
+		overlayView.frame = CGRect(-width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
 		overlayView.letter = letterView.letter
 		overlayView.shake(removeAtEnd: true)
 
@@ -139,11 +136,11 @@ final class TitlesIndexView : UIView
 		{
 			case .began:
 				isPanning = true
-				self.addSubview(overlayView)
+				addSubview(overlayView)
 			case .changed:
 				if let letterView = letterViewAtPoint(point)
 				{
-					overlayView.frame = CGRect(-self.width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
+					overlayView.frame = CGRect(-width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
 					overlayView.letter = letterView.letter
 					delegate?.didScrollToIndex(letterView.tag)
 				}

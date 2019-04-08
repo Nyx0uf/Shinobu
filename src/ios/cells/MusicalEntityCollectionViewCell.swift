@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class MusicalEntityBaseCell : UICollectionViewCell
+final class MusicalEntityBaseCell: UICollectionViewCell
 {
 	// MARK: - Public properties
 	// Album cover view
@@ -38,7 +38,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			else
 			{
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-					self.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+					self.label.textColor = Colors.mainText
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 1
 					anim.toValue = 0
@@ -51,7 +51,7 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 			}
 		}
 	}
-	//
+	// Flag to indicate the type of entity for the cell
 	var type: MusicalEntityType = .albums
 	{
 		didSet
@@ -64,16 +64,16 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 					cornerRadius = 12.0
 				case .artists, .albumsartists:
 					contentMode = .center
-					cornerRadius = self.imageView.width / 2.0
+					cornerRadius = imageView.width / 2.0
 				case .genres:
-					cornerRadius = self.imageView.width
+					cornerRadius = imageView.width
 				case .playlists:
 					cornerRadius = 0.0
 				default:
 					cornerRadius = 0.0
 			}
-			self.imageView.layer.cornerRadius = cornerRadius
-			self.imageView.contentMode = contentMode
+			imageView.layer.cornerRadius = cornerRadius
+			imageView.contentMode = contentMode
 		}
 	}
 
@@ -84,72 +84,35 @@ final class MusicalEntityBaseCell : UICollectionViewCell
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
+
 		self.backgroundColor = Colors.background
 		self.isAccessibilityElement = true
 
-		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20.0))
+		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+		self.imageView.backgroundColor = Colors.imageViewBackground
 		self.imageView.layer.borderColor = Colors.main.cgColor
 		self.imageView.clipsToBounds = true
-		self.imageView.layer.cornerRadius = 12.0
+		self.imageView.layer.cornerRadius = 12
 		self.imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		self.contentView.addSubview(self.imageView)
 
-		self.label = UILabel(frame: CGRect(0.0, self.imageView.bottom, frame.width, 20.0))
+		self.label = UILabel(frame: CGRect(0, self.imageView.maxY, frame.width, 20))
 		self.label.isAccessibilityElement = false
 		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		self.label.font = UIFont.systemFont(ofSize: 10.0, weight: .semibold)
+		self.label.textColor = Colors.mainText
+		self.label.font = UIFont.systemFont(ofSize: 10, weight: .semibold)
 		self.contentView.addSubview(self.label)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override func layoutSubviews()
 	{
-		self.imageView.frame = CGRect(.zero, frame.width, frame.height - 20.0)
-		self.label.frame = CGRect(0.0, self.imageView.bottom, frame.width, 20.0)
+		imageView.frame = CGRect(.zero, frame.width, frame.height - 20)
+		label.frame = CGRect(0, imageView.maxY, frame.width, 20)
 	}
-
-	// MARK: - Overrides
-	/*override var isSelected: Bool
-	{
-		didSet
-		{
-			if isSelected
-			{
-				label.font = UIFont.systemFont(ofSize: 10.0, weight: .black)
-				imageView.layer.borderWidth = 1
-			}
-			else
-			{
-				label.font = UIFont.systemFont(ofSize: 10.0, weight: .semibold)
-				imageView.layer.borderWidth = 0
-			}
-		}
-	}
-
-	override var isHighlighted: Bool
-	{
-		didSet
-		{
-			if isHighlighted
-			{
-				label.font = UIFont.systemFont(ofSize: 10.0, weight: .black)
-				imageView.layer.borderWidth = 1
-			}
-			else
-			{
-				label.font = UIFont.systemFont(ofSize: 10.0, weight: .semibold)
-				imageView.layer.borderWidth = 0
-			}
-		}
-	}*/
 
 	var associatedObject: Any?
 	{

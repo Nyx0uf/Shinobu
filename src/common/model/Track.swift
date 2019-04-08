@@ -1,7 +1,7 @@
 import Foundation
 
 
-final class Track : MusicalEntity
+final class Track: MusicalEntity
 {
 	// MARK: - Public properties
 	// Track artist
@@ -33,7 +33,7 @@ final class Track : MusicalEntity
 	}
 }
 
-extension Track : CustomStringConvertible
+extension Track: CustomStringConvertible
 {
 	var description: String
 	{

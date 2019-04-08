@@ -1,6 +1,7 @@
 import Foundation
 
-struct Message : CustomStringConvertible
+
+struct Message: CustomStringConvertible
 {
 	public enum MessageType
 	{
@@ -23,6 +24,6 @@ struct Message : CustomStringConvertible
 
 	public var description: String
 	{
-		return "[\(self.type)] \(self.content)"
+		return "[\(type)] \(content)"
 	}
 }

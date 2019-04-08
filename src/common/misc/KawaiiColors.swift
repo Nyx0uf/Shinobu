@@ -66,7 +66,7 @@ final class KawaiiColors
 		edgeColor = findEdgeColor(&imageColors)
 		if edgeColor == nil
 		{
-			edgeColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)
+			edgeColor = .white
 		}
 
 		// Find other colors
@@ -76,17 +76,17 @@ final class KawaiiColors
 		let darkBackground = edgeColor.isDark()
 		if primaryColor == nil
 		{
-			primaryColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			primaryColor = darkBackground ? .white : .black
 		}
 
 		if secondaryColor == nil
 		{
-			secondaryColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			secondaryColor = darkBackground ? .white : .black
 		}
 
 		if thirdColor == nil
 		{
-			thirdColor = darkBackground ? #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+			thirdColor = darkBackground ? .white : .black
 		}
 	}
 
@@ -105,7 +105,7 @@ final class KawaiiColors
 		{
 			return nil
 		}
-		bmContext.draw(cgImage, in: CGRect(0.0, 0.0, CGFloat(width), CGFloat(height)))
+		bmContext.draw(cgImage, in: CGRect(0, 0, CGFloat(width), CGFloat(height)))
 		guard let data = bmContext.data else
 		{
 			return nil
@@ -147,14 +147,14 @@ final class KawaiiColors
 					var count = rawImageColors[r][g][b]
 					if count > THRESHOLD
 					{
-						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
+						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1)
 						colors.append(CountedObject(object: color, count: count))
 					}
 
 					count = rawEdgeColors[r][g][b]
 					if count > THRESHOLD
 					{
-						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1.0)
+						let color = UIColor(red: CGFloat(r) / ppf, green: CGFloat(g) / ppf, blue: CGFloat(b) / ppf, alpha: 1)
 						edgeColors.append(CountedObject(object: color, count: count))
 					}
 				}
@@ -163,7 +163,7 @@ final class KawaiiColors
 		colors.sort { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 			return c1.count > c2.count
 		}
-		dominantColor = colors.count > 0 ? colors[0].object : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		dominantColor = colors.count > 0 ? colors[0].object : .black
 
 		if edgeColors.count > 0
 		{

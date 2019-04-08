@@ -1,7 +1,7 @@
 import Foundation
 
 
-struct MPDServer : Codable, Equatable
+struct MPDServer: Codable, Equatable
 {
 	// Coding keys
 	private enum MPDServerCodingKeys: String, CodingKey
@@ -36,14 +36,16 @@ struct MPDServer : Codable, Equatable
 
 		self.init(hostname: ho, port: po, password: pa)
 	}
+}
 
-	public func publicDescription() -> String
+extension MPDServer: CustomStringConvertible
+{
+	var description: String
 	{
-		return "\(self.hostname)\n\(self.port)\n"
+		return "\(hostname):\(port)\n"
 	}
 }
 
-// MARK: - Operators
 func == (lhs: MPDServer, rhs: MPDServer) -> Bool
 {
 	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)

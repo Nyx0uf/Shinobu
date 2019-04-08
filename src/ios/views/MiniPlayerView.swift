@@ -1,10 +1,10 @@
 import UIKit
 
 
-let baseHeight = CGFloat(44.0)
+let baseHeight = CGFloat(44)
 
 
-final class MiniPlayerView : UIView
+final class MiniPlayerView: UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -47,13 +47,13 @@ final class MiniPlayerView : UIView
 		else
 		{
 			headerHeight = baseHeight
-			marginTop = 20.0
+			marginTop = 20
 		}
 
-		let frame = CGRect(0.0, (UIApplication.shared.keyWindow?.frame.height)! + headerHeight, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - marginTop - baseHeight)
+		let frame = CGRect(0, (UIApplication.shared.keyWindow?.frame.height)! + headerHeight, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - marginTop - baseHeight)
 
 		super.init(frame: frame)
-		self.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		self.backgroundColor = .clear
 
 		// Blur background
 		let blurEffect = UIBlurEffect(style: .dark)
@@ -61,54 +61,53 @@ final class MiniPlayerView : UIView
 		self.blurEffectView.frame = CGRect(.zero, frame.size.width, headerHeight)
 		self.addSubview(self.blurEffectView)
 
-		self.imageView = UIImageView(frame: CGRect(0.0, 0.0, headerHeight, headerHeight))
-		self.imageView.backgroundColor = #colorLiteral(red: 0.1298420429, green: 0.1298461258, blue: 0.1298439503, alpha: 1)
+		self.imageView = UIImageView(frame: CGRect(0, 0, headerHeight, headerHeight))
+		self.imageView.backgroundColor = .black
 		self.imageView.isUserInteractionEnabled = true
 		self.blurEffectView.contentView.addSubview(self.imageView)
 
 		// Vibrancy over the play/pause button
 		//let vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
-		//vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0.0, headerHeight, headerHeight)
+		//vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0, headerHeight, headerHeight)
 		//self.blurEffectView.contentView.addSubview(vibrancyEffectView)
 
 		// Play / pause button
-		self.btnPlay = NYXButton(frame: CGRect(frame.right - headerHeight, (headerHeight - 44) / 2.0, 44, 44))
-		//self.btnPlay.setImage(#imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate).tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
+		self.btnPlay = NYXButton(frame: CGRect(frame.maxX - headerHeight, (headerHeight - 44) / 2, 44, 44))
 		self.btnPlay.addTarget(self, action: #selector(MiniPlayerView.changePlaybackAction(_:)), for: .touchUpInside)
 		self.btnPlay.tag = PlayerStatus.stopped.rawValue
 		self.btnPlay.isAccessibilityElement = true
 		self.blurEffectView.contentView.addSubview(self.btnPlay)
 
 		// Dummy accessibility view
-		self.accessibleView = UIView(frame: CGRect(self.imageView.right, 0.0, btnPlay.left - self.imageView.right, headerHeight))
-		self.accessibleView.backgroundColor = #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 0)
+		self.accessibleView = UIView(frame: CGRect(self.imageView.maxX, 0, btnPlay.x - self.imageView.maxX, headerHeight))
+		self.accessibleView.backgroundColor = .clear
 		self.accessibleView.isAccessibilityElement = true
 		self.blurEffectView.contentView.addSubview(self.accessibleView)
 
 		// Title
-		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.right + 5.0, 2.0, ((btnPlay.left + 5.0) - (self.imageView.right + 5.0)), 18.0))
+		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.maxX + 5, 2, ((btnPlay.x + 5) - (self.imageView.maxX + 5)), 18))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-		self.lblTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		self.lblTitle.textColor = .white
 		self.lblTitle.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblTitle)
 
 		// Artist
-		self.lblArtist = UILabel(frame: CGRect(self.imageView.right + 5.0, self.lblTitle.bottom + 2.0, self.lblTitle.width, 16.0))
+		self.lblArtist = UILabel(frame: CGRect(self.imageView.maxX + 5, self.lblTitle.maxY + 2, self.lblTitle.width, 16))
 		self.lblArtist.textAlignment = .center
 		self.lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-		self.lblArtist.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		self.lblArtist.textColor = Colors.mainText
 		self.lblArtist.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblArtist)
 
 		// Progress
-		self.progressView = UIView(frame: CGRect(0.0, 0.0, 0.0, 1.0))
-		self.progressView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		self.progressView = UIView(frame: CGRect(0, 0, 0, 1))
+		self.progressView.backgroundColor = .white
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
 		// Tableview
-		self.tableView = TracksListTableView(frame: CGRect(0.0, headerHeight, frame.width, frame.height - headerHeight), style: .plain)
+		self.tableView = TracksListTableView(frame: CGRect(0, headerHeight, frame.width, frame.height - headerHeight), style: .plain)
 		self.tableView.delegate = self
 		self.tableView.myDelegate = self
 		self.addSubview(self.tableView)
@@ -147,10 +146,7 @@ final class MiniPlayerView : UIView
 		APP_DELEGATE().window?.addSubview(self)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Public
 	func setInfoFromTrack(_ track: Track, ofAlbum album: Album)
@@ -158,7 +154,7 @@ final class MiniPlayerView : UIView
 		lblTitle.text = track.name
 		lblArtist.text = track.artist
 
-		guard let url = album.localCoverURL else {return}
+		guard let url = album.localCoverURL else { return }
 		if let image = UIImage.loadFromFileURL(url)
 		{
 			imageView.image = image.scaled(toSize: CGSize(imageView.width * UIScreen.main.scale, imageView.height * UIScreen.main.scale))
@@ -170,7 +166,7 @@ final class MiniPlayerView : UIView
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
-				op.callback = {(cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.setInfoFromTrack(track, ofAlbum: album)
 					}
@@ -181,7 +177,7 @@ final class MiniPlayerView : UIView
 			{
 				mpdBridge?.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
-					op.callback = {(cover: UIImage, thumbnail: UIImage) in
+					op.callback = { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.setInfoFromTrack(track, ofAlbum: album)
 						}
@@ -196,7 +192,7 @@ final class MiniPlayerView : UIView
 	{
 		NotificationCenter.default.post(name: .miniPlayerViewWillShow, object: nil)
 		let w = UIApplication.shared.keyWindow!
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
+		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = w.frame.height - self.blurEffectView.height
 		}, completion: { finished in
 			self.visible = true
@@ -208,7 +204,7 @@ final class MiniPlayerView : UIView
 	{
 		NotificationCenter.default.post(name: .miniPlayerViewWillHide, object: nil)
 		let w = UIApplication.shared.keyWindow!
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
+		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = w.frame.height + self.blurEffectView.height
 		}, completion: { finished in
 			self.visible = false
@@ -252,7 +248,7 @@ final class MiniPlayerView : UIView
 			}
 
 			let w = UIApplication.shared.keyWindow!
-			UIView.animate(withDuration: 0.35, delay: 0.0, options: UIView.AnimationOptions(), animations: {
+			UIView.animate(withDuration: 0.35, delay: 0, options: UIView.AnimationOptions(), animations: {
 				self.y = w.frame.height - self.height
 			}, completion: { finished in
 				self.fullyVisible = true
@@ -261,7 +257,7 @@ final class MiniPlayerView : UIView
 		else
 		{
 			let w = UIApplication.shared.keyWindow!
-			UIView.animate(withDuration: 0.35, delay: 0.0, options: UIView.AnimationOptions(), animations: {
+			UIView.animate(withDuration: 0.35, delay: 0, options: UIView.AnimationOptions(), animations: {
 				self.y = w.frame.height - self.blurEffectView.height
 			}, completion: { finished in
 				self.fullyVisible = false
@@ -305,7 +301,7 @@ final class MiniPlayerView : UIView
 			if state == PlayerStatus.playing.rawValue
 			{
 				let img = #imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate)
-				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: .white), for: .normal)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
@@ -314,7 +310,7 @@ final class MiniPlayerView : UIView
 			else
 			{
 				let img = #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)
-				btnPlay.setImage(img.tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: .white), for: .normal)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
 				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
@@ -326,7 +322,7 @@ final class MiniPlayerView : UIView
 }
 
 // MARK: - UITableViewDelegate
-extension MiniPlayerView : UITableViewDelegate
+extension MiniPlayerView: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -349,10 +345,10 @@ extension MiniPlayerView : UITableViewDelegate
 	}
 }
 
-extension MiniPlayerView : TracksListTableViewDelegate
+extension MiniPlayerView: TracksListTableViewDelegate
 {
 	func getCurrentTrack() -> Track?
 	{
-		return self.mpdBridge?.getCurrentTrack()
+		return mpdBridge?.getCurrentTrack()
 	}
 }

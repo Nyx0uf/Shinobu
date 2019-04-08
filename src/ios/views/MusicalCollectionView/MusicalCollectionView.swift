@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
+final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout
 {
 	private static let margin = CGFloat(12)
 
@@ -10,23 +10,20 @@ final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 		super.init()
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override func prepare()
 	{
 		super.prepare()
 
-		self.scrollDirection = .vertical
-		self.sectionInset = UIEdgeInsets(top: MusicalCollectionViewFlowLayout.margin, left: MusicalCollectionViewFlowLayout.margin, bottom: MusicalCollectionViewFlowLayout.margin, right: MusicalCollectionViewFlowLayout.margin)
+		scrollDirection = .vertical
+		sectionInset = UIEdgeInsets(top: MusicalCollectionViewFlowLayout.margin, left: MusicalCollectionViewFlowLayout.margin, bottom: MusicalCollectionViewFlowLayout.margin, right: MusicalCollectionViewFlowLayout.margin)
 
 		let columns = Settings.shared.integer(forKey: .pref_numberOfColumns)
 		guard let collectionView = collectionView else { return }
 		let marginsAndInsets = sectionInset.left + sectionInset.right + collectionView.safeAreaInsets.left + collectionView.safeAreaInsets.right + minimumInteritemSpacing * CGFloat(columns - 1)
 		let itemWidth = ((collectionView.bounds.size.width - marginsAndInsets) / CGFloat(columns)).rounded(.down)
-		self.itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
+		itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
 
 		let size = try! NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(itemWidth, itemWidth)), requiringSecureCoding: false)
 		Settings.shared.set(size, forKey: .coversSize)
@@ -38,7 +35,7 @@ final class MusicalCollectionViewFlowLayout : UICollectionViewFlowLayout
 	}
 }
 
-final class MusicalCollectionView : UIView
+final class MusicalCollectionView: UIView
 {
 	// MARK: - Public roperties
 	// Collection view
@@ -51,7 +48,6 @@ final class MusicalCollectionView : UIView
 		didSet
 		{
 			self.collectionView.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
-			//self.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
 		}
 	}
 
@@ -76,10 +72,7 @@ final class MusicalCollectionView : UIView
 		self.musicalEntityType = musicalEntityType
 	}
 	
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	func reloadData()
 	{
@@ -98,12 +91,12 @@ final class MusicalCollectionView : UIView
 
 	func updateLayout()
 	{
-		self.collectionView.collectionViewLayout.invalidateLayout()
-		self.collectionView.collectionViewLayout = MusicalCollectionViewFlowLayout()
+		collectionView.collectionViewLayout.invalidateLayout()
+		collectionView.collectionViewLayout = MusicalCollectionViewFlowLayout()
 	}
 }
 
-extension MusicalCollectionView : TitlesIndexViewDelegate
+extension MusicalCollectionView: TitlesIndexViewDelegate
 {
 	func didSelectIndex(_ index: Int)
 	{

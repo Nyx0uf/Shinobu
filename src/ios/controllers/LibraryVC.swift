@@ -1,13 +1,20 @@
 import UIKit
 
 
-final class LibraryVC : MusicalCollectionVC
+final class LibraryVC: MusicalCollectionVC
 {
 	// MARK: - Private properties
 	// Audio server changed
 	private var serverChanged = false
 
 	// MARK: - Initializers
+	init()
+	{
+		super.init(mpdBridge: MPDBridge())
+
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
+	}
+
 	override init(mpdBridge: MPDBridge)
 	{
 		super.init(mpdBridge: mpdBridge)
@@ -15,10 +22,7 @@ final class LibraryVC : MusicalCollectionVC
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -37,24 +41,9 @@ final class LibraryVC : MusicalCollectionVC
 		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
 	}
 
-	private func findShadowImage(under view: UIView) -> UIImageView? {
-		if view is UIImageView && view.bounds.size.height <= 1 {
-			return (view as! UIImageView)
-		}
-
-		for subview in view.subviews {
-			if let imageView = findShadowImage(under: subview) {
-				return imageView
-			}
-		}
-		return nil
-	}
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-
-		let shadowImageView = findShadowImage(under: navigationController!.navigationBar)
-		shadowImageView?.isHidden = true
 
 		// Initialize the mpd connection
 		if mpdBridge.server == nil
@@ -89,7 +78,7 @@ final class LibraryVC : MusicalCollectionVC
 			else
 			{
 				Logger.shared.log(type: .information, message: "No MPD server registered or enabled yet")
-				self.showServersListAction(nil)
+				showServersListAction(nil)
 			}
 		}
 
@@ -158,25 +147,25 @@ final class LibraryVC : MusicalCollectionVC
 					mpdBridge.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 				case .artists:
 					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					self.mpdBridge.getAlbumsForArtist(artist) { (albums) in
+					mpdBridge.getAlbumsForArtist(artist) { (albums) in
 						self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
 							self.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .albumsartists:
 					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
+					mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
 						self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
 							self.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
 				case .genres:
 					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
-					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
+					mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
 						self.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-							let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
+							let ar = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
 							self.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 						}
 					}
@@ -204,7 +193,7 @@ final class LibraryVC : MusicalCollectionVC
 			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
 			cell.longPressed = true
 
-			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				cell.longPressed = false
@@ -242,7 +231,7 @@ final class LibraryVC : MusicalCollectionVC
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
 								self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 							}
 						}
@@ -254,7 +243,7 @@ final class LibraryVC : MusicalCollectionVC
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = artist.albums.compactMap { $0.tracks }.flatMap{ $0 }
 								self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 							}
 						}
@@ -280,7 +269,7 @@ final class LibraryVC : MusicalCollectionVC
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
 								self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 							}
 						}
@@ -292,7 +281,7 @@ final class LibraryVC : MusicalCollectionVC
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { (albums) in
 							self.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = artist.albums.compactMap { $0.tracks }.flatMap{ $0 }
 								self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 							}
 						}
@@ -318,7 +307,7 @@ final class LibraryVC : MusicalCollectionVC
 					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
 							self.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-								let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = genre.albums.compactMap { $0.tracks }.flatMap{ $0 }
 								self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 							}
 						}
@@ -330,7 +319,7 @@ final class LibraryVC : MusicalCollectionVC
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { albums in
 							self.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-								let ar = genre.albums.compactMap({$0.tracks}).flatMap({$0})
+								let ar = genre.albums.compactMap { $0.tracks }.flatMap{ $0 }
 								self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 							}
 						}
@@ -404,13 +393,11 @@ final class LibraryVC : MusicalCollectionVC
 	// MARK: - Buttons actions
 	@objc func showServersListAction(_ sender: Any?)
 	{
-		let vc = ServersListVC(mpdBridge: self.mpdBridge)
+		let vc = ServersListVC(mpdBridge: mpdBridge)
 		let nvc = NYXNavigationController(rootViewController: vc)
 		vc.modalPresentationStyle = .overFullScreen
 		vc.modalTransitionStyle = .coverVertical
-		self.navigationController?.present(nvc, animated: true, completion: {
-
-		})
+		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func showSettingsAction(_ sender: Any?)
@@ -419,9 +406,7 @@ final class LibraryVC : MusicalCollectionVC
 		let nvc = NYXNavigationController(rootViewController: vc)
 		vc.modalPresentationStyle = .fullScreen
 		vc.modalTransitionStyle = .flipHorizontal
-		self.navigationController?.present(nvc, animated: true, completion: {
-
-		})
+		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?)
@@ -552,7 +537,7 @@ final class LibraryVC : MusicalCollectionVC
 			textField.textAlignment = .left
 		})
 
-		self.present(alertController, animated: true, completion: nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
 	// MARK: - Notifications
@@ -564,9 +549,9 @@ final class LibraryVC : MusicalCollectionVC
 	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
 	{
 		let vc = PlayerVC(mpdBridge: mpdBridge)
-		vc.transitioningDelegate = self.navigationController as! NYXNavigationController
+		vc.transitioningDelegate = navigationController as! NYXNavigationController
 		vc.modalPresentationStyle = .custom
-		self.navigationController?.present(vc, animated: true, completion: nil)
+		navigationController?.present(vc, animated: true, completion: nil)
 	}
 
 	override func didSelectDisplayType(_ typeAsInt: Int)
@@ -611,19 +596,19 @@ extension LibraryVC
 		{
 			case .albums:
 				let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			case .artists:
 				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			case .albumsartists:
 				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			case .genres:
 				let vc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			case .playlists:
 				let vc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			default:
 				break
 		}
@@ -656,7 +641,7 @@ extension LibraryVC
 }
 
 // MARK: - UIViewControllerTransitioningDelegate
-extension NYXNavigationController : UIViewControllerTransitioningDelegate
+extension NYXNavigationController: UIViewControllerTransitioningDelegate
 {
 	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning?
 	{

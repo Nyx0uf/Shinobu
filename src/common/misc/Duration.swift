@@ -67,8 +67,7 @@ struct Duration
 	}
 }
 
-// MARK: - Equatable
-extension Duration : Equatable
+extension Duration: Equatable
 {
 	static func == (lhs: Duration, rhs: Duration) -> Bool
 	{
@@ -76,8 +75,7 @@ extension Duration : Equatable
 	}
 }
 
-// MARK: - Comparable
-extension Duration : Comparable
+extension Duration: Comparable
 {
 	static func < (lhs: Duration, rhs: Duration) -> Bool
 	{
@@ -85,8 +83,7 @@ extension Duration : Comparable
 	}
 }
 
-
-extension Duration : Hashable
+extension Duration: Hashable
 {
 	public func hash(into hasher: inout Hasher)
 	{
@@ -94,7 +91,7 @@ extension Duration : Hashable
 	}
 }
 
-extension Duration : CustomStringConvertible
+extension Duration: CustomStringConvertible
 {
 	var description: String
 	{

@@ -1,7 +1,7 @@
 import Foundation
 
 
-struct MusicalEntityType : OptionSet
+struct MusicalEntityType: OptionSet
 {
 	let rawValue: Int
 
@@ -32,7 +32,7 @@ struct MusicalEntityType : OptionSet
 }
 
 
-class MusicalEntity : Hashable
+class MusicalEntity: Hashable
 {
 	// MARK: - Public properties
 	// Name
@@ -52,7 +52,7 @@ class MusicalEntity : Hashable
 }
 
 // MARK: - Equatable
-extension MusicalEntity : Equatable
+extension MusicalEntity: Equatable
 {
 	static func ==(lhs: MusicalEntity, rhs: MusicalEntity) -> Bool
 	{

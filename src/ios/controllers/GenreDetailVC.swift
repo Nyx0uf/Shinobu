@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class GenreDetailVC : MusicalCollectionVC
+final class GenreDetailVC: MusicalCollectionVC
 {
 	// MARK: - Public properties
 	// Selected genre
@@ -22,10 +22,7 @@ final class GenreDetailVC : MusicalCollectionVC
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeGenre)), delegate: self, mpdBridge: mpdBridge)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewWillAppear(_ animated: Bool)
@@ -60,7 +57,7 @@ final class GenreDetailVC : MusicalCollectionVC
 	{
 		var detailText: String?
 		let count = dataSource.items.count
-		switch self.dataSource.musicalEntityType
+		switch dataSource.musicalEntityType
 		{
 			case .albums:
 				detailText = "\(count) \(count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())"
@@ -108,13 +105,13 @@ final class GenreDetailVC : MusicalCollectionVC
 				break
 		}
 
-		if self.dataSource.items.count == 0
+		if dataSource.items.count == 0
 		{
-			self.collectionView.collectionView.contentOffset = CGPoint(0, 64)
+			collectionView.collectionView.contentOffset = CGPoint(0, 64)
 		}
 		else
 		{
-			self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
+			collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 		}
 	}
 }
@@ -128,10 +125,10 @@ extension GenreDetailVC
 		{
 			case .albums:
 				let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			case .artists, .albumsartists:
 				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
-				self.navigationController?.pushViewController(vc, animated: true)
+				navigationController?.pushViewController(vc, animated: true)
 			default:
 				break
 		}
@@ -148,7 +145,7 @@ extension GenreDetailVC
 			guard let strongSelf = self else { return }
 			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
-					let allTracks = strongSelf.genre.albums.compactMap({$0.tracks}).flatMap({$0})
+					let allTracks = strongSelf.genre.albums.compactMap { $0.tracks }.flatMap { $0 }
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: false, loop: false)
 				}
 			}
@@ -160,7 +157,7 @@ extension GenreDetailVC
 			guard let strongSelf = self else { return }
 			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
-					let allTracks = strongSelf.genre.albums.compactMap({$0.tracks}).flatMap({$0})
+					let allTracks = strongSelf.genre.albums.compactMap { $0.tracks }.flatMap { $0 }
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: true, loop: false)
 				}
 			}

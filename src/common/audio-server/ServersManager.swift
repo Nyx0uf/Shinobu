@@ -29,8 +29,8 @@ final class ServersManager
 
 	func handleServer(_ server: ShinobuServer)
 	{
-		var servers = self.getServersList()
-		let exist = servers.firstIndex{$0 == server}
+		var servers = getServersList()
+		let exist = servers.firstIndex { $0 == server }
 		var serverToAdd = server
 		if let index = exist
 		{
@@ -74,14 +74,14 @@ final class ServersManager
 		var ret = true
 		do
 		{
-			var shinobuServers = self.getServersList()
+			var shinobuServers = getServersList()
 			if let idx = shinobuServers.firstIndex(where: { $0.name == serverNameToRemove})
 			{
 				shinobuServers.remove(at: idx)
 
-				if self.getSelectedServerName() == serverNameToRemove
+				if getSelectedServerName() == serverNameToRemove
 				{
-					self.setSelectedServerName("")
+					setSelectedServerName("")
 				}
 
 				let encoder = JSONEncoder()
@@ -117,13 +117,13 @@ final class ServersManager
 
 	func getSelectedServer() -> ShinobuServer?
 	{
-		let name = self.getSelectedServerName()
+		let name = getSelectedServerName()
 		if String.isNullOrWhiteSpace(name)
 		{
 			return nil
 		}
 
-		let servers = self.getServersList()
-		return servers.filter({$0.name == name}).first
+		let servers = getServersList()
+		return servers.filter { $0.name == name }.first
 	}
 }

@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class PlaylistsAddVC : NYXTableViewController
+final class PlaylistsAddVC: NYXTableViewController
 {
 	// List of artists
 	var playlists = [Playlist]()
@@ -19,18 +19,15 @@ final class PlaylistsAddVC : NYXTableViewController
 		super.init(style: .plain)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
 
-		self.navigationController?.navigationBar.isTranslucent = false
-		self.navigationController?.navigationBar.barTintColor = Colors.backgroundAlt
+		navigationController?.navigationBar.isTranslucent = false
+		navigationController?.navigationBar.barTintColor = Colors.backgroundAlt
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -93,7 +90,7 @@ final class PlaylistsAddVC : NYXTableViewController
 			textField.textAlignment = .left
 		})
 
-		self.present(alertController, animated: true, completion: nil)
+		present(alertController, animated: true, completion: nil)
 	}
 
 	// MARK: - Private
@@ -125,7 +122,7 @@ extension PlaylistsAddVC
 		let playlist = playlists[indexPath.row]
 
 		cell.textLabel?.text = playlist.name
-		cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.textLabel?.textColor = .white
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = playlist.name
 

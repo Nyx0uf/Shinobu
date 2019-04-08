@@ -1,19 +1,19 @@
 import Foundation
 
 
-protocol ZeroConfExplorerDelegate : class
+protocol ZeroConfExplorerDelegate: class
 {
 	func didFindServer(_ server: ShinobuServer)
 }
 
 
-final class ZeroConfExplorer : NSObject
+final class ZeroConfExplorer: NSObject
 {
 	// MARK: - Public properties
 	// Is searching flag
 	private(set) var isSearching = false
 	// Services list
-	private(set) var services = [NetService : ShinobuServer]()
+	private(set) var services = [NetService: ShinobuServer]()
 	// Delegate
 	weak var delegate: ZeroConfExplorerDelegate?
 
@@ -72,7 +72,7 @@ final class ZeroConfExplorer : NSObject
 }
 
 // MARK: - NetServiceBrowserDelegate
-extension ZeroConfExplorer : NetServiceBrowserDelegate
+extension ZeroConfExplorer: NetServiceBrowserDelegate
 {
 	func netServiceBrowserWillSearch(_ browser: NetServiceBrowser)
 	{
@@ -84,7 +84,7 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 		isSearching = false
 	}
 
-	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber])
+	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String: NSNumber])
 	{
 		Logger.shared.log(type: .error, message: "ZeroConf didNotSearch : \(errorDict)")
 	}
@@ -103,11 +103,11 @@ extension ZeroConfExplorer : NetServiceBrowserDelegate
 }
 
 // MARK: - NetServiceDelegate
-extension ZeroConfExplorer : NetServiceDelegate
+extension ZeroConfExplorer: NetServiceDelegate
 {
 	func netServiceDidResolveAddress(_ sender: NetService)
 	{
-		guard let addresses = sender.addresses else {return}
+		guard let addresses = sender.addresses else { return }
 
 		var found = false
 		var tmpIP = ""
@@ -150,7 +150,7 @@ extension ZeroConfExplorer : NetServiceDelegate
 		}
 	}
 
-	func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber])
+	func netService(_ sender: NetService, didNotResolve errorDict: [String: NSNumber])
 	{
 	}
 

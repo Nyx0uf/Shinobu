@@ -2,7 +2,7 @@ import UIKit
 import CoreGraphics
 
 
-final class LetterView : UIView
+final class LetterView: UIView
 {
 	// MARK: - Public roperties
 	// Letter to draw
@@ -49,14 +49,11 @@ final class LetterView : UIView
 		self.letter = letter
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
 
 
-final class SimpleLetterView : UIView
+fileprivate final class SimpleLetterView: UIView
 {
 	// MARK: - Public properties
 	// Letter to draw
@@ -96,10 +93,7 @@ final class SimpleLetterView : UIView
 		createStrings()
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override func draw(_ rect: CGRect)
 	{

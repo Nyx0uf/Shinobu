@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class AlbumHeaderView : UIView
+final class AlbumHeaderView: UIView
 {
 	// MARK: - Public properties
 	// Album cover
@@ -43,17 +43,14 @@ final class AlbumHeaderView : UIView
 		self.addSubview(lblYear)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Drawing
 	override func draw(_ dirtyRect: CGRect)
 	{
-		guard let _ = image else {return}
+		guard let _ = image else { return }
 		let imageRect = CGRect(.zero, coverSize)
-		image.draw(in: imageRect, blendMode: .sourceAtop, alpha: 1.0)
+		image.draw(in: imageRect, blendMode: .sourceAtop, alpha: 1)
 
 		let context = UIGraphicsGetCurrentContext()
 		context?.saveGState()
@@ -63,7 +60,7 @@ final class AlbumHeaderView : UIView
 		let endPoint = CGPoint(imageRect.maxX, imageRect.midY)
 		let color = backgroundColor!
 		let gradientColors: [CGColor] = [color.withAlphaComponent(0.05).cgColor, color.withAlphaComponent(0.75).cgColor, color.withAlphaComponent(0.9).cgColor]
-		let locations: [CGFloat] = [0.0, 0.9, 1.0]
+		let locations: [CGFloat] = [0, 0.9, 1]
 		let gradient = CGGradient(colorsSpace: CGColorSpace.NYXAppropriateColorSpace(), colors: gradientColors as CFArray, locations: locations)
 		context?.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
 		context?.restoreGState()
@@ -85,7 +82,7 @@ final class AlbumHeaderView : UIView
 				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 				let string = album.name
 				let bgColor = UIColor(rgb: string.djb2())
-				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
+				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
 			}
 		}
 		else
@@ -93,7 +90,7 @@ final class AlbumHeaderView : UIView
 			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 			let string = album.name
 			let bgColor = UIColor(rgb: string.djb2())
-			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
+			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
 		}
 		self.image = image
 
@@ -114,10 +111,10 @@ final class AlbumHeaderView : UIView
 
 		// Update frame for title / artist
 		let s = album.name as NSString
-		let width = frame.width - (coverSize.width + 8.0)
-		let r = s.boundingRect(with: CGSize(width, 40.0), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : lblTitle.font!], context: nil)
-		lblTitle.frame = CGRect(coverSize.width + 4.0, 4.0, ceil(r.width), ceil(r.height))
-		lblArtist.frame = CGRect(coverSize.width + 4.0, lblTitle.bottom + 4.0, width, 18.0)
+		let width = frame.width - (coverSize.width + 8)
+		let r = s.boundingRect(with: CGSize(width, 40), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : lblTitle.font!], context: nil)
+		lblTitle.frame = CGRect(coverSize.width + 4, 4, ceil(r.width), ceil(r.height))
+		lblArtist.frame = CGRect(coverSize.width + 4, lblTitle.maxY + 4, width, 18)
 
 		lblTitle.text = album.name
 		lblArtist.text = album.artist
@@ -129,7 +126,7 @@ final class AlbumHeaderView : UIView
 		if let tracks = album.tracks
 		{
 			stra += "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n"
-			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
+			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
 			let minutes = total.seconds / 60
 			stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))\n"
 		}

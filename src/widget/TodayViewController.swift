@@ -4,7 +4,7 @@ import NotificationCenter
 
 final class TodayViewController: UIViewController, NCWidgetProviding
 {
-	// MARK: - Properties
+	// MARK: - Private properties
 	// Track title
 	@IBOutlet private var lblTrackTitle: UILabel!
 	// Track artist name
@@ -38,7 +38,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 
 		guard let server = ServersManager().getSelectedServer() else
 		{
-			self.disableAllBecauseCantWork()
+			disableAllBecauseCantWork()
 			return
 		}
 
@@ -48,7 +48,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		switch resultDataSource
 		{
 			case .failure(_):
-				self.disableAllBecauseCantWork()
+				disableAllBecauseCantWork()
 			case .success(_):
 				mpdBridge.entitiesForType(.albums) { (_) in }
 				NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
@@ -153,10 +153,10 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		}
 	}
 
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
-		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
+		downloadOperation.callback = { (cover: UIImage, thumbnail: UIImage) in
 			if let block = callback
 			{
 				block(cover, thumbnail)
@@ -179,6 +179,6 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	// MARK: - Notification
 	@objc private func playingTrackNotification(_ notification: Notification)
 	{
-		_ = self.updateFields()
+		_ = updateFields()
 	}
 }

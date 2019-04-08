@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 
 
-final class MessageView : UIView
+final class MessageView: UIView
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -29,21 +29,21 @@ final class MessageView : UIView
 			statusHeight = 20
 		}
 
-		let height = statusHeight + 44.0
-		let frame = CGRect(0.0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
+		let height = statusHeight + 44
+		let frame = CGRect(0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
 
 		super.init(frame: frame)
 		self.isUserInteractionEnabled = true
 		self.isAccessibilityElement = false
 
-		self.imageView = UIImageView(frame: CGRect(8.0, statusHeight + (40 - 24.0) / 2.0, 24.0, 24.0))
+		self.imageView = UIImageView(frame: CGRect(8, statusHeight + (40 - 24) / 2, 24, 24))
 		self.imageView.isAccessibilityElement = false
 		self.addSubview(self.imageView)
 
-		self.label = UILabel(frame: CGRect(self.imageView.right + 8.0, statusHeight + 2.0, frame.width - self.imageView.right - 8.0, frame.height - statusHeight - 4.0))
+		self.label = UILabel(frame: CGRect(self.imageView.maxX + 8, statusHeight + 2, frame.width - self.imageView.maxX - 8, frame.height - statusHeight - 4))
 		self.label.textAlignment = .left
-		self.label.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		self.label.font = UIFont.boldSystemFont(ofSize: 15.0)
+		self.label.textColor = .white
+		self.label.font = UIFont.boldSystemFont(ofSize: 15)
 		self.label.numberOfLines = 2
 		self.label.isAccessibilityElement = false
 		self.addSubview(self.label)
@@ -51,10 +51,7 @@ final class MessageView : UIView
 		APP_DELEGATE().window?.addSubview(self)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Public
 	func showWithMessage(message: Message, animated: Bool = true)
@@ -68,28 +65,28 @@ final class MessageView : UIView
 			return
 		}
 
-		if self.visible
+		if visible
 		{
 			stopTimer()
 		}
 
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
-			self.y = 0.0
+		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
+			self.y = 0
 			self.label.text = message.content
 			switch message.type
 			{
 				case .error:
-					self.backgroundColor = #colorLiteral(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+					self.backgroundColor = UIColor(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: .white)
 				case .warning:
-					self.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+					self.backgroundColor = UIColor(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: .white)
 				case .information:
-					self.backgroundColor = #colorLiteral(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+					self.backgroundColor = UIColor(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: .white)
 				case .success:
-					self.backgroundColor = #colorLiteral(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+					self.backgroundColor = UIColor(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
+					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: .white)
 			}
 			self.label.backgroundColor = self.backgroundColor
 		}, completion: { finished in
@@ -100,7 +97,7 @@ final class MessageView : UIView
 
 	func hide(_ animated: Bool = true)
 	{
-		UIView.animate(withDuration: animated ? 0.35 : 0.0, delay: 0.0, options: UIView.AnimationOptions(), animations: {
+		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = -self.height
 		}, completion: { finished in
 			self.visible = false

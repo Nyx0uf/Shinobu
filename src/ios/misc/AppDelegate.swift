@@ -1,38 +1,32 @@
 import UIKit
 
-func APP_DELEGATE() -> AppDelegate {return UIApplication.shared.delegate as! AppDelegate}
+func APP_DELEGATE() -> AppDelegate { return UIApplication.shared.delegate as! AppDelegate }
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate
 {
 	// Main window
 	var window: UIWindow?
-	// Container: VC + Menu
-	private let containerVC: ContainerVC
-	// MPD Data source
-	let mpdBridge: MPDBridge
 
 	override init()
 	{
-		self.mpdBridge = MPDBridge()
-		self.containerVC = ContainerVC()
 		super.init()
 	}
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
 	{
-		// Global appearance
-		self.setAppearances()
-
 		// Init settings
 		Settings.shared.initialize()
+
+		// Global appearance
+		setAppearances()
 
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
-		self.window = UIWindow(frame: UIScreen.main.bounds)
-		self.window?.rootViewController = self.containerVC
-		self.window?.makeKeyAndVisible()
+		window = UIWindow(frame: UIScreen.main.bounds)
+		window?.rootViewController = NYXNavigationController(rootViewController: LibraryVC())
+		window?.makeKeyAndVisible()
 		return true
 	}
 

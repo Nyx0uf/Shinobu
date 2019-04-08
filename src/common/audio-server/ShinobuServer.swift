@@ -1,7 +1,7 @@
 import Foundation
 
 
-struct ShinobuServer : Codable, Equatable
+struct ShinobuServer: Codable, Equatable
 {
 	// Coding keys
 	private enum ShinobuServerCodingKeys: String, CodingKey
@@ -51,11 +51,6 @@ struct ShinobuServer : Codable, Equatable
 		}
 	}
 
-	public func publicDescription() -> String
-	{
-		return "\(self.name)\n"
-	}
-
 	public func encode(to encoder: Encoder) throws
 	{
 		var container = encoder.container(keyedBy: ShinobuServerCodingKeys.self)
@@ -65,7 +60,14 @@ struct ShinobuServer : Codable, Equatable
 	}
 }
 
-// MARK: - Operators
+extension ShinobuServer: CustomStringConvertible
+{
+	var description: String
+	{
+		return name
+	}
+}
+
 func == (lhs: ShinobuServer, rhs: ShinobuServer) -> Bool
 {
 	return (lhs.mpd == rhs.mpd)

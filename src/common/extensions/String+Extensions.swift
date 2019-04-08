@@ -14,7 +14,7 @@ extension String
 	subscript(_ range: CountableRange<Int>) -> String
 	{
 		let idx1 = index(startIndex, offsetBy: max(0, range.lowerBound))
-		let idx2 = index(startIndex, offsetBy: min(self.count, range.upperBound))
+		let idx2 = index(startIndex, offsetBy: min(count, range.upperBound))
 		return String(self[idx1..<idx2])
 	}
 
@@ -31,13 +31,13 @@ extension String
 
 	func isEmptyOrWhiteSpace() -> Bool
 	{
-		return self.isEmpty || self.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
+		return isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	static func random(length: Int) -> String
 	{
 		let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-		return String((0...length - 1).map{ _ in letters.randomElement()! })
+		return String((0...length - 1).map { _ in letters.randomElement()! })
 	}
 
 	// MARK: - Hash functions
@@ -59,17 +59,17 @@ extension String
 
 	func djb2() -> Int32
 	{
-		return utf8.reduce(5381){($0 << 5) &+ $0 &+ Int32($1)}
+		return utf8.reduce(5381){ ($0 << 5) &+ $0 &+ Int32($1) }
 	}
 
 	func fuzzySearch(withString searchString: String, diacriticSensitive: Bool = false, caseSensitive: Bool = false) -> Bool
 	{
-		if searchString.count == 0 || self.count == 0
+		if searchString.count == 0 || count == 0
 		{
 			return false
 		}
 
-		if searchString.count > self.count
+		if searchString.count > count
 		{
 			return false
 		}

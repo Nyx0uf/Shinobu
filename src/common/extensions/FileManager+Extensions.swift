@@ -6,22 +6,24 @@ extension FileManager
 	func sizeOfDirectoryAtURL(_ directoryURL: URL) -> Int
 	{
 		var result = 0
-		let props = [URLResourceKey.localizedNameKey, URLResourceKey.creationDateKey, URLResourceKey.localizedTypeDescriptionKey]
+		let properties: [URLResourceKey] = [.localizedNameKey, .creationDateKey, .localizedTypeDescriptionKey]
 
 		do
 		{
-			let ar = try self.contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: props, options: [])
-			for url in ar
+			let directoryContent = try contentsOfDirectory(at: directoryURL, includingPropertiesForKeys: properties, options: [])
+			for url in directoryContent
 			{
 				var isDir: ObjCBool = false
-				self.fileExists(atPath: url.path, isDirectory: &isDir)
-				if isDir.boolValue
+				if fileExists(atPath: url.path, isDirectory: &isDir)
 				{
-					result += self.sizeOfDirectoryAtURL(url)
-				}
-				else
-				{
-					result += try self.attributesOfItem(atPath: url.path)[FileAttributeKey.size] as! Int
+					if isDir.boolValue
+					{
+						result += sizeOfDirectoryAtURL(url)
+					}
+					else
+					{
+						result += try attributesOfItem(atPath: url.path)[.size] as! Int
+					}
 				}
 			}
 		}

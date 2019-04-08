@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class AudioOutputsListVC : NYXTableViewController
+final class AudioOutputsListVC: NYXTableViewController
 {
 	// List of artists
 	var outputs = [AudioOutput]()
@@ -17,10 +17,7 @@ final class AudioOutputsListVC : NYXTableViewController
 		super.init(style: .plain)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -43,7 +40,7 @@ final class AudioOutputsListVC : NYXTableViewController
 	// MARK: - Private
 	private func refreshOutputs()
 	{
-		let cnn = MPDConnection(self.mpdServer)
+		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
 		switch result
 		{
@@ -57,7 +54,7 @@ final class AudioOutputsListVC : NYXTableViewController
 						break
 					case .success(let outputs):
 						self.outputs = outputs
-						self.tableView.reloadData()
+						tableView.reloadData()
 				}
 				cnn.disconnect()
 		}
@@ -81,7 +78,7 @@ extension AudioOutputsListVC
 		let output = outputs[indexPath.row]
 
 		cell.textLabel?.text = output.name
-		cell.textLabel?.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		cell.textLabel?.textColor = .white
 		cell.accessoryType = output.enabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
@@ -101,7 +98,7 @@ extension AudioOutputsListVC
 
 		let output = outputs[indexPath.row]
 
-		let cnn = MPDConnection(self.mpdServer)
+		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
 		switch result
 		{
@@ -114,7 +111,7 @@ extension AudioOutputsListVC
 					case .failure( _):
 						break
 					case .success( _):
-						self.refreshOutputs()
+						refreshOutputs()
 						NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
 				}
 				cnn.disconnect()

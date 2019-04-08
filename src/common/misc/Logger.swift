@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum LogType : String
+enum LogType: String
 {
 	case error = "❤️"
 	case warning = "💛"
@@ -9,7 +9,7 @@ enum LogType : String
 	case success = "💚"
 }
 
-private struct Log : CustomStringConvertible
+private struct Log: CustomStringConvertible
 {
 	let type: LogType
 	let dateString: String
@@ -75,17 +75,17 @@ final class Logger
 
 	public func log(error: Error)
 	{
-		self.log(type: .error, message: error.localizedDescription)
+		log(type: .error, message: error.localizedDescription)
 	}
 
 	public func log(string: String)
 	{
-		self.log(type: .information, message: string)
+		log(type: .information, message: string)
 	}
 
 	public func log(message: Message)
 	{
-		self.log(type: .information, message: message.content)
+		log(type: .information, message: message.content)
 	}
 
 	public func export() -> Data?

@@ -1,13 +1,13 @@
 import UIKit
 
 
-protocol ZeroConfBrowserVCDelegate : class
+protocol ZeroConfBrowserVCDelegate: class
 {
 	func audioServerDidChange(with server: ShinobuServer)
 }
 
 
-final class ZeroConfBrowserVC : NYXTableViewController
+final class ZeroConfBrowserVC: NYXTableViewController
 {
 	// MARK: - Public properties
 	// Delegate
@@ -27,35 +27,35 @@ final class ZeroConfBrowserVC : NYXTableViewController
 		super.viewDidLoad()
 
 		let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction(_:)))
-		self.navigationItem.leftBarButtonItem = done
+		navigationItem.leftBarButtonItem = done
 
 		// Navigation bar title
 		titleView.setMainText(NYXLocalizedString("lbl_header_server_zeroconf"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		tableView.separatorColor = .black
 		tableView.rowHeight = 64
 
-		self.zeroConfExplorer = ZeroConfExplorer()
-		self.zeroConfExplorer.delegate = self
+		zeroConfExplorer = ZeroConfExplorer()
+		zeroConfExplorer.delegate = self
 	}
 
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
-		self.zeroConfExplorer.searchForServices(type: "_mpd._tcp.")
+		zeroConfExplorer.searchForServices(type: "_mpd._tcp.")
 	}
 
 	override func viewWillDisappear(_ animated: Bool)
 	{
 		super.viewWillDisappear(animated)
-		self.zeroConfExplorer.stopSearch()
+		zeroConfExplorer.stopSearch()
 	}
 
 	// MARK: - Buttons actions
 	@objc private func doneAction(_ sender: Any?)
 	{
-		self.dismiss(animated: true, completion: nil)
+		dismiss(animated: true, completion: nil)
 	}
 }
 
@@ -73,15 +73,15 @@ extension ZeroConfBrowserVC
 		cell.backgroundColor = Colors.background
 		cell.contentView.backgroundColor = Colors.background
 		let backgroundView = UIView()
-		backgroundView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+		backgroundView.backgroundColor = Colors.backgroundSelected
 		cell.selectedBackgroundView = backgroundView
 
 		let server = servers[indexPath.row]
 		cell.textLabel?.text = server.name
-		cell.textLabel?.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+		cell.textLabel?.textColor = Colors.mainText
+		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		cell.detailTextLabel?.text = server.mpd.hostname + ":" + String(server.mpd.port)
-		cell.detailTextLabel?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+		cell.detailTextLabel?.textColor = Colors.placeholderText
 
 		if let currentServer = selectedServer
 		{
@@ -119,7 +119,7 @@ extension ZeroConfBrowserVC
 		}
 
 		// Different server, update
-		self.selectedServer = selected
+		selectedServer = selected
 
 		delegate?.audioServerDidChange(with: selected)
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: {
@@ -128,11 +128,11 @@ extension ZeroConfBrowserVC
 	}
 }
 
-extension ZeroConfBrowserVC : ZeroConfExplorerDelegate
+extension ZeroConfBrowserVC: ZeroConfExplorerDelegate
 {
 	internal func didFindServer(_ server: ShinobuServer)
 	{
-		servers = zeroConfExplorer.services.map({$0.value})
-		self.tableView.reloadData()
+		servers = zeroConfExplorer.services.map { $0.value }
+		tableView.reloadData()
 	}
 }

@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class Album : MusicalEntity
+final class Album: MusicalEntity
 {
 	// MARK: - Public properties
 	// Album artist
@@ -25,8 +25,8 @@ final class Album : MusicalEntity
 	private(set) var uniqueIdentifier: String
 	// Local URL for the cover
 	private(set) lazy var localCoverURL: URL? = {
-		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {return nil}
-		guard let coverDirectoryPath = Settings.shared.string(forKey: .coversDirectory) else {return nil}
+		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else { return nil }
+		guard let coverDirectoryPath = Settings.shared.string(forKey: .coversDirectory) else { return nil }
 		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
 	}()
 
@@ -45,7 +45,7 @@ final class Album : MusicalEntity
 	}
 }
 
-extension Album : CustomStringConvertible
+extension Album: CustomStringConvertible
 {
 	var description: String
 	{

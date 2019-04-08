@@ -4,7 +4,7 @@ import Foundation
 fileprivate let SLASH = Character("/")
 
 
-struct CoverServer : Codable, Equatable
+struct CoverServer: Codable, Equatable
 {
 	// Coding keys
 	private enum CoverServerCodingKeys: String, CodingKey
@@ -41,11 +41,6 @@ struct CoverServer : Codable, Equatable
 	}
 
 	// MARK: - Public
-	public func publicDescription() -> String
-	{
-		return "\(self.hostname)\n\(self.port)\n\(self.coverName)"
-	}
-
 	public func coverURLForPath(_ path: String) -> URL?
 	{
 		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName)
@@ -145,7 +140,14 @@ struct CoverServer : Codable, Equatable
 	}
 }
 
-// MARK: - Operators
+extension CoverServer: CustomStringConvertible
+{
+	var description: String
+	{
+		return "\(hostname):\(port) [\(coverName)]"
+	}
+}
+
 func == (lhs: CoverServer, rhs: CoverServer) -> Bool
 {
 	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)

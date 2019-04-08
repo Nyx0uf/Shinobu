@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class NYXNavigationTitleView : UIButton
+final class NYXNavigationTitleView: UIButton
 {
 	// MARK: - Public properties
 	// Main text
@@ -59,10 +59,7 @@ final class NYXNavigationTitleView : UIButton
 		self.addSubview(self.label)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override var intrinsicContentSize: CGSize
 	{
@@ -74,30 +71,30 @@ final class NYXNavigationTitleView : UIButton
 	{
 		self.mainText = mainText
 		self.detailText = detailText
-		self.updateDisplay()
+		updateDisplay()
 	}
 
 	// MARK: - Private
 	private func updateDisplay()
 	{
-		let color = (self.isHighlighted || self.isSelected) ? Colors.main : #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		let color = (isHighlighted || isSelected) ? Colors.main : Colors.mainText
 
 		if let detailText = self.detailText
 		{
-			self.label.numberOfLines = 2
+			label.numberOfLines = 2
 
 			// Main text
 			let attrs = NSMutableAttributedString(string: "\(mainText)\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15, weight: .medium), NSAttributedString.Key.foregroundColor : color])
 			// Detail text
 			attrs.append(NSAttributedString(string: detailText, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .regular), NSAttributedString.Key.foregroundColor : color]))
-			self.label.attributedText = attrs
+			label.attributedText = attrs
 		}
 		else
 		{
-			self.label.numberOfLines = 1
-			self.label.font = UIFont.systemFont(ofSize: 16.0, weight: .medium)
-			self.label.textColor = color
-			self.label.text = mainText
+			label.numberOfLines = 1
+			label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+			label.textColor = color
+			label.text = mainText
 		}
 	}
 }

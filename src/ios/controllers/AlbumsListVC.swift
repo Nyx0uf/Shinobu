@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class AlbumsListVC : MusicalCollectionVC
+final class AlbumsListVC: MusicalCollectionVC
 {
 	// MARK: - Public properties
 	// Selected artist
@@ -25,10 +25,7 @@ final class AlbumsListVC : MusicalCollectionVC
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: .albums, delegate: self, mpdBridge: mpdBridge)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewWillAppear(_ animated: Bool)
@@ -67,7 +64,7 @@ final class AlbumsListVC : MusicalCollectionVC
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
 
-			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle:.actionSheet)
+			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				MiniPlayerView.shared.stayHidden = false
@@ -110,7 +107,7 @@ extension AlbumsListVC
 	override func didSelectEntity(_ entity: AnyObject)
 	{
 		let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-		self.navigationController?.pushViewController(vc, animated: true)
+		navigationController?.pushViewController(vc, animated: true)
 	}
 }
 
@@ -139,7 +136,7 @@ extension AlbumsListVC
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
 					let source = self.dataSource.items as! [Album]
-					let ar = source.compactMap({$0.tracks}).flatMap({$0})
+					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
 					self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 				}
 			}
@@ -150,7 +147,7 @@ extension AlbumsListVC
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
 				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
 					let source = self.dataSource.items as! [Album]
-					let ar = source.compactMap({$0.tracks}).flatMap({$0})
+					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
 					self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 				}
 			}

@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class InteractableImageView : UIImageView
+final class InteractableImageView: UIImageView
 {
 	// MARK: - Public properties
 	// Delegate
@@ -19,22 +19,19 @@ final class InteractableImageView : UIImageView
 		self.addGestureRecognizer(singleTap)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Gestures
 	@objc func singleTap(_ gesture: UITapGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
-			self.delegate?.didTap()
+			delegate?.didTap()
 		}
 	}
 }
 
-protocol InteractableImageViewDelegate : class
+protocol InteractableImageViewDelegate: class
 {
 	func didTap()
 }

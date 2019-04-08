@@ -1,7 +1,7 @@
 import Foundation
 
 
-final class Artist : MusicalEntity
+final class Artist: MusicalEntity
 {
 	// MARK: - Public properties
 	// Albums list reference
@@ -14,7 +14,7 @@ final class Artist : MusicalEntity
 	}
 }
 
-extension Artist : CustomStringConvertible
+extension Artist: CustomStringConvertible
 {
 	var description: String
 	{

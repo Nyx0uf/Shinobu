@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class PlayerVC : NYXViewController, InteractableImageViewDelegate
+final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 {
 	// MARK: - Private properties
 	// Blur view
@@ -45,10 +45,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -56,11 +53,11 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		super.viewDidLoad()
 
 		// Blurred background
-		self.view = UIImageView(frame: self.view.bounds)
-		self.view.isUserInteractionEnabled = true
-		self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-		self.blurEffectView.frame = self.view.bounds
-		self.view.addSubview(blurEffectView)
+		view = UIImageView(frame: view.bounds)
+		view.isUserInteractionEnabled = true
+		blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+		blurEffectView.frame = view.bounds
+		view.addSubview(blurEffectView)
 
 		let statusHeight: CGFloat
 		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
@@ -81,108 +78,108 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		vev_title.frame = CGRect(0, statusHeight, width, heightTopLabels)
 		lblTrackTitle = AutoScrollLabel(frame: vev_title.bounds)
 		lblTrackTitle.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-		lblTrackTitle.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblTrackTitle.textColor = .white
 		lblTrackTitle.textAlignment = .center
 		vev_title.contentView.addSubview(lblTrackTitle)
-		self.blurEffectView.contentView.addSubview(vev_title)
+		blurEffectView.contentView.addSubview(vev_title)
 
 		// Track artist
 		let vev_artist = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_artist.frame = CGRect(0, vev_title.bottom, width, heightTopLabels)
+		vev_artist.frame = CGRect(0, vev_title.maxY, width, heightTopLabels)
 		lblTrackArtist = UILabel(frame: vev_artist.bounds)
 		lblTrackArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-		lblTrackArtist.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblTrackArtist.textColor = .white
 		lblTrackArtist.textAlignment = .center
 		vev_artist.contentView.addSubview(lblTrackArtist)
-		self.blurEffectView.contentView.addSubview(vev_artist)
+		blurEffectView.contentView.addSubview(vev_artist)
 
 		// Album
 		let vev_album = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_album.frame = CGRect(0, vev_artist.bottom, width, heightTopLabels)
+		vev_album.frame = CGRect(0, vev_artist.maxY, width, heightTopLabels)
 		lblAlbumName = UILabel(frame: vev_album.bounds)
 		lblAlbumName.font = UIFont.systemFont(ofSize: 13, weight: .light)
-		lblAlbumName.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblAlbumName.textColor = .white
 		lblAlbumName.textAlignment = .center
 		vev_album.contentView.addSubview(lblAlbumName)
-		self.blurEffectView.contentView.addSubview(vev_album)
+		blurEffectView.contentView.addSubview(vev_album)
 
 		// Track list view
 		let theight = width - (2 * margin)
-		let tframe = CGRect(margin, vev_album.bottom + 20, theight, theight)
+		let tframe = CGRect(margin, vev_album.maxY + 20, theight, theight)
 		trackListView = TracksListTableView(frame: tframe, style: .plain)
 		trackListView.delegate = self
 		trackListView.myDelegate = self
-		self.blurEffectView.contentView.addSubview(trackListView)
+		blurEffectView.contentView.addSubview(trackListView)
 
 		// Cover
 		coverView = InteractableImageView(frame: tframe)
 		coverView.delegate = self
-		self.blurEffectView.contentView.addSubview(coverView)
+		blurEffectView.contentView.addSubview(coverView)
 
 		// Elapsed label
 		let sizeTimeLabels = CGSize(40, 16)
 		let vev_elapsed = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_elapsed.frame = CGRect(coverView.left, coverView.bottom + 4, sizeTimeLabels)
+		vev_elapsed.frame = CGRect(coverView.x, coverView.maxY + 4, sizeTimeLabels)
 		lblElapsedDuration = UILabel(frame: vev_elapsed.bounds)
 		lblElapsedDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-		lblElapsedDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblElapsedDuration.textColor = .white
 		lblElapsedDuration.textAlignment = .left
 		vev_elapsed.contentView.addSubview(lblElapsedDuration)
-		self.blurEffectView.contentView.addSubview(vev_elapsed)
+		blurEffectView.contentView.addSubview(vev_elapsed)
 
 		// Remaining label
 		let vev_remaining = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark)))
-		vev_remaining.frame = CGRect(width - margin - sizeTimeLabels.width, coverView.bottom + 4, sizeTimeLabels)
+		vev_remaining.frame = CGRect(width - margin - sizeTimeLabels.width, coverView.maxY + 4, sizeTimeLabels)
 		lblRemainingDuration = UILabel(frame: vev_remaining.bounds)
 		lblRemainingDuration.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-		lblRemainingDuration.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		lblRemainingDuration.textColor = .white
 		lblRemainingDuration.textAlignment = .right
 		vev_remaining.contentView.addSubview(lblRemainingDuration)
-		self.blurEffectView.contentView.addSubview(vev_remaining)
+		blurEffectView.contentView.addSubview(vev_remaining)
 
 		// Slider track position
-		sliderPosition = UISlider(frame: CGRect(margin, vev_remaining.bottom, tframe.width, 31))
+		sliderPosition = UISlider(frame: CGRect(margin, vev_remaining.maxY, tframe.width, 31))
 		sliderPosition.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
-		self.blurEffectView.contentView.addSubview(sliderPosition)
+		blurEffectView.contentView.addSubview(sliderPosition)
 
 		// Previous button
 		let sizeButtonsTracks = CGSize(48, 48)
-		let yButtonsTracks = sliderPosition.bottom + 16
+		let yButtonsTracks = sliderPosition.maxY + 16
 		btnPrevious = UIButton(frame: CGRect(margin, yButtonsTracks, sizeButtonsTracks))
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: .white), for: .normal)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.main), for: .highlighted)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.main), for: .selected)
 		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
-		self.blurEffectView.contentView.addSubview(btnPrevious)
+		blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play/Pause button
 		btnPlay = UIButton(frame: CGRect((width - sizeButtonsTracks.width) / 2, yButtonsTracks, sizeButtonsTracks))
 		btnPlay.addTarget(mpdBridge, action: #selector(MPDBridge.togglePause), for: .touchUpInside)
-		self.blurEffectView.contentView.addSubview(btnPlay)
+		blurEffectView.contentView.addSubview(btnPlay)
 
 		// Next button
 		btnNext = UIButton(frame: CGRect(width - sizeButtonsTracks.width - margin, yButtonsTracks, sizeButtonsTracks))
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: .white), for: .normal)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.main), for: .highlighted)
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.main), for: .selected)
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
-		self.blurEffectView.contentView.addSubview(btnNext)
+		blurEffectView.contentView.addSubview(btnNext)
 
 		// Slider volume
-		sliderVolume = UISlider(frame: CGRect(margin, btnPrevious.bottom + 16, tframe.width, 31))
+		sliderVolume = UISlider(frame: CGRect(margin, btnPrevious.maxY + 16, tframe.width, 31))
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
-		sliderVolume.minimumValueImage = #imageLiteral(resourceName: "img-volume-lo").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
-		sliderVolume.maximumValueImage = #imageLiteral(resourceName: "img-volume-hi").tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))
-		self.blurEffectView.contentView.addSubview(sliderVolume)
+		sliderVolume.minimumValueImage = #imageLiteral(resourceName: "img-volume-lo").tinted(withColor: .white)
+		sliderVolume.maximumValueImage = #imageLiteral(resourceName: "img-volume-hi").tinted(withColor: .white)
+		blurEffectView.contentView.addSubview(sliderVolume)
 
 		// Repeat button
 		let loop = Settings.shared.bool(forKey: .mpd_repeat)
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		let sizeButtonsRR = CGSize(44, 44)
-		btnRepeat = UIButton(frame: CGRect(margin, self.view.height - sizeButtonsRR.height, sizeButtonsRR))
-		btnRepeat.setImage(imageRepeat.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRepeat = UIButton(frame: CGRect(margin, view.height - sizeButtonsRR.height, sizeButtonsRR))
+		btnRepeat.setImage(imageRepeat.tinted(withColor: .white)?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRepeat.setImage(imageRepeat.tinted(withColor: Colors.main)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
@@ -192,22 +189,22 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		// Random button
 		let random = Settings.shared.bool(forKey: .mpd_shuffle)
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom = UIButton(frame: CGRect(width - margin - sizeButtonsRR.width, self.view.height - sizeButtonsRR.height, sizeButtonsRR))
-		btnRandom.setImage(imageRandom.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1))?.withRenderingMode(.alwaysOriginal), for: .normal)
+		btnRandom = UIButton(frame: CGRect(width - margin - sizeButtonsRR.width, view.height - sizeButtonsRR.height, sizeButtonsRR))
+		btnRandom.setImage(imageRandom.tinted(withColor: .white)?.withRenderingMode(.alwaysOriginal), for: .normal)
 		btnRandom.setImage(imageRandom.tinted(withColor: Colors.main)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
-		self.blurEffectView.contentView.addSubview(btnRandom)
+		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Useless motion effect
 		var motionEffect = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
-		motionEffect.minimumRelativeValue = 20.0
-		motionEffect.maximumRelativeValue = -20.0
+		motionEffect.minimumRelativeValue = 20
+		motionEffect.maximumRelativeValue = -20
 		coverView.addMotionEffect(motionEffect)
 		motionEffect = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-		motionEffect.minimumRelativeValue = 20.0
-		motionEffect.maximumRelativeValue = -20.0
+		motionEffect.minimumRelativeValue = 20
+		motionEffect.maximumRelativeValue = -20
 		coverView.addMotionEffect(motionEffect)
 
 		// Single tap, two fingers
@@ -260,7 +257,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: coverView.size)
-				op.callback = {(cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
 						iv?.image = cover
@@ -270,10 +267,10 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				let size = self.coverView.size
+				let size = coverView.size
 				mpdBridge.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: size)
-					op.callback = {(cover: UIImage, thumbnail: UIImage) in
+					op.callback = { (cover: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.coverView.image = cover
 							iv?.image = cover
@@ -314,7 +311,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		if gesture.view === coverView
 		{
 			trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
-			trackListView.alpha = 0.0
+			trackListView.alpha = 0
 			if let tracks = mpdBridge.getCurrentAlbum()?.tracks
 			{
 				trackListView.tracks = tracks
@@ -332,8 +329,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 			}
 
 			UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
-				self.coverView.alpha = 0.0
-				self.trackListView.alpha = 1.0
+				self.coverView.alpha = 0
+				self.trackListView.alpha = 1
 				self.coverView.transform = CGAffineTransform(scaleX: -1, y: 1)
 				self.trackListView.transform = CGAffineTransform(scaleX: 1, y: 1)
 			}) { (finished) in
@@ -343,8 +340,8 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		else
 		{
 			UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
-				self.coverView.alpha = 1.0
-				self.trackListView.alpha = 0.0
+				self.coverView.alpha = 1
+				self.trackListView.alpha = 0
 				self.coverView.transform = CGAffineTransform(scaleX: 1, y: 1)
 				self.trackListView.transform = CGAffineTransform(scaleX: -1, y: 1)
 			}) { (finished) in
@@ -402,7 +399,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		if !sliderPosition.isSelected && !sliderPosition.isHighlighted
 		{
 			sliderPosition.setValue(Float(elapsed), animated: true)
-			sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderPosition.value * 100.0) / sliderPosition.maximumValue))%"
+			sliderPosition.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderPosition.value * 100) / sliderPosition.maximumValue))%"
 		}
 
 		let elapsedDuration = Duration(seconds: elapsed)
@@ -427,7 +424,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		if album.path != nil
 		{
 			let op = CoverOperation(album: album, cropSize: coverView.size)
-			op.callback = {(cover: UIImage, thumbnail: UIImage) in
+			op.callback = { (cover: UIImage, thumbnail: UIImage) in
 				DispatchQueue.main.async {
 					self.coverView.image = cover
 					iv?.image = cover
@@ -437,10 +434,10 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		}
 		else
 		{
-			let size = self.coverView.size
+			let size = coverView.size
 			mpdBridge.getPathForAlbum(album) {
 				let op = CoverOperation(album: album, cropSize: size)
-				op.callback = {(cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
 						iv?.image = cover
@@ -462,7 +459,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		if mpdBridge.getCurrentStatus() == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
-			btnPlay.setImage(imgPlay.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+			btnPlay.setImage(imgPlay.tinted(withColor: .white), for: .normal)
 			btnPlay.setImage(imgPlay.tinted(withColor: Colors.main), for: .highlighted)
 			btnPlay.setImage(imgPlay.tinted(withColor: Colors.main), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
@@ -470,7 +467,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 		else
 		{
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
-			btnPlay.setImage(imgPause.tinted(withColor: #colorLiteral(red: 1, green: 0.99997437, blue: 0.9999912977, alpha: 1)), for: .normal)
+			btnPlay.setImage(imgPause.tinted(withColor: .white), for: .normal)
 			btnPlay.setImage(imgPause.tinted(withColor: Colors.main), for: .highlighted)
 			btnPlay.setImage(imgPause.tinted(withColor: Colors.main), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
@@ -479,7 +476,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 
 	func setVolume(_ valueToSet: Float)
 	{
-		let tmp = clamp(ceil(valueToSet), lower: 0.0, upper: 100.0)
+		let tmp = clamp(ceil(valueToSet), lower: 0, upper: 100)
 		let volume = Int(tmp)
 
 		mpdBridge.setVolume(volume) { (success: Bool) in
@@ -495,7 +492,7 @@ final class PlayerVC : NYXViewController, InteractableImageViewDelegate
 }
 
 // MARK: - UITableViewDelegate
-extension PlayerVC : UITableViewDelegate
+extension PlayerVC: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -514,12 +511,12 @@ extension PlayerVC : UITableViewDelegate
 			}
 		}
 
-		let b = trackListView.tracks.filter({$0.trackNumber >= (indexPath.row + 1)})
+		let b = trackListView.tracks.filter { $0.trackNumber >= (indexPath.row + 1) }
 		mpdBridge.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
 	}
 }
 
-final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControllerAnimatedTransitioning
+final class PlayerVCCustomPresentAnimationController: NSObject, UIViewControllerAnimatedTransitioning
 {
 	var presenting = true
 
@@ -539,7 +536,7 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			containerView.addSubview(toViewController.view)
 
 			let iv = UIImageView(frame: CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height))
-			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
+			iv.backgroundColor = .clear
 			iv.image = MiniPlayerView.shared.imageView.image
 			if let coverURL = toViewController.mpdBridge.getCurrentAlbum()?.localCoverURL
 			{
@@ -551,14 +548,14 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			toViewController.coverView.image = iv.image
 			containerView.addSubview(iv)
 
-			toViewController.view.alpha = 0.0
+			toViewController.view.alpha = 0
 			MiniPlayerView.shared.stayHidden = true
-			UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+			UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
 				iv.frame = CGRect(32, UIDevice.current.isiPhoneX() ? 124 : 100, bounds.width - 64, bounds.width - 64)
 				MiniPlayerView.shared.hide()
 			}, completion: { finished in
-				UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
-					toViewController.view.alpha = 1.0
+				UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+					toViewController.view.alpha = 1
 				}, completion: { finished in
 					iv.removeFromSuperview()
 					transitionContext.completeTransition(true)
@@ -570,16 +567,16 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 			let fromViewController = transitionContext.viewController(forKey: .from) as! PlayerVC
 
 			let iv = UIImageView(frame: CGRect(32, 100, bounds.width - 64, bounds.width - 64))
-			iv.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 0)
+			iv.backgroundColor = .clear
 			iv.image = fromViewController.coverView.image
-			iv.alpha = 0.0
+			iv.alpha = 0
 			containerView.addSubview(iv)
 
-			UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut, animations: {
-				fromViewController.view.alpha = 0.0
-				iv.alpha = 1.0
+			UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+				fromViewController.view.alpha = 0
+				iv.alpha = 1
 			}, completion: { finished in
-				UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+				UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
 					iv.frame = CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height)
 				}, completion: { finished in
 					transitionContext.completeTransition(true)
@@ -592,10 +589,10 @@ final class PlayerVCCustomPresentAnimationController : NSObject, UIViewControlle
 	}
 }
 
-extension PlayerVC : TracksListTableViewDelegate
+extension PlayerVC: TracksListTableViewDelegate
 {
 	func getCurrentTrack() -> Track?
 	{
-		return self.mpdBridge.getCurrentTrack()
+		return mpdBridge.getCurrentTrack()
 	}
 }

@@ -173,7 +173,7 @@ final class MPDBridge
 					break
 				case .success(let list):
 					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-					let albums = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+					let albums = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
 					artist.albums = albums
 					callback(albums)
 			}
@@ -193,7 +193,7 @@ final class MPDBridge
 					break
 				case .success(let list):
 					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-					callback(list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)}))
+					callback(list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) }))
 			}
 		}
 	}
@@ -580,7 +580,7 @@ final class MPDBridge
 				break
 			case .success(let list):
 				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-				let entities = list.sorted(by: {$0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set)})
+				let entities = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
 				switch type
 				{
 				case .albums:
@@ -613,7 +613,7 @@ final class MPDBridge
 				case .failure(let error):
 					Logger.shared.log(error: error)
 				case .success(let result):
-					guard let infos = result else {return}
+					guard let infos = result else { return }
 					let status = infos[PLAYER_STATUS_KEY] as! Int
 					let track = infos[PLAYER_TRACK_KEY] as! Track
 					let album = infos[PLAYER_ALBUM_KEY] as! Album
@@ -648,7 +648,7 @@ final class MPDBridge
 		if let server = aNotification.object as? MPDServer
 		{
 			self.server = server
-			_ = self.reinitialize()
+			_ = reinitialize()
 		}
 	}
 
@@ -663,10 +663,10 @@ final class MPDBridge
 	}
 }
 
-extension MPDBridge : MPDConnectionDelegate
+extension MPDBridge: MPDConnectionDelegate
 {
 	func albumMatchingName(_ name: String) -> Album?
 	{
-		return _albums?.filter({$0.name == name}).first
+		return _albums?.filter { $0.name == name }.first
 	}
 }

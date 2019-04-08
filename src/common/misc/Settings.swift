@@ -4,7 +4,7 @@ import UIKit
 final class Settings
 {
 	// Preferences keys
-	public struct Key : RawRepresentable, Equatable, Hashable, Comparable
+	public struct Key: RawRepresentable, Equatable, Hashable, Comparable
 	{
 		public var rawValue: String
 
@@ -92,7 +92,7 @@ final class Settings
 		defaults.synchronize()
 	}
 
-	func dictionaryRepresentation() -> [String : Any]
+	func dictionaryRepresentation() -> [String: Any]
 	{
 		return defaults.dictionaryRepresentation()
 	}
@@ -141,7 +141,7 @@ final class Settings
 				fatalError("Failed to get cache directory")
 			}
 
-			guard let coversDirectoryPath = self.string(forKey: .coversDirectory) else
+			guard let coversDirectoryPath = string(forKey: .coversDirectory) else
 			{
 				fatalError("Failed to get covers directory")
 			}

@@ -1,7 +1,7 @@
 import UIKit
 
 
-protocol MusicalCollectionDataSourceAndDelegateDelegate : class
+protocol MusicalCollectionDataSourceAndDelegateDelegate: class
 {
 	func isSearching(actively: Bool) -> Bool
 	func didSelectEntity(_ entity: AnyObject)
@@ -10,7 +10,7 @@ protocol MusicalCollectionDataSourceAndDelegateDelegate : class
 }
 
 
-final class MusicalCollectionDataSourceAndDelegate : NSObject
+final class MusicalCollectionDataSourceAndDelegate: NSObject
 {
 	// MARK: - Public Properties
 	// Original data source
@@ -29,7 +29,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 
 	// MARK: - Private Properties
 	// Cover download operations
-	private var downloadOperations = [String : Operation]()
+	private var downloadOperations = [String: Operation]()
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// MPD servers manager
@@ -52,7 +52,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	func setItems(_ items: [MusicalEntity], forType type: MusicalEntityType)
 	{
 		self.items = items
-		self.musicalEntityType = type
+		musicalEntityType = type
 
 		//let tmp = items.compactMap({$0.name.first}).map({String($0).uppercased()}).reduce([], {$0.contains($1) ? $0 : $0 + [$1]})
 
@@ -73,7 +73,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 			orderedItems[letter]?.append(item)
 		}
 
-		self.titlesIndex = orderedItems.keys.sorted()
+		titlesIndex = orderedItems.keys.sorted()
 	}
 
 	func setSearchResults(_ searchResults: [MusicalEntity])
@@ -97,7 +97,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 			orderedSearchResults[letter]?.append(item)
 		}
 
-		self.searchTitlesIndex = orderedSearchResults.keys.sorted()
+		searchTitlesIndex = orderedSearchResults.keys.sorted()
 	}
 
 	func currentItemAtIndexPath(_ indexPath: IndexPath) -> MusicalEntity
@@ -115,7 +115,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	}
 
 	// MARK: - Private
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback:((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
 	{
 		let key = album.uniqueIdentifier
 		if let cop = downloadOperations[key] as! CoverOperation?
@@ -124,7 +124,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 		}
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
-		downloadOperation.callback = {(cover: UIImage, thumbnail: UIImage) in
+		downloadOperation.callback = { (cover: UIImage, thumbnail: UIImage) in
 			if let _ = weakOperation
 			{
 				self.downloadOperations.removeValue(forKey: key)
@@ -200,7 +200,7 @@ final class MusicalCollectionDataSourceAndDelegate : NSObject
 	}
 }
 
-extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
+extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 {
 	func numberOfSections(in collectionView: UICollectionView) -> Int
 	{
@@ -243,9 +243,9 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.label.textColor = Colors.mainText
 		cell.label.backgroundColor = collectionView.backgroundColor
-		cell.imageView.backgroundColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+		cell.imageView.backgroundColor = Colors.imageViewBackground
 
 		let entity = entities[indexPath.row]
 		// Init cell
@@ -257,15 +257,15 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 			case .albums:
 				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
 			case .artists, .albumsartists:
-				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
+				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: Colors.backgroundSelected)
 			case .genres:
 				let string = entity.name[0..<2].uppercased()
 				let backgroundColor = UIColor(rgb: string.djb2())
-				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
 			case .playlists:
 				let string = entity.name
 				let backgroundColor = UIColor(rgb: string.djb2())
-				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4.0)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
+				cell.image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: cell.imageView.size.width / 4)!, fontColor: backgroundColor.inverted(), backgroundColor: backgroundColor, maxSize: cell.imageView.size)
 			default:
 				break
 		}
@@ -275,7 +275,7 @@ extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDataSource
 }
 
 // MARK: - UICollectionViewDelegate
-extension MusicalCollectionDataSourceAndDelegate : UICollectionViewDelegate
+extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate
 {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
 	{

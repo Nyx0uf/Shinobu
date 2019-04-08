@@ -2,9 +2,9 @@ import UIKit
 import Foundation
 
 
-final class CoverOperation : Operation
+final class CoverOperation: Operation
 {
-	// MARK: - Private properties
+	// MARK: - Public properties
 	// isFinished override
 	private var junk = false
 	override var isFinished: Bool {
@@ -18,10 +18,10 @@ final class CoverOperation : Operation
 		}
 	}
 
-	// Downloaded data
-	var incomingData = Data()
-	// Task
-	var sessionTask: URLSessionTask?
+	// Custom completion block
+	var callback: ((UIImage, UIImage) -> Void)? = nil
+
+	// MARK: - Private properties
 	// Session configuration
 	private var localURLSessionConfiguration: URLSessionConfiguration {
 		let cfg = URLSessionConfiguration.default
@@ -35,15 +35,15 @@ final class CoverOperation : Operation
 	// URL
 	private var coverURL: URL? = nil
 	// Server manager
-	let serversManager: ServersManager
-
-	// MARK : Public properties
+	private let serversManager: ServersManager
 	// Album
-	let album: Album
+	private let album: Album
 	// Size of the thumbnail to create
-	let cropSize: CGSize
-	// Custom completion block
-	var callback: ((UIImage, UIImage) -> Void)? = nil
+	private let cropSize: CGSize
+	// Downloaded data
+	private var incomingData = Data()
+	// Task
+	private var sessionTask: URLSessionTask? = nil
 
 	// MARK: - Initializers
 	init(album: Album, cropSize: CGSize)
@@ -86,7 +86,7 @@ final class CoverOperation : Operation
 			isFinished = true
 			return
 		}
-		self.coverURL = finalURL
+		coverURL = finalURL
 
 		var request = URLRequest(url: finalURL)
 		request.addValue("image/*", forHTTPHeaderField: "Accept")
@@ -132,7 +132,7 @@ final class CoverOperation : Operation
 }
 
 // MARK: - NSURLSessionDelegate
-extension CoverOperation : URLSessionDataDelegate
+extension CoverOperation: URLSessionDataDelegate
 {
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void)
 	{

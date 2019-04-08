@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class PlaylistDetailVC : NYXViewController
+final class PlaylistDetailVC: NYXViewController
 {
 	// MARK: - Private properties
 	// Selected playlist
@@ -24,10 +24,7 @@ final class PlaylistDetailVC : NYXViewController
 		super.init(nibName: nil, bundle: nil)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -38,23 +35,23 @@ final class PlaylistDetailVC : NYXViewController
 		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
 		if navigationController == nil
 		{
-			defaultHeight = 0.0
+			defaultHeight = 0
 		}
-		colorView = UIView(frame: CGRect(0, 0, self.view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
-		self.view.addSubview(colorView)
+		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
+		view.addSubview(colorView)
 
 		// Album header view
 		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, self.view.width, coverSize?.cgSizeValue.height ?? defaultHeight))
-		self.view.addSubview(headerView)
+		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, view.width, coverSize?.cgSizeValue.height ?? defaultHeight))
+		view.addSubview(headerView)
 
 		// Tableview
-		tableView = TracksListTableView(frame: CGRect(0, headerView.bottom, self.view.width, self.view.height - headerView.bottom), style: .plain)
+		tableView = TracksListTableView(frame: CGRect(0, headerView.maxY, view.width, view.height - headerView.maxY), style: .plain)
 		tableView.useDummy = true
 		tableView.delegate = self
 		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
-		self.view.addSubview(tableView)
+		view.addSubview(tableView)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -91,7 +88,7 @@ final class PlaylistDetailVC : NYXViewController
 
 		let string = playlist.name
 		let bgColor = UIColor(rgb: string.djb2())
-		if let img = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: headerView.size.width / 4.0)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: headerView.size)
+		if let img = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: headerView.size.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: headerView.size)
 		{
 			headerView.image = img
 		}
@@ -101,7 +98,7 @@ final class PlaylistDetailVC : NYXViewController
 	{
 		if let tracks = playlist.tracks
 		{
-			let total = tracks.reduce(Duration(seconds: 0)){$0 + $1.duration}
+			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
 			let minutes = total.seconds / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
 		}
@@ -151,12 +148,12 @@ final class PlaylistDetailVC : NYXViewController
 			textField.textAlignment = .left
 		})
 
-		self.present(alertController, animated: true, completion: nil)
+		present(alertController, animated: true, completion: nil)
 	}
 }
 
 // MARK: - UITableViewDelegate
-extension PlaylistDetailVC : UITableViewDelegate
+extension PlaylistDetailVC: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
@@ -165,7 +162,7 @@ extension PlaylistDetailVC : UITableViewDelegate
 		})
 
 		// Dummy cell
-		guard let tracks = playlist.tracks else {return}
+		guard let tracks = playlist.tracks else { return }
 		if indexPath.row >= tracks.count
 		{
 			return
@@ -260,10 +257,10 @@ extension PlaylistDetailVC
 	}
 }
 
-extension PlaylistDetailVC : TracksListTableViewDelegate
+extension PlaylistDetailVC: TracksListTableViewDelegate
 {
 	func getCurrentTrack() -> Track?
 	{
-		return self.mpdBridge.getCurrentTrack()
+		return mpdBridge.getCurrentTrack()
 	}
 }

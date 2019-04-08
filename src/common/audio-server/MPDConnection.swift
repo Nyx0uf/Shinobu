@@ -9,7 +9,7 @@ public let PLAYER_STATUS_KEY = "status"
 public let PLAYER_VOLUME_KEY = "volume"
 
 
-enum PlayerStatus : Int
+enum PlayerStatus: Int
 {
 	case playing = 0
 	case paused = 1
@@ -25,13 +25,13 @@ struct AudioOutput
 }
 
 
-protocol MPDConnectionDelegate : class
+protocol MPDConnectionDelegate: class
 {
 	func albumMatchingName(_ name: String) -> Album?
 }
 
 
-struct MPDConnectionError : Error
+struct MPDConnectionError: Error
 {
 	enum Kind
 	{
@@ -151,7 +151,7 @@ final class MPDConnection
 	{
 		if displayType == .playlists
 		{
-			return self.getPlaylists()
+			return getPlaylists()
 		}
 
 		let tagType = mpdTagMatchingMusicalEntityType(displayType)

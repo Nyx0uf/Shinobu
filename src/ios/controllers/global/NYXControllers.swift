@@ -1,11 +1,11 @@
 import UIKit
 
 
-final class NYXNavigationController : UINavigationController
+final class NYXNavigationController: UINavigationController
 {
 	override var shouldAutorotate: Bool
 	{
-		if let topViewController = self.topViewController
+		if let topViewController = topViewController
 		{
 			return topViewController.shouldAutorotate
 		}
@@ -14,7 +14,7 @@ final class NYXNavigationController : UINavigationController
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
-		if let topViewController = self.topViewController
+		if let topViewController = topViewController
 		{
 			return topViewController.supportedInterfaceOrientations
 		}
@@ -23,7 +23,7 @@ final class NYXNavigationController : UINavigationController
 
 	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
 	{
-		if let topViewController = self.topViewController
+		if let topViewController = topViewController
 		{
 			return topViewController.preferredInterfaceOrientationForPresentation
 		}
@@ -32,19 +32,24 @@ final class NYXNavigationController : UINavigationController
 
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		if let presentedViewController = self.presentedViewController
+		if let presentedViewController = presentedViewController
 		{
 			return presentedViewController.preferredStatusBarStyle
 		}
-		if let topViewController = self.topViewController
+		if let topViewController = topViewController
 		{
 			return topViewController.preferredStatusBarStyle
 		}
 		return .lightContent
 	}
+
+	override func viewWillAppear(_ animated: Bool)
+	{
+		super.viewWillAppear(animated)
+	}
 }
 
-class NYXTableViewController : UITableViewController
+class NYXTableViewController: UITableViewController
 {
 	// Navigation title
 	private(set) var titleView: NYXNavigationTitleView! = nil
@@ -53,7 +58,7 @@ class NYXTableViewController : UITableViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 160.0, 44.0))
+		titleView = NYXNavigationTitleView(frame: CGRect(0, 0, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -73,13 +78,26 @@ class NYXTableViewController : UITableViewController
 		return true
 	}
 
+	override func viewWillAppear(_ animated: Bool)
+	{
+		super.viewWillAppear(animated)
+
+		if let navigationBar = navigationController?.navigationBar
+		{
+			if let shadowImageView = findShadowImage(under: navigationBar)
+			{
+				shadowImageView.isHidden = true
+			}
+		}
+	}
+
 	func updateNavigationTitle()
 	{
 
 	}
 }
 
-class NYXViewController : UIViewController
+class NYXViewController: UIViewController
 {
 	// Navigation title
 	private(set) var titleView: NYXNavigationTitleView! = nil
@@ -88,7 +106,7 @@ class NYXViewController : UIViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0.0, 0.0, 160.0, 44.0))
+		titleView = NYXNavigationTitleView(frame: CGRect(0, 0, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -108,13 +126,26 @@ class NYXViewController : UIViewController
 		return true
 	}
 
+	override func viewWillAppear(_ animated: Bool)
+	{
+		super.viewWillAppear(animated)
+
+		if let navigationBar = navigationController?.navigationBar
+		{
+			if let shadowImageView = findShadowImage(under: navigationBar)
+			{
+				shadowImageView.isHidden = true
+			}
+		}
+	}
+
 	func updateNavigationTitle()
 	{
 
 	}
 }
 
-class NYXAlertController : UIAlertController
+class NYXAlertController: UIAlertController
 {
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
@@ -145,5 +176,22 @@ public func NavigationBarHeight() -> CGFloat
 		statusHeight = 20
 	}
 
-	return statusHeight + 44.0
+	return statusHeight + 44
+}
+
+fileprivate func findShadowImage(under view: UIView) -> UIImageView?
+{
+	if view is UIImageView && view.bounds.size.height <= 1
+	{
+		return (view as! UIImageView)
+	}
+
+	for subview in view.subviews
+	{
+		if let imageView = findShadowImage(under: subview)
+		{
+			return imageView
+		}
+	}
+	return nil
 }

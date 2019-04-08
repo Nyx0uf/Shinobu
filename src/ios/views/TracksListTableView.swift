@@ -1,13 +1,13 @@
 import UIKit
 
 
-protocol TracksListTableViewDelegate : class
+protocol TracksListTableViewDelegate: class
 {
 	func getCurrentTrack() -> Track?
 }
 
 
-final class TracksListTableView : UITableView
+final class TracksListTableView: UITableView
 {
 	// MARK: - Public properties
 	// Tracks list
@@ -35,15 +35,12 @@ final class TracksListTableView : UITableView
 		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		self.separatorStyle = .none
 		self.backgroundColor = Colors.background
-		self.rowHeight = 44.0
+		self.rowHeight = 44
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 	}
 
-	required init?(coder aDecoder: NSCoder)
-	{
-		fatalError("init(coder:) has not been implemented")
-	}
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	deinit
 	{
@@ -53,12 +50,12 @@ final class TracksListTableView : UITableView
 	// MARK: - Private
 	@objc func playingTrackChangedNotification(_ notification: Notification)
 	{
-		self.reloadData()
+		reloadData()
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension TracksListTableView : UITableViewDataSource
+extension TracksListTableView: UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
 	{
@@ -81,9 +78,9 @@ extension TracksListTableView : UITableViewDataSource
 		}
 
 		cell.separator.isHidden = false
-		cell.lblTitle.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		cell.lblTrack.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-		cell.lblDuration.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		cell.lblTitle.textColor = Colors.mainText
+		cell.lblTrack.textColor = Colors.mainText
+		cell.lblDuration.textColor = Colors.mainText
 
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
@@ -92,7 +89,7 @@ extension TracksListTableView : UITableViewDataSource
 		let seconds = track.duration.minutesRepresentation().seconds
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
-		let currentTrack = self.myDelegate?.getCurrentTrack()
+		let currentTrack = myDelegate?.getCurrentTrack()
 		if currentTrack != nil && currentTrack == track
 		{
 			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .bold)
