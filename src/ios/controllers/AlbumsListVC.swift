@@ -133,33 +133,36 @@ extension AlbumsListVC
 	override var previewActionItems: [UIPreviewActionItem]
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
-			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
-					let source = self.dataSource.items as! [Album]
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
+				guard let strongSelf = self else { return }
+				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.artist.albums) { (tracks) in
+					let source = strongSelf.dataSource.items as! [Album]
 					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
-					self.mpdBridge.playTracks(ar, shuffle: false, loop: false)
+					strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
-			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				self.mpdBridge.getTracksForAlbums(self.artist.albums) { (tracks) in
-					let source = self.dataSource.items as! [Album]
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
+				guard let strongSelf = self else { return }
+				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.artist.albums) { (tracks) in
+					let source = strongSelf.dataSource.items as! [Album]
 					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
-					self.mpdBridge.playTracks(ar, shuffle: true, loop: false)
+					strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
-			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { (albums) in
-				let source = self.dataSource.items as! [Album]
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
+				guard let strongSelf = self else { return }
+				let source = strongSelf.dataSource.items as! [Album]
 				for album in source
 				{
-					self.mpdBridge.addAlbumToQueue(album)
+					strongSelf.mpdBridge.addAlbumToQueue(album)
 				}
 			}
 			MiniPlayerView.shared.stayHidden = false

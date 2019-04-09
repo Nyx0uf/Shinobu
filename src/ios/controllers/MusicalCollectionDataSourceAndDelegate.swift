@@ -115,19 +115,21 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	}
 
 	// MARK: - Private
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) -> CoverOperation
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
 		let key = album.uniqueIdentifier
-		if let cop = downloadOperations[key] as! CoverOperation?
+		if let _ = downloadOperations[key] as! CoverOperation?
 		{
-			return cop
+			return
 		}
 		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
-		downloadOperation.callback = { (cover: UIImage, thumbnail: UIImage) in
+		downloadOperation.callback = { (cover, thumbnail) in
 			if let _ = weakOperation
 			{
-				self.downloadOperations.removeValue(forKey: key)
+				DispatchQueue.main.async {
+					self.downloadOperations.removeValue(forKey: key)
+				}
 			}
 			if let block = callback
 			{
@@ -137,8 +139,6 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		downloadOperations[key] = downloadOperation
 
 		OperationManager.shared.addOperation(downloadOperation)
-
-		return downloadOperation
 	}
 
 	private func handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
@@ -165,12 +165,6 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		}
 		else
 		{
-			if let op = cell.associatedObject as! CoverOperation?
-			{
-				Logger.shared.log(type: .information, message: "canceling \(op)")
-				op.cancel()
-			}
-
 			if delegate.isSearching(actively: true)
 			{
 				return
@@ -180,7 +174,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{
-				cell.associatedObject = downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
+				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
 					}
@@ -189,9 +183,11 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 			else
 			{
 				mpdBridge.getPathForAlbum(album) {
-					cell.associatedObject = self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
-						DispatchQueue.main.async {
-							self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+					DispatchQueue.main.async {
+						self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
+							DispatchQueue.main.async {
+								self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+							}
 						}
 					}
 				}

@@ -29,6 +29,8 @@ class MusicalCollectionVC: NYXViewController
 	{
 		return [.albums, .artists, .albumsartists, .genres, .playlists]
 	}
+
+	// MARK: - Private properties
 	// View to change the type of items in the collection view
 	private var typeChoiceView: TypeChoiceView! = nil
 
@@ -140,7 +142,7 @@ class MusicalCollectionVC: NYXViewController
 		UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
 			self.searchView.alpha = 1
 			self.searchBar.becomeFirstResponder()
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.searchBarVisible = true
 		})
 	}
@@ -161,7 +163,7 @@ class MusicalCollectionVC: NYXViewController
 					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
 					self.collectionView.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.maxY)!)
 				}
-			}, completion: { finished in
+			}, completion: { (finished) in
 				self.typeChoiceView.removeFromSuperview()
 			})
 		}
@@ -211,7 +213,7 @@ class MusicalCollectionVC: NYXViewController
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: .curveEaseOut, animations: {
 			self.searchBar.resignFirstResponder()
 			self.searchView.alpha = 0
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.searchBarVisible = false
 		})
 	}

@@ -88,9 +88,9 @@ final class AlbumDetailVC: NYXViewController
 		// Don't have all the metadatas
 		if album.artist.count == 0
 		{
-			mpdBridge.getMetadatasForAlbum(album) {
+			mpdBridge.getMetadatasForAlbum(album) { [weak self] in
 				DispatchQueue.main.async {
-					self.updateHeader()
+					self?.updateHeader()
 				}
 			}
 		}
@@ -151,7 +151,7 @@ extension AlbumDetailVC: UITableViewDelegate
 			return nil
 		}
 
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist"), handler: { (action, view, completionHandler ) in
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist")) { (action, view, completionHandler) in
 			self.mpdBridge.entitiesForType(.playlists) { (entities) in
 				if entities.count == 0
 				{
@@ -181,7 +181,7 @@ extension AlbumDetailVC: UITableViewDelegate
 				}
 			}
 			completionHandler(true)
-		})
+		}
 		action.image = #imageLiteral(resourceName: "btn-playlist-add")
 		action.backgroundColor = Colors.main
 

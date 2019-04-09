@@ -17,6 +17,42 @@ final class ImageCache
 		self.cache.countLimit = 100
 	}
 
+	// MARK: - Public
+	func clear(_ callback: ((_ success: Bool) -> Void)?)
+	{
+		var success = true
+
+		defer
+		{
+			callback?(success)
+		}
+
+		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else
+		{
+			success = false
+			return
+		}
+		guard let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory) else
+		{
+			success = false
+			return
+		}
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+
+		do
+		{
+			try FileManager.default.removeItem(at: coversDirectoryURL)
+			try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+			URLCache.shared.removeAllCachedResponses()
+			self.cache.removeAllObjects()
+		}
+		catch _
+		{
+			Logger.shared.log(type: .error, message: "Can't delete cover cache")
+			success = false
+		}
+	}
+
 	// MARK: - Subscripting
 	subscript(key: String) -> UIImage?
 	{

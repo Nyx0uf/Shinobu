@@ -16,6 +16,7 @@ final class PlaylistsAddVC: NYXTableViewController
 	init(mpdBridge: MPDBridge)
 	{
 		self.mpdBridge = mpdBridge
+
 		super.init(style: .plain)
 	}
 
@@ -54,19 +55,19 @@ final class PlaylistsAddVC: NYXTableViewController
 	{
 		let alertController = NYXAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
 
-		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
 			{
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
-				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
-				}))
+				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
 			}
 			else
 			{
-				self.mpdBridge.createPlaylist(named: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdBridge.createPlaylist(named: textField.text!) { [weak self] (result) in
+					guard let strongSelf = self else { return }
 					switch result
 					{
 						case .failure(let error):
@@ -74,21 +75,21 @@ final class PlaylistsAddVC: NYXTableViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
+							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
 								DispatchQueue.main.async {
-									self.getPlaylists()
+									strongSelf.getPlaylists()
 								}
 							}
 					}
 				}
 			}
-		}))
-		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel, handler: nil))
+		})
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField(configurationHandler: { (textField) -> Void in
+		alertController.addTextField() { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_create_playlist_placeholder")
 			textField.textAlignment = .left
-		})
+		}
 
 		present(alertController, animated: true, completion: nil)
 	}
@@ -146,7 +147,7 @@ extension PlaylistsAddVC
 
 		let playlist = playlists[indexPath.row]
 
-		mpdBridge.addTrack(to: playlist, track: track) { (result: Result<Bool, MPDConnectionError>) in
+		mpdBridge.addTrack(to: playlist, track: track) { (result) in
 			DispatchQueue.main.async {
 				switch result
 				{

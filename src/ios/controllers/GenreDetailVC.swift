@@ -143,7 +143,7 @@ extension GenreDetailVC
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { (albums) in
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
 					let allTracks = strongSelf.genre.albums.compactMap { $0.tracks }.flatMap { $0 }
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: false, loop: false)
@@ -155,7 +155,7 @@ extension GenreDetailVC
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { (albums) in
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.genre.albums) { (tracks) in
 					let allTracks = strongSelf.genre.albums.compactMap { $0.tracks }.flatMap { $0 }
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: true, loop: false)
@@ -167,7 +167,7 @@ extension GenreDetailVC
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) {
 			[weak self] (action, viewController) in
 			guard let strongSelf = self else { return }
-			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { albums in
+			strongSelf.mpdBridge.getAlbumsForGenre(strongSelf.genre, firstOnly: false) { (albums) in
 				for album in strongSelf.genre.albums
 				{
 					strongSelf.mpdBridge.addAlbumToQueue(album)

@@ -75,23 +75,9 @@ final class SettingsVC: NYXTableViewController
 
 	@objc func toggleColumns(_ sender: Any?)
 	{
-		let columns = sColumns.selectedSegmentIndex == 0 ? 2 : 3
-		Settings.shared.set(columns, forKey: .pref_numberOfColumns)
+		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
 
-		// Clear cache because covers size will change
-		let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-		let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory)!
-		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
-		do
-		{
-			try FileManager.default.removeItem(at: coversDirectoryURL)
-			try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-			URLCache.shared.removeAllCachedResponses()
-		}
-		catch _
-		{
-			Logger.shared.log(type: .error, message: "Can't delete cover cache")
-		}
+		ImageCache.shared.clear(nil)
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .collectionViewLayoutShouldChange, object: nil)
 	}
@@ -117,8 +103,7 @@ final class SettingsVC: NYXTableViewController
 			guard let data = Logger.shared.export() else
 			{
 				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_logsexport_fail_msg"), preferredStyle: .alert)
-				let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
-				}
+				let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive)
 				alertController.addAction(okAction)
 				present(alertController, animated: true, completion: nil)
 				return
@@ -151,8 +136,7 @@ final class SettingsVC: NYXTableViewController
 		else
 		{
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message:NYXLocalizedString("lbl_alert_nomailaccount_msg"), preferredStyle: .alert)
-			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
-			}
+			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive)
 			alertController.addAction(okAction)
 			present(alertController, animated: true, completion: nil)
 		}
@@ -260,7 +244,7 @@ extension SettingsVC
 			if indexPath.row == 0
 			{
 				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
-				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) == 2 ? 0 : 1
+				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) - 2
 			}
 		}
 		else if indexPath.section == 1

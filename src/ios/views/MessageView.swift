@@ -89,7 +89,7 @@ final class MessageView: UIView
 					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: .white)
 			}
 			self.label.backgroundColor = self.backgroundColor
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.visible = true
 			self.startTimer(4)
 		})
@@ -99,7 +99,7 @@ final class MessageView: UIView
 	{
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = -self.height
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.visible = false
 		})
 	}

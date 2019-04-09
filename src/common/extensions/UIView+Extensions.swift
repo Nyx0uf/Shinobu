@@ -61,15 +61,15 @@ extension UIView
 			let radians = 30 / 180 * CGFloat.pi
 			let rotation = origTransform.rotated(by: radians)
 			self.transform = rotation
-		}, completion:{ finished in
+		}, completion:{ (finished) in
 			UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseOut, animations: {
 				let radians = -30 / 180 * CGFloat.pi
 				let rotation = origTransform.rotated(by: radians)
 				self.transform = rotation
-			}, completion:{ finished in
+			}, completion:{ (finished) in
 				UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseOut, animations: {
 					self.transform = origTransform
-				}, completion:{ finished in
+				}, completion:{ (finished) in
 					if removeAtEnd
 					{
 						self.removeFromSuperview()

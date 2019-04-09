@@ -43,7 +43,7 @@ extension UIImage
 
 		// Create scale-cropped image
 		let renderer = UIGraphicsImageRenderer(size: destRect.size)
-		return renderer.image() { rendererContext in
+		return renderer.image() { (rendererContext) in
 			let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
 			let image = UIImage(cgImage: sourceImg!, scale: 0, orientation: imageOrientation)
 			image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
@@ -72,7 +72,7 @@ extension UIImage
 	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage?
 	{
 		let renderer = UIGraphicsImageRenderer(size: size)
-		return renderer.image() { rendererContext in
+		return renderer.image() { (rendererContext) in
 			let rect = CGRect(.zero, self.size)
 			color.set()
 			UIRectFill(rect)

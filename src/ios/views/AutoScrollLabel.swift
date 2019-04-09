@@ -201,7 +201,7 @@ final class AutoScrollLabel: UIView
 			let duration = Double(labelWidth) / self.scrollSpeed
 			UIView.animate(withDuration: duration, delay: self.pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: { () -> Void in
 				self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0) : .zero
-			}) { finished in
+			}) { (finished) in
 				self.isScrolling = false
 
 				self.applyGradientMaskForFadeLength(fadeLengthIn: self.fadeLength, fade: false)

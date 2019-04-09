@@ -41,6 +41,7 @@ final class ServerAddVC: NYXTableViewController
 	{
 		self.mpdBridge = mpdBridge
 		self.serversManager = ServersManager()
+
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -153,8 +154,7 @@ final class ServerAddVC: NYXTableViewController
 		guard let serverName = tfMPDName.text , serverName.count > 0 else
 		{
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
-			}
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
 			present(alertController, animated: true, completion: nil)
 			return
@@ -164,8 +164,7 @@ final class ServerAddVC: NYXTableViewController
 		guard let ip = tfMPDHostname.text , ip.count > 0 else
 		{
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
-			}
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
 			present(alertController, animated: true, completion: nil)
 			return
@@ -239,8 +238,7 @@ final class ServerAddVC: NYXTableViewController
 			else
 			{
 				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
-				let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel) { (action) in
-				}
+				let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 				alertController.addAction(cancelAction)
 				present(alertController, animated: true, completion: nil)
 				return
@@ -352,39 +350,24 @@ final class ServerAddVC: NYXTableViewController
 
 	private func clearCache(confirm: Bool)
 	{
-		let clearBlock = { () -> Void in
-			let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last!
-			let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory)!
-			let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
-
-			do
-			{
-				try FileManager.default.removeItem(at: coversDirectoryURL)
-				try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
-				URLCache.shared.removeAllCachedResponses()
-			}
-			catch _
-			{
-				Logger.shared.log(type: .error, message: "Can't delete cover cache")
-			}
-			self.updateCacheLabel()
-		}
-
 		if confirm
 		{
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle: .alert)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
-			}
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel)
 			alertController.addAction(cancelAction)
 			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
-				clearBlock()
+				ImageCache.shared.clear() { (success) in
+					self.updateCacheLabel()
+				}
 			}
 			alertController.addAction(okAction)
 			present(alertController, animated: true, completion: nil)
 		}
 		else
 		{
-			clearBlock()
+			ImageCache.shared.clear() { (success) in
+				self.updateCacheLabel()
+			}
 		}
 	}
 
@@ -644,7 +627,7 @@ extension ServerAddVC
 		}
 		else if indexPath.section == 1 && indexPath.row == 4
 		{
-			mpdBridge.updateDatabase() { succeeded in
+			mpdBridge.updateDatabase() { (succeeded) in
 				DispatchQueue.main.async {
 					if succeeded == false
 					{

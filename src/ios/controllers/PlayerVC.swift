@@ -42,6 +42,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 	init(mpdBridge: MPDBridge)
 	{
 		self.mpdBridge = mpdBridge
+
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -229,7 +230,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
 
-		mpdBridge.getVolume { (volume: Int) in
+		mpdBridge.getVolume { (volume) in
 			DispatchQueue.main.async {
 				if volume == -1
 				{
@@ -257,7 +258,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: coverView.size)
-				op.callback = { (cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
 						iv?.image = cover
@@ -270,7 +271,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 				let size = coverView.size
 				mpdBridge.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: size)
-					op.callback = { (cover: UIImage, thumbnail: UIImage) in
+					op.callback = { (cover, thumbnail) in
 						DispatchQueue.main.async {
 							self.coverView.image = cover
 							iv?.image = cover
@@ -318,14 +319,14 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 			}
 			else
 			{
-				mpdBridge.getTracksForAlbums([mpdBridge.getCurrentAlbum()!], callback: { (tracks) in
+				mpdBridge.getTracksForAlbums([mpdBridge.getCurrentAlbum()!]) { (tracks) in
 					DispatchQueue.main.async {
 						if let tracks = self.mpdBridge.getCurrentAlbum()?.tracks
 						{
 							self.trackListView.tracks = tracks
 						}
 					}
-				})
+				}
 			}
 
 			UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
@@ -424,7 +425,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		if album.path != nil
 		{
 			let op = CoverOperation(album: album, cropSize: coverView.size)
-			op.callback = { (cover: UIImage, thumbnail: UIImage) in
+			op.callback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
 					self.coverView.image = cover
 					iv?.image = cover
@@ -437,7 +438,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 			let size = coverView.size
 			mpdBridge.getPathForAlbum(album) {
 				let op = CoverOperation(album: album, cropSize: size)
-				op.callback = { (cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.coverView.image = cover
 						iv?.image = cover
@@ -479,7 +480,7 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		let tmp = clamp(ceil(valueToSet), lower: 0, upper: 100)
 		let volume = Int(tmp)
 
-		mpdBridge.setVolume(volume) { (success: Bool) in
+		mpdBridge.setVolume(volume) { (success) in
 			if success
 			{
 				DispatchQueue.main.async {
@@ -553,10 +554,10 @@ final class PlayerVCCustomPresentAnimationController: NSObject, UIViewController
 			UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
 				iv.frame = CGRect(32, UIDevice.current.isiPhoneX() ? 124 : 100, bounds.width - 64, bounds.width - 64)
 				MiniPlayerView.shared.hide()
-			}, completion: { finished in
+			}, completion: { (finished) in
 				UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
 					toViewController.view.alpha = 1
-				}, completion: { finished in
+				}, completion: { (finished) in
 					iv.removeFromSuperview()
 					transitionContext.completeTransition(true)
 				})
@@ -575,10 +576,10 @@ final class PlayerVCCustomPresentAnimationController: NSObject, UIViewController
 			UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
 				fromViewController.view.alpha = 0
 				iv.alpha = 1
-			}, completion: { finished in
+			}, completion: { (finished) in
 				UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
 					iv.frame = CGRect(0, bounds.height - MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height, MiniPlayerView.shared.imageView.height)
-				}, completion: { finished in
+				}, completion: { (finished) in
 					transitionContext.completeTransition(true)
 					iv.removeFromSuperview()
 					let toViewController = transitionContext.viewController(forKey: .to)!

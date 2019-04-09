@@ -112,19 +112,19 @@ final class PlaylistDetailVC: NYXViewController
 	{
 		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
 
-		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default, handler: { alert -> Void in
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
 			if String.isNullOrWhiteSpace(textField.text)
 			{
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
-				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel, handler: { alert -> Void in
-				}))
+				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
 			}
 			else
 			{
-				self.mpdBridge.rename(playlist: self.playlist, withNewName: textField.text!) { (result: Result<Bool, MPDConnectionError>) in
+				self.mpdBridge.rename(playlist: self.playlist, withNewName: textField.text!) { [weak self] (result) in
+					guard let strongSelf = self else { return }
 					switch result
 					{
 						case .failure(let error):
@@ -132,21 +132,21 @@ final class PlaylistDetailVC: NYXViewController
 								MessageView.shared.showWithMessage(message: error.message)
 							}
 						case .success( _):
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
+							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
 								DispatchQueue.main.async {
-									self.updateNavigationTitle()
+									strongSelf.updateNavigationTitle()
 								}
 							}
 					}
 				}
 			}
-		}))
-		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel, handler: nil))
+		})
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField(configurationHandler: { (textField) -> Void in
+		alertController.addTextField() { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_rename_playlist_placeholder")
 			textField.textAlignment = .left
-		})
+		}
 
 		present(alertController, animated: true, completion: nil)
 	}
@@ -191,8 +191,9 @@ extension PlaylistDetailVC: UITableViewDelegate
 			return nil
 		}
 
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
-			self.mpdBridge.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { (result: Result<Bool, MPDConnectionError>) in
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist")) { (action, view, completionHandler ) in
+			self.mpdBridge.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { [weak self] (result) in
+				guard let strongSelf = self else { return }
 				switch result
 				{
 					case .failure(let error):
@@ -200,17 +201,17 @@ extension PlaylistDetailVC: UITableViewDelegate
 							MessageView.shared.showWithMessage(message: error.message)
 						}
 					case .success( _):
-						self.mpdBridge.getTracksForPlaylist(self.playlist) { (tracks) in
+						strongSelf.mpdBridge.getTracksForPlaylist(strongSelf.playlist) { (tracks) in
 							DispatchQueue.main.async {
-								self.updateNavigationTitle()
-								self.tableView.tracks = self.playlist.tracks!
+								strongSelf.updateNavigationTitle()
+								strongSelf.tableView.tracks = strongSelf.playlist.tracks!
 							}
 						}
 				}
 			}
 
 			completionHandler(true)
-		})
+		}
 		action.image = #imageLiteral(resourceName: "btn-trash")
 		action.backgroundColor = Colors.main
 
@@ -239,7 +240,7 @@ extension PlaylistDetailVC
 		}
 
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
-			self.mpdBridge.deletePlaylist(named: self.playlist.name) { (result: Result<Bool, MPDConnectionError>) in
+			self.mpdBridge.deletePlaylist(named: self.playlist.name) { (result) in
 				switch result
 				{
 					case .failure(let error):

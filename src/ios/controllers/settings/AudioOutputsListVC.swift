@@ -3,11 +3,14 @@ import UIKit
 
 final class AudioOutputsListVC: NYXTableViewController
 {
+	// MARK - Public properties
 	// List of artists
 	var outputs = [AudioOutput]()
+
+	// MARK - Private properties
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.audiooutput"
-	//
+	// MPD server
 	private let mpdServer: MPDServer
 
 	// MARK: - Initializers

@@ -31,7 +31,7 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 					anim.duration = 0.2
 					anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
-				}, completion:{ finished in
+				}, completion:{ (finished) in
 					self.imageView.layer.borderWidth = 1
 				})
 			}
@@ -45,7 +45,7 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 					anim.duration = 0.2
 					anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
-				}, completion:{ finished in
+				}, completion:{ (finished) in
 					self.imageView.layer.borderWidth = 0
 				})
 			}

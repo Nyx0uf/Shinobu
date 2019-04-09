@@ -152,16 +152,17 @@ extension ServersListVC
 
 	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
 	{
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist"), handler: { (action, view, completionHandler ) in
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist")) { [weak self] (action, view, completionHandler) in
 
-			let serverData = self.servers[indexPath.row]
-			if self.serversManager.removeServerByName(serverData.name)
+			guard let strongSelf = self else { return }
+			let serverData = strongSelf.servers[indexPath.row]
+			if strongSelf.serversManager.removeServerByName(serverData.name)
 			{
-				self.refreshServers()
+				strongSelf.refreshServers()
 			}
 
 			completionHandler(true)
-		})
+		}
 		action.image = #imageLiteral(resourceName: "btn-trash")
 		action.backgroundColor = Colors.destructiveAction
 

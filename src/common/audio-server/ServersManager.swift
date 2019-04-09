@@ -75,7 +75,7 @@ final class ServersManager
 		do
 		{
 			var shinobuServers = getServersList()
-			if let idx = shinobuServers.firstIndex(where: { $0.name == serverNameToRemove})
+			if let idx = shinobuServers.firstIndex(where: { $0.name == serverNameToRemove })
 			{
 				shinobuServers.remove(at: idx)
 

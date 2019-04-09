@@ -166,7 +166,7 @@ final class MiniPlayerView: UIView
 			if album.path != nil
 			{
 				let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
-				op.callback = { (cover: UIImage, thumbnail: UIImage) in
+				op.callback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.setInfoFromTrack(track, ofAlbum: album)
 					}
@@ -177,7 +177,7 @@ final class MiniPlayerView: UIView
 			{
 				mpdBridge?.getPathForAlbum(album) {
 					let op = CoverOperation(album: album, cropSize: (cropSize?.cgSizeValue)!)
-					op.callback = { (cover: UIImage, thumbnail: UIImage) in
+					op.callback = { (cover, thumbnail) in
 						DispatchQueue.main.async {
 							self.setInfoFromTrack(track, ofAlbum: album)
 						}
@@ -194,7 +194,7 @@ final class MiniPlayerView: UIView
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = w.frame.height - self.blurEffectView.height
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.visible = true
 			NotificationCenter.default.post(name: .miniPlayerViewDidShow, object: nil)
 		})
@@ -206,7 +206,7 @@ final class MiniPlayerView: UIView
 		let w = UIApplication.shared.keyWindow!
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = w.frame.height + self.blurEffectView.height
-		}, completion: { finished in
+		}, completion: { (finished) in
 			self.visible = false
 			NotificationCenter.default.post(name: .miniPlayerViewDidHide, object: nil)
 		})
@@ -250,7 +250,7 @@ final class MiniPlayerView: UIView
 			let w = UIApplication.shared.keyWindow!
 			UIView.animate(withDuration: 0.35, delay: 0, options: UIView.AnimationOptions(), animations: {
 				self.y = w.frame.height - self.height
-			}, completion: { finished in
+			}, completion: { (finished) in
 				self.fullyVisible = true
 			})
 		}
@@ -259,7 +259,7 @@ final class MiniPlayerView: UIView
 			let w = UIApplication.shared.keyWindow!
 			UIView.animate(withDuration: 0.35, delay: 0, options: UIView.AnimationOptions(), animations: {
 				self.y = w.frame.height - self.blurEffectView.height
-			}, completion: { finished in
+			}, completion: { (finished) in
 				self.fullyVisible = false
 			})
 		}
