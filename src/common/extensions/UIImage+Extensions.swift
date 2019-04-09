@@ -37,8 +37,8 @@ extension UIImage
 
 		let destRect = CGRect(.zero, fitSize).integral
 		// Crop center
-		let destX = CGFloat(round((scaledWidth - targetWidth) * 0.5))
-		let destY = CGFloat(round((scaledHeight - targetHeight) * 0.5))
+		let destX = CGFloat(round((scaledWidth - targetWidth) / 2))
+		let destY = CGFloat(round((scaledHeight - targetHeight) / 2))
 		let sourceRect = CGRect(ceil(destX / scaleFactor), destY / scaleFactor, targetWidth / scaleFactor, targetHeight / scaleFactor).integral
 
 		// Create scale-cropped image
@@ -128,7 +128,7 @@ extension UIImage
 		let framesetter = CTFramesetterCreateWithAttributedString(attrString)
 		var osef = CFRange(location: 0, length: 0)
 		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, trueMaxSize, &osef).ceilled()
-		let rect = CGRect((trueMaxSize.width - goodSize.width) * 0.5, (trueMaxSize.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
+		let rect = CGRect((trueMaxSize.width - goodSize.width) / 2, (trueMaxSize.height - goodSize.height) / 2, goodSize.width, goodSize.height)
 		let path = CGPath(rect: rect, transform: nil)
 		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
 

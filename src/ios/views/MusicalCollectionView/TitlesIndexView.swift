@@ -141,7 +141,10 @@ final class TitlesIndexView: UIView
 				if let letterView = letterViewAtPoint(point)
 				{
 					overlayView.frame = CGRect(-width - 32, (letterView.y) - (overlayView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
-					overlayView.letter = letterView.letter
+					if overlayView.letter != letterView.letter
+					{
+						overlayView.letter = letterView.letter
+					}
 					delegate?.didScrollToIndex(letterView.tag)
 				}
 			default:

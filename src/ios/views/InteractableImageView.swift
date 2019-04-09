@@ -10,6 +10,7 @@ final class InteractableImageView: UIImageView
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
+
 		self.isUserInteractionEnabled = true
 
 		let singleTap = UITapGestureRecognizer()

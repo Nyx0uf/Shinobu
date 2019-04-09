@@ -105,7 +105,7 @@ fileprivate final class SimpleLetterView: UIView
 		let framesetter = CTFramesetterCreateWithAttributedString(isSelected ? letterSelected : letterUnselected)
 		var osef = CFRange(location: 0, length: 0)
 		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, rect.size, &osef).ceilled()
-		let rect = CGRect((rect.width - goodSize.width) * 0.5, (rect.height - goodSize.height) * 0.5, goodSize.width, goodSize.height)
+		let rect = CGRect((rect.width - goodSize.width) / 2, (rect.height - goodSize.height) / 2, goodSize.width, goodSize.height)
 		let path = CGPath(rect: rect, transform: nil)
 		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
 
@@ -122,9 +122,10 @@ fileprivate final class SimpleLetterView: UIView
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
 
-		var attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), NSAttributedString.Key.foregroundColor : Colors.background, NSAttributedString.Key.paragraphStyle : paragraphStyle]
-		letterSelected = NSAttributedString(string: letter, attributes: attributes as [NSAttributedString.Key : Any])
-		attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), NSAttributedString.Key.foregroundColor : Colors.mainText, NSAttributedString.Key.paragraphStyle : paragraphStyle]
-		letterUnselected = NSAttributedString(string: letter, attributes: attributes as [NSAttributedString.Key : Any])
+		var attributes: [NSAttributedString.Key : Any] = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), .foregroundColor : Colors.background, .paragraphStyle : paragraphStyle]
+		letterSelected = NSAttributedString(string: letter, attributes: attributes)
+
+		attributes = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), .foregroundColor : Colors.mainText, .paragraphStyle : paragraphStyle]
+		letterUnselected = NSAttributedString(string: letter, attributes: attributes)
 	}
 }

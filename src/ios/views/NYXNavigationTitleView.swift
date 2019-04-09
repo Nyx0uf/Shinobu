@@ -54,7 +54,7 @@ final class NYXNavigationTitleView: UIButton
 
 		self.isAccessibilityElement = true
 
-		self.label.frame = CGRect(0, 0, frame.size)
+		self.label.frame = CGRect(.zero, frame.size)
 		self.label.textAlignment = .center
 		self.addSubview(self.label)
 	}

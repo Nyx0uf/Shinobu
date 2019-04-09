@@ -24,6 +24,7 @@ final class TypeChoiceView: UIView
 	init(frame: CGRect, musicalEntityTypes: [MusicalEntityType])
 	{
 		self.musicalEntityTypes = musicalEntityTypes
+
 		super.init(frame: frame)
 		self.backgroundColor = .black
 

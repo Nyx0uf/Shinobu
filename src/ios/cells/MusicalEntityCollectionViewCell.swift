@@ -77,9 +77,6 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 		}
 	}
 
-	// MARK: - Private properties
-	private var associatedKey = "fr.whine.key.cell"
-
 	// MARK: - Initializers
 	override init(frame: CGRect)
 	{
@@ -112,17 +109,5 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 	{
 		imageView.frame = CGRect(.zero, frame.width, frame.height - 20)
 		label.frame = CGRect(0, imageView.maxY, frame.width, 20)
-	}
-
-	var associatedObject: Any?
-	{
-		set
-		{
-			objc_setAssociatedObject(self, &associatedKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-		}
-		get
-		{
-			return objc_getAssociatedObject(self, &associatedKey)
-		}
 	}
 }

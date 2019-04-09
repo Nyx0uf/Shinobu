@@ -79,18 +79,16 @@ final class AlbumHeaderView: UIView
 			}
 			else
 			{
-				let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 				let string = album.name
 				let bgColor = UIColor(rgb: string.djb2())
-				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
+				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
 			}
 		}
 		else
 		{
-			let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
 			let string = album.name
 			let bgColor = UIColor(rgb: string.djb2())
-			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: (coverSize?.cgSizeValue)!.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: (coverSize?.cgSizeValue)!)
+			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
 		}
 		self.image = image
 
