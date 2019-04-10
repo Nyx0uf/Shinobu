@@ -148,8 +148,6 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		let yButtonsTracks = sliderPosition.maxY + 16
 		btnPrevious = UIButton(frame: CGRect(margin, yButtonsTracks, sizeButtonsTracks))
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: .white), for: .normal)
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.main), for: .highlighted)
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: Colors.main), for: .selected)
 		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
 		blurEffectView.contentView.addSubview(btnPrevious)
 
@@ -161,8 +159,6 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		// Next button
 		btnNext = UIButton(frame: CGRect(width - sizeButtonsTracks.width - margin, yButtonsTracks, sizeButtonsTracks))
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: .white), for: .normal)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.main), for: .highlighted)
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: Colors.main), for: .selected)
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		blurEffectView.contentView.addSubview(btnNext)
 
@@ -177,11 +173,10 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 
 		// Repeat button
 		let loop = Settings.shared.bool(forKey: .mpd_repeat)
-		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		let sizeButtonsRR = CGSize(44, 44)
+		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
 		btnRepeat = UIButton(frame: CGRect(margin, view.height - sizeButtonsRR.height, sizeButtonsRR))
 		btnRepeat.setImage(imageRepeat.tinted(withColor: .white)?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRepeat.setImage(imageRepeat.tinted(withColor: Colors.main)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRepeat.isSelected = loop
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.accessibilityLabel = NYXLocalizedString(loop ? "lbl_repeat_disable" : "lbl_repeat_enable")
@@ -192,7 +187,6 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
 		btnRandom = UIButton(frame: CGRect(width - margin - sizeButtonsRR.width, view.height - sizeButtonsRR.height, sizeButtonsRR))
 		btnRandom.setImage(imageRandom.tinted(withColor: .white)?.withRenderingMode(.alwaysOriginal), for: .normal)
-		btnRandom.setImage(imageRandom.tinted(withColor: Colors.main)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
 		btnRandom.isSelected = random
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.accessibilityLabel = NYXLocalizedString(random ? "lbl_random_disable" : "lbl_random_enable")
@@ -292,6 +286,11 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		NotificationCenter.default.removeObserver(self, name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.removeObserver(self, name: .playerStatusChanged, object: nil)
+	}
+
+	override var preferredStatusBarStyle: UIStatusBarStyle
+	{
+		return .lightContent
 	}
 
 	// MARK: - InteractableImageViewDelegate
@@ -461,16 +460,16 @@ final class PlayerVC: NYXViewController, InteractableImageViewDelegate
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay.tinted(withColor: .white), for: .normal)
-			btnPlay.setImage(imgPlay.tinted(withColor: Colors.main), for: .highlighted)
-			btnPlay.setImage(imgPlay.tinted(withColor: Colors.main), for: .selected)
+			btnPlay.setImage(imgPlay.tinted(withColor: themeProvider.currentTheme.tintColor), for: .highlighted)
+			btnPlay.setImage(imgPlay.tinted(withColor: themeProvider.currentTheme.tintColor), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		}
 		else
 		{
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
 			btnPlay.setImage(imgPause.tinted(withColor: .white), for: .normal)
-			btnPlay.setImage(imgPause.tinted(withColor: Colors.main), for: .highlighted)
-			btnPlay.setImage(imgPause.tinted(withColor: Colors.main), for: .selected)
+			btnPlay.setImage(imgPause.tinted(withColor: themeProvider.currentTheme.tintColor), for: .highlighted)
+			btnPlay.setImage(imgPause.tinted(withColor: themeProvider.currentTheme.tintColor), for: .selected)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}
 	}
@@ -595,5 +594,22 @@ extension PlayerVC: TracksListTableViewDelegate
 	func getCurrentTrack() -> Track?
 	{
 		return mpdBridge.getCurrentTrack()
+	}
+}
+
+extension PlayerVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: theme.tintColor), for: .highlighted)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: theme.tintColor), for: .selected)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: theme.tintColor), for: .highlighted)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").tinted(withColor: theme.tintColor), for: .selected)
+
+		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
+		let imageRandom = #imageLiteral(resourceName: "btn-random")
+		btnRepeat.setImage(imageRepeat.tinted(withColor: theme.tintColor)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+		btnRandom.setImage(imageRandom.tinted(withColor: theme.tintColor)?.withRenderingMode(.alwaysOriginal), for: .highlighted)
+
 	}
 }

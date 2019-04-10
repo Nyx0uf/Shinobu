@@ -14,8 +14,12 @@ final class SettingsVC: NYXTableViewController
 	private var swFuzzySearch: UISwitch!
 	// Logging switch
 	private var swLogging: UISwitch!
+	// Theme switch
+	private var swTheme: UISwitch!
 	// Columns control
 	private var sColumns: UISegmentedControl!
+	//
+	private var colorsButton = [ColorButton]()
 
 	// MARK: - UIViewController
 	override func viewDidLoad()
@@ -30,21 +34,36 @@ final class SettingsVC: NYXTableViewController
 		titleView.setMainText(NYXLocalizedString("lbl_section_settings"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = UITableView.colorSeparator
 
 		swShake = UISwitch()
-		swShake.tintColor = UITableView.colorActionItem
 		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
+
 		swFuzzySearch = UISwitch()
-		swFuzzySearch.tintColor = UITableView.colorActionItem
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
+
 		swLogging = UISwitch()
-		swLogging.tintColor = UITableView.colorActionItem
 		swLogging.addTarget(self, action: #selector(toggleLogging(_:)), for: .valueChanged)
+
+		swTheme = UISwitch()
+		swTheme.addTarget(self, action: #selector(toggleTheme(_:)), for: .valueChanged)
+
 		sColumns = UISegmentedControl(items: ["2", "3"])
-		sColumns.tintColor = Colors.main
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
 		sColumns.frame = CGRect(0, 0, 64, swLogging.height)
+
+		let margin = CGFloat(4)
+		var x = view.width - CGFloat(32 * TintColorType.allCases.count) - CGFloat(margin * CGFloat(TintColorType.allCases.count)) - 16
+		for c in TintColorType.allCases
+		{
+			let btn = ColorButton(frame: CGRect(x, 6, 32, 32), tintColorType: c)
+			btn.isSelected = c.rawValue == Settings.shared.integer(forKey: .pref_tintColor)
+			btn.addTarget(self, action: #selector(toggleTintColor(_:)), for: .touchUpInside)
+			colorsButton.append(btn)
+
+			x += 32 + margin
+		}
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -73,6 +92,15 @@ final class SettingsVC: NYXTableViewController
 		Settings.shared.set(!logging, forKey: .pref_enableLogging)
 	}
 
+	@objc func toggleTheme(_ sender: Any?)
+	{
+		let dark = !Settings.shared.bool(forKey: .pref_themeDark)
+		Settings.shared.set(dark, forKey: .pref_themeDark)
+		var theme = dark ? ShinobuTheme.dark : ShinobuTheme.light
+		theme.tintColor = colorForTintColorType(TintColorType(rawValue: Settings.shared.integer(forKey: .pref_tintColor))!)
+		themeProvider.currentTheme = theme
+	}
+
 	@objc func toggleColumns(_ sender: Any?)
 	{
 		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
@@ -80,6 +108,16 @@ final class SettingsVC: NYXTableViewController
 		ImageCache.shared.clear(nil)
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .collectionViewLayoutShouldChange, object: nil)
+	}
+
+	@objc fileprivate func toggleTintColor(_ sender: ColorButton?)
+	{
+		guard let button = sender else { return }
+
+		Settings.shared.set(button.tintColorType.rawValue, forKey: .pref_tintColor)
+
+		themeProvider.currentTheme.tintColor = colorForTintColorType(button.tintColorType)
+		themeProvider.currentTheme = themeProvider.currentTheme
 	}
 
 	@objc func closeAction(_ sender: Any?)
@@ -156,7 +194,7 @@ extension SettingsVC
 		switch section
 		{
 			case 0:
-				return 1
+				return 3
 			case 1:
 				return 1
 			case 2:
@@ -177,12 +215,25 @@ extension SettingsVC
 		if cell == nil
 		{
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
-			cell?.textLabel?.textColor = UITableView.colorMainText
-			cell?.backgroundColor = UITableView.colorCellBackground
 
 			if indexPath.section == 0
 			{
 				if indexPath.row == 0
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_theme_dark")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swTheme)
+				}
+				else if indexPath.row == 1
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_tint_color")
+					cell?.selectionStyle = .none
+					for btn in colorsButton
+					{
+						cell?.addSubview(btn)
+					}
+				}
+				else if indexPath.row == 2
 				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_columns")
 					cell?.selectionStyle = .none
@@ -219,11 +270,7 @@ extension SettingsVC
 				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_send_logs")
 					cell?.textLabel?.textAlignment = .center
-					cell?.textLabel?.textColor = UITableView.colorActionItem
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
-					let backgroundView = UIView()
-					backgroundView.backgroundColor = Colors.backgroundSelected
-					cell?.selectedBackgroundView = backgroundView
 				}
 			}
 			else
@@ -239,9 +286,25 @@ extension SettingsVC
 			}
 		}
 
+		cell?.backgroundColor = themeProvider.currentTheme.tableCellColor
+		cell?.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+
 		if indexPath.section == 0
 		{
 			if indexPath.row == 0
+			{
+				swTheme.frame = CGRect(UIScreen.main.bounds.width - 16 - swTheme.width, (cell!.height - swTheme.height) / 2, swTheme.size)
+				swTheme.isOn = Settings.shared.bool(forKey: .pref_themeDark)
+			}
+			else if indexPath.row == 1
+			{
+				let tintAsInt = Settings.shared.integer(forKey: .pref_tintColor)
+				for btn in colorsButton
+				{
+					btn.isSelected = btn.tintColorType.rawValue == tintAsInt
+				}
+			}
+			else if indexPath.row == 2
 			{
 				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
 				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) - 2
@@ -291,12 +354,12 @@ extension SettingsVC
 
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
 	{
-		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
+		let dummy = UIView(frame: CGRect(.zero, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 
 		let label = UILabel(frame: CGRect(10, 0, dummy.width - 20, dummy.height))
 		label.backgroundColor = dummy.backgroundColor
-		label.textColor = UITableView.colorHeaderTitle
+		label.textColor = themeProvider.currentTheme.tableSectionHeaderTextColor
 		label.font = UIFont.systemFont(ofSize: 18, weight: .light)
 		label.textAlignment = .center
 		dummy.addSubview(label)
@@ -327,7 +390,7 @@ extension SettingsVC
 
 	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
 	{
-		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
+		let dummy = UIView(frame: CGRect(.zero, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 		return dummy
 	}
@@ -343,5 +406,84 @@ extension SettingsVC: MFMailComposeViewControllerDelegate
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?)
 	{
 		controller.dismiss(animated: true, completion: nil)
+	}
+}
+
+extension SettingsVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		view.backgroundColor = theme.backgroundColor
+		tableView.backgroundColor = theme.backgroundColor
+		tableView.separatorColor = theme.tableSeparatorColor
+		swShake.onTintColor = theme.tintColor
+		swShake.tintColor = theme.switchTintColor
+		swFuzzySearch.onTintColor = theme.tintColor
+		swFuzzySearch.tintColor = theme.switchTintColor
+		swLogging.onTintColor = theme.tintColor
+		swLogging.tintColor = theme.switchTintColor
+		swTheme.onTintColor = theme.tintColor
+		swTheme.tintColor = theme.switchTintColor
+		sColumns.tintColor = theme.tintColor
+
+		tableView.reloadData()
+	}
+}
+
+
+fileprivate final class ColorButton: UIButton, Themed
+{
+	//
+	private(set) var tintColorType: TintColorType
+
+	init(frame: CGRect, tintColorType: TintColorType)
+	{
+		self.tintColorType = tintColorType
+
+		super.init(frame: frame)
+
+		self.layer.cornerRadius = frame.width / 2
+		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.backgroundColor = colorForTintColorType(tintColorType)
+
+		initializeTheming()
+	}
+
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	override var isSelected: Bool
+	{
+		willSet
+		{
+			self.layer.borderWidth = isSelected ? 2 : 0
+		}
+
+		didSet
+		{
+			self.layer.borderWidth = isSelected ? 2 : 0
+		}
+	}
+
+	override var isHighlighted: Bool
+	{
+		willSet
+		{
+			self.layer.borderWidth = isHighlighted ? 2 : 0
+		}
+
+		didSet
+		{
+			self.layer.borderWidth = isHighlighted ? 2 : 0
+		}
+	}
+
+	override var buttonType: UIButton.ButtonType
+	{
+		return .custom
+	}
+
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		self.layer.borderColor = theme.tableTextFieldTextColor.cgColor
 	}
 }

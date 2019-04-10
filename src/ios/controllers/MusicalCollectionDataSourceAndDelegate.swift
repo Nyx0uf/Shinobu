@@ -239,9 +239,6 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 		cell.type = musicalEntityType
 		cell.layer.shouldRasterize = true
 		cell.layer.rasterizationScale = UIScreen.main.scale
-		cell.label.textColor = Colors.mainText
-		cell.label.backgroundColor = collectionView.backgroundColor
-		cell.imageView.backgroundColor = Colors.imageViewBackground
 
 		let entity = entities[indexPath.row]
 		// Init cell
@@ -253,7 +250,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 			case .albums:
 				handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
 			case .artists, .albumsartists:
-				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: Colors.backgroundSelected)
+				cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: cell.imageTintColor)
 			case .genres:
 				let string = entity.name[0..<2].uppercased()
 				let backgroundColor = UIColor(rgb: string.djb2())

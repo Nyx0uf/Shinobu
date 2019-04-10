@@ -28,12 +28,9 @@ final class PlaylistsAddVC: NYXTableViewController
 		super.viewDidLoad()
 
 		navigationController?.navigationBar.isTranslucent = false
-		navigationController?.navigationBar.barTintColor = Colors.backgroundAlt
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = Colors.background
-		tableView.backgroundColor = Colors.backgroundAlt
 
 		titleView.setMainText(NYXLocalizedString("lbl_playlists"), detailText: nil)
 
@@ -41,6 +38,8 @@ final class PlaylistsAddVC: NYXTableViewController
 		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
 		createButton.accessibilityLabel = NYXLocalizedString("lbl_create_playlist")
 		navigationItem.rightBarButtonItems = [createButton]
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -117,13 +116,13 @@ extension PlaylistsAddVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-		cell.backgroundColor = Colors.backgroundAlt
-		cell.contentView.backgroundColor = Colors.backgroundAlt
+		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
+		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
 
 		let playlist = playlists[indexPath.row]
 
 		cell.textLabel?.text = playlist.name
-		cell.textLabel?.textColor = .white
+		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = playlist.name
 
@@ -159,5 +158,15 @@ extension PlaylistsAddVC
 				}
 			}
 		}
+	}
+}
+
+extension PlaylistsAddVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		navigationController?.navigationBar.barTintColor = theme.backgroundColorAlt
+		tableView.separatorColor = theme.backgroundColor
+		tableView.backgroundColor = theme.backgroundColorAlt
 	}
 }

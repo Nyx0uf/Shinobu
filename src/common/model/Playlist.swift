@@ -14,7 +14,6 @@ final class Playlist: MusicalEntity
 	}
 }
 
-// MARK: - Equatable
 extension Playlist
 {
 	static func ==(lhs: Playlist, rhs: Playlist) -> Bool

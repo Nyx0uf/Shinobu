@@ -57,6 +57,8 @@ final class NYXNavigationTitleView: UIButton
 		self.label.frame = CGRect(.zero, frame.size)
 		self.label.textAlignment = .center
 		self.addSubview(self.label)
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -77,16 +79,16 @@ final class NYXNavigationTitleView: UIButton
 	// MARK: - Private
 	private func updateDisplay()
 	{
-		let color = (isHighlighted || isSelected) ? Colors.main : Colors.mainText
+		let color = (isHighlighted || isSelected) ? themeProvider.currentTheme.tintColor : themeProvider.currentTheme.navigationTitleTextColor
 
 		if let detailText = self.detailText
 		{
 			label.numberOfLines = 2
 
 			// Main text
-			let attrs = NSMutableAttributedString(string: "\(mainText)\n", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15, weight: .medium), NSAttributedString.Key.foregroundColor : color])
+			let attrs = NSMutableAttributedString(string: "\(mainText)\n", attributes: [.font : UIFont.systemFont(ofSize: 15, weight: .medium), .foregroundColor : color])
 			// Detail text
-			attrs.append(NSAttributedString(string: detailText, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .regular), NSAttributedString.Key.foregroundColor : color]))
+			attrs.append(NSAttributedString(string: detailText, attributes: [.font : UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor : color]))
 			label.attributedText = attrs
 		}
 		else
@@ -96,5 +98,13 @@ final class NYXNavigationTitleView: UIButton
 			label.textColor = color
 			label.text = mainText
 		}
+	}
+}
+
+extension NYXNavigationTitleView : Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		self.updateDisplay()
 	}
 }

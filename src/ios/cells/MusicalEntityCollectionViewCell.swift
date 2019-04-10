@@ -24,7 +24,7 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 			if longPressed
 			{
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-					self.label.textColor = Colors.main
+					self.label.textColor = self.themeProvider.currentTheme.tintColor
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 0
 					anim.toValue = 1
@@ -38,7 +38,7 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 			else
 			{
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-					self.label.textColor = Colors.mainText
+					self.label.textColor = self.themeProvider.currentTheme.tableCellMainLabelTextColor
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 1
 					anim.toValue = 0
@@ -76,19 +76,18 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 			imageView.contentMode = contentMode
 		}
 	}
+	//
+	private(set) var imageTintColor: UIColor!
 
 	// MARK: - Initializers
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
 
-		self.backgroundColor = Colors.background
 		self.isAccessibilityElement = true
 
 		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.backgroundColor = Colors.imageViewBackground
-		self.imageView.layer.borderColor = Colors.main.cgColor
 		self.imageView.clipsToBounds = true
 		self.imageView.layer.cornerRadius = 12
 		self.imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
@@ -96,11 +95,11 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 
 		self.label = UILabel(frame: CGRect(0, self.imageView.maxY, frame.width, 20))
 		self.label.isAccessibilityElement = false
-		self.label.backgroundColor = self.backgroundColor
 		self.label.textAlignment = .center
-		self.label.textColor = Colors.mainText
 		self.label.font = UIFont.systemFont(ofSize: 10, weight: .semibold)
 		self.contentView.addSubview(self.label)
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -109,5 +108,18 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 	{
 		imageView.frame = CGRect(.zero, frame.width, frame.height - 20)
 		label.frame = CGRect(0, imageView.maxY, frame.width, 20)
+	}
+}
+
+extension MusicalEntityBaseCell: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		backgroundColor = theme.backgroundColor
+		label.textColor = theme.tableCellMainLabelTextColor
+		label.backgroundColor = theme.backgroundColor
+		imageView.backgroundColor = theme.collectionImageViewBackgroundColor
+		imageView.layer.borderColor = theme.tintColor.cgColor
+		imageTintColor = theme.backgroundColor
 	}
 }

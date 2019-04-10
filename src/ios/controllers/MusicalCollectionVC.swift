@@ -65,11 +65,8 @@ class MusicalCollectionVC: NYXViewController
 		{
 			searchView = UIView(frame: CGRect(0, 0, navigationBar.width, navigationBar.maxY))
 			searchBar = UISearchBar(frame: CGRect(0, navigationBar.y, navigationBar.width, navigationBar.height))
-			searchView.backgroundColor = Colors.background
 			searchView.alpha = 0
 			searchBar.searchBarStyle = .minimal
-			searchBar.tintColor = Colors.main
-			(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = Colors.mainText
 			searchBar.showsCancelButton = true
 			searchBar.delegate = self
 			searchView.addSubview(searchBar)
@@ -104,6 +101,8 @@ class MusicalCollectionVC: NYXViewController
 			titleView.isEnabled = true
 			titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
 		}
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -175,7 +174,6 @@ class MusicalCollectionVC: NYXViewController
 			UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
 				self.collectionView.frame = CGRect(0, self.typeChoiceView.maxY, self.collectionView.size)
 				self.collectionView.collectionView.contentInset = .zero
-				self.view.backgroundColor = Colors.background
 			}, completion: nil)
 		}
 	}
@@ -259,8 +257,6 @@ extension MusicalCollectionVC: UISearchBarDelegate
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String)
 	{
-		//guard dataSource.items.count > 0 else { return }
-
 		if String.isNullOrWhiteSpace(searchText)
 		{
 			dataSource.setSearchResults(dataSource.items)
@@ -329,5 +325,15 @@ extension MusicalCollectionVC: TypeChoiceViewDelegate
 {
 	@objc func didSelectDisplayType(_ typeAsInt: Int)
 	{
+	}
+}
+
+extension MusicalCollectionVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		searchView.backgroundColor = theme.backgroundColor
+		searchBar.tintColor = theme.tintColor
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = theme.tableCellMainLabelTextColor
 	}
 }

@@ -52,6 +52,8 @@ final class PlaylistDetailVC: NYXViewController
 		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
 		view.addSubview(tableView)
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -213,7 +215,7 @@ extension PlaylistDetailVC: UITableViewDelegate
 			completionHandler(true)
 		}
 		action.image = #imageLiteral(resourceName: "btn-trash")
-		action.backgroundColor = Colors.main
+		action.backgroundColor = self.themeProvider.currentTheme.tintColor
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}
@@ -263,5 +265,13 @@ extension PlaylistDetailVC: TracksListTableViewDelegate
 	func getCurrentTrack() -> Track?
 	{
 		return mpdBridge.getCurrentTrack()
+	}
+}
+
+extension PlaylistDetailVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+
 	}
 }

@@ -18,12 +18,7 @@ final class TrackTableViewCell: UITableViewCell
 	{
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		self.backgroundColor = Colors.background
-		self.contentView.backgroundColor = self.backgroundColor
-
 		self.lblTrack = UILabel()
-		self.lblTrack.backgroundColor = Colors.background
-		self.lblTrack.textColor = Colors.mainText
 		self.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .regular)
 		self.lblTrack.textAlignment = .center
 		self.contentView.addSubview(self.lblTrack)
@@ -34,8 +29,6 @@ final class TrackTableViewCell: UITableViewCell
 		self.lblTrack.widthAnchor.constraint(equalToConstant: 18).isActive = true
 
 		self.lblDuration = UILabel()
-		self.lblDuration.backgroundColor = Colors.background
-		self.lblDuration.textColor = Colors.mainText
 		self.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .light)
 		self.lblDuration.textAlignment = .right
 		self.contentView.addSubview(self.lblDuration)
@@ -46,8 +39,6 @@ final class TrackTableViewCell: UITableViewCell
 		self.lblDuration.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
 
 		self.lblTitle = UILabel()
-		self.lblTitle.backgroundColor = Colors.background
-		self.lblTitle.textColor = Colors.mainText
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .medium)
 		self.lblTitle.textAlignment = .left
 		self.contentView.addSubview(self.lblTitle)
@@ -65,6 +56,8 @@ final class TrackTableViewCell: UITableViewCell
 		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
 		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0).isActive = true
 		self.separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -75,11 +68,11 @@ final class TrackTableViewCell: UITableViewCell
 
 		if selected
 		{
-			backgroundColor = .white
+			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
 		}
 		else
 		{
-			backgroundColor = Colors.background
+			backgroundColor = themeProvider.currentTheme.backgroundColor
 		}
 		contentView.backgroundColor = backgroundColor
 		lblTitle.backgroundColor = backgroundColor
@@ -93,15 +86,25 @@ final class TrackTableViewCell: UITableViewCell
 
 		if highlighted
 		{
-			backgroundColor = .white
+			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
 		}
 		else
 		{
-			backgroundColor = Colors.background
+			backgroundColor = themeProvider.currentTheme.backgroundColor
 		}
 		contentView.backgroundColor = backgroundColor
 		lblTitle.backgroundColor = backgroundColor
 		lblDuration.backgroundColor = backgroundColor
 		lblTrack.backgroundColor = backgroundColor
+	}
+}
+
+extension TrackTableViewCell: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		backgroundColor = theme.backgroundColor
+		contentView.backgroundColor = theme.backgroundColor
+		separator.backgroundColor = theme.tableSeparatorColor
 	}
 }

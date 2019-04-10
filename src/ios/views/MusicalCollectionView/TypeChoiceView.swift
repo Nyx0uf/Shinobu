@@ -33,7 +33,7 @@ final class TypeChoiceView: UIView
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = self.backgroundColor
+		self.tableView.backgroundColor = .black
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
@@ -81,15 +81,14 @@ extension TypeChoiceView: UITableViewDataSource
 		if type == selectedMusicalEntityType
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-			cell.textLabel?.textColor = Colors.main
+			cell.textLabel?.textColor = themeProvider.currentTheme.tintColor
 			//cell.textLabel?.layer.cornerRadius = 5
 			//cell.textLabel?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-			//cell.textLabel?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0.4)
 		}
 		else
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-			cell.textLabel?.textColor = Colors.mainText
+			cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 			cell.textLabel?.layer.cornerRadius = 0
 			cell.textLabel?.backgroundColor = cell.backgroundColor
 		}
@@ -118,5 +117,13 @@ extension TypeChoiceView: UITableViewDelegate
 		UIView.animate(withDuration: 0.5, delay: 0.1 * Double(indexPath.row), usingSpringWithDamping: 0.8, initialSpringVelocity: 10, options: UIView.AnimationOptions(), animations: {
 			cell.frame = cellRect
 		}, completion: nil)
+	}
+}
+
+extension TypeChoiceView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+
 	}
 }

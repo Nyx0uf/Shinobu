@@ -53,7 +53,6 @@ extension Album: CustomStringConvertible
 	}
 }
 
-// MARK: - Equatable
 extension Album
 {
 	static func ==(lhs: Album, rhs: Album) -> Bool

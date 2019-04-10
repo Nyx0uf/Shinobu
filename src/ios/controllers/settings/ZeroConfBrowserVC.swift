@@ -33,11 +33,12 @@ final class ZeroConfBrowserVC: NYXTableViewController
 		titleView.setMainText(NYXLocalizedString("lbl_header_server_zeroconf"), detailText: nil)
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = .black
 		tableView.rowHeight = 64
 
 		zeroConfExplorer = ZeroConfExplorer()
 		zeroConfExplorer.delegate = self
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -70,18 +71,15 @@ extension ZeroConfBrowserVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "fr.whine.shinobu.cell.zeroconf")
-		cell.backgroundColor = Colors.background
-		cell.contentView.backgroundColor = Colors.background
-		let backgroundView = UIView()
-		backgroundView.backgroundColor = Colors.backgroundSelected
-		cell.selectedBackgroundView = backgroundView
+		cell.backgroundColor = themeProvider.currentTheme.backgroundColor
+		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColor
 
 		let server = servers[indexPath.row]
 		cell.textLabel?.text = server.name
-		cell.textLabel?.textColor = Colors.mainText
+		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		cell.detailTextLabel?.text = server.mpd.hostname + ":" + String(server.mpd.port)
-		cell.detailTextLabel?.textColor = Colors.placeholderText
+		cell.detailTextLabel?.textColor = themeProvider.currentTheme.tableCellDetailLabelTextColor
 
 		if let currentServer = selectedServer
 		{
@@ -134,5 +132,15 @@ extension ZeroConfBrowserVC: ZeroConfExplorerDelegate
 	{
 		servers = zeroConfExplorer.services.map { $0.value }
 		tableView.reloadData()
+	}
+}
+
+extension ZeroConfBrowserVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		tableView.backgroundColor = theme.backgroundColor
+		tableView.separatorColor = theme.tableSeparatorColor
+		tableView.tintColor = theme.tintColor
 	}
 }

@@ -79,13 +79,3 @@ extension UIView
 		})
 	}
 }
-
-extension UITableView
-{
-	static let colorSeparator = UIColor(red: 0.1019607843, green: 0.1019607843, blue: 0.1019607843, alpha: 1)
-	static let colorBackground = Colors.background
-	static let colorCellBackground = UIColor.black
-	static let colorMainText = Colors.mainText
-	static let colorHeaderTitle = UIColor(red: 1, green: 1, blue: 1, alpha: 0.8)
-	static let colorActionItem = UIColor.white
-}

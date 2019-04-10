@@ -51,7 +51,6 @@ class MusicalEntity: Hashable
 	}
 }
 
-// MARK: - Equatable
 extension MusicalEntity: Equatable
 {
 	static func ==(lhs: MusicalEntity, rhs: MusicalEntity) -> Bool

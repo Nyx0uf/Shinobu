@@ -53,8 +53,9 @@ final class ServersListVC: NYXTableViewController
 		
 		tableView.register(ShinobuServerTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = .black
 		tableView.rowHeight = 64
+
+		initializeTheming()
 	}
 	
 	override func viewWillAppear(_ animated: Bool)
@@ -164,8 +165,20 @@ extension ServersListVC
 			completionHandler(true)
 		}
 		action.image = #imageLiteral(resourceName: "btn-trash")
-		action.backgroundColor = Colors.destructiveAction
+		action.backgroundColor = UIColor(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
 
 		return UISwipeActionsConfiguration(actions: [action])
+	}
+}
+
+extension ServersListVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		view.backgroundColor = theme.backgroundColor
+		tableView.backgroundColor = theme.backgroundColor
+		tableView.separatorColor = theme.tableSeparatorColor
+
+		tableView.reloadData()
 	}
 }

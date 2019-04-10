@@ -22,7 +22,6 @@ extension Genre: CustomStringConvertible
 	}
 }
 
-// MARK: - Equatable
 extension Genre
 {
 	static func ==(lhs: Genre, rhs: Genre) -> Bool

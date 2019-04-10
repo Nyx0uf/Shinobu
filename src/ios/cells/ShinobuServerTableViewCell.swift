@@ -14,18 +14,17 @@ final class ShinobuServerTableViewCell: UITableViewCell
 	{
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		self.backgroundColor = Colors.background
-		self.contentView.backgroundColor = self.backgroundColor
 		self.isAccessibilityElement = true
 
 		self.label = UILabel(frame: CGRect(16, (64 - 32) / 2, 144, 32))
 		self.label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-		self.label.textColor = .white
+		self.label.isAccessibilityElement = false
 		self.contentView.addSubview(self.label)
 
 		self.toggle = UISwitch()
-		self.toggle.tintColor = UITableView.colorActionItem
 		self.contentView.addSubview(self.toggle)
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -44,11 +43,11 @@ final class ShinobuServerTableViewCell: UITableViewCell
 
 		if selected
 		{
-			backgroundColor = Colors.backgroundSelected
+			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
 		}
 		else
 		{
-			backgroundColor = Colors.background
+			backgroundColor = themeProvider.currentTheme.backgroundColor
 		}
 		contentView.backgroundColor = backgroundColor
 		label.backgroundColor = backgroundColor
@@ -60,13 +59,26 @@ final class ShinobuServerTableViewCell: UITableViewCell
 
 		if highlighted
 		{
-			backgroundColor = Colors.backgroundSelected
+			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
 		}
 		else
 		{
-			backgroundColor = Colors.background
+			backgroundColor = themeProvider.currentTheme.backgroundColor
 		}
 		contentView.backgroundColor = backgroundColor
 		label.backgroundColor = backgroundColor
+	}
+}
+
+extension ShinobuServerTableViewCell : Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		self.backgroundColor = theme.backgroundColor
+		self.contentView.backgroundColor = theme.backgroundColor
+		self.label.backgroundColor = theme.backgroundColor
+		self.label.textColor = theme.tableCellMainLabelTextColor
+		self.toggle.tintColor = theme.switchTintColor
+		self.toggle.onTintColor = theme.tintColor
 	}
 }

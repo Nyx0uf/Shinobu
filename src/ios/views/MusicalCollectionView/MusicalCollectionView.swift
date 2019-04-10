@@ -55,21 +55,20 @@ final class MusicalCollectionView: UIView
 	init(frame: CGRect, musicalEntityType: MusicalEntityType)
 	{
 		super.init(frame: frame)
-		self.backgroundColor = Colors.background
 
 		let widthIndexView = CGFloat(20)
 		self.collectionView.frame = CGRect(0, 0, frame.width - widthIndexView, frame.height)
-		self.collectionView.backgroundColor = self.backgroundColor
 		self.collectionView.isPrefetchingEnabled = false
 		self.collectionView.showsVerticalScrollIndicator = false
 		self.addSubview(collectionView)
 
 		self.indexView.frame = CGRect(self.collectionView.frame.width, 64, widthIndexView, frame.height - 64)
-		self.indexView.backgroundColor = self.backgroundColor
 		self.indexView.delegate = self
 		self.addSubview(indexView)
 
 		self.musicalEntityType = musicalEntityType
+
+		initializeTheming()
 	}
 	
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -106,5 +105,16 @@ extension MusicalCollectionView: TitlesIndexViewDelegate
 	func didScrollToIndex(_ index: Int)
 	{
 		collectionView.scrollToItem(at: IndexPath(row: 0, section: index), at: .top, animated: false)
+	}
+}
+
+extension MusicalCollectionView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		backgroundColor = theme.backgroundColor
+		collectionView.backgroundColor = theme.backgroundColor
+		indexView.backgroundColor = theme.backgroundColor
+		collectionView.reloadData()
 	}
 }

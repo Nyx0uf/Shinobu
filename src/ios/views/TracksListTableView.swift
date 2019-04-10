@@ -34,10 +34,11 @@ final class TracksListTableView: UITableView
 		self.dataSource = self
 		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		self.separatorStyle = .none
-		self.backgroundColor = Colors.background
 		self.rowHeight = 44
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -78,9 +79,9 @@ extension TracksListTableView: UITableViewDataSource
 		}
 
 		cell.separator.isHidden = false
-		cell.lblTitle.textColor = Colors.mainText
-		cell.lblTrack.textColor = Colors.mainText
-		cell.lblDuration.textColor = Colors.mainText
+		cell.lblTitle.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.lblTrack.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.lblDuration.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
@@ -116,5 +117,14 @@ extension TracksListTableView: UITableViewDataSource
 		cell.accessibilityLabel = stra
 
 		return cell
+	}
+}
+
+extension TracksListTableView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		backgroundColor = theme.backgroundColor
+		reloadData()
 	}
 }

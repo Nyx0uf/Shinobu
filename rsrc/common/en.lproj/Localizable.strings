@@ -75,6 +75,9 @@
 "lbl_pref_shaketoplayrandom" = "Shake to play random album";
 "lbl_pref_appearance" = "Appearance";
 "lbl_pref_columns" = "Number of columns";
+"lbl_pref_theme_light" = "Light theme";
+"lbl_pref_theme_dark" = "Dark theme";
+"lbl_pref_tint_color" = "Tint color";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
@@ -101,12 +104,6 @@
 
 "lbl_message_no_mpd_server" = "No MPD server configured";
 
-/* accessibility */
-"vo_displaymenu" = "Display navigation menu";
-"vo_hidemenu" = "Hide navigation menu";
-
-
-/* NEW */
 "lbl_header_server_list" = "Servers list";
 "lbl_current_selected_server" = "the current selected server";
 "lbl_current_selected_server_not" = "not the current selected server";

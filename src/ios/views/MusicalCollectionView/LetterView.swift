@@ -47,9 +47,19 @@ final class LetterView: UIView
 		self.addSubview(letterView)
 
 		self.letter = letter
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+}
+
+extension LetterView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		blurEffectView.effect = theme.blurEffectAlt
+	}
 }
 
 
@@ -90,7 +100,8 @@ fileprivate final class SimpleLetterView: UIView
 
 		self.isBigText = big
 		self.letter = letter
-		createStrings()
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -122,10 +133,19 @@ fileprivate final class SimpleLetterView: UIView
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
 
-		var attributes: [NSAttributedString.Key : Any] = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), .foregroundColor : Colors.background, .paragraphStyle : paragraphStyle]
+		var attributes: [NSAttributedString.Key : Any] = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), .foregroundColor : themeProvider.currentTheme.backgroundColor, .paragraphStyle : paragraphStyle]
 		letterSelected = NSAttributedString(string: letter, attributes: attributes)
 
-		attributes = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), .foregroundColor : Colors.mainText, .paragraphStyle : paragraphStyle]
+		attributes = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), .foregroundColor : themeProvider.currentTheme.tableCellMainLabelTextColor, .paragraphStyle : paragraphStyle]
 		letterUnselected = NSAttributedString(string: letter, attributes: attributes)
+	}
+}
+
+extension SimpleLetterView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		self.createStrings()
+		self.setNeedsDisplay()
 	}
 }

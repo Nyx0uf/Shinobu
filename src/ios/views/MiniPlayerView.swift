@@ -66,11 +66,6 @@ final class MiniPlayerView: UIView
 		self.imageView.isUserInteractionEnabled = true
 		self.blurEffectView.contentView.addSubview(self.imageView)
 
-		// Vibrancy over the play/pause button
-		//let vibrancyEffectView = UIVisualEffectView(effect: UIVibrancyEffect(blurEffect: blurEffect))
-		//vibrancyEffectView.frame = CGRect(frame.right - headerHeight, 0, headerHeight, headerHeight)
-		//self.blurEffectView.contentView.addSubview(vibrancyEffectView)
-
 		// Play / pause button
 		self.btnPlay = NYXButton(frame: CGRect(frame.maxX - headerHeight, (headerHeight - 44) / 2, 44, 44))
 		self.btnPlay.addTarget(self, action: #selector(MiniPlayerView.changePlaybackAction(_:)), for: .touchUpInside)
@@ -88,7 +83,6 @@ final class MiniPlayerView: UIView
 		self.lblTitle = AutoScrollLabel(frame: CGRect(self.imageView.maxX + 5, 2, ((btnPlay.x + 5) - (self.imageView.maxX + 5)), 18))
 		self.lblTitle.textAlignment = .center
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-		self.lblTitle.textColor = .white
 		self.lblTitle.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblTitle)
 
@@ -96,13 +90,11 @@ final class MiniPlayerView: UIView
 		self.lblArtist = UILabel(frame: CGRect(self.imageView.maxX + 5, self.lblTitle.maxY + 2, self.lblTitle.width, 16))
 		self.lblArtist.textAlignment = .center
 		self.lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-		self.lblArtist.textColor = Colors.mainText
 		self.lblArtist.isAccessibilityElement = false
 		self.blurEffectView.contentView.addSubview(self.lblArtist)
 
 		// Progress
 		self.progressView = UIView(frame: CGRect(0, 0, 0, 1))
-		self.progressView.backgroundColor = .white
 		self.progressView.isAccessibilityElement = false
 		self.addSubview(self.progressView)
 
@@ -144,6 +136,8 @@ final class MiniPlayerView: UIView
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
 
 		APP_DELEGATE().window?.addSubview(self)
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -301,19 +295,17 @@ final class MiniPlayerView: UIView
 			if state == PlayerStatus.playing.rawValue
 			{
 				let img = #imageLiteral(resourceName: "btn-pause").withRenderingMode(.alwaysTemplate)
-				btnPlay.setImage(img.tinted(withColor: .white), for: .normal)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.miniPlayerButtonColor), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .selected)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 			}
 			else
 			{
 				let img = #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)
-				btnPlay.setImage(img.tinted(withColor: .white), for: .normal)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .highlighted)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .selected)
-				btnPlay.setImage(img.tinted(withColor: Colors.main), for: .focused)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.miniPlayerButtonColor), for: .normal)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .highlighted)
+				btnPlay.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .selected)
 				btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 			}
 			btnPlay.tag = state
@@ -350,5 +342,16 @@ extension MiniPlayerView: TracksListTableViewDelegate
 	func getCurrentTrack() -> Track?
 	{
 		return mpdBridge?.getCurrentTrack()
+	}
+}
+
+extension MiniPlayerView: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		blurEffectView.effect = theme.blurEffect
+		lblTitle.textColor = theme.miniPlayerMainTextColor
+		lblArtist.textColor = theme.miniPlayerDetailTextColor
+		progressView.backgroundColor = theme.miniPlayerProgressColor
 	}
 }

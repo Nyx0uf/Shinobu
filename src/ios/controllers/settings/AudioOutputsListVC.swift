@@ -17,6 +17,7 @@ final class AudioOutputsListVC: NYXTableViewController
 	init(mpdServer: MPDServer)
 	{
 		self.mpdServer = mpdServer
+
 		super.init(style: .plain)
 	}
 
@@ -29,8 +30,8 @@ final class AudioOutputsListVC: NYXTableViewController
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-		tableView.separatorColor = Colors.background
-		tableView.backgroundColor = Colors.backgroundAlt
+
+		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -75,13 +76,13 @@ extension AudioOutputsListVC
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-		cell.backgroundColor = Colors.backgroundAlt
-		cell.contentView.backgroundColor = Colors.backgroundAlt
+		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
+		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
 
 		let output = outputs[indexPath.row]
 
 		cell.textLabel?.text = output.name
-		cell.textLabel?.textColor = .white
+		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell.accessoryType = output.enabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
@@ -119,5 +120,15 @@ extension AudioOutputsListVC
 				}
 				cnn.disconnect()
 		}
+	}
+}
+
+extension AudioOutputsListVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		tableView.separatorColor = theme.backgroundColor
+		tableView.backgroundColor = theme.backgroundColorAlt
+		tableView.tintColor = theme.tintColor
 	}
 }

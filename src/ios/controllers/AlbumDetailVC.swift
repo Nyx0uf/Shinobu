@@ -174,7 +174,7 @@ extension AlbumDetailVC: UITableViewDelegate
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
 						popController.delegate = self
-						popController.backgroundColor = Colors.backgroundAlt
+						popController.backgroundColor = self.themeProvider.currentTheme.backgroundColorAlt
 						tvc.preferredContentSize = CGSize(300, 200)
 						self.present(tvc, animated: true, completion: nil)
 					}
@@ -183,7 +183,7 @@ extension AlbumDetailVC: UITableViewDelegate
 			completionHandler(true)
 		}
 		action.image = #imageLiteral(resourceName: "btn-playlist-add")
-		action.backgroundColor = Colors.main
+		action.backgroundColor = self.themeProvider.currentTheme.tintColor
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}
@@ -226,5 +226,13 @@ extension AlbumDetailVC: TracksListTableViewDelegate
 	func getCurrentTrack() -> Track?
 	{
 		return mpdBridge.getCurrentTrack()
+	}
+}
+
+extension AlbumDetailVC: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+
 	}
 }

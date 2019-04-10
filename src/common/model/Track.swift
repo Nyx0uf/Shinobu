@@ -41,7 +41,6 @@ extension Track: CustomStringConvertible
 	}
 }
 
-// MARK: - Equatable
 extension Track
 {
 	static func ==(lhs: Track, rhs: Track) -> Bool

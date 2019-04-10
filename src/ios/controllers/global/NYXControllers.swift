@@ -3,6 +3,34 @@ import UIKit
 
 final class NYXNavigationController: UINavigationController
 {
+	private var themedStatusBarStyle: UIStatusBarStyle?
+
+	override var preferredStatusBarStyle: UIStatusBarStyle
+	{
+		if let presentedViewController = presentedViewController
+		{
+			return presentedViewController.preferredStatusBarStyle
+		}
+
+		if let themedStatusBarStyle = themedStatusBarStyle
+		{
+			return themedStatusBarStyle
+		}
+
+//		if let topViewController = topViewController
+//		{
+//			return topViewController.preferredStatusBarStyle
+//		}
+		return .lightContent
+	}
+
+	override func viewDidLoad()
+	{
+		super.viewDidLoad()
+
+		initializeTheming()
+	}
+
 	override var shouldAutorotate: Bool
 	{
 		if let topViewController = topViewController
@@ -30,22 +58,20 @@ final class NYXNavigationController: UINavigationController
 		return .portrait
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		if let presentedViewController = presentedViewController
-		{
-			return presentedViewController.preferredStatusBarStyle
-		}
-		if let topViewController = topViewController
-		{
-			return topViewController.preferredStatusBarStyle
-		}
-		return .lightContent
-	}
-
 	override func viewWillAppear(_ animated: Bool)
 	{
 		super.viewWillAppear(animated)
+	}
+}
+
+extension NYXNavigationController: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+		themedStatusBarStyle = theme.statusBarStyle
+		navigationBar.barStyle = theme.navigationBarStyle
+		navigationBar.tintColor = theme.tintColor
+		setNeedsStatusBarAppearanceUpdate()
 	}
 }
 
@@ -58,7 +84,7 @@ class NYXTableViewController: UITableViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0, 0, 160, 44))
+		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -106,7 +132,7 @@ class NYXViewController: UIViewController
 	{
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(0, 0, 160, 44))
+		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}

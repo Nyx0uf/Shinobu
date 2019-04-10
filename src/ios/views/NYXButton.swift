@@ -10,6 +10,8 @@ final class NYXButton: UIButton
 		self.layer.cornerRadius = frame.width / 2
 		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		self.tintColor = .white
+
+		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -18,12 +20,12 @@ final class NYXButton: UIButton
 	{
 		willSet
 		{
-			self.backgroundColor = isSelected ? Colors.selected : UIColor.clear
+			self.backgroundColor = isSelected ? themeProvider.currentTheme.tintColor : UIColor.clear
 		}
 
 		didSet
 		{
-			self.backgroundColor = isSelected ? Colors.selected : UIColor.clear
+			self.backgroundColor = isSelected ? themeProvider.currentTheme.tintColor : UIColor.clear
 		}
 	}
 
@@ -31,17 +33,25 @@ final class NYXButton: UIButton
 	{
 		willSet
 		{
-			self.backgroundColor = isHighlighted ? Colors.selected : UIColor.clear
+			self.backgroundColor = isHighlighted ? themeProvider.currentTheme.tintColor : UIColor.clear
 		}
 
 		didSet
 		{
-			self.backgroundColor = isHighlighted ? Colors.selected : UIColor.clear
+			self.backgroundColor = isHighlighted ? themeProvider.currentTheme.tintColor : UIColor.clear
 		}
 	}
 
 	override var buttonType: UIButton.ButtonType
 	{
 		return .custom
+	}
+}
+
+extension NYXButton: Themed
+{
+	func applyTheme(_ theme: ShinobuTheme)
+	{
+
 	}
 }
