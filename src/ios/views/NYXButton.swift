@@ -50,7 +50,7 @@ final class NYXButton: UIButton
 
 extension NYXButton: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 
 	}

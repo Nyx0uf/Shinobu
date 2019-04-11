@@ -77,9 +77,11 @@ extension ZeroConfBrowserVC
 		let server = servers[indexPath.row]
 		cell.textLabel?.text = server.name
 		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		cell.detailTextLabel?.text = server.mpd.hostname + ":" + String(server.mpd.port)
 		cell.detailTextLabel?.textColor = themeProvider.currentTheme.tableCellDetailLabelTextColor
+		cell.detailTextLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.5)
 
 		if let currentServer = selectedServer
 		{
@@ -97,6 +99,10 @@ extension ZeroConfBrowserVC
 			cell.accessoryType = .none
 		}
 
+		let v = UIView()
+		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = v
+
 		return cell
 	}
 }
@@ -106,6 +112,10 @@ extension ZeroConfBrowserVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+			tableView.deselectRow(at: indexPath, animated: true)
+		})
+
 		// Check if same server
 		let selected = servers[indexPath.row]
 		if let currentServer = selectedServer
@@ -132,12 +142,14 @@ extension ZeroConfBrowserVC: ZeroConfExplorerDelegate
 	{
 		servers = zeroConfExplorer.services.map { $0.value }
 		tableView.reloadData()
+		// Navigation bar title
+		titleView.setMainText(NYXLocalizedString("lbl_header_server_zeroconf"), detailText: "(\(servers.count))")
 	}
 }
 
 extension ZeroConfBrowserVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		tableView.backgroundColor = theme.backgroundColor
 		tableView.separatorColor = theme.tableSeparatorColor

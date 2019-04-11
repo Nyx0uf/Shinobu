@@ -141,7 +141,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		OperationManager.shared.addOperation(downloadOperation)
 	}
 
-	private func handleCoverForCell(_ cell: MusicalEntityBaseCell, at indexPath: IndexPath, withAlbum album: Album)
+	private func handleCoverForCell(_ cell: MusicalEntityCollectionViewCell, at indexPath: IndexPath, withAlbum album: Album)
 	{
 		// If image is in cache, bail out quickly
 		if let cachedImage = ImageCache.shared[album.uniqueIdentifier]
@@ -221,7 +221,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityBaseCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityCollectionViewCell
 
 		// Dummy cells
 		/*let entities = self.actualItems

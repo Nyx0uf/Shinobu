@@ -61,47 +61,11 @@ final class TrackTableViewCell: UITableViewCell
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-
-	override func setSelected(_ selected: Bool, animated: Bool)
-	{
-		super.setSelected(selected, animated: animated)
-
-		if selected
-		{
-			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
-		}
-		else
-		{
-			backgroundColor = themeProvider.currentTheme.backgroundColor
-		}
-		contentView.backgroundColor = backgroundColor
-		lblTitle.backgroundColor = backgroundColor
-		lblDuration.backgroundColor = backgroundColor
-		lblTrack.backgroundColor = backgroundColor
-	}
-
-	override func setHighlighted(_ highlighted: Bool, animated: Bool)
-	{
-		super.setHighlighted(highlighted, animated: animated)
-
-		if highlighted
-		{
-			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
-		}
-		else
-		{
-			backgroundColor = themeProvider.currentTheme.backgroundColor
-		}
-		contentView.backgroundColor = backgroundColor
-		lblTitle.backgroundColor = backgroundColor
-		lblDuration.backgroundColor = backgroundColor
-		lblTrack.backgroundColor = backgroundColor
-	}
 }
 
 extension TrackTableViewCell: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		backgroundColor = theme.backgroundColor
 		contentView.backgroundColor = theme.backgroundColor

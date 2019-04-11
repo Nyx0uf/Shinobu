@@ -22,6 +22,11 @@ final class PlaylistsAddVC: NYXTableViewController
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
+	override var preferredStatusBarStyle: UIStatusBarStyle
+	{
+		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
+	}
+
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
@@ -31,8 +36,7 @@ final class PlaylistsAddVC: NYXTableViewController
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-
-		titleView.setMainText(NYXLocalizedString("lbl_playlists"), detailText: nil)
+		tableView.tableFooterView = UIView()
 
 		// Create playlist button
 		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -99,6 +103,7 @@ final class PlaylistsAddVC: NYXTableViewController
 		mpdBridge.entitiesForType(.playlists) { (entities) in
 			DispatchQueue.main.async {
 				self.playlists = entities as! [Playlist]
+				self.titleView.setMainText(NYXLocalizedString("lbl_playlists"), detailText: "(\(entities.count))")
 				self.tableView.reloadData()
 			}
 		}
@@ -123,8 +128,13 @@ extension PlaylistsAddVC
 
 		cell.textLabel?.text = playlist.name
 		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = playlist.name
+
+		let v = UIView()
+		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = v
 
 		return cell
 	}
@@ -135,7 +145,7 @@ extension PlaylistsAddVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
@@ -163,7 +173,7 @@ extension PlaylistsAddVC
 
 extension PlaylistsAddVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		navigationController?.navigationBar.barTintColor = theme.backgroundColorAlt
 		tableView.separatorColor = theme.backgroundColor

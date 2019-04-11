@@ -82,8 +82,6 @@ extension TypeChoiceView: UITableViewDataSource
 		{
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			cell.textLabel?.textColor = themeProvider.currentTheme.tintColor
-			//cell.textLabel?.layer.cornerRadius = 5
-			//cell.textLabel?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		}
 		else
 		{
@@ -122,7 +120,7 @@ extension TypeChoiceView: UITableViewDelegate
 
 extension TypeChoiceView: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 
 	}

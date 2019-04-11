@@ -19,6 +19,7 @@ final class ShinobuServerTableViewCell: UITableViewCell
 		self.label = UILabel(frame: CGRect(16, (64 - 32) / 2, 144, 32))
 		self.label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
 		self.label.isAccessibilityElement = false
+		self.label.backgroundColor = .clear
 		self.contentView.addSubview(self.label)
 
 		self.toggle = UISwitch()
@@ -43,14 +44,12 @@ final class ShinobuServerTableViewCell: UITableViewCell
 
 		if selected
 		{
-			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
+			label.textColor = themeProvider.currentTheme.tintColor
 		}
 		else
 		{
-			backgroundColor = themeProvider.currentTheme.backgroundColor
+			label.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		}
-		contentView.backgroundColor = backgroundColor
-		label.backgroundColor = backgroundColor
 	}
 
 	override func setHighlighted(_ highlighted: Bool, animated: Bool)
@@ -59,26 +58,23 @@ final class ShinobuServerTableViewCell: UITableViewCell
 
 		if highlighted
 		{
-			backgroundColor = themeProvider.currentTheme.backgroundColorSelected
+			label.textColor = themeProvider.currentTheme.tintColor
 		}
 		else
 		{
-			backgroundColor = themeProvider.currentTheme.backgroundColor
+			label.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		}
-		contentView.backgroundColor = backgroundColor
-		label.backgroundColor = backgroundColor
 	}
 }
 
 extension ShinobuServerTableViewCell : Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
-		self.backgroundColor = theme.backgroundColor
-		self.contentView.backgroundColor = theme.backgroundColor
-		self.label.backgroundColor = theme.backgroundColor
-		self.label.textColor = theme.tableCellMainLabelTextColor
-		self.toggle.tintColor = theme.switchTintColor
-		self.toggle.onTintColor = theme.tintColor
+		backgroundColor = theme.backgroundColor
+		contentView.backgroundColor = theme.backgroundColor
+		label.textColor = theme.tableCellMainLabelTextColor
+		toggle.tintColor = theme.switchTintColor
+		toggle.onTintColor = theme.tintColor
 	}
 }

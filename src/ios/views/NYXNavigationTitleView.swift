@@ -103,7 +103,7 @@ final class NYXNavigationTitleView: UIButton
 
 extension NYXNavigationTitleView : Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		self.updateDisplay()
 	}

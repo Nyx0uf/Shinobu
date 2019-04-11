@@ -57,8 +57,9 @@ final class ServerAddVC: NYXTableViewController
 
 		let search = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(browserZeroConfAction(_:)))
 		search.accessibilityLabel = NYXLocalizedString("lbl_search_zeroconf")
-		let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(validateSettingsAction(_:)))
-		navigationItem.rightBarButtonItems = [save, search]
+		navigationItem.rightBarButtonItem = search
+		//let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(validateSettingsAction(_:)))
+		//navigationItem.rightBarButtonItems = [save, search]
 
 		tfMPDName = UITextField()
 		tfMPDName.translatesAutoresizingMaskIntoConstraints = false
@@ -125,6 +126,16 @@ final class ServerAddVC: NYXTableViewController
 		updateFields()
 	}
 
+	override func viewWillDisappear(_ animated: Bool)
+	{
+		super.viewWillDisappear(animated)
+
+		if isMovingFromParent
+		{
+			self.validateSettingsAction(nil)
+		}
+	}
+
 	// MARK: - Buttons actions
 	@objc func validateSettingsAction(_ sender: Any?)
 	{
@@ -133,10 +144,10 @@ final class ServerAddVC: NYXTableViewController
 		// Check server name
 		guard let serverName = tfMPDName.text , serverName.count > 0 else
 		{
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
+			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_name"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
-			present(alertController, animated: true, completion: nil)
+			navigationController?.present(alertController, animated: true, completion: nil)
 			return
 		}
 
@@ -146,7 +157,7 @@ final class ServerAddVC: NYXTableViewController
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
-			present(alertController, animated: true, completion: nil)
+			navigationController?.present(alertController, animated: true, completion: nil)
 			return
 		}
 
@@ -217,10 +228,10 @@ final class ServerAddVC: NYXTableViewController
 			}
 			else
 			{
-				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
+				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
 				let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 				alertController.addAction(cancelAction)
-				present(alertController, animated: true, completion: nil)
+				navigationController?.present(alertController, animated: true, completion: nil)
 				return
 			}
 		}
@@ -485,6 +496,9 @@ extension ServerAddVC
 					cell?.textLabel?.text = NYXLocalizedString("lbl_update_db")
 					cell?.textLabel?.textAlignment = .center
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
+					let v = UIView()
+					v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+					cell?.selectedBackgroundView = v
 				}
 			}
 			else
@@ -515,12 +529,16 @@ extension ServerAddVC
 					cell?.textLabel?.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(cacheSize) / 1048576))\(NYXLocalizedString("lbl_megabytes")))"
 					cell?.textLabel?.textAlignment = .center
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
+					let v = UIView()
+					v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+					cell?.selectedBackgroundView = v
 				}
 			}
 		}
 
 		cell?.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell?.backgroundColor = themeProvider.currentTheme.tableCellColor
+		cell?.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 
 		if indexPath.section == 0
 		{
@@ -713,7 +731,7 @@ extension ServerAddVC: UIPopoverPresentationControllerDelegate
 
 extension ServerAddVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		view.backgroundColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColor

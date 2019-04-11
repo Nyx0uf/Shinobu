@@ -96,7 +96,7 @@ final class SettingsVC: NYXTableViewController
 	{
 		let dark = !Settings.shared.bool(forKey: .pref_themeDark)
 		Settings.shared.set(dark, forKey: .pref_themeDark)
-		var theme = dark ? ShinobuTheme.dark : ShinobuTheme.light
+		var theme = dark ? Theme.dark : Theme.light
 		theme.tintColor = colorForTintColorType(TintColorType(rawValue: Settings.shared.integer(forKey: .pref_tintColor))!)
 		themeProvider.currentTheme = theme
 	}
@@ -271,6 +271,9 @@ extension SettingsVC
 					cell?.textLabel?.text = NYXLocalizedString("lbl_send_logs")
 					cell?.textLabel?.textAlignment = .center
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
+					let v = UIView()
+					v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+					cell?.selectedBackgroundView = v
 				}
 			}
 			else
@@ -288,6 +291,7 @@ extension SettingsVC
 
 		cell?.backgroundColor = themeProvider.currentTheme.tableCellColor
 		cell?.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell?.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 
 		if indexPath.section == 0
 		{
@@ -411,7 +415,7 @@ extension SettingsVC: MFMailComposeViewControllerDelegate
 
 extension SettingsVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		view.backgroundColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColor
@@ -442,8 +446,7 @@ fileprivate final class ColorButton: UIButton, Themed
 
 		super.init(frame: frame)
 
-		self.layer.cornerRadius = frame.width / 2
-		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.circleize()
 		self.backgroundColor = colorForTintColorType(tintColorType)
 
 		initializeTheming()
@@ -482,7 +485,7 @@ fileprivate final class ColorButton: UIButton, Themed
 		return .custom
 	}
 
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		self.layer.borderColor = theme.tableTextFieldTextColor.cgColor
 	}

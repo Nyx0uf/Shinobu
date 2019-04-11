@@ -4,7 +4,7 @@ import UIKit
 let baseHeight = CGFloat(44)
 
 
-final class MiniPlayerView: UIView
+final class MiniPlayerView: UIImageView
 {
 	// MARK: - Public properties
 	// Singletion instance
@@ -53,7 +53,7 @@ final class MiniPlayerView: UIView
 		let frame = CGRect(0, (UIApplication.shared.keyWindow?.frame.height)! + headerHeight, (UIApplication.shared.keyWindow?.frame.width)!, (UIApplication.shared.keyWindow?.frame.height)! - marginTop - baseHeight)
 
 		super.init(frame: frame)
-		self.backgroundColor = .clear
+		self.isUserInteractionEnabled = true
 
 		// Blur background
 		let blurEffect = UIBlurEffect(style: .dark)
@@ -134,7 +134,6 @@ final class MiniPlayerView: UIView
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
-
 		APP_DELEGATE().window?.addSubview(self)
 
 		initializeTheming()
@@ -152,6 +151,7 @@ final class MiniPlayerView: UIView
 		if let image = UIImage.loadFromFileURL(url)
 		{
 			imageView.image = image.scaled(toSize: CGSize(imageView.width * UIScreen.main.scale, imageView.height * UIScreen.main.scale))
+			self.image = image
 		}
 		else
 		{
@@ -280,9 +280,11 @@ final class MiniPlayerView: UIView
 			}
 
 			let ratio = width / CGFloat(track.duration.seconds)
-			UIView.animate(withDuration: 0.5) {
-				self.progressView.width = ratio * CGFloat(elapsed)
-			}
+			let barWidth = ratio * CGFloat(elapsed)
+			UIView.animate(withDuration: barWidth <= 1 ? 0 : 0.5, delay: 0, options: .curveLinear, animations: {
+				self.progressView.width = barWidth
+			}, completion: nil)
+
 			accessibleView.accessibilityLabel = "\(track.name) \(NYXLocalizedString("lbl_by")) \(track.artist)\n\((100 * elapsed) / Int(track.duration.seconds))% \(NYXLocalizedString("lbl_played"))"
 		}
 	}
@@ -347,8 +349,9 @@ extension MiniPlayerView: TracksListTableViewDelegate
 
 extension MiniPlayerView: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
+		backgroundColor = theme.backgroundColor
 		blurEffectView.effect = theme.blurEffect
 		lblTitle.textColor = theme.miniPlayerMainTextColor
 		lblArtist.textColor = theme.miniPlayerDetailTextColor

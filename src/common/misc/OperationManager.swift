@@ -18,7 +18,14 @@ final class OperationManager
 	// MARK: - Public
 	func addOperation(_ operation: Operation)
 	{
-		operationQueue.addOperation(operation)
+		if operationQueue.operationCount < 16
+		{
+			operationQueue.addOperation(operation)
+		}
+		else
+		{
+			Logger.shared.log(string: "dropping \(operation)")
+		}
 	}
 
 	func cancelAllOperations()

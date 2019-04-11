@@ -120,11 +120,6 @@ final class LibraryVC: MusicalCollectionVC
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override var shouldAutorotate: Bool
-	{
-		return true
-	}
-
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
 		return .lightContent
@@ -193,7 +188,7 @@ final class LibraryVC: MusicalCollectionVC
 		{
 			MiniPlayerView.shared.stayHidden = true
 			MiniPlayerView.shared.hide()
-			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityBaseCell
+			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
 			cell.longPressed = true
 
 			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -646,6 +641,20 @@ extension LibraryVC
 			mpdBridge.entitiesForType(.albums) { [weak self] (entities) in
 				guard let randomAlbum = entities.randomElement() as? Album else { return }
 				self?.mpdBridge.playAlbum(randomAlbum, shuffle: false, loop: false)
+
+				guard let url = randomAlbum.localCoverURL else { return }
+
+				if let image = UIImage.loadFromFileURL(url)
+				{
+					DispatchQueue.main.async {
+						let size = CGSize(256, 256)
+						let imageView = UIImageView(frame: CGRect((UIScreen.main.bounds.width - size.width) / 2, (UIScreen.main.bounds.height - size.height) / 2, size))
+						imageView.enableCorners()
+						imageView.image = image
+						self?.navigationController?.view.addSubview(imageView)
+						imageView.shake(duration: 0.5, removeAtEnd: true)
+					}
+				}
 			}
 		}
 	}

@@ -231,7 +231,7 @@ extension AlbumDetailVC: TracksListTableViewDelegate
 
 extension AlbumDetailVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 
 	}

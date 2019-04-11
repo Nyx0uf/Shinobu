@@ -8,9 +8,8 @@ final class ShinobuThemeProvider: ThemeProvider
 
 	// MARK: - Private properties
 	// Current theme
-	private var theme: SubscribableValue<ShinobuTheme>
-
-	var currentTheme: ShinobuTheme
+	private var theme: SubscribableValue<Theme>
+	var currentTheme: Theme
 	{
 		get
 		{
@@ -22,13 +21,21 @@ final class ShinobuThemeProvider: ThemeProvider
 		}
 	}
 
+	// MARK: - Initializers
 	init()
 	{
 		let dark = Settings.shared.bool(forKey: .pref_themeDark)
-		theme = SubscribableValue<ShinobuTheme>(value: dark ? .dark : .light)
+		theme = SubscribableValue<Theme>(value: dark ? .dark : .light)
 	}
 
-	private func setNewTheme(_ newTheme: ShinobuTheme)
+	// MARK: - Public
+	func subscribeToChanges(_ object: AnyObject, handler: @escaping (Theme) -> Void)
+	{
+		theme.subscribe(object, using: handler)
+	}
+
+	// MARK: - Private
+	private func setNewTheme(_ newTheme: Theme)
 	{
 		self.theme.value = newTheme
 
@@ -37,11 +44,6 @@ final class ShinobuThemeProvider: ThemeProvider
 		UIView.transition(with: window, duration: 0.3, options: [.transitionCrossDissolve], animations: {
 			self.theme.notify()
 		}, completion: nil)
-	}
-
-	func subscribeToChanges(_ object: AnyObject, handler: @escaping (ShinobuTheme) -> Void)
-	{
-		theme.subscribe(object, using: handler)
 	}
 }
 

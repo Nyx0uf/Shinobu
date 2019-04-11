@@ -24,7 +24,9 @@
                                     <constraint firstAttribute="width" constant="48" id="AdQ-9P-IzC"/>
                                     <constraint firstAttribute="height" constant="48" id="xov-Hb-9zz"/>
                                 </constraints>
-                                <state key="normal" image="btn-play"/>
+                                <state key="normal" image="btn-play">
+                                    <color key="titleColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="togglePause:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="yj3-BT-Y6l"/>
                                     <action selector="togglePauseAction:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="zS3-vP-K8Y"/>

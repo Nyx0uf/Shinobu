@@ -2,9 +2,8 @@ import UIKit
 import CoreGraphics
 
 
-// MARK: - Public constants
-public let kNYXNumberOfComponentsPerARBGPixel = 4
-public let kNYXNumberOfComponentsPerRGBAPixel = 4
+fileprivate let kNYXNumberOfComponentsPerARBGPixel = 4
+fileprivate let kNYXNumberOfComponentsPerRGBAPixel = 4
 
 
 extension CGContext

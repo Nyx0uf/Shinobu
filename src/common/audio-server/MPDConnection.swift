@@ -21,7 +21,7 @@ struct AudioOutput
 {
 	let id: Int
 	let name: String
-	let enabled: Bool
+	var enabled: Bool
 }
 
 

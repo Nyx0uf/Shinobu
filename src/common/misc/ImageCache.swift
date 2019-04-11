@@ -14,7 +14,7 @@ final class ImageCache
 	init()
 	{
 		self.cache = NSCache()
-		self.cache.countLimit = 100
+		self.cache.countLimit = 60
 	}
 
 	// MARK: - Public

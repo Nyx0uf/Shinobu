@@ -47,7 +47,7 @@ final class MusicalCollectionView: UIView
 	{
 		didSet
 		{
-			self.collectionView.register(MusicalEntityBaseCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
+			self.collectionView.register(MusicalEntityCollectionViewCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
 		}
 	}
 
@@ -110,7 +110,7 @@ extension MusicalCollectionView: TitlesIndexViewDelegate
 
 extension MusicalCollectionView: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		backgroundColor = theme.backgroundColor
 		collectionView.backgroundColor = theme.backgroundColor

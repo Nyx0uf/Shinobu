@@ -270,7 +270,7 @@ extension PlaylistDetailVC: TracksListTableViewDelegate
 
 extension PlaylistDetailVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 
 	}

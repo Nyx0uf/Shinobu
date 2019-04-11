@@ -599,7 +599,7 @@ extension PlayerVC: TracksListTableViewDelegate
 
 extension PlayerVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: theme.tintColor), for: .highlighted)
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").tinted(withColor: theme.tintColor), for: .selected)

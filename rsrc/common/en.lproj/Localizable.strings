@@ -44,7 +44,8 @@
 "lbl_alert_playalbum_addqueue" = "Add to queue";
 "lbl_alert_servercfg_error" = "Server configuration error";
 "lbl_alert_servercfg_error_msg" = "Invalid parameters";
-"lbl_alert_servercfg_error_host" = "Server parameter invalid";
+"lbl_alert_servercfg_error_host" = "Server host/IP invalid";
+"lbl_alert_servercfg_error_name" = "The name of the server must be specified";
 "lbl_alert_purge_cache_title" = "Images cache deletion";
 "lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
 "lbl_alert_server_need_check" = "Check your configuration";

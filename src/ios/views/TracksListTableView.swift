@@ -82,6 +82,9 @@ extension TracksListTableView: UITableViewDataSource
 		cell.lblTitle.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell.lblTrack.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
 		cell.lblDuration.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.lblTitle.highlightedTextColor = themeProvider.currentTheme.tintColor
+		cell.lblTrack.highlightedTextColor = themeProvider.currentTheme.tintColor
+		cell.lblDuration.highlightedTextColor = themeProvider.currentTheme.tintColor
 
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
@@ -116,13 +119,17 @@ extension TracksListTableView: UITableViewDataSource
 		}
 		cell.accessibilityLabel = stra
 
+		let v = UIView()
+		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = v
+
 		return cell
 	}
 }
 
 extension TracksListTableView: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		backgroundColor = theme.backgroundColor
 		reloadData()

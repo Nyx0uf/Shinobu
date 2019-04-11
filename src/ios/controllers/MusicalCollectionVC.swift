@@ -63,7 +63,7 @@ class MusicalCollectionVC: NYXViewController
 		// Searchbar
 		if let navigationBar = navigationController?.navigationBar
 		{
-			searchView = UIView(frame: CGRect(0, 0, navigationBar.width, navigationBar.maxY))
+			searchView = UIView(frame: CGRect(.zero, navigationBar.width, navigationBar.maxY))
 			searchBar = UISearchBar(frame: CGRect(0, navigationBar.y, navigationBar.width, navigationBar.height))
 			searchView.alpha = 0
 			searchBar.searchBarStyle = .minimal
@@ -73,7 +73,13 @@ class MusicalCollectionVC: NYXViewController
 		}
 
 		// Collection view
-		collectionView = MusicalCollectionView(frame: view.bounds, musicalEntityType: dataSource.musicalEntityType)
+		var miniHeight = CGFloat(44)
+		if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom
+		{
+			miniHeight += bottom
+		}
+
+		collectionView = MusicalCollectionView(frame: CGRect(.zero, view.width, view.height - miniHeight), musicalEntityType: dataSource.musicalEntityType)
 		collectionView.collectionView.delegate = dataSource
 		collectionView.collectionView.dataSource = dataSource
 		view.addSubview(collectionView)
@@ -284,7 +290,7 @@ extension MusicalCollectionVC : MusicalCollectionDataSourceAndDelegateDelegate
 {
 	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
 	{
-		if let c = collectionView.collectionView.cellForItem(at: indexPath) as? MusicalEntityBaseCell
+		if let c = collectionView.collectionView.cellForItem(at: indexPath) as? MusicalEntityCollectionViewCell
 		{
 			c.image = cover
 		}
@@ -330,8 +336,9 @@ extension MusicalCollectionVC: TypeChoiceViewDelegate
 
 extension MusicalCollectionVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
+		view.backgroundColor = theme.backgroundColor
 		searchView.backgroundColor = theme.backgroundColor
 		searchBar.tintColor = theme.tintColor
 		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = theme.tableCellMainLabelTextColor

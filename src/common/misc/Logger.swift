@@ -58,7 +58,7 @@ final class Logger
 	public func log(type: LogType, message: String, file: String = #file, function: String = #function, line: Int = #line)
 	{
 #if DEBUG
-		print(message)
+		print("[\(file)]:[\(line)] => \(message)")
 #endif
 
 		if Settings.shared.bool(forKey: .pref_enableLogging) == false

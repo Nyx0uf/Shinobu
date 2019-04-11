@@ -23,6 +23,11 @@ final class AudioOutputsListVC: NYXTableViewController
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
+	override var preferredStatusBarStyle: UIStatusBarStyle
+	{
+		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
+	}
+
 	// MARK: - UIViewController
 	override func viewDidLoad()
 	{
@@ -30,6 +35,7 @@ final class AudioOutputsListVC: NYXTableViewController
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.tableFooterView = UIView()
 
 		initializeTheming()
 	}
@@ -83,9 +89,14 @@ extension AudioOutputsListVC
 
 		cell.textLabel?.text = output.name
 		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.accessoryType = output.enabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
+
+		let v = UIView()
+		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = v
 
 		return cell
 	}
@@ -96,11 +107,11 @@ extension AudioOutputsListVC
 {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 	{
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
-		let output = outputs[indexPath.row]
+		var output = outputs[indexPath.row]
 
 		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
@@ -115,7 +126,9 @@ extension AudioOutputsListVC
 					case .failure( _):
 						break
 					case .success( _):
-						refreshOutputs()
+						output.enabled.toggle()
+						outputs[indexPath.row] = output
+						tableView.reloadRows(at: [indexPath], with: .fade)
 						NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
 				}
 				cnn.disconnect()
@@ -125,7 +138,7 @@ extension AudioOutputsListVC
 
 extension AudioOutputsListVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		tableView.separatorColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColorAlt

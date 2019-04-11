@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class NYXNavigationController: UINavigationController
+final class NYXNavigationController: UINavigationController, Themed
 {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
@@ -17,10 +17,6 @@ final class NYXNavigationController: UINavigationController
 			return themedStatusBarStyle
 		}
 
-//		if let topViewController = topViewController
-//		{
-//			return topViewController.preferredStatusBarStyle
-//		}
 		return .lightContent
 	}
 
@@ -58,18 +54,11 @@ final class NYXNavigationController: UINavigationController
 		return .portrait
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
-		super.viewWillAppear(animated)
-	}
-}
-
-extension NYXNavigationController: Themed
-{
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		themedStatusBarStyle = theme.statusBarStyle
 		navigationBar.barStyle = theme.navigationBarStyle
+		navigationBar.isTranslucent = true
 		navigationBar.tintColor = theme.tintColor
 		setNeedsStatusBarAppearanceUpdate()
 	}
@@ -89,19 +78,9 @@ class NYXTableViewController: UITableViewController
 		navigationItem.titleView = titleView
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return [.portrait, .portraitUpsideDown]
-	}
-
-	override var shouldAutorotate: Bool
-	{
-		return true
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -137,19 +116,9 @@ class NYXViewController: UIViewController
 		navigationItem.titleView = titleView
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		return .lightContent
-	}
-
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
 	{
 		return [.portrait, .portraitUpsideDown]
-	}
-
-	override var shouldAutorotate: Bool
-	{
-		return true
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -171,11 +140,17 @@ class NYXViewController: UIViewController
 	}
 }
 
-class NYXAlertController: UIAlertController
+class NYXAlertController: UIAlertController, Themed
 {
+	private var themedStatusBarStyle: UIStatusBarStyle?
+
 	override var preferredStatusBarStyle: UIStatusBarStyle
 	{
-		return .lightContent
+		if let themedStatusBarStyle = themedStatusBarStyle
+		{
+			return themedStatusBarStyle
+		}
+		return .default
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
@@ -183,9 +158,16 @@ class NYXAlertController: UIAlertController
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override var shouldAutorotate: Bool
+	override func viewDidLoad()
 	{
-		return true
+		super.viewDidLoad()
+
+		initializeTheming()
+	}
+
+	func applyTheme(_ theme: Theme)
+	{
+		themedStatusBarStyle = theme.statusBarStyle
 	}
 }
 
@@ -207,7 +189,7 @@ public func NavigationBarHeight() -> CGFloat
 
 fileprivate func findShadowImage(under view: UIView) -> UIImageView?
 {
-	if view is UIImageView && view.bounds.size.height <= 1
+	if view is UIImageView && view.height <= 1
 	{
 		return (view as! UIImageView)
 	}

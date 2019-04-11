@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */; };
 		430141E22229307300C68075 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
+		4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
 		434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E517521D56CF000CD88F7 /* AppDelegate.swift */; };
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 		434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
@@ -71,7 +72,7 @@
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
-		439ED9B6225D246F007F2F45 /* ShinobuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* ShinobuTheme.swift */; };
+		439ED9B6225D246F007F2F45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */; };
 		43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
@@ -82,7 +83,7 @@
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
 		43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */; };
-		43DC9F1E225CBBB700C6A8E5 /* ShinobuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* ShinobuTheme.swift */; };
+		43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43DC9F20225CBC1600C6A8E5 /* ShinobuThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */; };
 		43DC9F22225CBCE300C6A8E5 /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */; };
 		43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */; };
@@ -264,7 +265,7 @@
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServer.swift; sourceTree = "<group>"; };
 		43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theming.swift; sourceTree = "<group>"; };
-		43DC9F1D225CBBB700C6A8E5 /* ShinobuTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuTheme.swift; sourceTree = "<group>"; };
+		43DC9F1D225CBBB700C6A8E5 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuThemeProvider.swift; sourceTree = "<group>"; };
 		43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribableValue.swift; sourceTree = "<group>"; };
 		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -603,8 +604,8 @@
 		43DC9F1A225CBB3100C6A8E5 /* theming */ = {
 			isa = PBXGroup;
 			children = (
-				43DC9F1D225CBBB700C6A8E5 /* ShinobuTheme.swift */,
 				43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */,
+				43DC9F1D225CBBB700C6A8E5 /* Theme.swift */,
 				43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */,
 			);
 			path = theming;
@@ -840,7 +841,7 @@
 				4358B03B21EB44C5009A3BBF /* Playlist.swift in Sources */,
 				4358B02221EB42B4009A3BBF /* UIImage+Extensions.swift in Sources */,
 				4358B07321EB47A8009A3BBF /* LibraryVC.swift in Sources */,
-				43DC9F1E225CBBB700C6A8E5 /* ShinobuTheme.swift in Sources */,
+				43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */,
 				430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */,
 				430141E22229307300C68075 /* ServersManager.swift in Sources */,
 				4358B01F21EB42B4009A3BBF /* CGSize+Extensions.swift in Sources */,
@@ -861,7 +862,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				439ED9B6225D246F007F2F45 /* ShinobuTheme.swift in Sources */,
+				4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */,
+				439ED9B6225D246F007F2F45 /* Theme.swift in Sources */,
 				43B8BAA92254EFBE0033EA5D /* CoverOperation.swift in Sources */,
 				43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */,
 				43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */,
@@ -1151,7 +1153,7 @@
 		43FAE5A9224E5D45006843E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = src/widget/ShinobuWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = rsrc/widget/ShinobuWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
@@ -1178,7 +1180,7 @@
 		43FAE5AA224E5D45006843E9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = src/widget/ShinobuWidget.entitlements;
+				CODE_SIGN_ENTITLEMENTS = rsrc/widget/ShinobuWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;

@@ -54,20 +54,21 @@ extension UIView
 	}
 
 	// MARK: - Animations
-	public func shake(removeAtEnd: Bool = false)
+	public func shake(duration: Double, removeAtEnd: Bool = false)
 	{
 		let origTransform = transform
-		UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseOut, animations: {
+		let d = duration / 3
+		UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
 			let radians = 30 / 180 * CGFloat.pi
 			let rotation = origTransform.rotated(by: radians)
 			self.transform = rotation
 		}, completion:{ (finished) in
-			UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseOut, animations: {
+			UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
 				let radians = -30 / 180 * CGFloat.pi
 				let rotation = origTransform.rotated(by: radians)
 				self.transform = rotation
 			}, completion:{ (finished) in
-				UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseOut, animations: {
+				UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
 					self.transform = origTransform
 				}, completion:{ (finished) in
 					if removeAtEnd
@@ -77,5 +78,19 @@ extension UIView
 				})
 			})
 		})
+	}
+
+	public func enableCorners(withDivisor divisor: CGFloat = 10)
+	{
+		layer.cornerRadius = min(self.width, self.height) / divisor
+		layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		clipsToBounds = true
+	}
+
+	public func circleize()
+	{
+		layer.cornerRadius = self.width / 2
+		layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		clipsToBounds = true
 	}
 }

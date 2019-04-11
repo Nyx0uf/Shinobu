@@ -132,6 +132,9 @@ extension ServersListVC
 		cell.toggle.tag = indexPath.row
 		cell.toggle.addTarget(self, action: #selector(toggleServer(_:)), for: .valueChanged)
 		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.isSelected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
+		let v = UIView()
+		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = v
 
 		return cell
 	}
@@ -173,7 +176,7 @@ extension ServersListVC
 
 extension ServersListVC: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		view.backgroundColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColor

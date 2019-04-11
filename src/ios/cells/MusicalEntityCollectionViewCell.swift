@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class MusicalEntityBaseCell: UICollectionViewCell
+final class MusicalEntityCollectionViewCell: UICollectionViewCell
 {
 	// MARK: - Public properties
 	// Album cover view
@@ -88,9 +88,7 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 
 		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.clipsToBounds = true
-		self.imageView.layer.cornerRadius = 12
-		self.imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.imageView.enableCorners(withDivisor: 4)
 		self.contentView.addSubview(self.imageView)
 
 		self.label = UILabel(frame: CGRect(0, self.imageView.maxY, frame.width, 20))
@@ -111,9 +109,9 @@ final class MusicalEntityBaseCell: UICollectionViewCell
 	}
 }
 
-extension MusicalEntityBaseCell: Themed
+extension MusicalEntityCollectionViewCell: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
 		backgroundColor = theme.backgroundColor
 		label.textColor = theme.tableCellMainLabelTextColor

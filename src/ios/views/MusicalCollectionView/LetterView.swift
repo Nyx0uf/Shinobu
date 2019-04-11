@@ -1,16 +1,14 @@
 import UIKit
-import CoreGraphics
 
 
 final class LetterView: UIView
 {
 	// MARK: - Public roperties
-	// Letter to draw
 	var letter = ""
 	{
 		didSet
 		{
-			self.letterView.letter = letter
+			self.letterLayer.string = letter
 		}
 	}
 	// selected state
@@ -18,8 +16,12 @@ final class LetterView: UIView
 	{
 		didSet
 		{
-			self.blurEffectView.isHidden = !isSelected
-			self.letterView.isSelected = isSelected
+			self.letterLayer.font = UIFont.systemFont(ofSize: self.big ? 16 : 12, weight: self.isSelected ? .black : .semibold)
+			self.letterLayer.foregroundColor = self.isSelected ? themeProvider.currentTheme.backgroundColor.cgColor : themeProvider.currentTheme.tableCellMainLabelTextColor.cgColor
+			if self.big
+			{
+				self.blurEffectView.isHidden = !self.isSelected
+			}
 		}
 	}
 
@@ -27,24 +29,35 @@ final class LetterView: UIView
 	// Blur effect selection
 	private var blurEffectView: UIVisualEffectView!
 	// Actual letter view
-	private var letterView: SimpleLetterView!
+	private var letterLayer: CenteredTextLayer!
+	// Big text
+	private var big = false
 
 	// MARK: - Initializers
 	init(frame: CGRect, letter: String, big: Bool = false)
 	{
 		super.init(frame: frame)
 
-		self.layer.cornerRadius = 5
-		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-		self.clipsToBounds = true
-
 		// Blur background
-		blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-		blurEffectView.frame = self.bounds
-		self.addSubview(blurEffectView)
+		self.big = big
+		if big
+		{
+			self.enableCorners(withDivisor: 4)
 
-		letterView = SimpleLetterView(frame: self.bounds, letter: letter, big: big)
-		self.addSubview(letterView)
+			self.blurEffectView = UIVisualEffectView()
+			self.blurEffectView.frame = self.bounds
+			self.addSubview(self.blurEffectView)
+		}
+
+		self.letterLayer = CenteredTextLayer()
+		self.letterLayer.frame = self.bounds
+		self.letterLayer.backgroundColor = UIColor.clear.cgColor
+		self.letterLayer.alignmentMode = .center
+		self.letterLayer.font = UIFont.systemFont(ofSize: big ? 16 : 12, weight: .semibold)
+		self.letterLayer.string = letter
+		self.letterLayer.allowsFontSubpixelQuantization = true
+		self.letterLayer.contentsScale = UIScreen.main.scale
+		self.layer.addSublayer(self.letterLayer)
 
 		self.letter = letter
 
@@ -56,96 +69,54 @@ final class LetterView: UIView
 
 extension LetterView: Themed
 {
-	func applyTheme(_ theme: ShinobuTheme)
+	func applyTheme(_ theme: Theme)
 	{
-		blurEffectView.effect = theme.blurEffectAlt
+		letterLayer.foregroundColor = theme.tableCellMainLabelTextColor.cgColor
+
+		if big
+		{
+			blurEffectView.effect = theme.blurEffectAlt
+		}
 	}
 }
 
-
-fileprivate final class SimpleLetterView: UIView
+fileprivate final class CenteredTextLayer: CATextLayer
 {
-	// MARK: - Public properties
-	// Letter to draw
-	var letter = ""
+	public override init()
 	{
-		didSet
-		{
-			createStrings()
-			self.setNeedsDisplay()
-		}
-	}
-	// selected state
-	var isSelected = false
-	{
-		didSet
-		{
-			self.setNeedsDisplay()
-		}
+		super.init()
 	}
 
-	// MARK: - Private properties
-	// Big text
-	private var isBigText = false
-	// Selected attributed string
-	private var letterSelected: NSAttributedString!
-	// Unselected attributed string
-	private var letterUnselected: NSAttributedString!
-
-	init(frame: CGRect, letter: String, big: Bool)
+	override init(layer: Any)
 	{
-		super.init(frame: frame)
-
-		self.backgroundColor = .clear
-
-		self.isBigText = big
-		self.letter = letter
-
-		initializeTheming()
+		super.init(layer: layer)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override func draw(_ rect: CGRect)
+	override var font: CFTypeRef?
 	{
-		guard let context = UIGraphicsGetCurrentContext() else { return }
-		context.translateBy(x: 0, y: rect.height)
-		context.scaleBy(x: 1, y: -1)
-
-		// Figure out how big an image we need
-		let framesetter = CTFramesetterCreateWithAttributedString(isSelected ? letterSelected : letterUnselected)
-		var osef = CFRange(location: 0, length: 0)
-		let goodSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, osef, nil, rect.size, &osef).ceilled()
-		let rect = CGRect((rect.width - goodSize.width) / 2, (rect.height - goodSize.height) / 2, goodSize.width, goodSize.height)
-		let path = CGPath(rect: rect, transform: nil)
-		let frame = CTFramesetterCreateFrame(framesetter, CFRange(location: 0, length: 0), path, nil)
-
-		// Draw the text
-		context.setAllowsAntialiasing(true)
-		context.setAllowsFontSmoothing(true)
-		context.interpolationQuality = .high
-		CTFrameDraw(frame, context)
+		didSet
+		{
+			self.fontSize = (self.font as? UIFont)?.pointSize ?? 12
+		}
 	}
 
-	private func createStrings()
+	public override func draw(in ctx: CGContext)
 	{
-		let paragraphStyle = NSMutableParagraphStyle()
-		paragraphStyle.lineBreakMode = .byWordWrapping
-		paragraphStyle.alignment = .center
+		guard let text = string as? NSString, let font = font as? UIFont else
+		{
+			super.draw(in: ctx)
+			return
+		}
 
-		var attributes: [NSAttributedString.Key : Any] = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .black), .foregroundColor : themeProvider.currentTheme.backgroundColor, .paragraphStyle : paragraphStyle]
-		letterSelected = NSAttributedString(string: letter, attributes: attributes)
+		let attributes = [NSAttributedString.Key.font: font]
+		let textSize = text.size(withAttributes: attributes)
+		let yDiff = (bounds.height - textSize.height) / 2
 
-		attributes = [.font : UIFont.systemFont(ofSize: isBigText ? 16 : 12, weight: .semibold), .foregroundColor : themeProvider.currentTheme.tableCellMainLabelTextColor, .paragraphStyle : paragraphStyle]
-		letterUnselected = NSAttributedString(string: letter, attributes: attributes)
-	}
-}
-
-extension SimpleLetterView: Themed
-{
-	func applyTheme(_ theme: ShinobuTheme)
-	{
-		self.createStrings()
-		self.setNeedsDisplay()
+		ctx.saveGState()
+		ctx.translateBy(x: 0, y: yDiff)
+		super.draw(in: ctx)
+		ctx.restoreGState()
 	}
 }

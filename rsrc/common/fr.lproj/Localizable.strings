@@ -44,7 +44,8 @@
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
 "lbl_alert_servercfg_error" = "Erreur de configuration serveur";
 "lbl_alert_servercfg_error_msg" = "Paramètre(s) invalide(s)";
-"lbl_alert_servercfg_error_host" = "Paramètre serveur invalide";
+"lbl_alert_servercfg_error_host" = "Nom d'hôte/IP invalide";
+"lbl_alert_servercfg_error_name" = "Le nom du serveur doit-être spécifié";
 "lbl_alert_purge_cache_title" = "Suppression du cache des images";
 "lbl_alert_purge_cache_msg" = "Êtes-vous sûr de vouloir procéder ?";
 "lbl_alert_server_need_check" = "Vérifiez votre configuration";
