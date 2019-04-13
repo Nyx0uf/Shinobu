@@ -114,10 +114,10 @@ final class CoverOperation: Operation
 			return
 		}
 
-//		if thumbnail.save(url: saveURL) == false
-//		{
-//			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
-//		}
+		if thumbnail.save(url: saveURL) == false
+		{
+			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+		}
 
 		if let block = callback
 		{
