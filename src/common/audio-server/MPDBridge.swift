@@ -1,4 +1,5 @@
 import UIKit
+import MPDCLIENT
 
 
 final class MPDBridge
@@ -214,6 +215,96 @@ final class MPDBridge
 					callback()
 			}
 		}
+	}
+
+	func getPathForAlbum2(_ album: Album, callback: @escaping (Bool, String?) -> Void) -> DispatchWorkItem?
+	{
+		var dwi: DispatchWorkItem? = nil
+
+		guard MPDConnection.isValid(connection) else { return dwi }
+
+		dwi = DispatchWorkItem { [weak self] in
+			guard let strongSelf = self else
+			{
+				callback(false, nil)
+				return
+			}
+
+			if dwi!.isCancelled
+			{
+				Logger.shared.log(string: "cancelling work item for <\(album)>")
+				callback(false, nil)
+				return
+			}
+
+			if mpd_search_db_songs(strongSelf.connection.connection, true) == false
+			{
+				callback(false, nil)
+				return
+			}
+
+			if dwi!.isCancelled
+			{
+				Logger.shared.log(string: "cancelling work item for [mpd_search_db_songs] <\(album)>")
+				mpd_search_cancel(strongSelf.connection.connection)
+				callback(false, nil)
+				return
+			}
+
+			if mpd_search_add_tag_constraint(strongSelf.connection.connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
+			{
+				callback(false, nil)
+				return
+			}
+
+			if dwi!.isCancelled
+			{
+				Logger.shared.log(string: "cancelling work item for [mpd_search_add_tag_constraint] <\(album)>")
+				mpd_search_cancel(strongSelf.connection.connection)
+				callback(false, nil)
+				return
+			}
+
+			if mpd_search_commit(strongSelf.connection.connection) == false
+			{
+				callback(false, nil)
+				return
+			}
+
+			if dwi!.isCancelled
+			{
+				Logger.shared.log(string: "cancelling work item for [mpd_search_commit] <\(album)>")
+				mpd_response_finish(strongSelf.connection.connection)
+				callback(false, nil)
+				return
+			}
+
+			var path: String? = nil
+			if let song = mpd_recv_song(strongSelf.connection.connection)
+			{
+				if let uri = mpd_song_get_uri(song)
+				{
+					let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: uri), count: Int(strlen(uri)), deallocator: .none)
+					if let name = String(data: dataTemp, encoding: .utf8)
+					{
+						path = URL(fileURLWithPath: name).deletingLastPathComponent().path
+					}
+				}
+			}
+
+			if mpd_connection_get_error(strongSelf.connection.connection) != MPD_ERROR_SUCCESS || mpd_response_finish(strongSelf.connection.connection) == false
+			{
+				callback(false, nil)
+				return
+			}
+
+			album.path = path
+			callback(path != nil, path)
+		}
+
+		queue.async(execute: dwi!)
+
+		return dwi
 	}
 
 	func getTracksForAlbums(_ albums: [Album], callback: @escaping ([Track]?) -> Void)

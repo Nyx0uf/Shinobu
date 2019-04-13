@@ -43,7 +43,7 @@ final class Logger
 	// Logs list
 	private var logs: [Log]
 	// Maximum logs countto keep
-	private let maxLogsCount = 4096
+	private let maxLogsCount = 1024
 
 	// MARK: - Initializers
 	init()

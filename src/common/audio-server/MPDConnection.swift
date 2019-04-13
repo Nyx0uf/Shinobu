@@ -89,7 +89,7 @@ final class MPDConnection
 
 	// MARK: - Private properties
 	// mpd_connection object
-	private var connection: OpaquePointer? = nil
+	private(set) var connection: OpaquePointer? = nil
 	// Timeout in seconds
 	private let timeout = UInt32(10)
 

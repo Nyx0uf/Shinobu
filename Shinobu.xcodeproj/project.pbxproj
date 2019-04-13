@@ -80,6 +80,8 @@
 		43B8BAAB22564E980033EA5D /* NYXButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAA22564E980033EA5D /* NYXButton.swift */; };
 		43B8BAAE2257BE120033EA5D /* TitlesIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAD2257BE120033EA5D /* TitlesIndexView.swift */; };
 		43B8BAB02257BF840033EA5D /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAF2257BF840033EA5D /* LetterView.swift */; };
+		43C3E8032260C36B00F6F058 /* ThreadedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */; };
+		43C3E8042260C36B00F6F058 /* ThreadedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
 		43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */; };
@@ -262,6 +264,7 @@
 		43B8BAAA22564E980033EA5D /* NYXButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYXButton.swift; sourceTree = "<group>"; };
 		43B8BAAD2257BE120033EA5D /* TitlesIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitlesIndexView.swift; sourceTree = "<group>"; };
 		43B8BAAF2257BF840033EA5D /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterView.swift; sourceTree = "<group>"; };
+		43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedDictionary.swift; sourceTree = "<group>"; };
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServer.swift; sourceTree = "<group>"; };
 		43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theming.swift; sourceTree = "<group>"; };
@@ -529,6 +532,7 @@
 				4358B04821EB44E2009A3BBF /* OperationManager.swift */,
 				4358B04721EB44E2009A3BBF /* Settings.swift */,
 				43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */,
+				43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */,
 				4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */,
 			);
 			path = misc;
@@ -850,6 +854,7 @@
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,
+				43C3E8032260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
 				4358B02321EB42B4009A3BBF /* UIDevice+Extensions.swift in Sources */,
 				4358B04F21EB44E2009A3BBF /* KawaiiColors.swift in Sources */,
 				4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */,
@@ -875,6 +880,7 @@
 				43FAE5C0224E5F73006843E9 /* MPDBridge.swift in Sources */,
 				43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */,
 				43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */,
+				43C3E8042260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
 				43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */,
 				43FAE5BA224E5E0A006843E9 /* CGRect+Extensions.swift in Sources */,
 				43FAE5BB224E5E0A006843E9 /* CGSize+Extensions.swift in Sources */,

@@ -43,7 +43,7 @@ final class CoverOperation: Operation
 	// Downloaded data
 	private var incomingData = Data()
 	// Task
-	private var sessionTask: URLSessionTask? = nil
+	private var sessionTask: URLSessionDataTask? = nil
 
 	// MARK: - Initializers
 	init(album: Album, cropSize: CGSize)
@@ -59,7 +59,7 @@ final class CoverOperation: Operation
 		// Operation is cancelled, abort
 		if isCancelled
 		{
-			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
@@ -114,10 +114,10 @@ final class CoverOperation: Operation
 			return
 		}
 
-		if thumbnail.save(url: saveURL) == false
-		{
-			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
-		}
+//		if thumbnail.save(url: saveURL) == false
+//		{
+//			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+//		}
 
 		if let block = callback
 		{
@@ -138,7 +138,7 @@ extension CoverOperation: URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .information, message: "Cancelled")
+			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -151,7 +151,7 @@ extension CoverOperation: URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .information, message: "Cancelled")
+			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -163,7 +163,7 @@ extension CoverOperation: URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			Logger.shared.log(type: .information, message: "Cancelled")
+			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -171,7 +171,7 @@ extension CoverOperation: URLSessionDataDelegate
 
 		if let err = error
 		{
-			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
+			//Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
 			isFinished = true
 			return
 		}

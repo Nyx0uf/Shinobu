@@ -28,8 +28,6 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	private(set) var searchTitlesIndex = [String]()
 
 	// MARK: - Private Properties
-	// Cover download operations
-	private var downloadOperations = [String: Operation]()
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// MPD servers manager
@@ -38,6 +36,10 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	private(set) var orderedItems = [String: [MusicalEntity]]()
 	// Items splitted by section title
 	private(set) var orderedSearchResults = [String: [MusicalEntity]]()
+	// Cover download operations
+	private var downloadOperations = ThreadedDictionary<IndexPath, CoverOperation>()
+	// Get albums path items
+	private var pathsOperation = ThreadedDictionary<IndexPath, DispatchWorkItem>()
 
 	// MARK: - Initializers
 	init(type: MusicalEntityType, delegate: MusicalCollectionDataSourceAndDelegateDelegate, mpdBridge: MPDBridge)
@@ -53,8 +55,6 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	{
 		self.items = items
 		musicalEntityType = type
-
-		//let tmp = items.compactMap({$0.name.first}).map({String($0).uppercased()}).reduce([], {$0.contains($1) ? $0 : $0 + [$1]})
 
 		orderedItems.removeAll()
 		for item in items
@@ -115,10 +115,9 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	}
 
 	// MARK: - Private
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
+	private func downloadCoverForAlbum(_ album: Album, _ indexPath: IndexPath, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
-		let key = album.uniqueIdentifier
-		if let _ = downloadOperations[key] as! CoverOperation?
+		if let _ = downloadOperations[indexPath]
 		{
 			return
 		}
@@ -127,16 +126,14 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		downloadOperation.callback = { (cover, thumbnail) in
 			if let _ = weakOperation
 			{
-				DispatchQueue.main.async {
-					self.downloadOperations.removeValue(forKey: key)
-				}
+				self.downloadOperations.removeValue(forKey: indexPath)
 			}
 			if let block = callback
 			{
 				block(cover, thumbnail)
 			}
 		}
-		downloadOperations[key] = downloadOperation
+		downloadOperations[indexPath] = downloadOperation
 
 		OperationManager.shared.addOperation(downloadOperation)
 	}
@@ -174,7 +171,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
 			if album.path != nil
 			{
-				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
+				downloadCoverForAlbum(album, indexPath, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
 					}
@@ -182,15 +179,18 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 			}
 			else
 			{
-				mpdBridge.getPathForAlbum(album) {
-					DispatchQueue.main.async {
-						self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
+				let dwi = mpdBridge.getPathForAlbum2(album) { (success, path) in
+					self.pathsOperation.removeValue(forKey: indexPath)
+					if success
+					{
+						self.downloadCoverForAlbum(album, indexPath, cropSize: (cropSize?.cgSizeValue)!) { (cover, thumbnail) in
 							DispatchQueue.main.async {
 								self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
 							}
 						}
 					}
 				}
+				pathsOperation[indexPath] = dwi
 			}
 		}
 	}
@@ -205,8 +205,6 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
 	{
-//		let count = actualItems.count
-//		return count >= 9 ? count + 3 : count
 		if searching
 		{
 			let title = searchTitlesIndex[section]
@@ -222,16 +220,6 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
 	{
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: musicalEntityType.cellIdentifier(), for: indexPath) as! MusicalEntityCollectionViewCell
-
-		// Dummy cells
-		/*let entities = self.actualItems
-		if indexPath.row == entities.count || indexPath.row == entities.count + 1 || indexPath.row == entities.count + 2
-		{
-			cell.label.text = ""
-			cell.imageView.backgroundColor = collectionView.backgroundColor
-			cell.image = nil
-			return cell
-		}*/
 
 		let title = searching ? searchTitlesIndex[indexPath.section] : titlesIndex[indexPath.section]
 		let entities = searching ? orderedSearchResults[title]! : orderedItems[title]!
@@ -284,6 +272,22 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate
 		if let indexPath = collectionView.indexPathForItem(at: CGPoint(20, scrollView.contentOffset.y + (layout.sectionInset.top + NavigationBarHeight())))
 		{
 			delegate.didDisplayCellAtIndexPath(indexPath)
+		}
+	}
+
+	func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath)
+	{
+		// Cancel paths & covers operations
+		if let dwi = pathsOperation[indexPath]
+		{
+			dwi.cancel()
+			pathsOperation.removeValue(forKey: indexPath)
+		}
+
+		if let operation = downloadOperations[indexPath]
+		{
+			operation.cancel()
+			downloadOperations.removeValue(forKey: indexPath)
 		}
 	}
 }
