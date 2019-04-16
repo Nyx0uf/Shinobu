@@ -15,13 +15,6 @@ final class LibraryVC: MusicalCollectionVC
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
 	}
 
-	override init(mpdBridge: MPDBridge)
-	{
-		super.init(mpdBridge: mpdBridge)
-
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
-	}
-
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
@@ -38,7 +31,6 @@ final class LibraryVC: MusicalCollectionVC
 		navigationItem.leftBarButtonItems = [serversButton, settingsButton]
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(miniPlayShouldExpandNotification(_:)), name: .miniPlayerShouldExpand, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -71,8 +63,6 @@ final class LibraryVC: MusicalCollectionVC
 								self.updateNavigationButtons()
 							}
 						}
-
-						MiniPlayerView.shared.mpdBridge = mpdBridge
 				}
 			}
 			else
@@ -186,8 +176,6 @@ final class LibraryVC: MusicalCollectionVC
 
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
 		{
-			MiniPlayerView.shared.stayHidden = true
-			MiniPlayerView.shared.hide()
 			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
 			cell.longPressed = true
 
@@ -195,7 +183,6 @@ final class LibraryVC: MusicalCollectionVC
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
 				cell.longPressed = false
-				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(cancelAction)
 
@@ -207,21 +194,18 @@ final class LibraryVC: MusicalCollectionVC
 						self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
 						self.mpdBridge.addAlbumToQueue(album)
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
 				case .artists:
@@ -236,7 +220,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
@@ -249,7 +232,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
@@ -262,7 +244,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
 				case .albumsartists:
@@ -277,7 +258,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
@@ -290,7 +270,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
@@ -303,7 +282,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
 				case .genres:
@@ -318,7 +296,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
@@ -331,7 +308,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
@@ -344,7 +320,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(addQueueAction)
 				case .playlists:
@@ -353,14 +328,12 @@ final class LibraryVC: MusicalCollectionVC
 						self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(playAction)
 					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 						self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(shuffleAction)
 					let renameAction = UIAlertAction(title: NYXLocalizedString("lbl_rename_playlist"), style: .default) { (action) in
@@ -387,7 +360,6 @@ final class LibraryVC: MusicalCollectionVC
 						}
 						self.longPressRecognized = false
 						cell.longPressed = false
-						MiniPlayerView.shared.stayHidden = false
 					}
 					alertController.addAction(deleteAction)
 				default:
@@ -552,14 +524,6 @@ final class LibraryVC: MusicalCollectionVC
 		serverChanged = true
 	}
 
-	@objc func miniPlayShouldExpandNotification(_ aNotification: Notification)
-	{
-		let vc = PlayerVC(mpdBridge: mpdBridge)
-		vc.transitioningDelegate = navigationController as! NYXNavigationController
-		vc.modalPresentationStyle = .custom
-		navigationController?.present(vc, animated: true, completion: nil)
-	}
-
 	override func didSelectDisplayType(_ typeAsInt: Int)
 	{
 		// Hide
@@ -657,24 +621,6 @@ extension LibraryVC
 				}
 			}
 		}
-	}
-}
-
-// MARK: - UIViewControllerTransitioningDelegate
-extension NYXNavigationController: UIViewControllerTransitioningDelegate
-{
-	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning?
-	{
-		let c = PlayerVCCustomPresentAnimationController()
-		c.presenting = true
-		return c
-	}
-
-	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning?
-	{
-		let c = PlayerVCCustomPresentAnimationController()
-		c.presenting = false
-		return c
 	}
 }
 

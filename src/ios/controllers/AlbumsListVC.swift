@@ -61,13 +61,9 @@ final class AlbumsListVC: MusicalCollectionVC
 
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
 		{
-			MiniPlayerView.shared.stayHidden = true
-			MiniPlayerView.shared.hide()
-
 			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
 				self.longPressRecognized = false
-				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(cancelAction)
 
@@ -75,19 +71,16 @@ final class AlbumsListVC: MusicalCollectionVC
 			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
 				self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
-				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(playAction)
 			let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
 				self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
 				self.longPressRecognized = false
-				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(shuffleAction)
 			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
 				self.mpdBridge.addAlbumToQueue(album)
 				self.longPressRecognized = false
-				MiniPlayerView.shared.stayHidden = false
 			}
 			alertController.addAction(addQueueAction)
 
@@ -141,7 +134,6 @@ extension AlbumsListVC
 					strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
@@ -153,7 +145,6 @@ extension AlbumsListVC
 					strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
@@ -165,7 +156,6 @@ extension AlbumsListVC
 					strongSelf.mpdBridge.addAlbumToQueue(album)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		return [playAction, shuffleAction, addQueueAction]

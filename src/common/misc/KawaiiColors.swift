@@ -66,7 +66,7 @@ final class KawaiiColors
 		edgeColor = findEdgeColor(&imageColors)
 		if edgeColor == nil
 		{
-			edgeColor = .white
+			edgeColor = UIColor(rgb: 0xFFFFFF)
 		}
 
 		// Find other colors
@@ -76,17 +76,17 @@ final class KawaiiColors
 		let darkBackground = edgeColor.isDark()
 		if primaryColor == nil
 		{
-			primaryColor = darkBackground ? .white : .black
+			primaryColor = darkBackground ? UIColor(rgb: 0xFFFFFF) : UIColor(rgb: 0x000000)
 		}
 
 		if secondaryColor == nil
 		{
-			secondaryColor = darkBackground ? .white : .black
+			secondaryColor = darkBackground ? UIColor(rgb: 0xFFFFFF) : UIColor(rgb: 0x000000)
 		}
 
 		if thirdColor == nil
 		{
-			thirdColor = darkBackground ? .white : .black
+			thirdColor = darkBackground ? UIColor(rgb: 0xFFFFFF) : UIColor(rgb: 0x000000)
 		}
 	}
 
@@ -163,7 +163,7 @@ final class KawaiiColors
 		colors.sort { (c1: CountedObject<UIColor>, c2: CountedObject<UIColor>) -> Bool in
 			return c1.count > c2.count
 		}
-		dominantColor = colors.count > 0 ? colors[0].object : .black
+		dominantColor = colors.count > 0 ? colors[0].object : UIColor(rgb: 0x000000)
 
 		if edgeColors.count > 0
 		{

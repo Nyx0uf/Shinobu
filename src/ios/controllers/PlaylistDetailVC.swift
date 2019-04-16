@@ -228,17 +228,14 @@ extension PlaylistDetailVC
 	{
 		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
 			self.mpdBridge.playPlaylist(self.playlist, shuffle: false, loop: false)
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
 			self.mpdBridge.playPlaylist(self.playlist, shuffle: true, loop: false)
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let renameAction = UIPreviewAction(title: NYXLocalizedString("lbl_rename_playlisr"), style: .default) { (action, viewController) in
 			self.renamePlaylistAction()
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
@@ -253,7 +250,6 @@ extension PlaylistDetailVC
 						break
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		return [playAction, shuffleAction, renameAction, deleteAction]

@@ -26,14 +26,14 @@ final class TypeChoiceView: UIView
 		self.musicalEntityTypes = musicalEntityTypes
 
 		super.init(frame: frame)
-		self.backgroundColor = .black
+		self.backgroundColor = UIColor(rgb: 0x000000)
 
 		// TableView
 		self.tableView = UITableView(frame: CGRect(.zero, frame.size), style: .plain)
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.type")
 		self.tableView.dataSource = self
 		self.tableView.delegate = self
-		self.tableView.backgroundColor = .black
+		self.tableView.backgroundColor = UIColor(rgb: 0x000000)
 		self.tableView.showsVerticalScrollIndicator = false
 		self.tableView.scrollsToTop = false
 		self.tableView.isScrollEnabled = false
@@ -57,7 +57,7 @@ extension TypeChoiceView: UITableViewDataSource
 	{
 		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.type", for: indexPath)
 		cell.selectionStyle = .none
-		cell.backgroundColor = .black
+		cell.backgroundColor = UIColor(rgb: 0x000000)
 		cell.textLabel?.textAlignment = .center
 		var title = ""
 		let type = musicalEntityTypes[indexPath.row]

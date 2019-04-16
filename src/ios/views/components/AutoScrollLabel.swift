@@ -88,7 +88,7 @@ final class AutoScrollLabel: UIView
 	/// Text align (only when not auto-scrolling)
 	public var textAlignment = NSTextAlignment.left
 	/// Scrollview
-	private(set) var scrollView: UIScrollView!
+	private(set) var scrollView = UIScrollView()
 	/// Labels
 	private var mainLabel: UILabel!
 	private var secondaryLabel: UILabel!
@@ -102,6 +102,7 @@ final class AutoScrollLabel: UIView
 		set
 		{
 			super.frame = newValue
+			self.scrollView.frame = CGRect(.zero, newValue.size)
 			didChangeFrame()
 		}
 	}
@@ -126,13 +127,38 @@ final class AutoScrollLabel: UIView
 	}
 
 	// MARK: - Initializers
-	public override init(frame: CGRect)
+	init()
 	{
-		super.init(frame: frame)
+		super.init(frame: .zero)
+
 		self.isUserInteractionEnabled = false
 		self.clipsToBounds = true
 
-		self.scrollView = UIScrollView(frame: self.bounds)
+		self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		self.scrollView.backgroundColor = .clear
+		self.scrollView.showsVerticalScrollIndicator = false
+		self.scrollView.showsHorizontalScrollIndicator = false
+		self.scrollView.isScrollEnabled = false
+		self.addSubview(self.scrollView)
+
+		// Create labels
+		self.mainLabel = UILabel()
+		self.mainLabel.backgroundColor = .clear
+		self.scrollView.addSubview(self.mainLabel)
+
+		self.secondaryLabel = UILabel()
+		self.secondaryLabel.backgroundColor = .clear
+		self.scrollView.addSubview(self.secondaryLabel)
+	}
+
+	public override init(frame: CGRect)
+	{
+		super.init(frame: frame)
+
+		self.isUserInteractionEnabled = false
+		self.clipsToBounds = true
+
+		self.scrollView.frame = self.bounds
 		self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		self.scrollView.backgroundColor = .clear
 		self.scrollView.showsVerticalScrollIndicator = false
@@ -283,7 +309,7 @@ final class AutoScrollLabel: UIView
 			gradientMask.rasterizationScale = UIScreen.main.scale
 			gradientMask.startPoint = CGPoint(x: 0, y: frame.midY)
 			gradientMask.endPoint = CGPoint(x: 1, y: frame.midY)
-			gradientMask.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+			gradientMask.colors = [UIColor.clear.cgColor, UIColor(rgb: 0x000000).cgColor, UIColor(rgb: 0x000000).cgColor, UIColor.clear.cgColor]
 
 			// Calcluate fade
 			let fadePoint = fadeLength / bounds.width

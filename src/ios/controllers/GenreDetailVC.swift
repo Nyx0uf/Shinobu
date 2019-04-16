@@ -149,7 +149,6 @@ extension GenreDetailVC
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: false, loop: false)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) {
@@ -161,7 +160,6 @@ extension GenreDetailVC
 					strongSelf.mpdBridge.playTracks(allTracks, shuffle: true, loop: false)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) {
@@ -173,7 +171,6 @@ extension GenreDetailVC
 					strongSelf.mpdBridge.addAlbumToQueue(album)
 				}
 			}
-			MiniPlayerView.shared.stayHidden = false
 		}
 
 		return [playAction, shuffleAction, addQueueAction]

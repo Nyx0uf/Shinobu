@@ -43,7 +43,7 @@ final class MessageView: UIView
 
 		self.label = UILabel(frame: CGRect(self.imageView.maxX + 8, statusHeight + 2, frame.width - self.imageView.maxX - 8, frame.height - statusHeight - 4))
 		self.label.textAlignment = .left
-		self.label.textColor = .white
+		self.label.textColor = UIColor(rgb: 0xFFFFFF)
 		self.label.font = UIFont.boldSystemFont(ofSize: 15)
 		self.label.numberOfLines = 2
 		self.label.isAccessibilityElement = false
@@ -77,17 +77,17 @@ final class MessageView: UIView
 			switch message.type
 			{
 				case .error:
-					self.backgroundColor = UIColor(red: 0.5807225108, green: 0.066734083, blue: 0, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: .white)
+					self.backgroundColor = UIColor(rgb: 0x941100)
+					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: UIColor(rgb: 0xFFFFFF))
 				case .warning:
-					self.backgroundColor = UIColor(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: .white)
+					self.backgroundColor = UIColor(rgb: 0xF3AF22)
+					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: UIColor(rgb: 0xFFFFFF))
 				case .information:
-					self.backgroundColor = UIColor(red: 0, green: 0.5898008943, blue: 1, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: .white)
+					self.backgroundColor = UIColor(rgb: 0x0096FF)
+					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: UIColor(rgb: 0xFFFFFF))
 				case .success:
-					self.backgroundColor = UIColor(red: 0, green: 0.5603182912, blue: 0, alpha: 1)
-					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: .white)
+					self.backgroundColor = UIColor(rgb: 0x008F00)
+					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: UIColor(rgb: 0xFFFFFF))
 			}
 			self.label.backgroundColor = self.backgroundColor
 		}, completion: { (finished) in

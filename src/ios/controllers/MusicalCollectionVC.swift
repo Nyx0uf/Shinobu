@@ -79,7 +79,8 @@ class MusicalCollectionVC: NYXViewController
 			miniHeight += bottom
 		}
 
-		collectionView = MusicalCollectionView(frame: CGRect(.zero, view.width, view.height - miniHeight), musicalEntityType: dataSource.musicalEntityType)
+		self.view.frame = CGRect(.zero, view.width, view.height - miniHeight)
+		collectionView = MusicalCollectionView(frame: CGRect(.zero, view.width, view.height), musicalEntityType: dataSource.musicalEntityType)
 		collectionView.collectionView.delegate = dataSource
 		collectionView.collectionView.dataSource = dataSource
 		view.addSubview(collectionView)

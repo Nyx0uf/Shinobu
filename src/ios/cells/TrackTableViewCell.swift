@@ -49,7 +49,7 @@ final class TrackTableViewCell: UITableViewCell
 		self.lblTitle.heightAnchor.constraint(equalToConstant: 18).isActive = true
 
 		self.separator = UIView()
-		self.separator.backgroundColor = .black
+		self.separator.backgroundColor = UIColor(rgb: 0x000000)
 		self.contentView.addSubview(self.separator)
 		self.separator.translatesAutoresizingMaskIntoConstraints = false
 		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8).isActive = true

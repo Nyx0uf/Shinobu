@@ -163,7 +163,7 @@ extension CoverOperation: URLSessionDataDelegate
 	{
 		if isCancelled
 		{
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -171,7 +171,7 @@ extension CoverOperation: URLSessionDataDelegate
 
 		if let err = error
 		{
-			//Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
+			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
 			isFinished = true
 			return
 		}

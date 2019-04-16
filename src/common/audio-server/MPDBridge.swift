@@ -508,6 +508,16 @@ final class MPDBridge
 		}
 	}
 
+	func play()
+	{
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			_ = strongSelf.connection.play()
+		}
+	}
+
 	// MARK: - Pausing
 	@objc func togglePause()
 	{
@@ -516,6 +526,16 @@ final class MPDBridge
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			_ = strongSelf.connection.togglePause()
+		}
+	}
+
+	@objc func stop()
+	{
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			_ = strongSelf.connection.stop()
 		}
 	}
 
@@ -708,6 +728,8 @@ final class MPDBridge
 					let status = infos[PLAYER_STATUS_KEY] as! Int
 					let track = infos[PLAYER_TRACK_KEY] as! Track
 					let album = infos[PLAYER_ALBUM_KEY] as! Album
+					//let random = infos[PLAYER_RANDOM_KEY] as! Bool
+					//let loop = infos[PLAYER_REPEAT_KEY] as! Bool
 
 					// Track changed
 					if currentTrack == nil || (currentTrack != nil && track != currentTrack!)

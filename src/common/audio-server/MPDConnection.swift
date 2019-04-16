@@ -7,6 +7,8 @@ public let PLAYER_ALBUM_KEY = "album"
 public let PLAYER_ELAPSED_KEY = "elapsed"
 public let PLAYER_STATUS_KEY = "status"
 public let PLAYER_VOLUME_KEY = "volume"
+public let PLAYER_RANDOM_KEY = "random"
+public let PLAYER_REPEAT_KEY = "repeat"
 
 
 enum PlayerStatus: Int
@@ -49,6 +51,7 @@ struct MPDConnectionError: Error
 		case renamePlaylistError
 		case loadPlaylistError
 		case togglePlayPauseError
+		case toggleStopError
 		case toggleRandomError
 		case toggleRepeatError
 		case changeTrackError
@@ -780,6 +783,16 @@ final class MPDConnection
 		}
 		return .failure(MPDConnectionError(.playError, getLastErrorMessageForConnection()))
 	}
+
+	func play() -> Result<Bool, MPDConnectionError>
+	{
+		let ret = mpd_run_play(connection)
+		if ret
+		{
+			return .success(true)
+		}
+		return .failure(MPDConnectionError(.playError, getLastErrorMessageForConnection()))
+	}
 	
 	func addAlbumToQueue(_ album: Album) -> Result<Bool, MPDConnectionError>
 	{
@@ -821,6 +834,16 @@ final class MPDConnection
 			return .success(true)
 		}
 		return .failure(MPDConnectionError(.togglePlayPauseError, getLastErrorMessageForConnection()))
+	}
+
+	func stop() -> Result<Bool, MPDConnectionError>
+	{
+		let ret = mpd_run_stop(connection)
+		if ret
+		{
+			return .success(true)
+		}
+		return .failure(MPDConnectionError(.toggleStopError, getLastErrorMessageForConnection()))
 	}
 
 	func nextTrack() -> Result<Bool, MPDConnectionError>
@@ -928,6 +951,8 @@ final class MPDConnection
 				let state = statusFromMPDStateObject(mpd_status_get_state(status)).rawValue
 				let elapsed = mpd_status_get_elapsed_time(status)
 				let volume = Int(mpd_status_get_volume(status))
+				let random = mpd_status_get_random(status)
+				let loop = mpd_status_get_repeat(status)
 				guard let tmpAlbumName = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) else
 				{
 					return .failure(MPDConnectionError(.getStatusError, getLastErrorMessageForConnection()))
@@ -937,7 +962,7 @@ final class MPDConnection
 				{
 					if let album = delegate?.albumMatchingName(name)
 					{
-						return .success([PLAYER_TRACK_KEY : track, PLAYER_ALBUM_KEY : album, PLAYER_ELAPSED_KEY : Int(elapsed), PLAYER_STATUS_KEY : state, PLAYER_VOLUME_KEY : volume])
+						return .success([PLAYER_TRACK_KEY : track, PLAYER_ALBUM_KEY : album, PLAYER_ELAPSED_KEY : Int(elapsed), PLAYER_STATUS_KEY : state, PLAYER_VOLUME_KEY : volume, PLAYER_REPEAT_KEY : loop, PLAYER_RANDOM_KEY : random])
 					}
 				}
 

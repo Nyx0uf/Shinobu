@@ -121,8 +121,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="btn-next" width="48" height="48"/>
-        <image name="btn-play" width="48" height="48"/>
-        <image name="btn-previous" width="48" height="48"/>
+        <image name="btn-next" width="36" height="36"/>
+        <image name="btn-play" width="36" height="36"/>
+        <image name="btn-previous" width="36" height="36"/>
     </resources>
 </document>

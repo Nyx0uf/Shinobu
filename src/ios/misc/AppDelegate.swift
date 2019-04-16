@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
 
 		window = UIWindow(frame: UIScreen.main.bounds)
-		window?.rootViewController = NYXNavigationController(rootViewController: LibraryVC())
+		window?.rootViewController = ContainerVC()
 		window?.makeKeyAndVisible()
 		return true
 	}
