@@ -195,7 +195,7 @@ final class PlayerVC : NYXViewController
 
 		// Repeat button
 		let imageRepeat = #imageLiteral(resourceName: "btn-repeat")
-		btnRepeat.frame = CGRect(width - marginX - miniHeight, btnPlay.maxY + 16, miniHeight, miniHeight)
+		btnRepeat.frame = CGRect(width - marginX - miniBaseHeight, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
 		btnRepeat.setImage(imageRepeat)
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.alpha = 0
@@ -203,14 +203,14 @@ final class PlayerVC : NYXViewController
 
 		// Random button
 		let imageRandom = #imageLiteral(resourceName: "btn-random")
-		btnRandom.frame = CGRect(marginX, btnPlay.maxY + 16, miniHeight, miniHeight)
+		btnRandom.frame = CGRect(marginX, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
 		btnRandom.setImage(imageRandom)
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.alpha = 0
 		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Slider volume
-		sliderVolume.frame = CGRect(btnRandom.maxX + marginX, btnPlay.maxY + 16, btnRepeat.x - marginX - btnRandom.maxX - marginX, miniHeight)
+		sliderVolume.frame = CGRect(btnRandom.maxX + marginX, btnPlay.maxY + 16, btnRepeat.x - marginX - btnRandom.maxX - marginX, miniBaseHeight)
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
@@ -289,13 +289,13 @@ final class PlayerVC : NYXViewController
 					DispatchQueue.main.async {
 						if volume == -1
 						{
-							self.sliderVolume.isHidden = true
+							self.sliderVolume.isEnabled = false
 							self.sliderVolume.value = 0
 							self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
 						}
 						else
 						{
-							self.sliderVolume.isHidden = false
+							self.sliderVolume.isEnabled = true
 							self.sliderVolume.value = CGFloat(volume)
 							self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 						}
@@ -319,19 +319,23 @@ final class PlayerVC : NYXViewController
 					self.lblArtist.alpha = 1
 					self.lblAlbum.frame = CGRect(self.lblArtist.maxX + marginX, self.lblArtist.y, self.lblAlbum.size)
 					self.lblAlbum.alpha = 1
+
 					self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, self.view.size.width - 64, self.view.size.width - 64)
+
 					self.btnPlay.frame = CGRect((width - self.btnPlay.width) / 2, self.coverView.maxY + 20, self.btnPlay.size)
 					self.btnPrevious.frame = CGRect(self.btnPlay.x - self.btnPrevious.width - 8, self.coverView.maxY + 20, self.btnPrevious.size)
 					self.btnPrevious.alpha = 1
 					self.btnNext.frame = CGRect(self.btnPlay.maxX + 8, self.coverView.maxY + 20, self.btnNext.size)
-					self.btnRandom.frame = CGRect(marginX, self.btnPlay.maxY + 16, self.btnRandom.size)
-					self.btnRandom.alpha = 1
-					self.btnRepeat.frame = CGRect(width - marginX - miniHeight, self.btnPlay.maxY + 16, self.btnRepeat.size)
-					self.btnRepeat.alpha = 1
 					self.btnStop.frame = CGRect(width - marginX - miniBaseHeight, self.btnPlay.y, miniBaseHeight, miniBaseHeight)
 					self.btnStop.alpha = 1
+
+					self.btnRandom.frame = CGRect(marginX, self.btnPlay.maxY + 16, self.btnRandom.size)
+					self.btnRandom.alpha = 1
+					self.btnRepeat.frame = CGRect(width - marginX - miniBaseHeight, self.btnPlay.maxY + 16, self.btnRepeat.size)
+					self.btnRepeat.alpha = 1
 					self.sliderVolume.frame = CGRect(self.btnRandom.maxX + marginX, self.btnPlay.maxY + 16, self.sliderVolume.size)
 					self.sliderVolume.alpha = 1
+
 					self.progress.alpha = 0
 				}, completion: { (finished) in
 					self.coverView.addMotionEffect(self.motionEffectX)
