@@ -19,6 +19,13 @@ enum PlayerStatus: Int
 	case unknown = -1
 }
 
+struct PlayerState
+{
+	let status: PlayerStatus
+	let isRandom: Bool
+	let isRepeat: Bool
+}
+
 struct AudioOutput
 {
 	let id: Int
@@ -1095,6 +1102,14 @@ final class MPDConnection
 			let tmpString = String(data: dataTemp, encoding: .utf8)
 			artist = tmpString ?? ""
 		}
+		// album name
+		var albumName = ""
+		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0)
+		{
+			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpPtr), count: Int(strlen(tmpPtr)), deallocator: .none)
+			let tmpString = String(data: dataTemp, encoding: .utf8)
+			albumName = tmpString ?? ""
+		}
 		// track number
 		var trackNumber = "0"
 		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_TRACK, 0)
@@ -1117,6 +1132,7 @@ final class MPDConnection
 		let trackNumInt = Int(trackNumber) ?? 1
 		let track = Track(name: title, artist: artist, duration: Duration(seconds: UInt(duration)), trackNumber: trackNumInt, uri: uri)
 		track.position = pos
+		track.albumName = albumName
 		return track
 	}
 

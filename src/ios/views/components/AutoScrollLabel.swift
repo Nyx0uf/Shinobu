@@ -1,17 +1,17 @@
 import UIKit
 
 
-private let kNYXLabelSpacing = CGFloat(20)
-
-enum ScrollDirection
-{
-	case left
-	case right
-}
+fileprivate let LABEL_SPACING = CGFloat(20)
 
 
 final class AutoScrollLabel: UIView
 {
+	enum ScrollDirection
+	{
+		case left
+		case right
+	}
+
 	/// Scroll direction
 	public var direction = ScrollDirection.left
 	{
@@ -131,30 +131,20 @@ final class AutoScrollLabel: UIView
 	{
 		super.init(frame: .zero)
 
-		self.isUserInteractionEnabled = false
-		self.clipsToBounds = true
-
-		self.scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		self.scrollView.backgroundColor = .clear
-		self.scrollView.showsVerticalScrollIndicator = false
-		self.scrollView.showsHorizontalScrollIndicator = false
-		self.scrollView.isScrollEnabled = false
-		self.addSubview(self.scrollView)
-
-		// Create labels
-		self.mainLabel = UILabel()
-		self.mainLabel.backgroundColor = .clear
-		self.scrollView.addSubview(self.mainLabel)
-
-		self.secondaryLabel = UILabel()
-		self.secondaryLabel.backgroundColor = .clear
-		self.scrollView.addSubview(self.secondaryLabel)
+		commonInit()
 	}
 
 	public override init(frame: CGRect)
 	{
 		super.init(frame: frame)
 
+		commonInit()
+	}
+
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	private func commonInit()
+	{
 		self.isUserInteractionEnabled = false
 		self.clipsToBounds = true
 
@@ -175,8 +165,6 @@ final class AutoScrollLabel: UIView
 		self.secondaryLabel.backgroundColor = .clear
 		self.scrollView.addSubview(self.secondaryLabel)
 	}
-
-	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Private
 	private func didChangeFrame()
@@ -221,12 +209,12 @@ final class AutoScrollLabel: UIView
 			self.scrollView.layer.removeAllAnimations()
 
 			let scrollLeft = (self.direction == .left)
-			self.scrollView.contentOffset = scrollLeft ? .zero : CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0)
+			self.scrollView.contentOffset = scrollLeft ? .zero : CGPoint(x: labelWidth + LABEL_SPACING, y: 0)
 
 			// Scroll animation
 			let duration = Double(labelWidth) / self.scrollSpeed
 			UIView.animate(withDuration: duration, delay: self.pauseInterval, options: [.curveLinear, .allowUserInteraction], animations: { () -> Void in
-				self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + kNYXLabelSpacing, y: 0) : .zero
+				self.scrollView.contentOffset = scrollLeft ? CGPoint(x: labelWidth + LABEL_SPACING, y: 0) : .zero
 			}) { (finished) in
 				self.isScrolling = false
 
@@ -256,7 +244,7 @@ final class AutoScrollLabel: UIView
 		mainLabel.frame = frame1
 
 		var frame2 = secondaryLabel.frame
-		frame2.origin = CGPoint(mainLabel.bounds.width + kNYXLabelSpacing, 0)
+		frame2.origin = CGPoint(mainLabel.bounds.width + LABEL_SPACING, 0)
 		frame2.size.height = bounds.height
 		secondaryLabel.frame = frame2
 
@@ -269,7 +257,7 @@ final class AutoScrollLabel: UIView
 			secondaryLabel.isHidden = false
 
 			var size = CGSize.zero
-			size.width = mainLabel.bounds.width + bounds.width + kNYXLabelSpacing
+			size.width = mainLabel.bounds.width + bounds.width + LABEL_SPACING
 			size.height = bounds.height
 			scrollView.contentSize = size
 

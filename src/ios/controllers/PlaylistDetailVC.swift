@@ -181,7 +181,7 @@ extension PlaylistDetailVC: UITableViewDelegate
 			}
 		}
 
-		mpdBridge.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat), position: UInt32(indexPath.row))
+		mpdBridge.playPlaylist(playlist, shuffle: false, loop: false, position: UInt32(indexPath.row))
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?

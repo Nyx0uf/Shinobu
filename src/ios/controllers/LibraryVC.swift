@@ -129,14 +129,14 @@ final class LibraryVC: MusicalCollectionVC
 			{
 				case .albums:
 					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-					mpdBridge.playAlbum(album, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+					mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				case .artists:
 					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
 					mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
 							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 						}
 					}
 				case .albumsartists:
@@ -145,7 +145,7 @@ final class LibraryVC: MusicalCollectionVC
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
 							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 						}
 					}
 				case .genres:
@@ -154,12 +154,12 @@ final class LibraryVC: MusicalCollectionVC
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
 							let ar = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
 						}
 					}
 				case .playlists:
 					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-					mpdBridge.playPlaylist(playlist, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+					mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
 				default:
 					break
 			}

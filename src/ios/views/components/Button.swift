@@ -1,42 +1,80 @@
 import UIKit
 
 
-final class Button: UIButton
+final class Button: UIControl
 {
+	// MARK: - Public properties
+	// Selected & Highlighted color
+	private(set) var selectedTintColor = UIColor.clear
+	// Button image
+	private(set) var image = UIImage()
+	private(set) var imageView = UIImageView()
+
 	// MARK: - Initializers
 	init()
 	{
 		super.init(frame: .zero)
 
-		self.tintColor = UIColor(rgb: 0xFFFFFF)
-
-		initializeTheming()
+		commonInit()
 	}
 
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
 
-		self.layer.cornerRadius = frame.width / 2
-		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-		self.tintColor = UIColor(rgb: 0xFFFFFF)
-
-		initializeTheming()
+		commonInit()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
+	private func commonInit()
+	{
+		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.layer.cornerRadius = frame.width / 2
+
+		self.imageView.frame = bounds
+		self.imageView.contentMode = .center
+		self.addSubview(self.imageView)
+	}
+
 	// MARK: - Properties override
+	override var frame: CGRect
+	{
+		didSet
+		{
+			self.layer.cornerRadius = frame.width / 2
+			self.imageView.frame = CGRect(.zero, frame.size)
+		}
+	}
+
 	override var isSelected: Bool
 	{
 		willSet
 		{
-			self.backgroundColor = isSelected ? themeProvider.currentTheme.tintColor.withAlphaComponent(0.2) : UIColor.clear
+			if self.isSelected
+			{
+				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
+				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+			}
+			else
+			{
+				self.backgroundColor = UIColor.clear
+				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+			}
 		}
 
 		didSet
 		{
-			self.backgroundColor = isSelected ? themeProvider.currentTheme.tintColor.withAlphaComponent(0.2) : UIColor.clear
+			if self.isSelected
+			{
+				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
+				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+			}
+			else
+			{
+				self.backgroundColor = UIColor.clear
+				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+			}
 		}
 	}
 
@@ -44,43 +82,39 @@ final class Button: UIButton
 	{
 		willSet
 		{
-			self.backgroundColor = isHighlighted ? themeProvider.currentTheme.tintColor.withAlphaComponent(0.2) : UIColor.clear
+			if self.isHighlighted
+			{
+				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
+				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+			}
+			else
+			{
+				self.backgroundColor = UIColor.clear
+				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+			}
 		}
 
 		didSet
 		{
-			self.backgroundColor = isHighlighted ? themeProvider.currentTheme.tintColor.withAlphaComponent(0.2) : UIColor.clear
-		}
-	}
-
-	override var buttonType: UIButton.ButtonType
-	{
-		return .custom
-	}
-
-	override var frame: CGRect
-	{
-		didSet
-		{
-			self.layer.cornerRadius = frame.width / 2
-			self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+			if self.isHighlighted
+			{
+				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
+				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+			}
+			else
+			{
+				self.backgroundColor = UIColor.clear
+				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+			}
 		}
 	}
 
 	// MARK: - Public
-	func setImage(_ image: UIImage)
+	func setImage(_ img: UIImage, tintColor: UIColor, selectedTintColor: UIColor)
 	{
-		let img = image.withRenderingMode(.alwaysTemplate)
-		super.setImage(img.tinted(withColor: themeProvider.currentTheme.miniPlayerButtonColor), for: .normal)
-		super.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .highlighted)
-		super.setImage(img.tinted(withColor: themeProvider.currentTheme.tintColor), for: .selected)
-	}
-}
-
-extension Button: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
-
+		self.image = img.withRenderingMode(.alwaysTemplate)
+		self.tintColor = tintColor
+		self.selectedTintColor = selectedTintColor
+		imageView.image = self.image.tinted(withColor: tintColor)
 	}
 }

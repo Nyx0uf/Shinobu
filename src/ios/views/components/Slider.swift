@@ -37,26 +37,20 @@ class Slider: UIControl
 	{
 		super.init(frame: .zero)
 
-		self.backgroundColor = UIColor(white: 1, alpha: 0.1)
-
-		self.enableCorners(withDivisor: 2)
-
-		self.blurEffectView.effect = UIBlurEffect(style: .light)
-		self.blurEffectView.isUserInteractionEnabled = false
-		self.addSubview(self.blurEffectView)
-
-		// Single tap to request full player view
-		let singleTap = UITapGestureRecognizer()
-		singleTap.numberOfTapsRequired = 1
-		singleTap.numberOfTouchesRequired = 1
-		singleTap.addTarget(self, action: #selector(singleTap(_:)))
-		self.addGestureRecognizer(singleTap)
+		commonInit()
 	}
 
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
 
+		commonInit()
+	}
+
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	private func commonInit()
+	{
 		self.backgroundColor = UIColor(white: 1, alpha: 0.1)
 
 		self.enableCorners(withDivisor: 2)
@@ -74,27 +68,29 @@ class Slider: UIControl
 		self.addGestureRecognizer(singleTap)
 	}
 
-	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-
 	// MARK: - Gestures
 	@objc func singleTap(_ gest: UITapGestureRecognizer)
 	{
 		if gest.state == .ended
 		{
-			let location = gest.location(in: self)
-
-			let val = (location.x / bounds.width) * maximumValue
-			value = clamp(val, lower: minimumValue, upper: maximumValue)
+			updateValueForLocation(gest.location(in: self))
 			updateFrames()
 
 			sendActions(for: .touchUpInside)
 		}
 	}
 
-	// MARK: - Public
-	func updateFrames()
+	// MARK: - Internal
+	internal func updateFrames()
 	{
 		blurEffectView.width = clamp((bounds.width / maximumValue) * value, lower: 0, upper: bounds.width)
+	}
+
+	// MARK: - Private
+	private func updateValueForLocation(_ location: CGPoint)
+	{
+		let val = (location.x / bounds.width) * maximumValue
+		value = clamp(val, lower: minimumValue, upper: maximumValue)
 	}
 }
 
@@ -108,10 +104,7 @@ extension Slider
 
 	override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool
 	{
-		let location = touch.location(in: self)
-
-		let val = (location.x / bounds.width) * maximumValue
-		value = clamp(val, lower: minimumValue, upper: maximumValue)
+		updateValueForLocation(touch.location(in: self))
 		updateFrames()
 
 		sendActions(for: .valueChanged)
@@ -121,6 +114,5 @@ extension Slider
 
 	override func endTracking(_ touch: UITouch?, with event: UIEvent?)
 	{
-		sendActions(for: .touchUpInside)
 	}
 }

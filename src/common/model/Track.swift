@@ -14,6 +14,8 @@ final class Track: MusicalEntity
 	var uri: String
 	// Position in the queue
 	var position: UInt32 = 0
+	// Album name
+	var albumName: String = ""
 
 	// MARK: - Initializers
 	init(name: String, artist: String, duration: Duration, trackNumber: Int, uri: String)

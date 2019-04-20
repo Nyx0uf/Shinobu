@@ -1,6 +1,21 @@
 import UIKit
 import ImageIO
 import MobileCoreServices
+import Accelerate
+
+// Grayscale stuff
+fileprivate let gray_redCoeff = Float(0.2126)
+fileprivate let gray_greenCoeff = Float(0.7152)
+fileprivate let gray_blueCoeff = Float(0.0722)
+fileprivate let gray_divisor = Int32(0x1000)
+fileprivate let gray_fDivisor = Float(gray_divisor)
+fileprivate var gray_coefficientsMatrix = [
+	Int16(gray_redCoeff * gray_fDivisor),
+	Int16(gray_greenCoeff * gray_fDivisor),
+	Int16(gray_blueCoeff * gray_fDivisor)
+]
+fileprivate let gray_preBias: [Int16] = [0, 0, 0, 0]
+fileprivate let gray_postBias = Int32(0)
 
 
 extension UIImage
@@ -41,34 +56,40 @@ extension UIImage
 		let destY = CGFloat(round((scaledHeight - targetHeight) / 2))
 		let sourceRect = CGRect(ceil(destX / scaleFactor), destY / scaleFactor, targetWidth / scaleFactor, targetHeight / scaleFactor).integral
 
-		// Create scale-cropped image
-		let renderer = UIGraphicsImageRenderer(size: destRect.size)
-		return renderer.image() { (rendererContext) in
-			let sourceImg = cgImage?.cropping(to: sourceRect) // cropping happens here
-			let image = UIImage(cgImage: sourceImg!, scale: 0, orientation: imageOrientation)
-			image.draw(in: destRect) // the actual scaling happens here, and orientation is taken care of automatically
-		}
-	}
+		guard let cgImage = self.cgImage?.cropping(to: sourceRect) else { return nil }
 
-	func scaled(toSize fitSize: CGSize) -> UIImage?
-	{
-		guard let cgImage = cgImage else { return nil }
+		guard let colorSpace = cgImage.colorSpace else { return nil }
 
-		let width = ceil(fitSize.width * scale)
-		let height = ceil(fitSize.height * scale)
+		// Source & destination vImage buffers
+		var sourceBuffer = vImage_Buffer()
+		var destinationBuffer = vImage_Buffer()
 
-		let context = CGContext(data: nil, width: Int(width), height: Int(height), bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: cgImage.bytesPerRow, space: cgImage.colorSpace!, bitmapInfo: cgImage.bitmapInfo.rawValue)
-		context!.interpolationQuality = .high
-		context?.draw(cgImage, in: CGRect(.zero, width, height))
-
-		if let scaledImageRef = context?.makeImage()
+		defer
 		{
-			return UIImage(cgImage: scaledImageRef)
+			free(destinationBuffer.data)
+			free(sourceBuffer.data)
 		}
 
-		return nil
+		var format = vImage_CGImageFormat(bitsPerComponent: UInt32(cgImage.bitsPerComponent), bitsPerPixel: UInt32(cgImage.bitsPerPixel), colorSpace: Unmanaged.passRetained(colorSpace), bitmapInfo: cgImage.bitmapInfo, version: 0, decode: nil, renderingIntent: cgImage.renderingIntent)
+		guard vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
+
+		guard vImageBuffer_Init(&destinationBuffer, UInt(destRect.height * UIScreen.main.scale), UInt(destRect.width * UIScreen.main.scale), format.bitsPerPixel, vImage_Flags(kvImageNoFlags)) == kvImageNoError else
+		{
+			return nil
+		}
+
+		// Scale
+		guard vImageScale_ARGB8888(&sourceBuffer, &destinationBuffer, nil, vImage_Flags(kvImageNoFlags)) == kvImageNoError else
+		{
+			return nil
+		}
+
+		guard let result = vImageCreateCGImageFromBuffer(&destinationBuffer, &format, nil, nil, vImage_Flags(kvImageNoFlags), nil) else { return nil}
+
+		return UIImage(cgImage: result.takeRetainedValue(), scale: scale, orientation: imageOrientation)
 	}
 
+	// MARK: - Filtering
 	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage?
 	{
 		let renderer = UIGraphicsImageRenderer(size: size)
@@ -86,6 +107,41 @@ extension UIImage
 		}
 	}
 
+	public func grayscaled() -> UIImage?
+	{
+		guard let cgImage = self.cgImage else { return nil }
+
+		guard let colorSpace = cgImage.colorSpace else { return nil }
+
+		// Source & destination vImage buffers
+		var sourceBuffer = vImage_Buffer()
+		var destinationBuffer = vImage_Buffer()
+
+		defer
+		{
+			free(destinationBuffer.data)
+			free(sourceBuffer.data)
+		}
+
+		// Create vImage src buffer
+		var format = vImage_CGImageFormat(bitsPerComponent: UInt32(cgImage.bitsPerComponent), bitsPerPixel: UInt32(cgImage.bitsPerPixel), colorSpace: Unmanaged.passRetained(colorSpace), bitmapInfo: cgImage.bitmapInfo, version: 0, decode: nil, renderingIntent: cgImage.renderingIntent)
+		guard vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
+
+		// Create vImage dst buffer
+		guard vImageBuffer_Init(&destinationBuffer, sourceBuffer.height, sourceBuffer.width, 8, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
+
+		guard vImageMatrixMultiply_ARGB8888ToPlanar8(&sourceBuffer, &destinationBuffer, &gray_coefficientsMatrix, gray_divisor, gray_preBias, gray_postBias, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
+
+		// Create a 1-channel, 8-bit grayscale format that's used to generate a displayable image
+		var monoFormat = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 8, colorSpace: Unmanaged.passRetained(CGColorSpaceCreateDeviceGray()), bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue), version: 0, decode: nil, renderingIntent: .defaultIntent)
+
+		// Create a Core Graphics image from the grayscale destination buffer
+		guard let result = vImageCreateCGImageFromBuffer(&destinationBuffer, &monoFormat, nil, nil, vImage_Flags(kvImageNoFlags), nil) else { return nil }
+
+		return UIImage(cgImage: result.takeRetainedValue(), scale: self.scale, orientation: self.imageOrientation)
+	}
+
+	// MARK: - I/O
 	func save(url: URL) -> Bool
 	{
 		guard let cgImage = cgImage else

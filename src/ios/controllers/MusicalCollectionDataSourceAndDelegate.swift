@@ -37,7 +37,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	// Items splitted by section title
 	private(set) var orderedSearchResults = [String: [MusicalEntity]]()
 	// Cover download operations
-	private var downloadOperations = ThreadedDictionary<IndexPath, CoverOperation>()
+	private var downloadOperations = ThreadedDictionary<IndexPath, DownloadCoverOperation>()
 	// Get albums path items
 	private var pathsOperation = ThreadedDictionary<IndexPath, DispatchWorkItem>()
 
@@ -121,7 +121,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		{
 			return
 		}
-		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
+		let downloadOperation = DownloadCoverOperation(album: album, cropSize: cropSize)
 		weak var weakOperation = downloadOperation
 		downloadOperation.callback = { (cover, thumbnail) in
 			if let _ = weakOperation

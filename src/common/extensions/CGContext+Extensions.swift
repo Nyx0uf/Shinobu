@@ -2,8 +2,9 @@ import UIKit
 import CoreGraphics
 
 
-fileprivate let kNYXNumberOfComponentsPerARBGPixel = 4
-fileprivate let kNYXNumberOfComponentsPerRGBAPixel = 4
+fileprivate let numberOfComponentsPerARBGPixel = 4
+fileprivate let numberOfComponentsPerRGBAPixel = 4
+fileprivate let numberOfComponentsPerGrayPixel = 3
 
 
 extension CGContext
@@ -12,7 +13,7 @@ extension CGContext
 	class func ARGBBitmapContext(width: Int, height: Int, withAlpha: Bool, wideGamut: Bool) -> CGContext?
 	{
 		let alphaInfo = withAlpha ? CGImageAlphaInfo.premultipliedFirst : CGImageAlphaInfo.noneSkipFirst
-		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * kNYXNumberOfComponentsPerARBGPixel, space: wideGamut ? CGColorSpace.NYXAppropriateColorSpace() : CGColorSpaceCreateDeviceRGB(), bitmapInfo: alphaInfo.rawValue)
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * numberOfComponentsPerARBGPixel, space: wideGamut ? CGColorSpace.NYXAppropriateColorSpace() : CGColorSpaceCreateDeviceRGB(), bitmapInfo: alphaInfo.rawValue)
 		return bmContext
 	}
 
@@ -20,7 +21,14 @@ extension CGContext
 	class func RGBABitmapContext(width: Int, height: Int, withAlpha: Bool, wideGamut: Bool) -> CGContext?
 	{
 		let alphaInfo = withAlpha ? CGImageAlphaInfo.premultipliedLast : CGImageAlphaInfo.noneSkipLast
-		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * kNYXNumberOfComponentsPerRGBAPixel, space: wideGamut ? CGColorSpace.NYXAppropriateColorSpace() : CGColorSpaceCreateDeviceRGB(), bitmapInfo: alphaInfo.rawValue)
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * numberOfComponentsPerRGBAPixel, space: wideGamut ? CGColorSpace.NYXAppropriateColorSpace() : CGColorSpaceCreateDeviceRGB(), bitmapInfo: alphaInfo.rawValue)
+		return bmContext
+	}
+
+	// MARK: - Gray bitmap context
+	public class func GrayBitmapContext(width: Int, height: Int) -> CGContext?
+	{
+		let bmContext = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * numberOfComponentsPerGrayPixel, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue)
 		return bmContext
 	}
 }

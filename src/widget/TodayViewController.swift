@@ -101,7 +101,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 			ret = false
 		}
 
-		if mpdBridge.getCurrentStatus() == .paused
+		if mpdBridge.getCurrentState().status == .paused
 		{
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay, for: .normal)
@@ -155,7 +155,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 
 	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
-		let downloadOperation = CoverOperation(album: album, cropSize: cropSize)
+		let downloadOperation = DownloadCoverOperation(album: album, cropSize: cropSize)
 		downloadOperation.callback = { (cover: UIImage, thumbnail: UIImage) in
 			if let block = callback
 			{

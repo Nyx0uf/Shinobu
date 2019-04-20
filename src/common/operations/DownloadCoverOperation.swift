@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 
 
-final class CoverOperation: Operation
+final class DownloadCoverOperation: Operation
 {
 	// MARK: - Public properties
 	// isFinished override
@@ -41,7 +41,7 @@ final class CoverOperation: Operation
 	// Size of the thumbnail to create
 	private let cropSize: CGSize
 	// Downloaded data
-	private var incomingData = Data()
+	var incomingData = Data()
 	// Task
 	private var sessionTask: URLSessionDataTask? = nil
 
@@ -59,7 +59,7 @@ final class CoverOperation: Operation
 		// Operation is cancelled, abort
 		if isCancelled
 		{
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
@@ -132,7 +132,7 @@ final class CoverOperation: Operation
 }
 
 // MARK: - NSURLSessionDelegate
-extension CoverOperation: URLSessionDataDelegate
+extension DownloadCoverOperation: URLSessionDataDelegate
 {
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void)
 	{

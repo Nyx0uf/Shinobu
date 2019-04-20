@@ -20,7 +20,7 @@ final class ImagedSlider: Slider
 	}
 
 	override var frame: CGRect
-		{
+	{
 		didSet
 		{
 			self.imageView.frame = CGRect((frame.width - frame.height) / 2, 0, frame.height, frame.height)
@@ -32,33 +32,34 @@ final class ImagedSlider: Slider
 	{
 		super.init()
 
-		self.imageView.backgroundColor = .clear
-		self.imageView.contentMode = .center
-		self.addSubview(self.imageView)
+		commonInit()
 	}
 
 	override init(frame: CGRect)
 	{
 		super.init(frame: frame)
 
-		self.imageView.frame = CGRect((frame.width - frame.height) / 2, 0, frame.height, frame.height)
-		self.imageView.backgroundColor = .clear
-		self.imageView.contentMode = .center
-		self.addSubview(self.imageView)
+		commonInit()
 	}
 
 	init(minImage: UIImage, midImage: UIImage, maxImage: UIImage)
 	{
 		super.init()
 
-		self.imageView.backgroundColor = .clear
-		self.imageView.contentMode = .center
-		self.addSubview(self.imageView)
+		commonInit()
 
 		self.setImages(min: minImage, mid: midImage, max: maxImage)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	private func commonInit()
+	{
+		self.imageView.frame = CGRect((frame.width - frame.height) / 2, 0, frame.height, frame.height)
+		self.imageView.backgroundColor = .clear
+		self.imageView.contentMode = .center
+		self.addSubview(self.imageView)
+	}
 
 	// MARK: - Public
 	func setImages(min: UIImage, mid: UIImage, max: UIImage)

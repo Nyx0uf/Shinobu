@@ -28,9 +28,7 @@ final class MPDBridge
 	// Current playing album
 	private var currentAlbum: Album? = nil
 	// Player status (playing, paused, stopped)
-	private var currentStatus: PlayerStatus = .unknown
-	// List of the tracks of the current queue
-	private var listTracksInQueue = [Track]()
+	private var currentState = PlayerState(status: .unknown, isRandom: false, isRepeat: false)
 
 	// MARK: - Initializers
 	init()
@@ -99,14 +97,9 @@ final class MPDBridge
 		return queue.sync { self.currentAlbum }
 	}
 
-	func getCurrentStatus() -> PlayerStatus
+	func getCurrentState() -> PlayerState
 	{
-		return queue.sync { self.currentStatus }
-	}
-
-	func getTracksInQueue() -> [Track]
-	{
-		return queue.sync { self.listTracksInQueue }
+		return queue.sync { self.currentState }
 	}
 
 	func entitiesForType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void)
@@ -561,6 +554,16 @@ final class MPDBridge
 		}
 	}
 
+	func toggleRepeat()
+	{
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			_ = strongSelf.connection.setRepeat(!strongSelf.currentState.isRepeat)
+		}
+	}
+
 	// MARK: - Random
 	func setRandom(_ random: Bool)
 	{
@@ -569,6 +572,16 @@ final class MPDBridge
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			_ = strongSelf.connection.setRandom(random)
+		}
+	}
+
+	func toggleRandom()
+	{
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			_ = strongSelf.connection.setRandom(!strongSelf.currentState.isRandom)
 		}
 	}
 
@@ -593,7 +606,7 @@ final class MPDBridge
 		}
 	}
 
-	func getSongsOfCurrentQueue(callback: @escaping () -> Void)
+	func getSongsOfCurrentQueue(callback: @escaping ([Track]) -> Void)
 	{
 		guard MPDConnection.isValid(connection) else { return }
 
@@ -605,8 +618,7 @@ final class MPDBridge
 			case .failure( _):
 				break
 			case .success(let tracks):
-				strongSelf.listTracksInQueue = tracks
-				callback()
+				callback(tracks)
 			}
 		}
 	}
@@ -728,8 +740,8 @@ final class MPDBridge
 					let status = infos[PLAYER_STATUS_KEY] as! Int
 					let track = infos[PLAYER_TRACK_KEY] as! Track
 					let album = infos[PLAYER_ALBUM_KEY] as! Album
-					//let random = infos[PLAYER_RANDOM_KEY] as! Bool
-					//let loop = infos[PLAYER_REPEAT_KEY] as! Bool
+					let random = infos[PLAYER_RANDOM_KEY] as! Bool
+					let loop = infos[PLAYER_REPEAT_KEY] as! Bool
 
 					// Track changed
 					if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
@@ -738,12 +750,12 @@ final class MPDBridge
 					}
 
 					// Status changed
-					if currentStatus.rawValue != status
+					if currentState.status.rawValue != status
 					{
 						NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
 					}
 
-					self.currentStatus = PlayerStatus(rawValue: status)!
+					currentState = PlayerState(status: PlayerStatus(rawValue: status)!, isRandom: random, isRepeat: loop)
 					currentTrack = track
 					currentAlbum = album
 					NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)

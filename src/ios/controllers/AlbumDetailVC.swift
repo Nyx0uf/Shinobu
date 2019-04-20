@@ -139,7 +139,7 @@ extension AlbumDetailVC: UITableViewDelegate
 		}
 
 		let b = tracks.filter { $0.trackNumber >= (indexPath.row + 1) }
-		mpdBridge.playTracks(b, shuffle: Settings.shared.bool(forKey: .mpd_shuffle), loop: Settings.shared.bool(forKey: .mpd_repeat))
+		mpdBridge.playTracks(b, shuffle: false, loop: false)
 	}
 
 	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?

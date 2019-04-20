@@ -1,6 +1,9 @@
 import UIKit
 
 
+fileprivate let marginX = CGFloat(5)
+
+
 final class LabeledSlider: Slider
 {
 	// MARK: - Private proerties
@@ -11,7 +14,7 @@ final class LabeledSlider: Slider
 	{
 		didSet
 		{
-			self.label.frame = CGRect(5, 0, frame.width - 10, frame.height)
+			self.label.frame = CGRect(marginX, 0, frame.width - 2 * marginX, frame.height)
 			self.enableCorners(withDivisor: 4)
 		}
 	}
@@ -21,23 +24,25 @@ final class LabeledSlider: Slider
 	{
 		super.init()
 
-		self.label.backgroundColor = .clear
-		self.label.isAccessibilityElement = false
-		self.addSubview(self.label)
+		commonInit()
 	}
 
 	override init(frame: CGRect)
 	{
-		self.label.frame = CGRect((frame.width - frame.height) / 2, 0, frame.height, frame.height)
-		self.label.backgroundColor = .clear
-		self.label.isAccessibilityElement = false
-
 		super.init(frame: frame)
 
+		commonInit()
+	}
+
+	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	private func commonInit()
+	{
+		self.label.frame = CGRect(marginX, 0, frame.width - 2 * marginX, frame.height)
+		self.label.backgroundColor = .clear
+		self.label.isAccessibilityElement = false
 		self.addSubview(self.label)
 
 		self.enableCorners(withDivisor: 4)
 	}
-
-	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
