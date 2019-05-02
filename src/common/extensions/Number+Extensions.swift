@@ -10,7 +10,7 @@ extension Int
 
 	func MB() -> Int
 	{
-		return self * 1024 * 1024
+		return self * 1048576
 	}
 }
 

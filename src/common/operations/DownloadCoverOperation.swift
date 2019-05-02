@@ -40,16 +40,19 @@ final class DownloadCoverOperation: Operation
 	private let album: Album
 	// Size of the thumbnail to create
 	private let cropSize: CGSize
+	//
+	private var save = true
 	// Downloaded data
 	var incomingData = Data()
 	// Task
 	private var sessionTask: URLSessionDataTask? = nil
 
 	// MARK: - Initializers
-	init(album: Album, cropSize: CGSize)
+	init(album: Album, cropSize: CGSize, save: Bool = true)
 	{
 		self.album = album
 		self.cropSize = cropSize
+		self.save = save
 		self.serversManager = ServersManager()
 	}
 
@@ -114,9 +117,13 @@ final class DownloadCoverOperation: Operation
 			return
 		}
 
-		if thumbnail.save(url: saveURL) == false
+		if save
 		{
-			Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+			if thumbnail.save(url: saveURL) == false
+			{
+				Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+			}
+
 		}
 
 		if let block = callback

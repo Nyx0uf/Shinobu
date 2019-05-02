@@ -18,6 +18,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - Automatically find MPD server with Bonjour/Zeroconf
 - MPD Audio output selection
 - Widget
+- Normal & Dark modes, 5 tint colors
 - 🇬🇧 and 🇫🇷 localized
 
 
@@ -28,6 +29,16 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 
 ![screenshot](https://static.whine.fr/images/2019/shinobu1.gif)
+
+
+# INSTALLATION
+
+To install **Shinobu** you will need macOS, so you have two choices, either you have access to a Mac, or you run macOS on a Virtual Machine.
+
+1. Install the latest [Xcode version](https://itunes.apple.com/fr/app/xcode/id497799835?l=en&mt=12)
+2. Clone this project
+3. Open *shinobu.xcodeproj*
+4. Plug your iPhone and hit the Build & Run button
 
 # LICENSE
 

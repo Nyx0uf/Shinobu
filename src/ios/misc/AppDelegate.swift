@@ -13,9 +13,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 		// Init settings
 		Settings.shared.initialize()
 
-		// URL cache
-		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
-
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = ContainerVC()
 		window?.makeKeyAndVisible()

@@ -326,21 +326,12 @@ final class PlayerVC : NYXViewController
 	@objc func bla(_ sender: Any?)
 	{
 //		var start = Date()
-//		for _ in 0...10
+//		for _ in 0...100
 //		{
 //			let img = imgCover?.smartCropped(toSize: coverView.size)
 //		}
 //		var end = Date()
 //		var executionTime = end.timeIntervalSince(start)
-//		print("Execution time: \(executionTime)")
-//
-//		start = Date()
-//		for _ in 0...10
-//		{
-//			let img = imgCover?.smartCropped(toSize: coverView.size)
-//		}
-//		end = Date()
-//		executionTime = end.timeIntervalSince(start)
 //		print("Execution time: \(executionTime)")
 	}
 
@@ -392,7 +383,7 @@ final class PlayerVC : NYXViewController
 					self.lblAlbum.origin = CGPoint(self.lblArtist.maxX + marginX, self.lblArtist.y)
 					self.lblAlbum.alpha = 1
 
-					self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, self.view.width - 64)
+					self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, width - 64)
 
 					self.btnPlay.origin = CGPoint((width - self.btnPlay.width) / 2, self.coverView.maxY + 20)
 					self.btnPrevious.origin = CGPoint(self.btnPlay.x - self.btnPrevious.width - 8, self.btnPlay.y)
@@ -479,7 +470,7 @@ final class PlayerVC : NYXViewController
 			lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
 			lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
 
-			updateRandomAndRepeatButtons()
+			updateRandomAndRepeatState()
 		}
 	}
 
@@ -498,13 +489,14 @@ final class PlayerVC : NYXViewController
 
 		// Update cover if from another album (playlist case)
 		let iv = view as? UIImageView
+		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
 		if album.path != nil
 		{
-			let op = DownloadCoverOperation(album: album, cropSize: coverView.size)
+			let op = DownloadCoverOperation(album: album, cropSize: coverSize, save: false)
 			op.callback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
-					self.imgCover = cover
-					self.coverView.image = cover
+					self.imgCover = thumbnail
+					self.coverView.image = thumbnail
 					iv?.image = cover
 					self.updatePlayPauseState()
 				}
@@ -513,13 +505,12 @@ final class PlayerVC : NYXViewController
 		}
 		else
 		{
-			let size = coverView.size
 			mpdBridge.getPathForAlbum(album) {
-				let op = DownloadCoverOperation(album: album, cropSize: size)
+				let op = DownloadCoverOperation(album: album, cropSize: coverSize, save: false)
 				op.callback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
-						self.imgCover = cover
-						self.coverView.image = cover
+						self.imgCover = thumbnail
+						self.coverView.image = thumbnail
 						iv?.image = cover
 						self.updatePlayPauseState()
 					}
@@ -534,10 +525,8 @@ final class PlayerVC : NYXViewController
 
 	@objc func playerStatusChangedNotification(_ aNotification: Notification?)
 	{
-		//guard let notif = aNotification, let userInfos = notif.userInfo else { return }
-
 		updatePlayPauseState()
-		updateRandomAndRepeatButtons()
+		updateRandomAndRepeatState()
 	}
 
 	// MARK: - Private
@@ -552,11 +541,7 @@ final class PlayerVC : NYXViewController
 			DispatchQueue.global(qos: .userInteractive).async {
 				let grayscaled = self.imgCover?.grayscaled()
 				DispatchQueue.main.async {
-					UIView.transition(with: self.coverView,
-									  duration: 0.35,
-									  options: .transitionCrossDissolve,
-									  animations: { self.coverView.image = grayscaled },
-									  completion: nil)
+					UIView.transition(with: self.coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = grayscaled }, completion: nil)
 				}
 			}
 		}
@@ -565,30 +550,31 @@ final class PlayerVC : NYXViewController
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 
-			UIView.transition(with: coverView,
-							  duration: 0.35,
-							  options: .transitionCrossDissolve,
-							  animations: { self.coverView.image = self.imgCover },
-							  completion: nil)
+			UIView.transition(with: coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = self.imgCover }, completion: nil)
 		}
 		btnPlay.tag = status.rawValue
 	}
 
-	private func updateRandomAndRepeatButtons()
+	private func updateRandomAndRepeatState()
 	{
 		let state = mpdBridge.getCurrentState()
 
-		if !btnRandom.isHighlighted
-		{
-			btnRandom.isSelected = state.isRandom
-			btnRandom.accessibilityLabel = NYXLocalizedString(state.isRandom ? "lbl_random_disable" : "lbl_random_enable")
-		}
+		UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
+			if !self.btnRandom.isHighlighted
+			{
+				self.btnRandom.isSelected = state.isRandom
+				self.btnRandom.accessibilityLabel = NYXLocalizedString(state.isRandom ? "lbl_random_disable" : "lbl_random_enable")
+			}
 
-		if !btnRepeat.isHighlighted
-		{
-			btnRepeat.isSelected = state.isRepeat
-			btnRepeat.accessibilityLabel = NYXLocalizedString(state.isRepeat ? "lbl_repeat_disable" : "lbl_repeat_enable")
-		}
+			if !self.btnRepeat.isHighlighted
+			{
+				self.btnRepeat.isSelected = state.isRepeat
+				self.btnRepeat.accessibilityLabel = NYXLocalizedString(state.isRepeat ? "lbl_repeat_disable" : "lbl_repeat_enable")
+			}
+
+			self.lblNextTrack.alpha = state.isRandom ? 0 : 1
+			self.lblNextAlbumArtist.alpha = state.isRandom ? 0 : 1
+		}, completion: nil)
 	}
 
 	private func updateUpNext(after: UInt32)
