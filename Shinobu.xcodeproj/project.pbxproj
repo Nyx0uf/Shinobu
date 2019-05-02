@@ -321,15 +321,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		434E512F21D56BF400CD88F7 /* external */ = {
+		434E512F21D56BF400CD88F7 /* libmpdclient */ = {
 			isa = PBXGroup;
 			children = (
-				434E513021D56BF400CD88F7 /* libmpdclient-src */,
+				434E513021D56BF400CD88F7 /* src */,
 			);
-			path = external;
+			path = libmpdclient;
 			sourceTree = "<group>";
 		};
-		434E513021D56BF400CD88F7 /* libmpdclient-src */ = {
+		434E513021D56BF400CD88F7 /* src */ = {
 			isa = PBXGroup;
 			children = (
 				434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */,
@@ -382,7 +382,7 @@
 				434E516521D56BF400CD88F7 /* queue.h */,
 				434E516621D56BF400CD88F7 /* playlist.h */,
 			);
-			path = "libmpdclient-src";
+			path = src;
 			sourceTree = "<group>";
 		};
 		434E517121D56CF000CD88F7 /* src */ = {
@@ -476,6 +476,7 @@
 			children = (
 				4358B01321EB42B4009A3BBF /* audio-server */,
 				4358B00421EB42B4009A3BBF /* extensions */,
+				434E512F21D56BF400CD88F7 /* libmpdclient */,
 				4358B03E21EB44E2009A3BBF /* misc */,
 				4358B02F21EB44C4009A3BBF /* model */,
 				4358B03C21EB44E2009A3BBF /* operations */,
@@ -653,7 +654,6 @@
 			children = (
 				434E517121D56CF000CD88F7 /* src */,
 				434E517821D56CFA00CD88F7 /* rsrc */,
-				434E512F21D56BF400CD88F7 /* external */,
 				43FAE59C224E5D45006843E9 /* Frameworks */,
 				43E89D9821CC36E00033E501 /* Products */,
 			);
@@ -1162,12 +1162,12 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/external/libmpdclient-src",
+					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1189,11 +1189,11 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/external/libmpdclient-src",
+					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1214,13 +1214,13 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/external/libmpdclient-src",
+					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG WIDGET";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1241,13 +1241,13 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/external/libmpdclient-src",
+					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WIDGET;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/external/LIBMPDCLIENT";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
