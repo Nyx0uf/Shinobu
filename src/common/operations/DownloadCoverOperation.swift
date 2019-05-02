@@ -17,9 +17,8 @@ final class DownloadCoverOperation: Operation
 			didChangeValue(forKey: "isFinished")
 		}
 	}
-
-	// Custom completion block
-	var callback: ((UIImage, UIImage) -> Void)? = nil
+	// Downloaded data
+	var downloadedData = Data()
 
 	// MARK: - Private properties
 	// Session configuration
@@ -38,20 +37,15 @@ final class DownloadCoverOperation: Operation
 	private let serversManager: ServersManager
 	// Album
 	private let album: Album
-	// Size of the thumbnail to create
-	private let cropSize: CGSize
-	//
+	// Save data flag
 	private var save = true
-	// Downloaded data
-	var incomingData = Data()
 	// Task
 	private var sessionTask: URLSessionDataTask? = nil
 
 	// MARK: - Initializers
-	init(album: Album, cropSize: CGSize, save: Bool = true)
+	init(album: Album, save: Bool = true)
 	{
 		self.album = album
-		self.cropSize = cropSize
 		self.save = save
 		self.serversManager = ServersManager()
 	}
@@ -99,42 +93,9 @@ final class DownloadCoverOperation: Operation
 	}
 
 	// MARK: - Private
-	private func processData()
-	{
-		guard let cover = UIImage(data: incomingData) else
-		{
-			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(incomingData.count)b) [\(String(describing: coverURL))]")
-			return
-		}
-		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
-		{
-			Logger.shared.log(type: .error, message: "Failed to create thumbnail for <\(album.name)>")
-			return
-		}
-		guard let saveURL = album.localCoverURL else
-		{
-			Logger.shared.log(type: .error, message: "Invalid cover url for <\(album.name)>")
-			return
-		}
-
-		if save
-		{
-			if thumbnail.save(url: saveURL) == false
-			{
-				Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
-			}
-
-		}
-
-		if let block = callback
-		{
-			block(cover, thumbnail)
-		}
-	}
-
 	override var description: String
 	{
-		return "CoverOperation for <\(album.name)>"
+		return "DownloadCoverOperation for <\(album.name)>"
 	}
 }
 
@@ -163,7 +124,7 @@ extension DownloadCoverOperation: URLSessionDataDelegate
 			isFinished = true
 			return
 		}
-		incomingData.append(data)
+		downloadedData.append(data)
 	}
 
 	func urlSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
@@ -179,10 +140,8 @@ extension DownloadCoverOperation: URLSessionDataDelegate
 		if let err = error
 		{
 			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
-			isFinished = true
-			return
 		}
-		processData()
+
 		isFinished = true
 	}
 

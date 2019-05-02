@@ -155,15 +155,15 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 
 	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
 	{
-		let downloadOperation = DownloadCoverOperation(album: album, cropSize: cropSize)
-		downloadOperation.callback = { (cover: UIImage, thumbnail: UIImage) in
+		var op = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
+		op.processCallback = { (cover: UIImage, thumbnail: UIImage) in
 			if let block = callback
 			{
 				block(cover, thumbnail)
 			}
 		}
 
-		OperationQueue.main.addOperation(downloadOperation)
+		op.submit()
 	}
 
 	private func disableAllBecauseCantWork()

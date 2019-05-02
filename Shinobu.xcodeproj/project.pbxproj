@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */; };
 		430141E22229307300C68075 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
+		43147ED7227B410400486588 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
+		43147ED8227B415300486588 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
 		4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
 		434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E517521D56CF000CD88F7 /* AppDelegate.swift */; };
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
@@ -905,6 +907,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43147ED8227B415300486588 /* OperationManager.swift in Sources */,
+				43147ED7227B410400486588 /* CoverOperations.swift in Sources */,
 				4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */,
 				439ED9B6225D246F007F2F45 /* Theme.swift in Sources */,
 				43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */,

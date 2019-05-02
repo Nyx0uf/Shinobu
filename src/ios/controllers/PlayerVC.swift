@@ -492,8 +492,18 @@ final class PlayerVC : NYXViewController
 		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
 		if album.path != nil
 		{
-			let op = DownloadCoverOperation(album: album, cropSize: coverSize, save: false)
-			op.callback = { (cover, thumbnail) in
+//			let op = DownloadCoverOperation(album: album, save: false)
+//			op.callback = { (cover, thumbnail) in
+//				DispatchQueue.main.async {
+//					self.imgCover = thumbnail
+//					self.coverView.image = thumbnail
+//					iv?.image = cover
+//					self.updatePlayPauseState()
+//				}
+//			}
+//			OperationManager.shared.addOperation(op)
+			var op = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
+			op.processCallback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
 					self.imgCover = thumbnail
 					self.coverView.image = thumbnail
@@ -501,13 +511,13 @@ final class PlayerVC : NYXViewController
 					self.updatePlayPauseState()
 				}
 			}
-			OperationManager.shared.addOperation(op)
+			op.submit()
 		}
 		else
 		{
 			mpdBridge.getPathForAlbum(album) {
-				let op = DownloadCoverOperation(album: album, cropSize: coverSize, save: false)
-				op.callback = { (cover, thumbnail) in
+				var op = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
+				op.processCallback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.imgCover = thumbnail
 						self.coverView.image = thumbnail
@@ -515,7 +525,7 @@ final class PlayerVC : NYXViewController
 						self.updatePlayPauseState()
 					}
 				}
-				OperationManager.shared.addOperation(op)
+				op.submit()
 			}
 		}
 

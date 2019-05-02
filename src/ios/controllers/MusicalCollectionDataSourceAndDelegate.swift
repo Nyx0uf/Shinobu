@@ -37,7 +37,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 	// Items splitted by section title
 	private(set) var orderedSearchResults = [String: [MusicalEntity]]()
 	// Cover download operations
-	private var downloadOperations = ThreadedDictionary<IndexPath, DownloadCoverOperation>()
+	private var downloadOperations = ThreadedDictionary<IndexPath, CoverOperations>()
 	// Get albums path items
 	private var pathsOperation = ThreadedDictionary<IndexPath, DispatchWorkItem>()
 
@@ -121,21 +121,18 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject
 		{
 			return
 		}
-		let downloadOperation = DownloadCoverOperation(album: album, cropSize: cropSize)
-		weak var weakOperation = downloadOperation
-		downloadOperation.callback = { (cover, thumbnail) in
-			if let _ = weakOperation
-			{
-				self.downloadOperations.removeValue(forKey: indexPath)
-			}
+
+		var op = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
+		op.processCallback = { (cover, thumbnail) in
+			self.downloadOperations.removeValue(forKey: indexPath)
 			if let block = callback
 			{
 				block(cover, thumbnail)
 			}
 		}
-		downloadOperations[indexPath] = downloadOperation
+		downloadOperations[indexPath] = op
 
-		OperationManager.shared.addOperation(downloadOperation)
+		op.submit()
 	}
 
 	private func handleCoverForCell(_ cell: MusicalEntityCollectionViewCell, at indexPath: IndexPath, withAlbum album: Album)
