@@ -177,18 +177,26 @@ final class PlayerVC : NYXViewController
 		// Artist (full)
 		lblArtist.frame = CGRect(marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
 		lblArtist.image = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.navigationTitleTextColor)
+		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.tintColor)
 		lblArtist.textColor = themeProvider.currentTheme.navigationTitleTextColor
+		lblArtist.highlightedTextColor = themeProvider.currentTheme.tintColor
 		lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
+		lblArtist.underlined = true
 		lblArtist.alpha = 0
+		lblArtist.addTarget(self, action: #selector(showArtistAction(_:)), for: .touchUpInside)
 		blurEffectView.contentView.addSubview(lblArtist)
 
 		// Album (full)
 		lblAlbum.align = .right
 		lblAlbum.frame = CGRect(lblArtist.maxX + marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
 		lblAlbum.image = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.navigationTitleTextColor)
+		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.tintColor)
 		lblAlbum.textColor = themeProvider.currentTheme.navigationTitleTextColor
+		lblAlbum.highlightedTextColor = themeProvider.currentTheme.tintColor
 		lblAlbum.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
+		lblAlbum.underlined = true
 		lblAlbum.alpha = 0
+		lblAlbum.addTarget(self, action: #selector(showAlbumAction(_:)), for: .touchUpInside)
 		blurEffectView.contentView.addSubview(lblAlbum)
 
 		// Elapsed label
@@ -335,113 +343,29 @@ final class PlayerVC : NYXViewController
 //		print("Execution time: \(executionTime)")
 	}
 
+	@objc func showArtistAction(_ sender: Any?)
+	{
+		toggleMinified()
+
+		NotificationCenter.default.postOnMainThreadAsync(name: .showArtistNotification, object: lblArtist.text)
+	}
+
+	@objc func showAlbumAction(_ sender: Any?)
+	{
+		toggleMinified()
+
+		if let album = mpdBridge.getCurrentAlbum()
+		{
+			NotificationCenter.default.postOnMainThreadAsync(name: .showAlbumNotification, object: album)
+		}
+	}
+
 	// MARK: - Gestures
 	@objc func singleTap(_ gesture: UITapGestureRecognizer)
 	{
 		if gesture.state == .ended
 		{
-			let width = UIScreen.main.bounds.width
-			if isMinified
-			{
-				mpdBridge.getVolume { (volume) in
-					DispatchQueue.main.async {
-						if volume == -1
-						{
-							self.sliderVolume.isEnabled = false
-							self.sliderVolume.value = 0
-							self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
-						}
-						else
-						{
-							self.sliderVolume.isEnabled = true
-							self.sliderVolume.value = CGFloat(volume)
-							self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
-						}
-					}
-				}
-
-				updateUpNext(after: mpdBridge.getCurrentTrack()?.position ?? 0)
-
-				let y = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
-				UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
-					self.view.y = 0
-
-					self.vev_elapsed.origin = CGPoint(marginX, y)
-					self.vev_elapsed.alpha = 1
-					self.vev_remaining.origin = CGPoint(width - self.vev_remaining.width - marginX, self.vev_elapsed.y)
-					self.vev_remaining.alpha = 1
-
-					self.lblTrack.frame = CGRect(marginX, self.vev_elapsed.maxY + 10, width - 2 * marginX, 32)
-					self.lblTrack.alpha = 0
-					self.sliderTrack.frame = CGRect(marginX, self.vev_elapsed.maxY + 10, width - 2 * marginX, 32)
-					self.sliderTrack.alpha = 1
-
-					self.lblAlbumArtist.frame = CGRect(marginX, self.lblTrack.maxY + 10, width - 2 * marginX, self.lblTrack.height)
-					self.lblAlbumArtist.alpha = 0
-					self.lblArtist.origin = CGPoint(marginX, self.lblTrack.maxY + 10)
-					self.lblArtist.alpha = 1
-					self.lblAlbum.origin = CGPoint(self.lblArtist.maxX + marginX, self.lblArtist.y)
-					self.lblAlbum.alpha = 1
-
-					self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, width - 64)
-
-					self.btnPlay.origin = CGPoint((width - self.btnPlay.width) / 2, self.coverView.maxY + 20)
-					self.btnPrevious.origin = CGPoint(self.btnPlay.x - self.btnPrevious.width - 8, self.btnPlay.y)
-					self.btnPrevious.alpha = 1
-					self.btnNext.origin = CGPoint(self.btnPlay.maxX + 8, self.btnPlay.y)
-					self.btnStop.origin = CGPoint(width - marginX - miniBaseHeight, self.btnPlay.y)
-					self.btnStop.alpha = 1
-
-					self.btnRandom.origin = CGPoint(marginX, self.btnPlay.maxY + 16)
-					self.btnRandom.alpha = 1
-					self.btnRepeat.origin = CGPoint(width - marginX - miniBaseHeight, self.btnRandom.y)
-					self.btnRepeat.alpha = 1
-					self.sliderVolume.origin = CGPoint(self.btnRandom.maxX + marginX, self.btnRandom.y)
-					self.sliderVolume.alpha = 1
-
-					self.tapableView.frame = self.coverView.frame
-
-					self.progress.alpha = 0
-				}, completion: { (finished) in
-					self.coverView.addMotionEffect(self.motionEffectX)
-					self.coverView.addMotionEffect(self.motionEffectY)
-				})
-			}
-			else
-			{
-				let lblsHeightTotal = CGFloat(18 + 4 + 16)
-				UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
-					self.view.y = UIScreen.main.bounds.height - miniHeight
-
-					self.coverView.frame = CGRect(.zero, miniHeight, miniHeight)
-
-					self.btnNext.origin = CGPoint(self.view.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2)
-					self.btnPlay.origin = CGPoint(self.btnNext.x - miniBaseHeight, self.btnNext.y)
-
-					self.lblTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
-					self.sliderTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
-					self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
-
-					self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniHeight)
-
-					self.lblAlbumArtist.alpha = 1
-					self.lblTrack.alpha = 1
-					self.progress.alpha = 1
-					self.sliderTrack.alpha = 0
-					self.lblArtist.alpha = 0
-					self.lblAlbum.alpha = 0
-					self.btnPrevious.alpha = 0
-					self.btnRandom.alpha = 0
-					self.btnRepeat.alpha = 0
-					self.btnStop.alpha = 0
-					self.vev_elapsed.alpha = 0
-					self.vev_remaining.alpha = 0
-				}, completion: { (finished) in
-					self.coverView.removeMotionEffect(self.motionEffectX)
-					self.coverView.removeMotionEffect(self.motionEffectY)
-				})
-			}
-			isMinified.toggle()
+			toggleMinified()
 		}
 	}
 
@@ -492,16 +416,6 @@ final class PlayerVC : NYXViewController
 		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
 		if album.path != nil
 		{
-//			let op = DownloadCoverOperation(album: album, save: false)
-//			op.callback = { (cover, thumbnail) in
-//				DispatchQueue.main.async {
-//					self.imgCover = thumbnail
-//					self.coverView.image = thumbnail
-//					iv?.image = cover
-//					self.updatePlayPauseState()
-//				}
-//			}
-//			OperationManager.shared.addOperation(op)
 			var op = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
 			op.processCallback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
@@ -607,6 +521,112 @@ final class PlayerVC : NYXViewController
 				strongSelf.lblNextAlbumArtist.text = ""
 			}
 		}
+	}
+
+	private func toggleMinified()
+	{
+		let width = UIScreen.main.bounds.width
+		if isMinified
+		{
+			mpdBridge.getVolume { (volume) in
+				DispatchQueue.main.async {
+					if volume == -1
+					{
+						self.sliderVolume.isEnabled = false
+						self.sliderVolume.value = 0
+						self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
+					}
+					else
+					{
+						self.sliderVolume.isEnabled = true
+						self.sliderVolume.value = CGFloat(volume)
+						self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
+					}
+				}
+			}
+
+			updateUpNext(after: mpdBridge.getCurrentTrack()?.position ?? 0)
+
+			let y = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
+				self.view.y = 0
+
+				self.vev_elapsed.origin = CGPoint(marginX, y)
+				self.vev_elapsed.alpha = 1
+				self.vev_remaining.origin = CGPoint(width - self.vev_remaining.width - marginX, self.vev_elapsed.y)
+				self.vev_remaining.alpha = 1
+
+				self.lblTrack.frame = CGRect(marginX, self.vev_elapsed.maxY + 10, width - 2 * marginX, 32)
+				self.lblTrack.alpha = 0
+				self.sliderTrack.frame = CGRect(marginX, self.vev_elapsed.maxY + 10, width - 2 * marginX, 32)
+				self.sliderTrack.alpha = 1
+
+				self.lblAlbumArtist.frame = CGRect(marginX, self.lblTrack.maxY + 10, width - 2 * marginX, self.lblTrack.height)
+				self.lblAlbumArtist.alpha = 0
+				self.lblArtist.origin = CGPoint(marginX, self.lblTrack.maxY + 10)
+				self.lblArtist.alpha = 1
+				self.lblAlbum.origin = CGPoint(self.lblArtist.maxX + marginX, self.lblArtist.y)
+				self.lblAlbum.alpha = 1
+
+				self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, width - 64)
+
+				self.btnPlay.origin = CGPoint((width - self.btnPlay.width) / 2, self.coverView.maxY + 20)
+				self.btnPrevious.origin = CGPoint(self.btnPlay.x - self.btnPrevious.width - 8, self.btnPlay.y)
+				self.btnPrevious.alpha = 1
+				self.btnNext.origin = CGPoint(self.btnPlay.maxX + 8, self.btnPlay.y)
+				self.btnStop.origin = CGPoint(width - marginX - miniBaseHeight, self.btnPlay.y)
+				self.btnStop.alpha = 1
+
+				self.btnRandom.origin = CGPoint(marginX, self.btnPlay.maxY + 16)
+				self.btnRandom.alpha = 1
+				self.btnRepeat.origin = CGPoint(width - marginX - miniBaseHeight, self.btnRandom.y)
+				self.btnRepeat.alpha = 1
+				self.sliderVolume.origin = CGPoint(self.btnRandom.maxX + marginX, self.btnRandom.y)
+				self.sliderVolume.alpha = 1
+
+				self.tapableView.frame = self.coverView.frame
+
+				self.progress.alpha = 0
+			}, completion: { (finished) in
+				self.coverView.addMotionEffect(self.motionEffectX)
+				self.coverView.addMotionEffect(self.motionEffectY)
+			})
+		}
+		else
+		{
+			let lblsHeightTotal = CGFloat(18 + 4 + 16)
+			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
+				self.view.y = UIScreen.main.bounds.height - miniHeight
+
+				self.coverView.frame = CGRect(.zero, miniHeight, miniHeight)
+
+				self.btnNext.origin = CGPoint(self.view.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2)
+				self.btnPlay.origin = CGPoint(self.btnNext.x - miniBaseHeight, self.btnNext.y)
+
+				self.lblTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
+				self.sliderTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
+				self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
+
+				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniHeight)
+
+				self.lblAlbumArtist.alpha = 1
+				self.lblTrack.alpha = 1
+				self.progress.alpha = 1
+				self.sliderTrack.alpha = 0
+				self.lblArtist.alpha = 0
+				self.lblAlbum.alpha = 0
+				self.btnPrevious.alpha = 0
+				self.btnRandom.alpha = 0
+				self.btnRepeat.alpha = 0
+				self.btnStop.alpha = 0
+				self.vev_elapsed.alpha = 0
+				self.vev_remaining.alpha = 0
+			}, completion: { (finished) in
+				self.coverView.removeMotionEffect(self.motionEffectX)
+				self.coverView.removeMotionEffect(self.motionEffectY)
+			})
+		}
+		isMinified.toggle()
 	}
 }
 

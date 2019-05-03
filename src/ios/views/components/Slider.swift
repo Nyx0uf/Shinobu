@@ -60,7 +60,7 @@ class Slider: UIControl
 		self.blurEffectView.isUserInteractionEnabled = false
 		self.addSubview(self.blurEffectView)
 
-		// Single tap to request full player view
+		// Single tap
 		let singleTap = UITapGestureRecognizer()
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1

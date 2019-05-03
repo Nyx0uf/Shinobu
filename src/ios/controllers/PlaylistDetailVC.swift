@@ -37,6 +37,10 @@ final class PlaylistDetailVC: NYXViewController
 		{
 			defaultHeight = 0
 		}
+		else
+		{
+			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+		}
 		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
 		view.addSubview(colorView)
 

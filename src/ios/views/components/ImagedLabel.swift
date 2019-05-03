@@ -20,6 +20,8 @@ final class ImagedLabel: UIControl
 			self.updateFrames()
 		}
 	}
+	// Underline text
+	var underlined = false
 
 	// MARK: - Properties override
 	override var frame: CGRect
@@ -41,6 +43,16 @@ final class ImagedLabel: UIControl
 		set
 		{
 			self.label.text = newValue
+
+			if let s = newValue
+			{
+				if underlined
+				{
+					let attributedText = NSMutableAttributedString(string: s)
+					attributedText.addAttribute(NSAttributedString.Key.underlineStyle , value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: s.count))
+					self.attributedText = attributedText
+				}
+			}
 		}
 	}
 	// Attributed text
@@ -65,6 +77,18 @@ final class ImagedLabel: UIControl
 		set
 		{
 			self.label.textColor = newValue
+		}
+	}
+	// Highlighted text color
+	public var highlightedTextColor: UIColor?
+	{
+		get
+		{
+			return self.label.highlightedTextColor
+		}
+		set
+		{
+			self.label.highlightedTextColor = newValue
 		}
 	}
 	// Font
@@ -93,6 +117,33 @@ final class ImagedLabel: UIControl
 			self.imageView.image = newValue
 		}
 	}
+	// Highlighted Image
+	public var highlightedImage: UIImage?
+	{
+		get
+		{
+			return self.imageView.highlightedImage
+		}
+		set
+		{
+			self.imageView.highlightedImage = newValue
+		}
+	}
+
+	// MARK: - Override
+	override var isHighlighted: Bool
+	{
+		willSet
+		{
+			self.label.isHighlighted = newValue
+			self.imageView.isHighlighted = newValue
+		}
+		didSet
+		{
+			self.label.isHighlighted = self.isHighlighted
+			self.imageView.isHighlighted = self.isHighlighted
+		}
+	}
 
 	// MARK: - Initializers
 	init()
@@ -119,7 +170,23 @@ final class ImagedLabel: UIControl
 		self.label.frame = CGRect(self.imageView.maxX + space, 0, frame.width - self.imageView.maxX - space, frame.height)
 		self.addSubview(self.label)
 
+		// Single tap to request full player view
+		let singleTap = UITapGestureRecognizer()
+		singleTap.numberOfTapsRequired = 1
+		singleTap.numberOfTouchesRequired = 1
+		singleTap.addTarget(self, action: #selector(singleTap(_:)))
+		self.addGestureRecognizer(singleTap)
+
 		initializeTheming()
+	}
+
+	// MARK: - Gestures
+	@objc func singleTap(_ gest: UITapGestureRecognizer)
+	{
+		if gest.state == .ended
+		{
+			sendActions(for: .touchUpInside)
+		}
 	}
 
 	// MARK: - Private

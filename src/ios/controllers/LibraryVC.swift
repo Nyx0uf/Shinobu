@@ -31,6 +31,8 @@ final class LibraryVC: MusicalCollectionVC
 		navigationItem.leftBarButtonItems = [serversButton, settingsButton]
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(showArtist(_:)), name: .showArtistNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(showAlbum(_:)), name: .showAlbumNotification, object: nil)
 	}
 
 	override func viewWillAppear(_ animated: Bool)
@@ -554,6 +556,22 @@ final class LibraryVC: MusicalCollectionVC
 				self.updateNavigationButtons()
 			}
 		}
+	}
+
+	@objc func showArtist(_ aNotification: Notification)
+	{
+		guard let artistName = aNotification.object as? String else { return }
+
+		let vc = AlbumsListVC(artist: Artist(name: artistName), isAlbumArtist: false, mpdBridge: mpdBridge)
+		navigationController?.pushViewController(vc, animated: true)
+	}
+
+	@objc func showAlbum(_ aNotification: Notification)
+	{
+		guard let album = aNotification.object as? Album else { return }
+
+		let vc = AlbumDetailVC(album: album, mpdBridge: mpdBridge)
+		navigationController?.pushViewController(vc, animated: true)
 	}
 }
 
