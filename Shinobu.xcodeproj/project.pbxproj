@@ -1195,6 +1195,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-O3";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1249,6 +1250,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WIDGET;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-O3";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
