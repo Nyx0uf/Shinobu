@@ -96,7 +96,7 @@ public class ThreadedObject<V>
 	init(_ value: V)
 	{
 		self.value = value
-		self.queue = DispatchQueue(label: "fr.whine.shinobu.whine.queue.threadedobject", attributes: .concurrent)
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.threadedobject", attributes: .concurrent)
 	}
 
 	func async(_ callback: @escaping (inout V) -> Void)
