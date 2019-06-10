@@ -111,6 +111,31 @@ struct CoverServer: Codable, Equatable
 		return finalURL
 	}
 
+	public func URLWithPath(_ path: String) -> URL?
+	{
+		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName)
+		{
+			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
+			return nil
+		}
+
+		guard var urlComponents = URLComponents(string: hostname) else
+		{
+			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
+			return nil
+		}
+		urlComponents.port = Int(port)
+		urlComponents.path = "\(path.first != nil && path.first! != "/" ? "/" : "")\(path)"
+
+		guard let tmpURL = urlComponents.url else
+		{
+			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
+			return nil
+		}
+
+		return tmpURL
+	}
+
 	// MARK: - Private
 	private static func sanitizeHostname(_ hostname: String, _ port: UInt16) -> String
 	{

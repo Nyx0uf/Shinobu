@@ -74,6 +74,7 @@
 "lbl_section_database" = "Base de données";
 
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
+"lbl_pref_useprettydb" = "Utiliser pretty_mpd_db";
 "lbl_pref_appearance" = "Apparence";
 "lbl_pref_columns" = "Nombre de colonnes";
 "lbl_pref_theme_light" = "Thème clair";

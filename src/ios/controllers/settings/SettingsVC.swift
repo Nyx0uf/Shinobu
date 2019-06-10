@@ -9,6 +9,8 @@ final class SettingsVC: NYXTableViewController
 {
 	// MARK: - Private properties
 	// Shake to play switch
+	private var swPrettyDB: UISwitch!
+	// Shake to play switch
 	private var swShake: UISwitch!
 	// Fuzzy search switch
 	private var swFuzzySearch: UISwitch!
@@ -37,6 +39,9 @@ final class SettingsVC: NYXTableViewController
 
 		swShake = UISwitch()
 		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
+
+		swPrettyDB = UISwitch()
+		swPrettyDB.addTarget(self, action: #selector(toggleUsePrettyDB(_:)), for: .valueChanged)
 
 		swFuzzySearch = UISwitch()
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
@@ -78,6 +83,12 @@ final class SettingsVC: NYXTableViewController
 	{
 		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
+	}
+
+	@objc func toggleUsePrettyDB(_ sender: Any?)
+	{
+		let pretty = Settings.shared.bool(forKey: .pref_usePrettyDB)
+		Settings.shared.set(!pretty, forKey: .pref_usePrettyDB)
 	}
 
 	@objc func toggleFuzzySearch(_ sender: Any?)
@@ -196,7 +207,7 @@ extension SettingsVC
 			case 0:
 				return 3
 			case 1:
-				return 1
+				return 2
 			case 2:
 				return 1
 			case 3:
@@ -243,6 +254,12 @@ extension SettingsVC
 			else if indexPath.section == 1
 			{
 				if indexPath.row == 0
+				{
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_useprettydb")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swPrettyDB)
+				}
+				else if indexPath.row == 1
 				{
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 					cell?.selectionStyle = .none
@@ -317,6 +334,11 @@ extension SettingsVC
 		else if indexPath.section == 1
 		{
 			if indexPath.row == 0
+			{
+				swPrettyDB.frame = CGRect(UIScreen.main.bounds.width - 16 - swPrettyDB.width, (cell!.height - swPrettyDB.height) / 2, swPrettyDB.size)
+				swPrettyDB.isOn = Settings.shared.bool(forKey: .pref_usePrettyDB)
+			}
+			else if indexPath.row == 1
 			{
 				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
 				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
@@ -422,6 +444,8 @@ extension SettingsVC: Themed
 		tableView.separatorColor = theme.tableSeparatorColor
 		swShake.onTintColor = theme.tintColor
 		swShake.tintColor = theme.switchTintColor
+		swPrettyDB.onTintColor = theme.tintColor
+		swPrettyDB.tintColor = theme.switchTintColor
 		swFuzzySearch.onTintColor = theme.tintColor
 		swFuzzySearch.tintColor = theme.switchTintColor
 		swLogging.onTintColor = theme.tintColor

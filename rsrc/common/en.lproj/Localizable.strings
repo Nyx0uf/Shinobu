@@ -74,6 +74,7 @@
 "lbl_section_database" = "Database";
 
 "lbl_pref_shaketoplayrandom" = "Shake to play random album";
+"lbl_pref_useprettydb" = "Use pretty_mpd_db";
 "lbl_pref_appearance" = "Appearance";
 "lbl_pref_columns" = "Number of columns";
 "lbl_pref_theme_light" = "Light theme";

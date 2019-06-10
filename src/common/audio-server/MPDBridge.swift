@@ -29,10 +29,13 @@ final class MPDBridge
 	private var currentAlbum: Album? = nil
 	// Player status (playing, paused, stopped)
 	private var currentState = PlayerState(status: .unknown, isRandom: false, isRepeat: false)
+	//
+	private var usePrettyDB = false
 
 	// MARK: - Initializers
-	init()
+	init(usePrettyDB: Bool)
 	{
+		self.usePrettyDB = usePrettyDB
 		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.mpdbridge", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
@@ -696,6 +699,21 @@ final class MPDBridge
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
+
+			// Using mpd_pretty_db.py script
+			if strongSelf.usePrettyDB && type == .albums
+			{
+				let albumsWithPath = PrettyDBManager.albums()
+				if albumsWithPath.count > 0
+				{
+					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+					let good = albumsWithPath.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
+					strongSelf._albums = good
+					callback(good)
+					return
+				}
+			}
+
 			let result = strongSelf.connection.getListForMusicalEntityType(type)
 			switch result
 			{

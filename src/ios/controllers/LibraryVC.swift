@@ -10,7 +10,7 @@ final class LibraryVC: MusicalCollectionVC
 	// MARK: - Initializers
 	init()
 	{
-		super.init(mpdBridge: MPDBridge())
+		super.init(mpdBridge: MPDBridge(usePrettyDB: Settings.shared.bool(forKey: .pref_usePrettyDB)))
 
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
 	}

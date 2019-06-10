@@ -20,7 +20,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	// Cover view
 	@IBOutlet private var imageView: UIImageView!
 	// MPD data source
-	private var mpdBridge = MPDBridge()
+	private var mpdBridge = MPDBridge(usePrettyDB: false)
 
 	required init?(coder aDecoder: NSCoder)
 	{
