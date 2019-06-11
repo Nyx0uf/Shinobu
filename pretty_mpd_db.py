@@ -74,6 +74,7 @@ def albums_from_songs(p_queue, p_albums, p_done, p_fullpath):
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser()
     PARSER.add_argument("-d", action="store", dest="d", type=str, help="MPD directory (same as music_directory in mpd config file)")
+    PARSER.add_argument("-fmt", action="store", dest="fmt", type=str, default="json", help="format")
     RES = PARSER.parse_args()
 
     # Sanity checks
@@ -94,15 +95,14 @@ if __name__ == "__main__":
     # Make unique
     ALBUMS = list(dict.fromkeys(ALBUMS_DUP))
 
-    CONNECTION = sqlite3.connect("{}_mpd.db".format(RES.d))
-    CURSOR = CONNECTION.cursor()
-    CURSOR.execute('CREATE TABLE IF NOT EXISTS albums(id INTEGER PRIMARY KEY, name TEXT NOT NULL, path TEXT NOT NULL)')
-
-    for album in ALBUMS:
-        CURSOR.execute("INSERT INTO albums(name, path) VALUES(?, ?)", (album.name, album.path,))
-
-    CONNECTION.commit()
-    CONNECTION.close()
-
-    with open("{}_mpd.json".format(RES.d), 'w') as outfile:
-        json.dump([a.__dict__ for a in ALBUMS], outfile)
+    if RES.fmt.lower() == "sqlite":
+        CONNECTION = sqlite3.connect("{}_mpd.db".format(RES.d))
+        CURSOR = CONNECTION.cursor()
+        CURSOR.execute('CREATE TABLE IF NOT EXISTS albums(id INTEGER PRIMARY KEY, name TEXT NOT NULL, path TEXT NOT NULL)')
+        for album in ALBUMS:
+            CURSOR.execute("INSERT INTO albums(name, path) VALUES(?, ?)", (album.name, album.path,))
+        CONNECTION.commit()
+        CONNECTION.close()
+    else:
+        with open("{}_mpd.json".format(RES.d), 'w') as outfile:
+            json.dump([a.__dict__ for a in ALBUMS], outfile)
