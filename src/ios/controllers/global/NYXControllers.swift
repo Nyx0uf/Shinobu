@@ -1,61 +1,48 @@
 import UIKit
 
-
-final class NYXNavigationController: UINavigationController, Themed
-{
+final class NYXNavigationController: UINavigationController, Themed {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		if let presentedViewController = presentedViewController
-		{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		if let presentedViewController = presentedViewController {
 			return presentedViewController.preferredStatusBarStyle
 		}
 
-		if let themedStatusBarStyle = themedStatusBarStyle
-		{
+		if let themedStatusBarStyle = themedStatusBarStyle {
 			return themedStatusBarStyle
 		}
 
 		return .lightContent
 	}
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		initializeTheming()
 	}
 
-	override var shouldAutorotate: Bool
-	{
-		if let topViewController = topViewController
-		{
+	override var shouldAutorotate: Bool {
+		if let topViewController = topViewController {
 			return topViewController.shouldAutorotate
 		}
 		return true
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
-		if let topViewController = topViewController
-		{
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+		if let topViewController = topViewController {
 			return topViewController.supportedInterfaceOrientations
 		}
 		return .all
 	}
 
-	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation
-	{
-		if let topViewController = topViewController
-		{
+	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+		if let topViewController = topViewController {
 			return topViewController.preferredInterfaceOrientationForPresentation
 		}
 		return .portrait
 	}
 
-	func applyTheme(_ theme: Theme)
-	{
+	func applyTheme(_ theme: Theme) {
 		themedStatusBarStyle = theme.statusBarStyle
 		navigationBar.barStyle = theme.navigationBarStyle
 		navigationBar.isTranslucent = true
@@ -64,13 +51,11 @@ final class NYXNavigationController: UINavigationController, Themed
 	}
 }
 
-class NYXTableViewController: UITableViewController
-{
+class NYXTableViewController: UITableViewController {
 	// Navigation title
 	private(set) var titleView: NYXNavigationTitleView! = nil
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
@@ -78,37 +63,30 @@ class NYXTableViewController: UITableViewController
 		navigationItem.titleView = titleView
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-		if let navigationBar = navigationController?.navigationBar
-		{
-			if let shadowImageView = findShadowImage(under: navigationBar)
-			{
+		if let navigationBar = navigationController?.navigationBar {
+			if let shadowImageView = findShadowImage(under: navigationBar) {
 				shadowImageView.isHidden = true
 			}
 		}
 	}
 
-	func updateNavigationTitle()
-	{
+	func updateNavigationTitle() {
 
 	}
 }
 
-class NYXViewController: UIViewController
-{
+class NYXViewController: UIViewController {
 	// Navigation title
 	private(set) var titleView: NYXNavigationTitleView! = nil
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
@@ -116,88 +94,68 @@ class NYXViewController: UIViewController
 		navigationItem.titleView = titleView
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-		if let navigationBar = navigationController?.navigationBar
-		{
-			if let shadowImageView = findShadowImage(under: navigationBar)
-			{
+		if let navigationBar = navigationController?.navigationBar {
+			if let shadowImageView = findShadowImage(under: navigationBar) {
 				shadowImageView.isHidden = true
 			}
 		}
 	}
 
-	func updateNavigationTitle()
-	{
+	func updateNavigationTitle() {
 
 	}
 }
 
-class NYXAlertController: UIAlertController, Themed
-{
+class NYXAlertController: UIAlertController, Themed {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		if let themedStatusBarStyle = themedStatusBarStyle
-		{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		if let themedStatusBarStyle = themedStatusBarStyle {
 			return themedStatusBarStyle
 		}
 		return .default
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		initializeTheming()
 	}
 
-	func applyTheme(_ theme: Theme)
-	{
+	func applyTheme(_ theme: Theme) {
 		themedStatusBarStyle = theme.statusBarStyle
 	}
 }
 
-
-public func NavigationBarHeight() -> CGFloat
-{
+public func NavigationBarHeight() -> CGFloat {
 	let statusHeight: CGFloat
-	if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
-	{
+	if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top {
 		statusHeight = top < 20 ? 20 : top
-	}
-	else
-	{
+	} else {
 		statusHeight = 20
 	}
 
 	return statusHeight + 44
 }
 
-fileprivate func findShadowImage(under view: UIView) -> UIImageView?
-{
-	if view is UIImageView && view.height <= 1
-	{
+private func findShadowImage(under view: UIView) -> UIImageView? {
+	if view is UIImageView && view.height <= 1 {
 		return (view as! UIImageView)
 	}
 
-	for subview in view.subviews
-	{
-		if let imageView = findShadowImage(under: subview)
-		{
+	for subview in view.subviews {
+		if let imageView = findShadowImage(under: subview) {
 			return imageView
 		}
 	}

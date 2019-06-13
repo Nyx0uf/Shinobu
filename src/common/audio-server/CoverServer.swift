@@ -1,14 +1,10 @@
 import Foundation
 
+private let SLASH = Character("/")
 
-fileprivate let SLASH = Character("/")
-
-
-struct CoverServer: Codable, Equatable
-{
+struct CoverServer: Codable, Equatable {
 	// Coding keys
-	private enum CoverServerCodingKeys: String, CodingKey
-	{
+	private enum CoverServerCodingKeys: String, CodingKey {
 		case hostname
 		case port
 		case coverName
@@ -23,15 +19,13 @@ struct CoverServer: Codable, Equatable
 	let coverName: String
 
 	// MARK: - Initializers
-	init(hostname: String, port: UInt16, coverName: String)
-	{
+	init(hostname: String, port: UInt16, coverName: String) {
 		self.hostname = CoverServer.sanitizeHostname(hostname, port)
 		self.port = port
 		self.coverName = coverName
 	}
 
-	init(from decoder: Decoder) throws
-	{
+	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CoverServerCodingKeys.self)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
@@ -41,58 +35,45 @@ struct CoverServer: Codable, Equatable
 	}
 
 	// MARK: - Public
-	public func coverURLForPath(_ path: String) -> URL?
-	{
-		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName)
-		{
+	public func coverURLForPath(_ path: String) -> URL? {
+		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName) {
 			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
 			return nil
 		}
 
-		guard var urlComponents = URLComponents(string: hostname) else
-		{
+		guard var urlComponents = URLComponents(string: hostname) else {
 			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
 			return nil
 		}
 		urlComponents.port = Int(port)
 
-		guard let urlHostname = URL(string: hostname) else
-		{
+		guard let urlHostname = URL(string: hostname) else {
 			Logger.shared.log(type: .error, message: "Unable to create URL hostname for <\(hostname)>")
 			return nil
 		}
 		var urlPath = urlHostname.path
-		if String.isNullOrWhiteSpace(urlPath) || urlPath == "/"
-		{
+		if String.isNullOrWhiteSpace(urlPath) || urlPath == "/" {
 			urlPath = path
-		}
-		else
-		{
-			if let first = urlPath.first, first != SLASH
-			{
+		} else {
+			if let first = urlPath.first, first != SLASH {
 				urlPath = "/" + urlPath
 			}
-			urlPath = urlPath + path
+			urlPath += path
 		}
 
-		guard let tmp = urlPath.last else
-		{
+		guard let tmp = urlPath.last else {
 			return nil
 		}
 
-		if tmp != "/"
-		{
-			urlPath = urlPath + "/" + coverName
-		}
-		else
-		{
-			urlPath = urlPath + coverName
+		if tmp != "/" {
+			urlPath +=  "/" + coverName
+		} else {
+			urlPath += coverName
 		}
 
 		urlComponents.path = urlPath
 
-		guard let tmpURL = urlComponents.url else
-		{
+		guard let tmpURL = urlComponents.url else {
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
 			return nil
 		}
@@ -111,24 +92,20 @@ struct CoverServer: Codable, Equatable
 		return finalURL
 	}
 
-	public func URLWithPath(_ path: String) -> URL?
-	{
-		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName)
-		{
+	public func URLWithPath(_ path: String) -> URL? {
+		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName) {
 			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
 			return nil
 		}
 
-		guard var urlComponents = URLComponents(string: hostname) else
-		{
+		guard var urlComponents = URLComponents(string: hostname) else {
 			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
 			return nil
 		}
 		urlComponents.port = Int(port)
 		urlComponents.path = "\(path.first != nil && path.first! != "/" ? "/" : "")\(path)"
 
-		guard let tmpURL = urlComponents.url else
-		{
+		guard let tmpURL = urlComponents.url else {
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
 			return nil
 		}
@@ -137,27 +114,19 @@ struct CoverServer: Codable, Equatable
 	}
 
 	// MARK: - Private
-	private static func sanitizeHostname(_ hostname: String, _ port: UInt16) -> String
-	{
+	private static func sanitizeHostname(_ hostname: String, _ port: UInt16) -> String {
 		var h: String
-		if hostname.hasPrefix("http://") || hostname.hasPrefix("https://")
-		{
+		if hostname.hasPrefix("http://") || hostname.hasPrefix("https://") {
 			h = hostname
-		}
-		else
-		{
-			if port == 443
-			{
+		} else {
+			if port == 443 {
 				h = "https://" + hostname
-			}
-			else
-			{
+			} else {
 				h = "http://" + hostname
 			}
 		}
 
-		if let last = h.last, last == SLASH
-		{
+		if let last = h.last, last == SLASH {
 			h.removeLast()
 		}
 
@@ -165,15 +134,12 @@ struct CoverServer: Codable, Equatable
 	}
 }
 
-extension CoverServer: CustomStringConvertible
-{
-	var description: String
-	{
+extension CoverServer: CustomStringConvertible {
+	var description: String {
 		return "\(hostname):\(port) [\(coverName)]"
 	}
 }
 
-func == (lhs: CoverServer, rhs: CoverServer) -> Bool
-{
+func == (lhs: CoverServer, rhs: CoverServer) -> Bool {
 	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)
 }

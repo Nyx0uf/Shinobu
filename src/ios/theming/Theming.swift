@@ -1,8 +1,6 @@
 import Foundation
 
-
-protocol ThemeProvider
-{
+protocol ThemeProvider {
 	associatedtype Theme
 
 	var currentTheme: Theme { get }
@@ -10,19 +8,16 @@ protocol ThemeProvider
 	func subscribeToChanges(_ object: AnyObject, handler: @escaping (Theme) -> Void)
 }
 
-protocol Themed
-{
-	associatedtype _ThemeProvider: ThemeProvider
+protocol Themed {
+	associatedtype TProvider: ThemeProvider
 
-	var themeProvider: _ThemeProvider { get }
+	var themeProvider: TProvider { get }
 
-	func applyTheme(_ theme: _ThemeProvider.Theme)
+	func applyTheme(_ theme: TProvider.Theme)
 }
 
-extension Themed where Self: AnyObject
-{
-	func initializeTheming()
-	{
+extension Themed where Self: AnyObject {
+	func initializeTheming() {
 		applyTheme(themeProvider.currentTheme)
 		themeProvider.subscribeToChanges(self) { [weak self] (newTheme) in
 			self?.applyTheme(newTheme)

@@ -1,30 +1,22 @@
 import UIKit
 
+private let LABEL_SPACING = CGFloat(20)
 
-fileprivate let LABEL_SPACING = CGFloat(20)
-
-
-final class AutoScrollLabel: UIView
-{
-	enum ScrollDirection
-	{
+final class AutoScrollLabel: UIView {
+	enum ScrollDirection {
 		case left
 		case right
 	}
 
 	/// Scroll direction
-	public var direction = ScrollDirection.left
-	{
-		didSet
-		{
+	public var direction = ScrollDirection.left {
+		didSet {
 			scrollLabelIfNeeded()
 		}
 	}
 	/// Scroll speed (px per second)
-	public var scrollSpeed: Double = 30
-	{
-		didSet
-		{
+	public var scrollSpeed: Double = 30 {
+		didSet {
 			scrollLabelIfNeeded()
 		}
 	}
@@ -33,12 +25,9 @@ final class AutoScrollLabel: UIView
 	/// Is scrolling flag
 	private(set) var isScrolling = false
 	/// Fade length
-	public var fadeLength: CGFloat = 8
-	{
-		didSet
-		{
-			if fadeLength != oldValue
-			{
+	public var fadeLength: CGFloat = 8 {
+		didSet {
+			if fadeLength != oldValue {
 				refreshLabels()
 				applyGradientMaskForFadeLength(fadeLengthIn: fadeLength, fade: false)
 			}
@@ -46,39 +35,30 @@ final class AutoScrollLabel: UIView
 	}
 	// MARK: UILabel properties
 	/// Text
-	public var text: String?
-	{
-		get
-		{
+	public var text: String? {
+		get {
 			return self.mainLabel.text
 		}
-		set
-		{
+		set {
 			self.setText(text: newValue, refresh: true)
 		}
 	}
 	/// Text color
-	public var textColor: UIColor!
-	{
-		get
-		{
+	public var textColor: UIColor! {
+		get {
 			return self.mainLabel.textColor
 		}
-		set
-		{
+		set {
 			self.mainLabel.textColor = newValue
 			self.secondaryLabel.textColor = newValue
 		}
 	}
 	/// Font
-	public var font: UIFont!
-	{
-		get
-		{
+	public var font: UIFont! {
+		get {
 			return self.mainLabel.font
 		}
-		set
-		{
+		set {
 			self.mainLabel.font = newValue
 			self.secondaryLabel.font = newValue
 			self.refreshLabels()
@@ -93,49 +73,37 @@ final class AutoScrollLabel: UIView
 	private var mainLabel: UILabel!
 	private var secondaryLabel: UILabel!
 	// MARK: UIView Override
-	public override var frame: CGRect
-	{
-		get
-		{
+	public override var frame: CGRect {
+		get {
 			return super.frame
 		}
-		set
-		{
+		set {
 			super.frame = newValue
 			self.scrollView.frame = CGRect(.zero, newValue.size)
 			didChangeFrame()
 		}
 	}
-	public override var bounds: CGRect
-	{
-		get
-		{
+	public override var bounds: CGRect {
+		get {
 			return super.bounds
 		}
-		set
-		{
+		set {
 			super.bounds = newValue
 			didChangeFrame()
 		}
 	}
-	public override var intrinsicContentSize: CGSize
-	{
-		get
-		{
-			return CGSize(width: 0, height: self.mainLabel.intrinsicContentSize.height)
-		}
+	public override var intrinsicContentSize: CGSize {
+		return CGSize(width: 0, height: self.mainLabel.intrinsicContentSize.height)
 	}
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		super.init(frame: .zero)
 
 		commonInit()
 	}
 
-	public override init(frame: CGRect)
-	{
+	public override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		commonInit()
@@ -143,8 +111,7 @@ final class AutoScrollLabel: UIView
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	private func commonInit()
-	{
+	private func commonInit() {
 		self.isUserInteractionEnabled = false
 		self.clipsToBounds = true
 
@@ -167,40 +134,33 @@ final class AutoScrollLabel: UIView
 	}
 
 	// MARK: - Private
-	private func didChangeFrame()
-	{
+	private func didChangeFrame() {
 		refreshLabels()
 		applyGradientMaskForFadeLength(fadeLengthIn: fadeLength, fade: isScrolling)
 	}
 
 	// MARK: - Public
-	public func setText(text: String?, refresh: Bool)
-	{
-		if text == self.text
-		{
+	public func setText(text: String?, refresh: Bool) {
+		if text == self.text {
 			return
 		}
 
 		mainLabel.text = text
 		secondaryLabel.text = text
 
-		if refresh
-		{
+		if refresh {
 			refreshLabels()
 		}
 	}
 
-	@objc public func scrollLabelIfNeeded()
-	{
+	@objc public func scrollLabelIfNeeded() {
 		DispatchQueue.main.async {
-			if String.isNullOrWhiteSpace(self.text)
-			{
+			if String.isNullOrWhiteSpace(self.text) {
 				return
 			}
 
 			let labelWidth = self.mainLabel.bounds.width
-			if labelWidth <= self.bounds.width
-			{
+			if labelWidth <= self.bounds.width {
 				return
 			}
 
@@ -220,18 +180,15 @@ final class AutoScrollLabel: UIView
 
 				self.applyGradientMaskForFadeLength(fadeLengthIn: self.fadeLength, fade: false)
 
-				if finished
-				{
+				if finished {
 					self.performSelector(inBackground: #selector(AutoScrollLabel.scrollLabelIfNeeded), with: nil)
 				}
 			}
 		}
 	}
 
-	private func refreshLabels()
-	{
-		if mainLabel == nil
-		{
+	private func refreshLabels() {
+		if mainLabel == nil {
 			return
 		}
 
@@ -252,8 +209,7 @@ final class AutoScrollLabel: UIView
 		scrollView.layer.removeAllAnimations()
 
 		// If label is bigger than width => scroll
-		if mainLabel.bounds.width > bounds.width
-		{
+		if mainLabel.bounds.width > bounds.width {
 			secondaryLabel.isHidden = false
 
 			var size = CGSize.zero
@@ -264,9 +220,7 @@ final class AutoScrollLabel: UIView
 			applyGradientMaskForFadeLength(fadeLengthIn: fadeLength, fade: isScrolling)
 
 			scrollLabelIfNeeded()
-		}
-		else
-		{
+		} else {
 			secondaryLabel.isHidden = true
 
 			scrollView.contentSize = bounds.size
@@ -280,16 +234,13 @@ final class AutoScrollLabel: UIView
 		}
 	}
 
-	private func applyGradientMaskForFadeLength(fadeLengthIn: CGFloat, fade: Bool)
-	{
-		if mainLabel == nil
-		{
+	private func applyGradientMaskForFadeLength(fadeLengthIn: CGFloat, fade: Bool) {
+		if mainLabel == nil {
 			return
 		}
 
 		let fadeLength = (mainLabel.bounds.width <= bounds.width) ? 0 : fadeLengthIn
-		if fadeLength != 0
-		{
+		if fadeLength != 0 {
 			let gradientMask = CAGradientLayer()
 			gradientMask.bounds = layer.bounds
 			gradientMask.position = CGPoint(x: bounds.midX, y: bounds.midY)
@@ -303,15 +254,13 @@ final class AutoScrollLabel: UIView
 			let fadePoint = fadeLength / bounds.width
 			var leftFadePoint = fadePoint
 			var rightFadePoint = 1 - fadePoint
-			if !fade
-			{
-				switch direction
-				{
-					case .left:
-						leftFadePoint = 0
-					case .right:
-						leftFadePoint = 0
-						rightFadePoint = 1
+			if !fade {
+				switch direction {
+				case .left:
+					leftFadePoint = 0
+				case .right:
+					leftFadePoint = 0
+					rightFadePoint = 1
 				}
 			}
 			gradientMask.locations = [NSNumber(value: 0), NSNumber(value: Double(leftFadePoint)), NSNumber(value: Double(rightFadePoint)), NSNumber(value: 1)]
@@ -320,9 +269,7 @@ final class AutoScrollLabel: UIView
 			CATransaction.setDisableActions(true)
 			layer.mask = gradientMask
 			CATransaction.commit()
-		}
-		else
-		{
+		} else {
 			layer.mask = nil
 		}
 	}

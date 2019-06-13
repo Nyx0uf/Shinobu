@@ -1,13 +1,10 @@
 import UIKit
 
+private let miniBaseHeight = CGFloat(44)
+private var miniHeight = miniBaseHeight
+private let marginX = CGFloat(16)
 
-fileprivate let miniBaseHeight = CGFloat(44)
-fileprivate var miniHeight = miniBaseHeight
-fileprivate let marginX = CGFloat(16)
-
-
-final class PlayerVC : NYXViewController
-{
+final class PlayerVC: NYXViewController {
 	// MARK: - Public properties
 	private(set) var isMinified = true
 
@@ -60,10 +57,9 @@ final class PlayerVC : NYXViewController
 	private let lblNextTrack = AutoScrollLabel()
 	private let lblNextAlbumArtist = AutoScrollLabel()
 	// Current cover
-	private var imgCover: UIImage? = nil
+	private var imgCover: UIImage?
 
-	init(mpdBridge: MPDBridge)
-	{
+	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
 
 		super.init(nibName: nil, bundle: nil)
@@ -72,13 +68,11 @@ final class PlayerVC : NYXViewController
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		let width = UIScreen.main.bounds.width
-		if let bottom = (UIApplication.shared.delegate as! AppDelegate).window?.safeAreaInsets.bottom
-		{
+		if let bottom = (UIApplication.shared.delegate as! AppDelegate).window?.safeAreaInsets.bottom {
 			miniHeight += bottom
 		}
 
@@ -92,8 +86,7 @@ final class PlayerVC : NYXViewController
 		view.addSubview(blurEffectView)
 
 		// Top corners radius
-		if UIDevice.current.isiPhoneX()
-		{
+		if UIDevice.current.isiPhoneX() {
 			view.layer.cornerRadius = 10
 			view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
 			view.layer.masksToBounds = true
@@ -286,44 +279,34 @@ final class PlayerVC : NYXViewController
 	}
 
 	// MARK: - Buttons actions
-	@objc func changePlaybackAction(_ sender: UIButton?)
-	{
-		if btnPlay.tag == PlayerStatus.stopped.rawValue
-		{
+	@objc func changePlaybackAction(_ sender: UIButton?) {
+		if btnPlay.tag == PlayerStatus.stopped.rawValue {
 			mpdBridge.play()
-		}
-		else
-		{
+		} else {
 			mpdBridge.togglePause()
 		}
 	}
 
-	@objc func toggleRandomAction(_ sender: Any?)
-	{
+	@objc func toggleRandomAction(_ sender: Any?) {
 		mpdBridge.toggleRandom()
 	}
 
-	@objc func toggleRepeatAction(_ sender: Any?)
-	{
+	@objc func toggleRepeatAction(_ sender: Any?) {
 		mpdBridge.toggleRepeat()
 	}
 
-	@objc func changeTrackPositionAction(_ sender: Slider?)
-	{
-		if let track = mpdBridge.getCurrentTrack()
-		{
+	@objc func changeTrackPositionAction(_ sender: Slider?) {
+		if let track = mpdBridge.getCurrentTrack() {
 			mpdBridge.setTrackPosition(Int(sliderTrack.value), trackPosition: track.position)
 		}
 	}
 
-	@objc func changeVolumeAction(_ sender: Slider?)
-	{
+	@objc func changeVolumeAction(_ sender: Slider?) {
 		let tmp = clamp(ceil(sliderVolume.value), lower: 0, upper: 100)
 		let volume = Int(tmp)
 
 		mpdBridge.setVolume(volume) { (success) in
-			if success
-			{
+			if success {
 				DispatchQueue.main.async {
 					self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
 				}
@@ -331,8 +314,7 @@ final class PlayerVC : NYXViewController
 		}
 	}
 
-	@objc func bla(_ sender: Any?)
-	{
+	@objc func bla(_ sender: Any?) {
 //		var start = Date()
 //		for _ in 0...100
 //		{
@@ -343,48 +325,38 @@ final class PlayerVC : NYXViewController
 //		print("Execution time: \(executionTime)")
 	}
 
-	@objc func showArtistAction(_ sender: Any?)
-	{
+	@objc func showArtistAction(_ sender: Any?) {
 		toggleMinified()
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .showArtistNotification, object: lblArtist.text)
 	}
 
-	@objc func showAlbumAction(_ sender: Any?)
-	{
+	@objc func showAlbumAction(_ sender: Any?) {
 		toggleMinified()
 
-		if let album = mpdBridge.getCurrentAlbum()
-		{
+		if let album = mpdBridge.getCurrentAlbum() {
 			NotificationCenter.default.postOnMainThreadAsync(name: .showAlbumNotification, object: album)
 		}
 	}
 
 	// MARK: - Gestures
-	@objc func singleTap(_ gesture: UITapGestureRecognizer)
-	{
-		if gesture.state == .ended
-		{
+	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
+		if gesture.state == .ended {
 			toggleMinified()
 		}
 	}
 
 	// MARK: - Notifications
-	@objc func playingTrackNotification(_ aNotification: Notification?)
-	{
+	@objc func playingTrackNotification(_ aNotification: Notification?) {
 		guard let notif = aNotification, let userInfos = notif.userInfo else { return }
 
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let elapsed = userInfos[PLAYER_ELAPSED_KEY] as? Int else { return }
 
-		if isMinified
-		{ // Components to update when minified
+		if isMinified { // Components to update when minified
 			progress.width = (CGFloat(elapsed) * (view.width - coverView.width)) / CGFloat(track.duration.seconds)
-		}
-		else
-		{ // Components to update when full screen
+		} else { // Components to update when full screen
 			// Update track position slider if not panning the slider
-			if !sliderTrack.isHighlighted && !sliderTrack.isSelected
-			{
+			if !sliderTrack.isHighlighted && !sliderTrack.isSelected {
 				sliderTrack.value = CGFloat(elapsed)
 				sliderTrack.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderTrack.value * 100) / sliderTrack.maximumValue))%"
 			}
@@ -398,8 +370,7 @@ final class PlayerVC : NYXViewController
 		}
 	}
 
-	@objc func playingTrackChangedNotification(_ aNotification: Notification?)
-	{
+	@objc func playingTrackChangedNotification(_ aNotification: Notification?) {
 		guard let notif = aNotification, let userInfos = notif.userInfo else { return }
 
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let album = userInfos[PLAYER_ALBUM_KEY] as? Album else { return }
@@ -412,34 +383,31 @@ final class PlayerVC : NYXViewController
 		lblAlbum.text = album.name
 
 		// Update cover if from another album (playlist case)
-		let iv = view as? UIImageView
+		let imv = view as? UIImageView
 		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
-		if album.path != nil
-		{
-			var op = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
-			op.processCallback = { (cover, thumbnail) in
+		if album.path != nil {
+			var cop = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
+			cop.processCallback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
 					self.imgCover = thumbnail
 					self.coverView.image = thumbnail
-					iv?.image = cover
+					imv?.image = cover
 					self.updatePlayPauseState()
 				}
 			}
-			op.submit()
-		}
-		else
-		{
+			cop.submit()
+		} else {
 			mpdBridge.getPathForAlbum(album) {
-				var op = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
-				op.processCallback = { (cover, thumbnail) in
+				var cop = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
+				cop.processCallback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.imgCover = thumbnail
 						self.coverView.image = thumbnail
-						iv?.image = cover
+						imv?.image = cover
 						self.updatePlayPauseState()
 					}
 				}
-				op.submit()
+				cop.submit()
 			}
 		}
 
@@ -447,18 +415,15 @@ final class PlayerVC : NYXViewController
 		updateUpNext(after: track.position)
 	}
 
-	@objc func playerStatusChangedNotification(_ aNotification: Notification?)
-	{
+	@objc func playerStatusChangedNotification(_ aNotification: Notification?) {
 		updatePlayPauseState()
 		updateRandomAndRepeatState()
 	}
 
 	// MARK: - Private
-	private func updatePlayPauseState()
-	{
+	private func updatePlayPauseState() {
 		let status = mpdBridge.getCurrentState().status
-		if status == .paused || status == .stopped
-		{
+		if status == .paused || status == .stopped {
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 
@@ -468,9 +433,7 @@ final class PlayerVC : NYXViewController
 					UIView.transition(with: self.coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = grayscaled }, completion: nil)
 				}
 			}
-		}
-		else
-		{
+		} else {
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 
@@ -479,19 +442,16 @@ final class PlayerVC : NYXViewController
 		btnPlay.tag = status.rawValue
 	}
 
-	private func updateRandomAndRepeatState()
-	{
+	private func updateRandomAndRepeatState() {
 		let state = mpdBridge.getCurrentState()
 
 		UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
-			if !self.btnRandom.isHighlighted
-			{
+			if !self.btnRandom.isHighlighted {
 				self.btnRandom.isSelected = state.isRandom
 				self.btnRandom.accessibilityLabel = NYXLocalizedString(state.isRandom ? "lbl_random_disable" : "lbl_random_enable")
 			}
 
-			if !self.btnRepeat.isHighlighted
-			{
+			if !self.btnRepeat.isHighlighted {
 				self.btnRepeat.isSelected = state.isRepeat
 				self.btnRepeat.accessibilityLabel = NYXLocalizedString(state.isRepeat ? "lbl_repeat_disable" : "lbl_repeat_enable")
 			}
@@ -501,17 +461,14 @@ final class PlayerVC : NYXViewController
 		}, completion: nil)
 	}
 
-	private func updateUpNext(after: UInt32)
-	{
+	private func updateUpNext(after: UInt32) {
 		// Up next
-		mpdBridge.getSongsOfCurrentQueue() { [weak self] (tracks) in
+		mpdBridge.getSongsOfCurrentQueue { [weak self] (tracks) in
 			guard let strongSelf = self else { return }
 			DispatchQueue.main.async {
-				if tracks.count > 0
-				{
+				if tracks.count > 0 {
 					let t = tracks.filter {$0.position > after}.sorted(by: { $0.position < $1.position })
-					if t.count > 0
-					{
+					if t.count > 0 {
 						strongSelf.lblNextTrack.text = t[0].name
 						strongSelf.lblNextAlbumArtist.text = "\(t[0].artist) — \(t[0].albumName)"
 						return
@@ -523,21 +480,16 @@ final class PlayerVC : NYXViewController
 		}
 	}
 
-	private func toggleMinified()
-	{
+	private func toggleMinified() {
 		let width = UIScreen.main.bounds.width
-		if isMinified
-		{
+		if isMinified {
 			mpdBridge.getVolume { (volume) in
 				DispatchQueue.main.async {
-					if volume == -1
-					{
+					if volume == -1 {
 						self.sliderVolume.isEnabled = false
 						self.sliderVolume.value = 0
 						self.sliderVolume.accessibilityLabel = NYXLocalizedString("lbl_volume_control_disabled")
-					}
-					else
-					{
+					} else {
 						self.sliderVolume.isEnabled = true
 						self.sliderVolume.value = CGFloat(volume)
 						self.sliderVolume.accessibilityLabel = "\(NYXLocalizedString("lbl_volume")) \(volume)%"
@@ -587,13 +539,11 @@ final class PlayerVC : NYXViewController
 				self.tapableView.frame = self.coverView.frame
 
 				self.progress.alpha = 0
-			}, completion: { (finished) in
+			}, completion: { (_) in
 				self.coverView.addMotionEffect(self.motionEffectX)
 				self.coverView.addMotionEffect(self.motionEffectY)
 			})
-		}
-		else
-		{
+		} else {
 			let lblsHeightTotal = CGFloat(18 + 4 + 16)
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
 				self.view.y = UIScreen.main.bounds.height - miniHeight
@@ -621,7 +571,7 @@ final class PlayerVC : NYXViewController
 				self.btnStop.alpha = 0
 				self.vev_elapsed.alpha = 0
 				self.vev_remaining.alpha = 0
-			}, completion: { (finished) in
+			}, completion: { (_) in
 				self.coverView.removeMotionEffect(self.motionEffectX)
 				self.coverView.removeMotionEffect(self.motionEffectY)
 			})
@@ -630,10 +580,8 @@ final class PlayerVC : NYXViewController
 	}
 }
 
-extension PlayerVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension PlayerVC: Themed {
+	func applyTheme(_ theme: Theme) {
 
 	}
 }

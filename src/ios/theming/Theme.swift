@@ -1,8 +1,6 @@
 import UIKit
 
-
-struct Theme
-{
+struct Theme {
 	let statusBarStyle: UIStatusBarStyle
 	let navigationBarStyle: UIBarStyle
 	let blurEffect: UIBlurEffect
@@ -26,8 +24,7 @@ struct Theme
 	let collectionImageViewBackgroundColor: UIColor
 }
 
-extension Theme
-{
+extension Theme {
 	static let light = Theme(
 		statusBarStyle: .default,
 		navigationBarStyle: .default,
@@ -77,8 +74,7 @@ extension Theme
 	)
 }
 
-public enum TintColorType: Int, CaseIterable
-{
+public enum TintColorType: Int, CaseIterable {
 	case blue = 1
 	case green = 2
 	case pink = 3
@@ -86,19 +82,17 @@ public enum TintColorType: Int, CaseIterable
 	case yellow = 5
 }
 
-public func colorForTintColorType(_ type: TintColorType) -> UIColor
-{
-	switch type
-	{
-		case .orange:
-			return UIColor(rgb: 0xFF6600)
-		case .blue:
-			return UIColor(rgb: 0x2F74FB)
-		case .green:
-			return UIColor(rgb: 0x1DC021)
-		case .yellow:
-			return UIColor(rgb: 0xFDB22B)
-		case .pink:
-			return UIColor(rgb: 0xFF00FF)
+public func colorForTintColorType(_ type: TintColorType) -> UIColor {
+	switch type {
+	case .orange:
+		return UIColor(rgb: 0xFF6600)
+	case .blue:
+		return UIColor(rgb: 0x2F74FB)
+	case .green:
+		return UIColor(rgb: 0x1DC021)
+	case .yellow:
+		return UIColor(rgb: 0xFDB22B)
+	case .pink:
+		return UIColor(rgb: 0xFF00FF)
 	}
 }

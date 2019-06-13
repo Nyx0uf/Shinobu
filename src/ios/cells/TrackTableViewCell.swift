@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class TrackTableViewCell: UITableViewCell
-{
+final class TrackTableViewCell: UITableViewCell {
 	// MARK: - Public properties
 	// Track number
 	private(set) var lblTrack: UILabel!
@@ -14,8 +12,7 @@ final class TrackTableViewCell: UITableViewCell
 	private(set) var separator: UIView!
 
 	// MARK: - Initializers
-	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?)
-	{
+	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
 		self.lblTrack = UILabel()
@@ -63,10 +60,8 @@ final class TrackTableViewCell: UITableViewCell
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
 
-extension TrackTableViewCell: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension TrackTableViewCell: Themed {
+	func applyTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 		contentView.backgroundColor = theme.backgroundColor
 		separator.backgroundColor = theme.tableSeparatorColor

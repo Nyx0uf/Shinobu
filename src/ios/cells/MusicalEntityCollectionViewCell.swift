@@ -1,28 +1,21 @@
 import UIKit
 
-
-final class MusicalEntityCollectionViewCell: UICollectionViewCell
-{
+final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 	// MARK: - Public properties
 	// Album cover view
 	var imageView: UIImageView! = nil
 	// Entity name
 	var label: UILabel! = nil
 	// Cover
-	var image: UIImage? = nil
-	{
-		didSet
-		{
+	var image: UIImage? = nil {
+		didSet {
 			imageView.image = image
 		}
 	}
 	// Flag to indicate that the cell is being long pressed
-	var longPressed: Bool = false
-	{
-		didSet
-		{
-			if longPressed
-			{
+	var longPressed: Bool = false {
+		didSet {
+			if longPressed {
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
 					self.label.textColor = self.themeProvider.currentTheme.tintColor
 					let anim = CABasicAnimation(keyPath: "borderWidth")
@@ -31,12 +24,10 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell
 					anim.duration = 0.2
 					anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
-				}, completion:{ (finished) in
+				}, completion: { (_) in
 					self.imageView.layer.borderWidth = 1
 				})
-			}
-			else
-			{
+			} else {
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
 					self.label.textColor = self.themeProvider.currentTheme.tableCellMainLabelTextColor
 					let anim = CABasicAnimation(keyPath: "borderWidth")
@@ -45,32 +36,29 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell
 					anim.duration = 0.2
 					anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
 					self.imageView.layer.add(anim, forKey: "kawaii-anim")
-				}, completion:{ (finished) in
+				}, completion: { (_) in
 					self.imageView.layer.borderWidth = 0
 				})
 			}
 		}
 	}
 	// Flag to indicate the type of entity for the cell
-	var type: MusicalEntityType = .albums
-	{
-		didSet
-		{
+	var type: MusicalEntityType = .albums {
+		didSet {
 			var cornerRadius = CGFloat(0)
 			var contentMode = UIView.ContentMode.scaleToFill
-			switch type
-			{
-				case .albums:
-					cornerRadius = 12.0
-				case .artists, .albumsartists:
-					contentMode = .center
-					cornerRadius = imageView.width / 2.0
-				case .genres:
-					cornerRadius = imageView.width
-				case .playlists:
-					cornerRadius = 0.0
-				default:
-					cornerRadius = 0.0
+			switch type {
+			case .albums:
+				cornerRadius = 12.0
+			case .artists, .albumsartists:
+				contentMode = .center
+				cornerRadius = imageView.width / 2.0
+			case .genres:
+				cornerRadius = imageView.width
+			case .playlists:
+				cornerRadius = 0.0
+			default:
+				cornerRadius = 0.0
 			}
 			imageView.layer.cornerRadius = cornerRadius
 			imageView.contentMode = contentMode
@@ -80,8 +68,7 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell
 	private(set) var imageTintColor: UIColor!
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		self.isAccessibilityElement = true
@@ -102,17 +89,14 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override func layoutSubviews()
-	{
+	override func layoutSubviews() {
 		imageView.frame = CGRect(.zero, frame.width, frame.height - 20)
 		label.frame = CGRect(0, imageView.maxY, frame.width, 20)
 	}
 }
 
-extension MusicalEntityCollectionViewCell: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension MusicalEntityCollectionViewCell: Themed {
+	func applyTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 		label.textColor = theme.tableCellMainLabelTextColor
 		label.backgroundColor = theme.backgroundColor

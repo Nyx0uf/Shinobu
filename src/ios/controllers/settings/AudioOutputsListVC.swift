@@ -1,21 +1,18 @@
 import UIKit
 
-
-final class AudioOutputsListVC: NYXTableViewController
-{
-	// MARK - Public properties
+final class AudioOutputsListVC: NYXTableViewController {
+	// MARK: - Public properties
 	// List of artists
 	var outputs = [AudioOutput]()
 
-	// MARK - Private properties
+	// MARK: - Private properties
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.audiooutput"
 	// MPD server
 	private let mpdServer: MPDServer
 
 	// MARK: - Initializers
-	init(mpdServer: MPDServer)
-	{
+	init(mpdServer: MPDServer) {
 		self.mpdServer = mpdServer
 
 		super.init(style: .plain)
@@ -23,14 +20,12 @@ final class AudioOutputsListVC: NYXTableViewController
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
 	}
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
@@ -40,47 +35,40 @@ final class AudioOutputsListVC: NYXTableViewController
 		initializeTheming()
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		refreshOutputs()
 	}
 
 	// MARK: - Private
-	private func refreshOutputs()
-	{
+	private func refreshOutputs() {
 		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
-		switch result
-		{
-			case .failure( _):
+		switch result {
+		case .failure:
+			break
+		case .success:
+			let res = cnn.getAvailableOutputs()
+			switch res {
+			case .failure:
 				break
-			case .success( _):
-				let r = cnn.getAvailableOutputs()
-				switch r
-				{
-					case .failure( _):
-						break
-					case .success(let outputs):
-						self.outputs = outputs
-						tableView.reloadData()
-				}
-				cnn.disconnect()
+			case .success(let outputs):
+				self.outputs = outputs
+				tableView.reloadData()
+			}
+			cnn.disconnect()
 		}
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension AudioOutputsListVC
-{
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
+extension AudioOutputsListVC {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return outputs.count
 	}
 
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
 		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
@@ -94,19 +82,17 @@ extension AudioOutputsListVC
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
 
-		let v = UIView()
-		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
-		cell.selectedBackgroundView = v
+		let view = UIView()
+		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+		cell.selectedBackgroundView = view
 
 		return cell
 	}
 }
 
 // MARK: - UITableViewDelegate
-extension AudioOutputsListVC
-{
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension AudioOutputsListVC {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
@@ -115,31 +101,27 @@ extension AudioOutputsListVC
 
 		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
-		switch result
-		{
-			case .failure( _):
+		switch result {
+		case .failure:
+			break
+		case .success:
+			let res = cnn.toggleOutput(output)
+			switch res {
+			case .failure:
 				break
-			case .success( _):
-				let r = cnn.toggleOutput(output)
-				switch r
-				{
-					case .failure( _):
-						break
-					case .success( _):
-						output.enabled.toggle()
-						outputs[indexPath.row] = output
-						tableView.reloadRows(at: [indexPath], with: .fade)
-						NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
-				}
-				cnn.disconnect()
+			case .success:
+				output.enabled.toggle()
+				outputs[indexPath.row] = output
+				tableView.reloadRows(at: [indexPath], with: .fade)
+				NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)
+			}
+			cnn.disconnect()
 		}
 	}
 }
 
-extension AudioOutputsListVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension AudioOutputsListVC: Themed {
+	func applyTheme(_ theme: Theme) {
 		tableView.separatorColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColorAlt
 		tableView.tintColor = theme.tintColor

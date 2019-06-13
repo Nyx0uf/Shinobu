@@ -1,14 +1,12 @@
 import UIKit
 import Foundation
 
-
-final class ProcessCoverOperation: Operation
-{
+final class ProcessCoverOperation: Operation {
 	// MARK: - Public properties
 	// Image data
-	var data: Data? = nil
+	var data: Data?
 	// Custom completion block
-	var callback: ((UIImage, UIImage) -> Void)? = nil
+	var callback: ((UIImage, UIImage) -> Void)?
 
 	// MARK: - Private properties
 	// Album
@@ -19,63 +17,52 @@ final class ProcessCoverOperation: Operation
 	private var save = true
 
 	// MARK: - Initializers
-	init(album: Album, cropSize: CGSize, save: Bool)
-	{
+	init(album: Album, cropSize: CGSize, save: Bool) {
 		self.album = album
 		self.cropSize = cropSize
 		self.save = save
 	}
 
 	// MARK: - Override
-	override func main()
-	{
+	override func main() {
 		// Operation is cancelled, abort
-		if isCancelled
-		{
+		if isCancelled {
 			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			return
 		}
 
-		guard let imageData = data else
-		{
+		guard let imageData = data else {
 			Logger.shared.log(type: .error, message: "No data <\(album.name)>")
 			return
 		}
 
-		guard let cover = UIImage(data: imageData) else
-		{
+		guard let cover = UIImage(data: imageData) else {
 			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(imageData.count)b)")
 			return
 		}
 
-		guard let thumbnail = cover.smartCropped(toSize: cropSize) else
-		{
+		guard let thumbnail = cover.smartCropped(toSize: cropSize) else {
 			Logger.shared.log(type: .error, message: "Failed to create thumbnail for <\(album.name)>")
 			return
 		}
 
-		guard let saveURL = album.localCoverURL else
-		{
+		guard let saveURL = album.localCoverURL else {
 			Logger.shared.log(type: .error, message: "Invalid cover url for <\(album.name)>")
 			return
 		}
 
-		if save
-		{
-			if thumbnail.save(url: saveURL) == false
-			{
+		if save {
+			if thumbnail.save(url: saveURL) == false {
 				Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
 			}
 		}
 
-		if let block = callback
-		{
+		if let block = callback {
 			block(cover, thumbnail)
 		}
 	}
 
-	override var description: String
-	{
+	override var description: String {
 		return "ProcessCoverOperation for <\(album.name)>"
 	}
 }

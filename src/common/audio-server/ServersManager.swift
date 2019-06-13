@@ -1,125 +1,90 @@
 import Foundation
 
-
-final class ServersManager
-{
+final class ServersManager {
 	// MARK: - Public
-	func getServersList() -> [ShinobuServer]
-	{
+	func getServersList() -> [ShinobuServer] {
 		let decoder = JSONDecoder()
 		var servers = [ShinobuServer]()
-		if let serversAsData = Settings.shared.data(forKey: .servers)
-		{
-			do
-			{
+		if let serversAsData = Settings.shared.data(forKey: .servers) {
+			do {
 				servers = try decoder.decode([ShinobuServer].self, from: serversAsData)
-			}
-			catch let error
-			{
+			} catch let error {
 				Logger.shared.log(type: .information, message: "Failed to decode servers: \(error.localizedDescription)")
 			}
-		}
-		else
-		{
+		} else {
 			Logger.shared.log(type: .information, message: "No servers registered yet")
 		}
 
 		return servers
 	}
 
-	func handleServer(_ server: ShinobuServer)
-	{
+	func handleServer(_ server: ShinobuServer) {
 		var servers = getServersList()
 		let exist = servers.firstIndex { $0 == server }
 		var serverToAdd = server
-		if let index = exist
-		{
+		if let index = exist {
 			// Ensure unique name
-			for server in servers
-			{
-				if server != serverToAdd && server.name == serverToAdd.name
-				{
+			for server in servers {
+				if server != serverToAdd && server.name == serverToAdd.name {
 					serverToAdd.name += "-\(String.random(length: 4))"
 				}
 			}
 			servers[index] = serverToAdd
-		}
-		else
-		{
+		} else {
 			// Ensure unique name
-			for server in servers
-			{
-				if server.name == serverToAdd.name
-				{
-					serverToAdd.name += "-\(String.random(length: 4))"
-				}
+			for server in servers where server.name == serverToAdd.name {
+				serverToAdd.name += "-\(String.random(length: 4))"
 			}
 			servers.append(serverToAdd)
 		}
 
 		let encoder = JSONEncoder()
-		do
-		{
+		do {
 			let newServersAsData = try encoder.encode(servers)
 			Settings.shared.set(newServersAsData, forKey: .servers)
-		}
-		catch let error
-		{
+		} catch let error {
 			Logger.shared.log(error: error)
 		}
 	}
 
-	func removeServerByName(_ serverNameToRemove: String) -> Bool
-	{
+	func removeServerByName(_ serverNameToRemove: String) -> Bool {
 		var ret = true
-		do
-		{
+		do {
 			var shinobuServers = getServersList()
-			if let idx = shinobuServers.firstIndex(where: { $0.name == serverNameToRemove })
-			{
+			if let idx = shinobuServers.firstIndex(where: { $0.name == serverNameToRemove }) {
 				shinobuServers.remove(at: idx)
 
-				if getSelectedServerName() == serverNameToRemove
-				{
+				if getSelectedServerName() == serverNameToRemove {
 					setSelectedServerName("")
 				}
 
 				let encoder = JSONEncoder()
 				let newServersAsData = try encoder.encode(shinobuServers)
 				Settings.shared.set(newServersAsData, forKey: .servers)
-			}
-			else
-			{
+			} else {
 				ret = false
 			}
-		}
-		catch let error
-		{
+		} catch let error {
 			Logger.shared.log(type: .error, message: error.localizedDescription)
 			ret = false
 		}
 		return ret
 	}
 
-	func setSelectedServerName(_ serverName: String)
-	{
+	func setSelectedServerName(_ serverName: String) {
 		Settings.shared.set(serverName, forKey: .selectedServerName)
 	}
 
-	func getSelectedServerName() -> String
-	{
-		if let name = Settings.shared.string(forKey: .selectedServerName)
-		{
+	func getSelectedServerName() -> String {
+		if let name = Settings.shared.string(forKey: .selectedServerName) {
 			return name
 		}
 		return ""
 	}
 
-	func getSelectedServer() -> ShinobuServer?
-	{
+	func getSelectedServer() -> ShinobuServer? {
 		let name = getSelectedServerName()
-		if String.isNullOrWhiteSpace(name)
-		{
+		if String.isNullOrWhiteSpace(name) {
 			return nil
 		}
 

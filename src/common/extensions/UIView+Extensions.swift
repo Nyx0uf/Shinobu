@@ -1,78 +1,66 @@
 import UIKit
 
-
-extension UIView
-{
+extension UIView {
 	// MARK: - Shortcuts
-	var x: CGFloat
-	{
+	var x: CGFloat {
 		get { return frame.origin.x }
 		set { frame.origin.x = newValue }
 	}
 
-	var y: CGFloat
-	{
+	var y: CGFloat {
 		get { return frame.origin.y }
 		set { frame.origin.y = newValue }
 	}
 
-	var width: CGFloat
-	{
+	var width: CGFloat {
 		get { return frame.width }
 		set { frame.size.width = newValue }
 	}
 
-	var height: CGFloat
-	{
+	var height: CGFloat {
 		get { return frame.height }
 		set { frame.size.height = newValue }
 	}
 
-	var origin: CGPoint
-	{
+	var origin: CGPoint {
 		get { return frame.origin }
 		set { frame.origin = newValue }
 	}
 
-	var size: CGSize
-	{
+	var size: CGSize {
 		get { return frame.size }
 		set { frame.size = newValue }
 	}
 
 	// MARK: - Edges
-	public var maxX: CGFloat
-	{
+	public var maxX: CGFloat {
 		get { return x + width }
 		set { x = newValue - width }
 	}
 
-	public var maxY: CGFloat
-	{
+	public var maxY: CGFloat {
 		get { return y + height }
 		set { y = newValue - height }
 	}
 
 	// MARK: - Animations
-	public func shake(duration: Double, removeAtEnd: Bool = false)
-	{
+	public func shake(duration: Double, removeAtEnd: Bool = false) {
 		let origTransform = transform
-		let d = duration / 3
-		UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
+		let dur = duration / 3
+		UIView.animate(withDuration: dur, delay: 0, options: .curveEaseInOut, animations: {
 			let radians = 30 / 180 * CGFloat.pi
 			let rotation = origTransform.rotated(by: radians)
 			self.transform = rotation
-		}, completion:{ (finished) in
-			UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
+		}, completion: { (_) in
+			UIView.animate(withDuration: dur, delay: 0, options: .curveEaseInOut, animations: {
 				let radians = -30 / 180 * CGFloat.pi
 				let rotation = origTransform.rotated(by: radians)
 				self.transform = rotation
-			}, completion:{ (finished) in
-				UIView.animate(withDuration: d, delay: 0, options: .curveEaseInOut, animations: {
+			}, completion: { (_) in
+				UIView.animate(withDuration: dur, delay: 0, options: .curveEaseInOut, animations: {
 					self.transform = origTransform
-				}, completion:{ (finished) in
-					if removeAtEnd
-					{
+				}, completion: { (_) in
+					if removeAtEnd {
 						self.removeFromSuperview()
 					}
 				})
@@ -80,15 +68,13 @@ extension UIView
 		})
 	}
 
-	public func enableCorners(withDivisor divisor: CGFloat = 10)
-	{
+	public func enableCorners(withDivisor divisor: CGFloat = 10) {
 		layer.cornerRadius = min(self.width, self.height) / divisor
 		layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		clipsToBounds = true
 	}
 
-	public func circleize()
-	{
+	public func circleize() {
 		layer.cornerRadius = self.width / 2
 		layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		clipsToBounds = true

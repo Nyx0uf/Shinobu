@@ -1,55 +1,43 @@
 import UIKit
 
-
-final class NYXNavigationTitleView: UIButton
-{
+final class NYXNavigationTitleView: UIButton {
 	// MARK: - Public properties
 	// Main text
 	private(set) var mainText: String = ""
 	// Optional detail text
-	private(set) var detailText: String? = nil
+	private(set) var detailText: String?
 
 	// MARK: - Private properties
 	// Button label
 	private let label = UILabel()
 
 	// MARK: - Override properties
-	override var isHighlighted: Bool
-	{
-		didSet
-		{
-			if oldValue != isHighlighted
-			{
+	override var isHighlighted: Bool {
+		didSet {
+			if oldValue != isHighlighted {
 				updateDisplay()
 			}
 		}
 	}
 
-	override var isSelected: Bool
-	{
-		didSet
-		{
-			if oldValue != isSelected
-			{
+	override var isSelected: Bool {
+		didSet {
+			if oldValue != isSelected {
 				updateDisplay()
 			}
 		}
 	}
 
-	override var isEnabled: Bool
-	{
-		didSet
-		{
-			if oldValue != isEnabled
-			{
+	override var isEnabled: Bool {
+		didSet {
+			if oldValue != isEnabled {
 				updateDisplay()
 			}
 		}
 	}
 
 	// MARK: - Initializers
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		self.isAccessibilityElement = true
@@ -63,36 +51,30 @@ final class NYXNavigationTitleView: UIButton
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var intrinsicContentSize: CGSize
-	{
+	override var intrinsicContentSize: CGSize {
 		return UIView.layoutFittingExpandedSize
 	}
 
 	// MARK: - Public
-	public func setMainText(_ mainText: String, detailText: String?)
-	{
+	public func setMainText(_ mainText: String, detailText: String?) {
 		self.mainText = mainText
 		self.detailText = detailText
 		updateDisplay()
 	}
 
 	// MARK: - Private
-	private func updateDisplay()
-	{
+	private func updateDisplay() {
 		let color = (isHighlighted || isSelected) ? themeProvider.currentTheme.tintColor : themeProvider.currentTheme.navigationTitleTextColor
 
-		if let detailText = self.detailText
-		{
+		if let detailText = self.detailText {
 			label.numberOfLines = 2
 
 			// Main text
-			let attrs = NSMutableAttributedString(string: "\(mainText)\n", attributes: [.font : UIFont.systemFont(ofSize: 15, weight: .medium), .foregroundColor : color])
+			let attrs = NSMutableAttributedString(string: "\(mainText)\n", attributes: [.font: UIFont.systemFont(ofSize: 15, weight: .medium), .foregroundColor: color])
 			// Detail text
-			attrs.append(NSAttributedString(string: detailText, attributes: [.font : UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor : color]))
+			attrs.append(NSAttributedString(string: detailText, attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor: color]))
 			label.attributedText = attrs
-		}
-		else
-		{
+		} else {
 			label.numberOfLines = 1
 			label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
 			label.textColor = color
@@ -101,10 +83,8 @@ final class NYXNavigationTitleView: UIButton
 	}
 }
 
-extension NYXNavigationTitleView : Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension NYXNavigationTitleView: Themed {
+	func applyTheme(_ theme: Theme) {
 		self.updateDisplay()
 	}
 }

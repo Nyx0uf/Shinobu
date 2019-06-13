@@ -1,11 +1,8 @@
 import Foundation
 
-
-struct ShinobuServer: Codable, Equatable
-{
+struct ShinobuServer: Codable, Equatable {
 	// Coding keys
-	private enum ShinobuServerCodingKeys: String, CodingKey
-	{
+	private enum ShinobuServerCodingKeys: String, CodingKey {
 		case name
 		case mpd
 		case covers
@@ -20,39 +17,32 @@ struct ShinobuServer: Codable, Equatable
 	var covers: CoverServer?
 
 	// MARK: - Initializers
-	init(name: String, mpd: MPDServer)
-	{
+	init(name: String, mpd: MPDServer) {
 		self.name = name
 		self.mpd = mpd
 		self.covers = nil
 	}
 
-	init(name: String, mpd: MPDServer, covers: CoverServer)
-	{
+	init(name: String, mpd: MPDServer, covers: CoverServer) {
 		self.name = name
 		self.mpd = mpd
 		self.covers = covers
 	}
 
-	init(from decoder: Decoder) throws
-	{
+	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: ShinobuServerCodingKeys.self)
 		let na = try values.decode(String.self, forKey: .name)
 		let mp = try values.decode(MPDServer.self, forKey: .mpd)
 		let co = try values.decode(CoverServer?.self, forKey: .covers)
 
-		if co == nil
-		{
+		if co == nil {
 			self.init(name: na, mpd: mp)
-		}
-		else
-		{
+		} else {
 			self.init(name: na, mpd: mp, covers: co!)
 		}
 	}
 
-	public func encode(to encoder: Encoder) throws
-	{
+	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: ShinobuServerCodingKeys.self)
 		try container.encode(name, forKey: .name)
 		try container.encode(mpd, forKey: .mpd)
@@ -60,15 +50,12 @@ struct ShinobuServer: Codable, Equatable
 	}
 }
 
-extension ShinobuServer: CustomStringConvertible
-{
-	var description: String
-	{
+extension ShinobuServer: CustomStringConvertible {
+	var description: String {
 		return name
 	}
 }
 
-func == (lhs: ShinobuServer, rhs: ShinobuServer) -> Bool
-{
+func == (lhs: ShinobuServer, rhs: ShinobuServer) -> Bool {
 	return (lhs.mpd == rhs.mpd)
 }

@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class ImageCache
-{
+final class ImageCache {
 	// MARK: - Public properties
 	// Singletion instance
 	static let shared = ImageCache()
@@ -11,8 +9,7 @@ final class ImageCache
 	private let cache: NSCache<AnyObject, UIImage>
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		self.cache = NSCache()
 		self.cache.countLimit = 60
 		// URL cache
@@ -20,52 +17,41 @@ final class ImageCache
 	}
 
 	// MARK: - Public
-	func clear(_ callback: ((_ success: Bool) -> Void)?)
-	{
+	func clear(_ callback: ((_ success: Bool) -> Void)?) {
 		var success = true
 
-		defer
-		{
+		defer {
 			callback?(success)
 		}
 
-		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else
-		{
+		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {
 			success = false
 			return
 		}
-		guard let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory) else
-		{
+		guard let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory) else {
 			success = false
 			return
 		}
 		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
 
-		do
-		{
+		do {
 			try FileManager.default.removeItem(at: coversDirectoryURL)
 			try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
 			URLCache.shared.removeAllCachedResponses()
 			self.cache.removeAllObjects()
-		}
-		catch _
-		{
+		} catch _ {
 			Logger.shared.log(type: .error, message: "Can't delete cover cache")
 			success = false
 		}
 	}
 
 	// MARK: - Subscripting
-	subscript(key: String) -> UIImage?
-	{
-		get
-		{
+	subscript(key: String) -> UIImage? {
+		get {
 			return cache.object(forKey: key as AnyObject)
 		}
-		set (newValue)
-		{
-			if let img = newValue
-			{
+		set (newValue) {
+			if let img = newValue {
 				cache.setObject(img, forKey: key as AnyObject)
 			}
 		}

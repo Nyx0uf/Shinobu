@@ -1,9 +1,7 @@
 import UIKit
 import Foundation
 
-
-final class DownloadCoverOperation: Operation
-{
+final class DownloadCoverOperation: Operation {
 	// MARK: - Public properties
 	// isFinished override
 	private var junk = false
@@ -32,7 +30,7 @@ final class DownloadCoverOperation: Operation
 		return Foundation.URLSession(configuration: localURLSessionConfiguration, delegate: self, delegateQueue: nil)
 	}
 	// URL
-	private var coverURL: URL? = nil
+	private var coverURL: URL?
 	// Server manager
 	private let serversManager: ServersManager
 	// Album
@@ -40,45 +38,39 @@ final class DownloadCoverOperation: Operation
 	// Save data flag
 	private var save = true
 	// Task
-	private var sessionTask: URLSessionDataTask? = nil
+	private var sessionTask: URLSessionDataTask?
 
 	// MARK: - Initializers
-	init(album: Album, save: Bool = true)
-	{
+	init(album: Album, save: Bool = true) {
 		self.album = album
 		self.save = save
 		self.serversManager = ServersManager()
 	}
 
 	// MARK: - Override
-	override func start()
-	{
+	override func start() {
 		// Operation is cancelled, abort
-		if isCancelled
-		{
+		if isCancelled {
 			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
 
 		// No path for album, abort
-		guard let path = album.path else
-		{
+		guard let path = album.path else {
 			Logger.shared.log(type: .error, message: "No path defined for album <\(album.name)>")
 			isFinished = true
 			return
 		}
 
 		// No mpd server configured, abort
-		guard let server = serversManager.getSelectedServer()?.covers else
-		{
+		guard let server = serversManager.getSelectedServer()?.covers else {
 			Logger.shared.log(type: .error, message: "No cover server")
 			isFinished = true
 			return
 		}
 
-		guard let finalURL = server.coverURLForPath(path) else
-		{
+		guard let finalURL = server.coverURLForPath(path) else {
 			Logger.shared.log(type: .error, message: "Unable to create URL for <\(path)>")
 			isFinished = true
 			return
@@ -93,19 +85,15 @@ final class DownloadCoverOperation: Operation
 	}
 
 	// MARK: - Private
-	override var description: String
-	{
+	override var description: String {
 		return "DownloadCoverOperation for <\(album.name)>"
 	}
 }
 
 // MARK: - NSURLSessionDelegate
-extension DownloadCoverOperation: URLSessionDataDelegate
-{
-	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void)
-	{
-		if isCancelled
-		{
+extension DownloadCoverOperation: URLSessionDataDelegate {
+	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
+		if isCancelled {
 			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
@@ -115,10 +103,8 @@ extension DownloadCoverOperation: URLSessionDataDelegate
 		completionHandler(.allow)
 	}
 
-	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
-	{
-		if isCancelled
-		{
+	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+		if isCancelled {
 			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
@@ -127,26 +113,22 @@ extension DownloadCoverOperation: URLSessionDataDelegate
 		downloadedData.append(data)
 	}
 
-	func urlSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
-	{
-		if isCancelled
-		{
+	func urlSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		if isCancelled {
 			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
 		}
 
-		if let err = error
-		{
+		if let err = error {
 			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
 		}
 
 		isFinished = true
 	}
 
-	internal func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
-	{
+	internal func urlSession(_ session: Foundation.URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
 		completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
 	}
 }

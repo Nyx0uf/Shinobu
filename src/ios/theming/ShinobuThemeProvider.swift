@@ -1,42 +1,34 @@
 import UIKit
 
-
-final class ShinobuThemeProvider: ThemeProvider
-{
+final class ShinobuThemeProvider: ThemeProvider {
 	// MARK: - Singleton instance
 	static let shared: ShinobuThemeProvider = .init()
 
 	// MARK: - Private properties
 	// Current theme
 	private var theme: SubscribableValue<Theme>
-	var currentTheme: Theme
-	{
-		get
-		{
+	var currentTheme: Theme {
+		get {
 			return theme.value
 		}
-		set
-		{
+		set {
 			setNewTheme(newValue)
 		}
 	}
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		let dark = Settings.shared.bool(forKey: .pref_themeDark)
 		theme = SubscribableValue<Theme>(value: dark ? .dark : .light)
 	}
 
 	// MARK: - Public
-	func subscribeToChanges(_ object: AnyObject, handler: @escaping (Theme) -> Void)
-	{
+	func subscribeToChanges(_ object: AnyObject, handler: @escaping (Theme) -> Void) {
 		theme.subscribe(object, using: handler)
 	}
 
 	// MARK: - Private
-	private func setNewTheme(_ newTheme: Theme)
-	{
+	private func setNewTheme(_ newTheme: Theme) {
 		self.theme.value = newTheme
 
 		guard let window = UIApplication.shared.delegate?.window! else { return }
@@ -47,10 +39,8 @@ final class ShinobuThemeProvider: ThemeProvider
 	}
 }
 
-extension Themed where Self: AnyObject
-{
-	var themeProvider: ShinobuThemeProvider
-	{
+extension Themed where Self: AnyObject {
+	var themeProvider: ShinobuThemeProvider {
 		return ShinobuThemeProvider.shared
 	}
 }

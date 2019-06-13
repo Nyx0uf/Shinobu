@@ -1,22 +1,18 @@
 import UIKit
 
-
-final class AlbumsListVC: MusicalCollectionVC
-{
+final class AlbumsListVC: MusicalCollectionVC {
 	// MARK: - Public properties
 	// Selected artist
 	let artist: Artist
 	// Show artist or album artist ?
 	let isAlbumArtist: Bool
 	// Allowed display types
-	override var allowedMusicalEntityTypes: [MusicalEntityType]
-	{
+	override var allowedMusicalEntityTypes: [MusicalEntityType] {
 		return [.albums]
 	}
 
 	// MARK: - Initializers
-	init(artist: Artist, isAlbumArtist: Bool, mpdBridge: MPDBridge)
-	{
+	init(artist: Artist, isAlbumArtist: Bool, mpdBridge: MPDBridge) {
 		self.artist = artist
 		self.isAlbumArtist = isAlbumArtist
 
@@ -28,21 +24,17 @@ final class AlbumsListVC: MusicalCollectionVC
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-		if artist.albums.count <= 0
-		{
+		if artist.albums.count <= 0 {
 			mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist) { [weak self] (albums) in
 				DispatchQueue.main.async {
 					self?.setItems(albums, forMusicalEntityType: .albums)
 					self?.updateNavigationTitle()
 				}
 			}
-		}
-		else
-		{
+		} else {
 			DispatchQueue.main.async {
 				self.setItems(self.artist.albums, forMusicalEntityType: .albums)
 				self.updateNavigationTitle()
@@ -51,34 +43,31 @@ final class AlbumsListVC: MusicalCollectionVC
 	}
 
 	// MARK: - Gestures
-	override func longPress(_ gest: UILongPressGestureRecognizer)
-	{
-		if longPressRecognized
-		{
+	override func longPress(_ gest: UILongPressGestureRecognizer) {
+		if longPressRecognized {
 			return
 		}
 		longPressRecognized = true
 
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
-		{
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView)) {
 			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (_) in
 				self.longPressRecognized = false
 			}
 			alertController.addAction(cancelAction)
 
 			let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
+			let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
 				self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				self.longPressRecognized = false
 			}
 			alertController.addAction(playAction)
-			let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
+			let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
 				self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
 				self.longPressRecognized = false
 			}
 			alertController.addAction(shuffleAction)
-			let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
+			let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
 				self.mpdBridge.addAlbumToQueue(album)
 				self.longPressRecognized = false
 			}
@@ -88,29 +77,23 @@ final class AlbumsListVC: MusicalCollectionVC
 		}
 	}
 
-	override func updateNavigationTitle()
-	{
+	override func updateNavigationTitle() {
 		titleView.setMainText(artist.name, detailText: "\(dataSource.items.count) \(dataSource.items.count == 1 ? NYXLocalizedString("lbl_album").lowercased() : NYXLocalizedString("lbl_albums").lowercased())")
 	}
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension AlbumsListVC
-{
-	override func didSelectEntity(_ entity: AnyObject)
-	{
-		let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-		navigationController?.pushViewController(vc, animated: true)
+extension AlbumsListVC {
+	override func didSelectEntity(_ entity: AnyObject) {
+		let avc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
+		navigationController?.pushViewController(avc, animated: true)
 	}
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension AlbumsListVC
-{
-	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
-	{
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath)
-		{
+extension AlbumsListVC {
+	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath) {
 			previewingContext.sourceRect = cellAttributes.frame
 
 			let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
@@ -121,38 +104,35 @@ extension AlbumsListVC
 }
 
 // MARK: - Peek & Pop
-extension AlbumsListVC
-{
-	override var previewActionItems: [UIPreviewActionItem]
-	{
-		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
+extension AlbumsListVC {
+	override var previewActionItems: [UIPreviewActionItem] {
+		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
 				guard let strongSelf = self else { return }
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.artist.albums) { (tracks) in
 					let source = strongSelf.dataSource.items as! [Album]
-					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
-					strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
+					let arr = source.compactMap { $0.tracks }.flatMap { $0 }
+					strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 				}
 			}
 		}
 
-		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
+		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
 			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
 				guard let strongSelf = self else { return }
 				strongSelf.mpdBridge.getTracksForAlbums(strongSelf.artist.albums) { (tracks) in
 					let source = strongSelf.dataSource.items as! [Album]
-					let ar = source.compactMap { $0.tracks }.flatMap { $0 }
-					strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
+					let arr = source.compactMap { $0.tracks }.flatMap { $0 }
+					strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
 				}
 			}
 		}
 
-		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
-			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (albums) in
+		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_, _) in
+			self.mpdBridge.getAlbumsForArtist(self.artist, isAlbumArtist: self.isAlbumArtist) { [weak self] (_) in
 				guard let strongSelf = self else { return }
 				let source = strongSelf.dataSource.items as! [Album]
-				for album in source
-				{
+				for album in source {
 					strongSelf.mpdBridge.addAlbumToQueue(album)
 				}
 			}

@@ -2,15 +2,11 @@ import UIKit
 import ImageIO
 import MobileCoreServices
 
-
-extension UIImage
-{
-	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false) -> UIImage?
-	{
+extension UIImage {
+	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false) -> UIImage? {
 		guard let imgRef = cgImage else { return nil }
 
-		if let cropped = imgRef.smartCropped(toSize: fitSize, highQuality: highQuality)
-		{
+		if let cropped = imgRef.smartCropped(toSize: fitSize, highQuality: highQuality) {
 			return UIImage(cgImage: cropped, scale: scale, orientation: imageOrientation)
 		}
 
@@ -18,29 +14,25 @@ extension UIImage
 	}
 
 	// MARK: - Filtering
-	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage?
-	{
+	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage? {
 		let renderer = UIGraphicsImageRenderer(size: size)
-		return renderer.image() { (rendererContext) in
+		return renderer.image { (_) in
 			let rect = CGRect(.zero, self.size)
 			color.set()
 			UIRectFill(rect)
 
 			draw(in: rect, blendMode: .destinationIn, alpha: 1)
 
-			if opacity > 0
-			{
+			if opacity > 0 {
 				draw(in: rect, blendMode: .sourceAtop, alpha: opacity)
 			}
 		}
 	}
 
-	public func grayscaled() -> UIImage?
-	{
+	public func grayscaled() -> UIImage? {
 		guard let imgRef = cgImage else { return nil }
 
-		if let grayscaled = imgRef.grayscaled()
-		{
+		if let grayscaled = imgRef.grayscaled() {
 			return UIImage(cgImage: grayscaled, scale: scale, orientation: imageOrientation)
 		}
 
@@ -48,40 +40,35 @@ extension UIImage
 	}
 
 	// MARK: - I/O
-	func save(url: URL) -> Bool
-	{
-		guard let cgImage = cgImage else
-		{
+	func save(url: URL) -> Bool {
+		guard let cgImage = cgImage else {
 			return false
 		}
 
-		guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypeJPEG, 1, nil) else
-		{
+		guard let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypeJPEG, 1, nil) else {
 			return false
 		}
 
-		CGImageDestinationSetProperties(destination, [kCGImageDestinationLossyCompressionQuality as String : 0.75] as CFDictionary)
+		CGImageDestinationSetProperties(destination, [kCGImageDestinationLossyCompressionQuality as String: 0.75] as CFDictionary)
 
 		CGImageDestinationAddImage(destination, cgImage, nil)
 
 		return CGImageDestinationFinalize(destination)
 	}
 
-	class func loadFromFileURL(_ url: URL) -> UIImage?
-	{
+	class func loadFromFileURL(_ url: URL) -> UIImage? {
 		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-		let props = [kCGImageSourceShouldCache as String : true]
+		let props = [kCGImageSourceShouldCache as String: true]
 		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else { return nil }
 		return UIImage(cgImage: imageRef)
 	}
 
-	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage?
-	{
+	class func fromString(_ string: String, font: UIFont, fontColor: UIColor, backgroundColor: UIColor, maxSize: CGSize) -> UIImage? {
 		// Create an attributed string with string and font information
 		let paragraphStyle = NSMutableParagraphStyle()
 		paragraphStyle.lineBreakMode = .byWordWrapping
 		paragraphStyle.alignment = .center
-		let attributes = [NSAttributedString.Key.font : font, NSAttributedString.Key.foregroundColor : fontColor, NSAttributedString.Key.paragraphStyle : paragraphStyle]
+		let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: fontColor, NSAttributedString.Key.paragraphStyle: paragraphStyle]
 		let attrString = NSAttributedString(string: string, attributes: attributes)
 		let scale = UIScreen.main.scale
 		let trueMaxSize = maxSize * scale
@@ -106,13 +93,10 @@ extension UIImage
 		CTFrameDraw(frame, bmContext)
 
 		// Save
-		if let imageRef = bmContext.makeImage()
-		{
+		if let imageRef = bmContext.makeImage() {
 			let img = UIImage(cgImage: imageRef)
 			return img
-		}
-		else
-		{
+		} else {
 			return nil
 		}
 	}

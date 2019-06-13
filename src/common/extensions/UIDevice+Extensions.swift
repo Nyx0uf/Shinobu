@@ -1,22 +1,16 @@
 import UIKit
 
-
-extension UIDevice
-{
-	func isPad() -> Bool
-	{
+extension UIDevice {
+	func isPad() -> Bool {
 		return userInterfaceIdiom == .pad
 	}
 
-	func isPhone() -> Bool
-	{
+	func isPhone() -> Bool {
 		return userInterfaceIdiom == .phone
 	}
 
-	func isiPhoneX() -> Bool
-	{
-		if isPhone()
-		{
+	func isiPhoneX() -> Bool {
+		if isPhone() {
 			let height = Int(UIScreen.main.nativeBounds.height)
 			return height == 2436 || height == 2688 || height == 1792
 		}

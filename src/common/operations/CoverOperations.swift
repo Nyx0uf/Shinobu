@@ -1,12 +1,10 @@
 import UIKit
 
-
-struct CoverOperations
-{
+struct CoverOperations {
 	//
-	var downloadCallback: ((Data) -> Void)? = nil
+	var downloadCallback: ((Data) -> Void)?
 	//
-	var processCallback: ((UIImage, UIImage) -> Void)? = nil
+	var processCallback: ((UIImage, UIImage) -> Void)?
 	// MARK: - Private properties
 	// Album
 	private let album: Album
@@ -21,15 +19,14 @@ struct CoverOperations
 	private var bridgeOperation: BlockOperation
 	private var processOperation: ProcessCoverOperation
 
-	init(album: Album, cropSize: CGSize, saveProcessed: Bool)
-	{
+	init(album: Album, cropSize: CGSize, saveProcessed: Bool) {
 		self.album = album
 		self.cropSize = cropSize
 		self.saveProcessed = saveProcessed
 
 		self.downloadOperation = DownloadCoverOperation(album: album)
 		self.processOperation = ProcessCoverOperation(album: album, cropSize: cropSize, save: saveProcessed)
-		self.bridgeOperation = BlockOperation() { [weak processOperation, weak downloadOperation] in
+		self.bridgeOperation = BlockOperation { [weak processOperation, weak downloadOperation] in
 			processOperation?.data = downloadOperation?.downloadedData
 		}
 
@@ -37,15 +34,13 @@ struct CoverOperations
 		processOperation.addDependency(bridgeOperation)
 	}
 
-	func submit()
-	{
+	func submit() {
 		processOperation.callback = processCallback
 
 		OperationManager.shared.addOperations([downloadOperation, processOperation, bridgeOperation], waitUntilFinished: false)
 	}
 
-	func cancel()
-	{
+	func cancel() {
 		downloadOperation.cancel()
 		bridgeOperation.cancel()
 		processOperation.cancel()

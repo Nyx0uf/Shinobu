@@ -1,23 +1,18 @@
 import Foundation
 
-
-final class Playlist: MusicalEntity
-{
+final class Playlist: MusicalEntity {
 	// MARK: - Public properties
 	// Album tracks
-	var tracks: [Track]? = nil
+	var tracks: [Track]?
 
 	// MARK: - Initializers
-	override init(name: String)
-	{
+	override init(name: String) {
 		super.init(name: name)
 	}
 }
 
-extension Playlist
-{
-	static func ==(lhs: Playlist, rhs: Playlist) -> Bool
-	{
+extension Playlist {
+	static func == (lhs: Playlist, rhs: Playlist) -> Bool {
 		return (lhs.name == rhs.name)
 	}
 }

@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class AlbumHeaderView: UIView
-{
+final class AlbumHeaderView: UIView {
 	// MARK: - Public properties
 	// Album cover
 	private(set) var image: UIImage!
@@ -18,8 +16,7 @@ final class AlbumHeaderView: UIView
 	let coverSize: CGSize
 
 	// MARK: - Initializers
-	init(frame: CGRect, coverSize: CGSize)
-	{
+	init(frame: CGRect, coverSize: CGSize) {
 		self.coverSize = coverSize
 
 		super.init(frame: frame)
@@ -46,9 +43,8 @@ final class AlbumHeaderView: UIView
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Drawing
-	override func draw(_ dirtyRect: CGRect)
-	{
-		guard let _ = image else { return }
+	override func draw(_ dirtyRect: CGRect) {
+		guard image != nil else { return }
 		let imageRect = CGRect(.zero, coverSize)
 		image.draw(in: imageRect, blendMode: .sourceAtop, alpha: 1)
 
@@ -67,25 +63,18 @@ final class AlbumHeaderView: UIView
 	}
 
 	// MARK: - Public
-	func updateHeaderWithAlbum(_ album: Album)
-	{
+	func updateHeaderWithAlbum(_ album: Album) {
 		// Set cover
-		var image: UIImage? = nil
-		if let coverURL = album.localCoverURL
-		{
-			if let cover = UIImage.loadFromFileURL(coverURL)
-			{
+		var image: UIImage?
+		if let coverURL = album.localCoverURL {
+			if let cover = UIImage.loadFromFileURL(coverURL) {
 				image = cover
-			}
-			else
-			{
+			} else {
 				let string = album.name
 				let bgColor = UIColor(rgb: string.djb2())
 				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
 			}
-		}
-		else
-		{
+		} else {
 			let string = album.name
 			let bgColor = UIColor(rgb: string.djb2())
 			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
@@ -93,25 +82,25 @@ final class AlbumHeaderView: UIView
 		self.image = image
 
 		// Analyze colors
-		let x = KawaiiColors(image: image!, precision: 8, samplingEdge: .right)
-		x.analyze()
-		backgroundColor = x.edgeColor
-		lblTitle.textColor = x.primaryColor
+		let kcs = KawaiiColors(image: image!, precision: 8, samplingEdge: .right)
+		kcs.analyze()
+		backgroundColor = kcs.edgeColor
+		lblTitle.textColor = kcs.primaryColor
 		lblTitle.backgroundColor = backgroundColor
-		lblArtist.textColor = x.secondaryColor
+		lblArtist.textColor = kcs.secondaryColor
 		lblArtist.backgroundColor = backgroundColor
-		lblGenre.textColor = x.thirdColor
+		lblGenre.textColor = kcs.thirdColor
 		lblGenre.backgroundColor = backgroundColor
-		lblYear.textColor = x.thirdColor
+		lblYear.textColor = kcs.thirdColor
 		lblYear.backgroundColor = backgroundColor
 
 		setNeedsDisplay()
 
 		// Update frame for title / artist
-		let s = album.name as NSString
+		let aname = album.name as NSString
 		let width = frame.width - (coverSize.width + 8)
-		let r = s.boundingRect(with: CGSize(width, 40), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font : lblTitle.font!], context: nil)
-		lblTitle.frame = CGRect(coverSize.width + 4, 4, ceil(r.width), ceil(r.height))
+		let rec = aname.boundingRect(with: CGSize(width, 40), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: lblTitle.font!], context: nil)
+		lblTitle.frame = CGRect(coverSize.width + 4, 4, ceil(rec.width), ceil(rec.height))
 		lblArtist.frame = CGRect(coverSize.width + 4, lblTitle.maxY + 4, width, 18)
 
 		lblTitle.text = album.name
@@ -121,8 +110,7 @@ final class AlbumHeaderView: UIView
 
 		// Accessibility
 		var stra = "\(album.name) \(NYXLocalizedString("lbl_by")) \(album.artist)\n"
-		if let tracks = album.tracks
-		{
+		if let tracks = album.tracks {
 			stra += "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n"
 			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
 			let minutes = total.seconds / 60

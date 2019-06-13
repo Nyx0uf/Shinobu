@@ -1,20 +1,17 @@
 import UIKit
 
-
-final class PlaylistsAddVC: NYXTableViewController
-{
+final class PlaylistsAddVC: NYXTableViewController {
 	// List of artists
 	var playlists = [Playlist]()
 	// Track to add
-	var trackToAdd: Track? = nil
+	var trackToAdd: Track?
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.playlist"
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 
 	// MARK: - Initializers
-	init(mpdBridge: MPDBridge)
-	{
+	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
 
 		super.init(style: .plain)
@@ -22,14 +19,12 @@ final class PlaylistsAddVC: NYXTableViewController
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
 	}
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		navigationController?.navigationBar.isTranslucent = false
@@ -46,50 +41,44 @@ final class PlaylistsAddVC: NYXTableViewController
 		initializeTheming()
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		getPlaylists()
 	}
 
 	// MARK: - Actions
-	@objc func createPlaylistAction(_ sender: Any?)
-	{
+	@objc func createPlaylistAction(_ sender: Any?) {
 		let alertController = NYXAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
-			if String.isNullOrWhiteSpace(textField.text)
-			{
+			if String.isNullOrWhiteSpace(textField.text) {
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
-			}
-			else
-			{
+			} else {
 				self.mpdBridge.createPlaylist(named: textField.text!) { [weak self] (result) in
 					guard let strongSelf = self else { return }
-					switch result
-					{
-						case .failure(let error):
+					switch result {
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						strongSelf.mpdBridge.entitiesForType(.playlists) { (_) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								strongSelf.getPlaylists()
 							}
-						case .success( _):
-							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									strongSelf.getPlaylists()
-								}
-							}
+						}
 					}
 				}
 			}
 		})
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField() { (textField) in
+		alertController.addTextField { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_create_playlist_placeholder")
 			textField.textAlignment = .left
 		}
@@ -98,8 +87,7 @@ final class PlaylistsAddVC: NYXTableViewController
 	}
 
 	// MARK: - Private
-	private func getPlaylists()
-	{
+	private func getPlaylists() {
 		mpdBridge.entitiesForType(.playlists) { (entities) in
 			DispatchQueue.main.async {
 				self.playlists = entities as! [Playlist]
@@ -111,15 +99,12 @@ final class PlaylistsAddVC: NYXTableViewController
 }
 
 // MARK: - UITableViewDataSource
-extension PlaylistsAddVC
-{
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
+extension PlaylistsAddVC {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return playlists.count
 	}
 
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
 		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
@@ -141,16 +126,13 @@ extension PlaylistsAddVC
 }
 
 // MARK: - UITableViewDelegate
-extension PlaylistsAddVC
-{
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension PlaylistsAddVC {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
-		guard let track = trackToAdd else
-		{
+		guard let track = trackToAdd else {
 			return
 		}
 
@@ -158,23 +140,20 @@ extension PlaylistsAddVC
 
 		mpdBridge.addTrack(to: playlist, track: track) { (result) in
 			DispatchQueue.main.async {
-				switch result
-				{
-					case .failure(let error):
-						MessageView.shared.showWithMessage(message: error.message)
-					case .success( _):
-						let str = "\(track.name) \(NYXLocalizedString("lbl_playlist_track_added")) \(playlist.name)"
-						MessageView.shared.showWithMessage(message: Message(content: str, type: .success))
+				switch result {
+				case .failure(let error):
+					MessageView.shared.showWithMessage(message: error.message)
+				case .success:
+					let str = "\(track.name) \(NYXLocalizedString("lbl_playlist_track_added")) \(playlist.name)"
+					MessageView.shared.showWithMessage(message: Message(content: str, type: .success))
 				}
 			}
 		}
 	}
 }
 
-extension PlaylistsAddVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension PlaylistsAddVC: Themed {
+	func applyTheme(_ theme: Theme) {
 		navigationController?.navigationBar.barTintColor = theme.backgroundColorAlt
 		tableView.separatorColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColorAlt

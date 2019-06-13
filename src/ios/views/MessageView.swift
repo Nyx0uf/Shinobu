@@ -1,9 +1,7 @@
 import UIKit
 import AVFoundation
 
-
-final class MessageView: UIView
-{
+final class MessageView: UIView {
 	// MARK: - Public properties
 	// Singletion instance
 	static let shared = MessageView(frame: .zero)
@@ -17,15 +15,11 @@ final class MessageView: UIView
 	private var timer: DispatchSourceTimer! = nil
 
 	// MARK: - Initializers
-	override init(frame f: CGRect)
-	{
+	override init(frame f: CGRect) {
 		let statusHeight: CGFloat
-		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top
-		{
+		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top {
 			statusHeight = top < 20 ? 20 : top
-		}
-		else
-		{
+		} else {
 			statusHeight = 20
 		}
 
@@ -49,65 +43,61 @@ final class MessageView: UIView
 		self.label.isAccessibilityElement = false
 		self.addSubview(self.label)
 
-		APP_DELEGATE().window?.addSubview(self)
+		if let window = UIApplication.shared.delegate?.window {
+			window?.addSubview(self)
+		}
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Public
-	func showWithMessage(message: Message, animated: Bool = true)
-	{
+	func showWithMessage(message: Message, animated: Bool = true) {
 		// Voice over case, speak error
-		if UIAccessibility.isVoiceOverRunning
-		{
+		if UIAccessibility.isVoiceOverRunning {
 			let utterance = AVSpeechUtterance(string: message.content)
 			let synth = AVSpeechSynthesizer()
 			synth.speak(utterance)
 			return
 		}
 
-		if visible
-		{
+		if visible {
 			stopTimer()
 		}
 
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = 0
 			self.label.text = message.content
-			switch message.type
-			{
-				case .error:
-					self.backgroundColor = UIColor(rgb: 0x941100)
-					self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: UIColor(rgb: 0xFFFFFF))
-				case .warning:
-					self.backgroundColor = UIColor(rgb: 0xF3AF22)
-					self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: UIColor(rgb: 0xFFFFFF))
-				case .information:
-					self.backgroundColor = UIColor(rgb: 0x0096FF)
-					self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: UIColor(rgb: 0xFFFFFF))
-				case .success:
-					self.backgroundColor = UIColor(rgb: 0x008F00)
-					self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+			switch message.type {
+			case .error:
+				self.backgroundColor = UIColor(rgb: 0x941100)
+				self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+			case .warning:
+				self.backgroundColor = UIColor(rgb: 0xF3AF22)
+				self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+			case .information:
+				self.backgroundColor = UIColor(rgb: 0x0096FF)
+				self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+			case .success:
+				self.backgroundColor = UIColor(rgb: 0x008F00)
+				self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: UIColor(rgb: 0xFFFFFF))
 			}
 			self.label.backgroundColor = self.backgroundColor
-		}, completion: { (finished) in
+		}, completion: { (_) in
 			self.visible = true
 			self.startTimer(4)
 		})
 	}
 
-	func hide(_ animated: Bool = true)
-	{
+	func hide(_ animated: Bool = true) {
 		UIView.animate(withDuration: animated ? 0.35 : 0, delay: 0, options: UIView.AnimationOptions(), animations: {
 			self.y = -self.height
-		}, completion: { (finished) in
+		}, completion: { (_) in
 			self.visible = false
 		})
 	}
 
 	// MARK: - Private
-	private func startTimer(_ interval: Int)
-	{
+	private func startTimer(_ interval: Int) {
 		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
 		timer.schedule(deadline: .now() + .seconds(interval))
 		timer.setEventHandler {
@@ -116,10 +106,8 @@ final class MessageView: UIView
 		timer.resume()
 	}
 
-	private func stopTimer()
-	{
-		if timer != nil
-		{
+	private func stopTimer() {
+		if timer != nil {
 			timer.cancel()
 			timer = nil
 		}

@@ -1,8 +1,6 @@
 import Foundation
 
-
-final class Track: MusicalEntity
-{
+final class Track: MusicalEntity {
 	// MARK: - Public properties
 	// Track artist
 	var artist: String
@@ -18,8 +16,7 @@ final class Track: MusicalEntity
 	var albumName: String = ""
 
 	// MARK: - Initializers
-	init(name: String, artist: String, duration: Duration, trackNumber: Int, uri: String)
-	{
+	init(name: String, artist: String, duration: Duration, trackNumber: Int, uri: String) {
 		self.artist = artist
 		self.duration = duration
 		self.trackNumber = trackNumber
@@ -28,25 +25,20 @@ final class Track: MusicalEntity
 	}
 
 	// MARK: - Hashable
-	override public func hash(into hasher: inout Hasher)
-	{
+	override public func hash(into hasher: inout Hasher) {
 		let value = name.djb2() ^ Int32(duration.seconds) ^ Int32(trackNumber) ^ Int32(uri.hashValue)
 		hasher.combine(value)
 	}
 }
 
-extension Track: CustomStringConvertible
-{
-	var description: String
-	{
+extension Track: CustomStringConvertible {
+	var description: String {
 		return "Title: <\(name)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
 	}
 }
 
-extension Track
-{
-	static func ==(lhs: Track, rhs: Track) -> Bool
-	{
+extension Track {
+	static func == (lhs: Track, rhs: Track) -> Bool {
 		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
 	}
 }

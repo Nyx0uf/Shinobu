@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class AlbumDetailVC: NYXViewController
-{
+final class AlbumDetailVC: NYXViewController {
 	// MARK: - Private properties
 	// Selected album
 	private let album: Album
@@ -16,8 +14,7 @@ final class AlbumDetailVC: NYXViewController
 	private let mpdBridge: MPDBridge
 
 	// MARK: - Initializers
-	init(album: Album, mpdBridge: MPDBridge)
-	{
+	init(album: Album, mpdBridge: MPDBridge) {
 		self.album = album
 		self.mpdBridge = mpdBridge
 
@@ -27,18 +24,14 @@ final class AlbumDetailVC: NYXViewController
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Color under navbar
 		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
-		if navigationController == nil
-		{
+		if navigationController == nil {
 			defaultHeight = 0
-		}
-		else
-		{
+		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		}
 		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
@@ -58,21 +51,17 @@ final class AlbumDetailVC: NYXViewController
 		view.addSubview(tableView)
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		// Update header
 		updateHeader()
 
 		// Get songs list if needed
-		if let tracks = album.tracks
-		{
+		if let tracks = album.tracks {
 			updateNavigationTitle()
 			tableView.tracks = tracks
-		}
-		else
-		{
+		} else {
 			mpdBridge.getTracksForAlbums([album]) { [weak self] (tracks) in
 				DispatchQueue.main.async {
 					self?.updateNavigationTitle()
@@ -83,15 +72,13 @@ final class AlbumDetailVC: NYXViewController
 	}
 
 	// MARK: - Private
-	private func updateHeader()
-	{
+	private func updateHeader() {
 		// Update header view
 		headerView.updateHeaderWithAlbum(album)
 		colorView.backgroundColor = headerView.backgroundColor
 
 		// Don't have all the metadatas
-		if album.artist.count == 0
-		{
+		if album.artist.count == 0 {
 			mpdBridge.getMetadatasForAlbum(album) { [weak self] in
 				DispatchQueue.main.async {
 					self?.updateHeader()
@@ -100,43 +87,34 @@ final class AlbumDetailVC: NYXViewController
 		}
 	}
 
-	override func updateNavigationTitle()
-	{
-		if let tracks = album.tracks
-		{
+	override func updateNavigationTitle() {
+		if let tracks = album.tracks {
 			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
 			let minutes = total.seconds / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
-		}
-		else
-		{
+		} else {
 			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
 		}
 	}
 }
 
 // MARK: - UITableViewDelegate
-extension AlbumDetailVC: UITableViewDelegate
-{
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension AlbumDetailVC: UITableViewDelegate {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
 		// Dummy cell
 		guard let tracks = album.tracks else { return }
-		if indexPath.row >= tracks.count
-		{
+		if indexPath.row >= tracks.count {
 			return
 		}
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = mpdBridge.getCurrentTrack()
-		{
+		if let currentPlayingTrack = mpdBridge.getCurrentTrack() {
 			let selectedTrack = tracks[indexPath.row]
-			if selectedTrack == currentPlayingTrack
-			{
+			if selectedTrack == currentPlayingTrack {
 				mpdBridge.togglePause()
 				return
 			}
@@ -146,34 +124,29 @@ extension AlbumDetailVC: UITableViewDelegate
 		mpdBridge.playTracks(b, shuffle: false, loop: false)
 	}
 
-	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-	{
+	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		// Dummy cell
 		guard let tracks = album.tracks else { return nil }
-		if indexPath.row >= tracks.count
-		{
+		if indexPath.row >= tracks.count {
 			return nil
 		}
 
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist")) { (action, view, completionHandler) in
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist")) { (_, _, completionHandler) in
 			self.mpdBridge.entitiesForType(.playlists) { (entities) in
-				if entities.count == 0
-				{
+				if entities.count == 0 {
 					return
 				}
 
 				DispatchQueue.main.async {
-					guard let cell = tableView.cellForRow(at: indexPath) else
-					{
+					guard let cell = tableView.cellForRow(at: indexPath) else {
 						return
 					}
 
-					let vc = PlaylistsAddVC(mpdBridge: self.mpdBridge)
-					let tvc = NYXNavigationController(rootViewController: vc)
-					vc.trackToAdd = tracks[indexPath.row]
+					let pvc = PlaylistsAddVC(mpdBridge: self.mpdBridge)
+					let tvc = NYXNavigationController(rootViewController: pvc)
+					pvc.trackToAdd = tracks[indexPath.row]
 					tvc.modalPresentationStyle = .popover
-					if let popController = tvc.popoverPresentationController
-					{
+					if let popController = tvc.popoverPresentationController {
 						popController.permittedArrowDirections = [.up, .down]
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
@@ -193,28 +166,24 @@ extension AlbumDetailVC: UITableViewDelegate
 	}
 }
 
-extension AlbumDetailVC: UIPopoverPresentationControllerDelegate
-{
-	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
-	{
+extension AlbumDetailVC: UIPopoverPresentationControllerDelegate {
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
 		return .none
 	}
 }
 
 // MARK: - Peek & Pop
-extension AlbumDetailVC
-{
-	override var previewActionItems: [UIPreviewActionItem]
-	{
-		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
+extension AlbumDetailVC {
+	override var previewActionItems: [UIPreviewActionItem] {
+		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
 			self.mpdBridge.playAlbum(self.album, shuffle: false, loop: false)
 		}
 
-		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
+		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
 			self.mpdBridge.playAlbum(self.album, shuffle: true, loop: false)
 		}
 
-		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action, viewController) in
+		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_, _) in
 			self.mpdBridge.addAlbumToQueue(self.album)
 		}
 
@@ -222,18 +191,14 @@ extension AlbumDetailVC
 	}
 }
 
-extension AlbumDetailVC: TracksListTableViewDelegate
-{
-	func getCurrentTrack() -> Track?
-	{
+extension AlbumDetailVC: TracksListTableViewDelegate {
+	func getCurrentTrack() -> Track? {
 		return mpdBridge.getCurrentTrack()
 	}
 }
 
-extension AlbumDetailVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension AlbumDetailVC: Themed {
+	func applyTheme(_ theme: Theme) {
 
 	}
 }

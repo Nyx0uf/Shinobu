@@ -1,28 +1,23 @@
 import UIKit
 import Accelerate
 
-
 // Grayscale stuff
-fileprivate let gray_redCoeff = Float(0.2126)
-fileprivate let gray_greenCoeff = Float(0.7152)
-fileprivate let gray_blueCoeff = Float(0.0722)
-fileprivate let gray_divisor = Int32(0x1000)
-fileprivate let gray_fDivisor = Float(gray_divisor)
-fileprivate var gray_coefficientsMatrix = [
+private let gray_redCoeff = Float(0.2126)
+private let gray_greenCoeff = Float(0.7152)
+private let gray_blueCoeff = Float(0.0722)
+private let gray_divisor = Int32(0x1000)
+private let gray_fDivisor = Float(gray_divisor)
+private var gray_coefficientsMatrix = [
 	Int16(gray_redCoeff * gray_fDivisor),
 	Int16(gray_greenCoeff * gray_fDivisor),
 	Int16(gray_blueCoeff * gray_fDivisor)
 ]
-fileprivate let gray_preBias: [Int16] = [0, 0, 0, 0]
-fileprivate let gray_postBias = Int32(0)
+private let gray_preBias: [Int16] = [0, 0, 0, 0]
+private let gray_postBias = Int32(0)
 
-
-extension CGImage
-{
-	func vImageFormat() -> vImage_CGImageFormat?
-	{
-		guard let colorSpace = self.colorSpace else
-		{
+extension CGImage {
+	func vImageFormat() -> vImage_CGImageFormat? {
+		guard let colorSpace = self.colorSpace else {
 			return nil
 		}
 
@@ -36,8 +31,7 @@ extension CGImage
 			renderingIntent: self.renderingIntent)
 	}
 
-	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false) -> CGImage?
-	{
+	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false) -> CGImage? {
 		let sourceWidth = CGFloat(width)
 		let sourceHeight = CGFloat(height)
 		let targetWidth = fitSize.width
@@ -52,14 +46,11 @@ extension CGImage
 
 		// Proportionally scale source image
 		var scalingFactor: CGFloat, scaledWidth: CGFloat, scaledHeight: CGFloat
-		if scaleWidth
-		{
+		if scaleWidth {
 			scalingFactor = 1 / sourceRatio
 			scaledWidth = targetWidth
 			scaledHeight = CGFloat(round(targetWidth * scalingFactor))
-		}
-		else
-		{
+		} else {
 			scalingFactor = sourceRatio
 			scaledWidth = CGFloat(round(targetHeight * scalingFactor))
 			scaledHeight = targetHeight
@@ -78,8 +69,7 @@ extension CGImage
 		var sourceBuffer = vImage_Buffer()
 		var destinationBuffer = vImage_Buffer()
 
-		defer
-		{
+		defer {
 			free(destinationBuffer.data)
 			free(sourceBuffer.data)
 		}
@@ -87,19 +77,15 @@ extension CGImage
 		guard var format = cgImage.vImageFormat() else { return nil }
 		guard vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
 
-		guard vImageBuffer_Init(&destinationBuffer, UInt(fitSize.height * UIScreen.main.scale), UInt(fitSize.width * UIScreen.main.scale), format.bitsPerPixel, vImage_Flags(kvImageNoFlags)) == kvImageNoError else
-		{
+		guard vImageBuffer_Init(&destinationBuffer, UInt(fitSize.height * UIScreen.main.scale), UInt(fitSize.width * UIScreen.main.scale), format.bitsPerPixel, vImage_Flags(kvImageNoFlags)) == kvImageNoError else {
 			return nil
 		}
 
-		if cgImage.alphaInfo == .premultipliedFirst || cgImage.alphaInfo == .premultipliedLast
-		{ // Premultiplied case
+		if cgImage.alphaInfo == .premultipliedFirst || cgImage.alphaInfo == .premultipliedLast { // Premultiplied case
 			guard vImageUnpremultiplyData_ARGB8888(&sourceBuffer, &sourceBuffer, vImage_Flags(kvImageNoFlags))  == kvImageNoError else { return nil }
 			guard vImageScale_ARGB8888(&sourceBuffer, &destinationBuffer, nil, vImage_Flags(highQuality ? kvImageHighQualityResampling : kvImageNoFlags)) == kvImageNoError else { return nil }
 			guard vImagePremultiplyData_ARGB8888(&destinationBuffer, &destinationBuffer, vImage_Flags(kvImageNoFlags))  == kvImageNoError else { return nil }
-		}
-		else
-		{
+		} else {
 			guard vImageScale_ARGB8888(&sourceBuffer, &destinationBuffer, nil, vImage_Flags(highQuality ? kvImageHighQualityResampling : kvImageNoFlags)) == kvImageNoError else { return nil }
 		}
 
@@ -108,14 +94,12 @@ extension CGImage
 		return result.takeRetainedValue()
 	}
 
-	public func grayscaled() -> CGImage?
-	{
+	public func grayscaled() -> CGImage? {
 		// Source & destination vImage buffers
 		var sourceBuffer = vImage_Buffer()
 		var destinationBuffer = vImage_Buffer()
 
-		defer
-		{
+		defer {
 			free(destinationBuffer.data)
 			free(sourceBuffer.data)
 		}

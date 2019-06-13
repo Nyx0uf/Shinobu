@@ -1,18 +1,14 @@
 import UIKit
 
-
-class Slider: UIControl
-{
+class Slider: UIControl {
 	// MARK: - Public properties
 	// Minimum value
 	var minimumValue = CGFloat(0)
 	// Maximum value
 	var maximumValue = CGFloat(100)
 	// Current value
-	var value = CGFloat(0)
-	{
-		didSet
-		{
+	var value = CGFloat(0) {
+		didSet {
 			self.updateFrames()
 		}
 	}
@@ -22,10 +18,8 @@ class Slider: UIControl
 	private var blurEffectView = UIVisualEffectView()
 
 	// MARK: - Properties override
-	override var frame: CGRect
-	{
-		didSet
-		{
+	override var frame: CGRect {
+		didSet {
 			self.blurEffectView.frame = CGRect(.zero, 0, frame.height)
 			self.enableCorners(withDivisor: 2)
 			self.updateFrames()
@@ -33,15 +27,13 @@ class Slider: UIControl
 	}
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		super.init(frame: .zero)
 
 		commonInit()
 	}
 
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		commonInit()
@@ -49,8 +41,7 @@ class Slider: UIControl
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	private func commonInit()
-	{
+	private func commonInit() {
 		self.backgroundColor = UIColor(white: 1, alpha: 0.1)
 
 		self.enableCorners(withDivisor: 2)
@@ -69,10 +60,8 @@ class Slider: UIControl
 	}
 
 	// MARK: - Gestures
-	@objc func singleTap(_ gest: UITapGestureRecognizer)
-	{
-		if gest.state == .ended
-		{
+	@objc func singleTap(_ gest: UITapGestureRecognizer) {
+		if gest.state == .ended {
 			updateValueForLocation(gest.location(in: self))
 			updateFrames()
 
@@ -81,29 +70,24 @@ class Slider: UIControl
 	}
 
 	// MARK: - Internal
-	internal func updateFrames()
-	{
+	internal func updateFrames() {
 		blurEffectView.width = clamp((bounds.width / maximumValue) * value, lower: 0, upper: bounds.width)
 	}
 
 	// MARK: - Private
-	private func updateValueForLocation(_ location: CGPoint)
-	{
+	private func updateValueForLocation(_ location: CGPoint) {
 		let val = (location.x / bounds.width) * maximumValue
 		value = clamp(val, lower: minimumValue, upper: maximumValue)
 	}
 }
 
 // MARK: - Tracking
-extension Slider
-{
-	override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool
-	{
+extension Slider {
+	override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
 		return true
 	}
 
-	override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool
-	{
+	override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
 		updateValueForLocation(touch.location(in: self))
 		updateFrames()
 
@@ -112,7 +96,6 @@ extension Slider
 		return true
 	}
 
-	override func endTracking(_ touch: UITouch?, with event: UIEvent?)
-	{
+	override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
 	}
 }

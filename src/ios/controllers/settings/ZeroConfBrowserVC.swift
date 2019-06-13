@@ -1,19 +1,15 @@
 import UIKit
 
-
-protocol ZeroConfBrowserVCDelegate: class
-{
+protocol ZeroConfBrowserVCDelegate: class {
 	func audioServerDidChange(with server: ShinobuServer)
 }
 
-
-final class ZeroConfBrowserVC: NYXTableViewController
-{
+final class ZeroConfBrowserVC: NYXTableViewController {
 	// MARK: - Public properties
 	// Delegate
-	weak var delegate: ZeroConfBrowserVCDelegate? = nil
+	weak var delegate: ZeroConfBrowserVCDelegate?
 	// Currently selectd server on the add vc
-	var selectedServer: ShinobuServer? = nil
+	var selectedServer: ShinobuServer?
 
 	// MARK: - Private properties
 	// Zeroconf explorer
@@ -22,8 +18,7 @@ final class ZeroConfBrowserVC: NYXTableViewController
 	private var servers = [ShinobuServer]()
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAction(_:)))
@@ -41,35 +36,29 @@ final class ZeroConfBrowserVC: NYXTableViewController
 		initializeTheming()
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		zeroConfExplorer.searchForServices(type: "_mpd._tcp.")
 	}
 
-	override func viewWillDisappear(_ animated: Bool)
-	{
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		zeroConfExplorer.stopSearch()
 	}
 
 	// MARK: - Buttons actions
-	@objc private func doneAction(_ sender: Any?)
-	{
+	@objc private func doneAction(_ sender: Any?) {
 		dismiss(animated: true, completion: nil)
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension ZeroConfBrowserVC
-{
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
+extension ZeroConfBrowserVC {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return servers.count
 	}
 
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "fr.whine.shinobu.cell.zeroconf")
 		cell.backgroundColor = themeProvider.currentTheme.backgroundColor
 		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColor
@@ -83,19 +72,13 @@ extension ZeroConfBrowserVC
 		cell.detailTextLabel?.textColor = themeProvider.currentTheme.tableCellDetailLabelTextColor
 		cell.detailTextLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.5)
 
-		if let currentServer = selectedServer
-		{
-			if currentServer == server
-			{
+		if let currentServer = selectedServer {
+			if currentServer == server {
 				cell.accessoryType = .checkmark
-			}
-			else
-			{
+			} else {
 				cell.accessoryType = .none
 			}
-		}
-		else
-		{
+		} else {
 			cell.accessoryType = .none
 		}
 
@@ -108,20 +91,16 @@ extension ZeroConfBrowserVC
 }
 
 // MARK: - UITableViewDelegate
-extension ZeroConfBrowserVC
-{
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension ZeroConfBrowserVC {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
 		// Check if same server
 		let selected = servers[indexPath.row]
-		if let currentServer = selectedServer
-		{
-			if selected == currentServer
-			{
+		if let currentServer = selectedServer {
+			if selected == currentServer {
 				return
 			}
 		}
@@ -136,10 +115,8 @@ extension ZeroConfBrowserVC
 	}
 }
 
-extension ZeroConfBrowserVC: ZeroConfExplorerDelegate
-{
-	internal func didFindServer(_ server: ShinobuServer)
-	{
+extension ZeroConfBrowserVC: ZeroConfExplorerDelegate {
+	internal func didFindServer(_ server: ShinobuServer) {
 		servers = zeroConfExplorer.services.map { $0.value }
 		tableView.reloadData()
 		// Navigation bar title
@@ -147,10 +124,8 @@ extension ZeroConfBrowserVC: ZeroConfExplorerDelegate
 	}
 }
 
-extension ZeroConfBrowserVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension ZeroConfBrowserVC: Themed {
+	func applyTheme(_ theme: Theme) {
 		tableView.backgroundColor = theme.backgroundColor
 		tableView.separatorColor = theme.tableSeparatorColor
 		tableView.tintColor = theme.tintColor

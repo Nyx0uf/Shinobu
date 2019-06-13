@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class Album: MusicalEntity
-{
+final class Album: MusicalEntity {
 	// MARK: - Public properties
 	// Album artist
 	var artist: String = ""
@@ -13,14 +11,13 @@ final class Album: MusicalEntity
 	// Album path
 	var path: String? {
 		didSet {
-			if let p = self.path
-			{
+			if let p = self.path {
 				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:#€").lowercased())_\(p.sha256())"
 			}
 		}
 	}
 	// Album tracks
-	var tracks: [Track]? = nil
+	var tracks: [Track]?
 	// Album UUID
 	private(set) var uniqueIdentifier: String
 	// Local URL for the cover
@@ -31,32 +28,26 @@ final class Album: MusicalEntity
 	}()
 
 	// MARK: - Initializers
-	override init(name: String)
-	{
+	override init(name: String) {
 		self.uniqueIdentifier = name.sha256()
 		super.init(name: name)
 	}
 
 	// MARK: - Hashable
-	override public func hash(into hasher: inout Hasher)
-	{
+	override public func hash(into hasher: inout Hasher) {
 		let value = name.djb2() ^ Int32(genre.hashValue) ^ Int32(year.hashValue)
 		hasher.combine(value)
 	}
 }
 
-extension Album: CustomStringConvertible
-{
-	var description: String
-	{
+extension Album: CustomStringConvertible {
+	var description: String {
 		return "\nName: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(String(describing: path))>\n"
 	}
 }
 
-extension Album
-{
-	static func ==(lhs: Album, rhs: Album) -> Bool
-	{
+extension Album {
+	static func == (lhs: Album, rhs: Album) -> Bool {
 		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
 	}
 }

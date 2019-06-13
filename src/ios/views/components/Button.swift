@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class Button: UIControl
-{
+final class Button: UIControl {
 	// MARK: - Public properties
 	// Selected & Highlighted color
 	private(set) var selectedTintColor = UIColor.clear
@@ -11,15 +9,13 @@ final class Button: UIControl
 	private(set) var imageView = UIImageView()
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		super.init(frame: .zero)
 
 		commonInit()
 	}
 
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		commonInit()
@@ -27,8 +23,7 @@ final class Button: UIControl
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	private func commonInit()
-	{
+	private func commonInit() {
 		self.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		self.layer.cornerRadius = frame.width / 2
 
@@ -38,71 +33,51 @@ final class Button: UIControl
 	}
 
 	// MARK: - Properties override
-	override var frame: CGRect
-	{
-		didSet
-		{
+	override var frame: CGRect {
+		didSet {
 			self.layer.cornerRadius = frame.width / 2
 			self.imageView.frame = CGRect(.zero, frame.size)
 		}
 	}
 
-	override var isSelected: Bool
-	{
-		willSet
-		{
-			if self.isSelected
-			{
+	override var isSelected: Bool {
+		willSet {
+			if self.isSelected {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
 				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
-			}
-			else
-			{
+			} else {
 				self.backgroundColor = UIColor.clear
 				self.imageView.image = self.image.tinted(withColor: self.tintColor)
 			}
 		}
 
-		didSet
-		{
-			if self.isSelected
-			{
+		didSet {
+			if self.isSelected {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
 				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
-			}
-			else
-			{
+			} else {
 				self.backgroundColor = UIColor.clear
 				self.imageView.image = self.image.tinted(withColor: self.tintColor)
 			}
 		}
 	}
 
-	override var isHighlighted: Bool
-	{
-		willSet
-		{
-			if self.isHighlighted
-			{
+	override var isHighlighted: Bool {
+		willSet {
+			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
 				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
-			}
-			else
-			{
+			} else {
 				self.backgroundColor = UIColor.clear
 				self.imageView.image = self.image.tinted(withColor: self.tintColor)
 			}
 		}
 
-		didSet
-		{
-			if self.isHighlighted
-			{
+		didSet {
+			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
 				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
-			}
-			else
-			{
+			} else {
 				self.backgroundColor = UIColor.clear
 				self.imageView.image = self.image.tinted(withColor: self.tintColor)
 			}
@@ -110,8 +85,7 @@ final class Button: UIControl
 	}
 
 	// MARK: - Public
-	func setImage(_ img: UIImage, tintColor: UIColor, selectedTintColor: UIColor)
-	{
+	func setImage(_ img: UIImage, tintColor: UIColor, selectedTintColor: UIColor) {
 		self.image = img.withRenderingMode(.alwaysTemplate)
 		self.tintColor = tintColor
 		self.selectedTintColor = selectedTintColor

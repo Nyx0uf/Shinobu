@@ -1,11 +1,8 @@
 import Foundation
 
-
-struct MPDServer: Codable, Equatable
-{
+struct MPDServer: Codable, Equatable {
 	// Coding keys
-	private enum MPDServerCodingKeys: String, CodingKey
-	{
+	private enum MPDServerCodingKeys: String, CodingKey {
 		case hostname
 		case port
 		case password
@@ -20,15 +17,13 @@ struct MPDServer: Codable, Equatable
 	let password: String
 
 	// MARK: - Initializers
-	init(hostname: String, port: UInt16, password: String = "")
-	{
+	init(hostname: String, port: UInt16, password: String = "") {
 		self.hostname = hostname
 		self.port = port
 		self.password = password
 	}
 
-	init(from decoder: Decoder) throws
-	{
+	init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: MPDServerCodingKeys.self)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
@@ -38,15 +33,12 @@ struct MPDServer: Codable, Equatable
 	}
 }
 
-extension MPDServer: CustomStringConvertible
-{
-	var description: String
-	{
+extension MPDServer: CustomStringConvertible {
+	var description: String {
 		return "\(hostname):\(port)\n"
 	}
 }
 
-func == (lhs: MPDServer, rhs: MPDServer) -> Bool
-{
+func == (lhs: MPDServer, rhs: MPDServer) -> Bool {
 	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
 }

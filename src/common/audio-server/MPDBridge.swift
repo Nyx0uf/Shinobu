@@ -1,9 +1,7 @@
 import UIKit
 import MPDCLIENT
 
-
-final class MPDBridge
-{
+final class MPDBridge {
 	// MARK: - Public properties
 	// MPD server
 	var server: MPDServer! = nil
@@ -24,17 +22,16 @@ final class MPDBridge
 	// Genres list
 	private var _genres: [Genre]?
 	// Current playing track
-	private var currentTrack: Track? = nil
+	private var currentTrack: Track?
 	// Current playing album
-	private var currentAlbum: Album? = nil
+	private var currentAlbum: Album?
 	// Player status (playing, paused, stopped)
 	private var currentState = PlayerState(status: .unknown, isRandom: false, isRepeat: false)
 	//
 	private var usePrettyDB = false
 
 	// MARK: - Initializers
-	init(usePrettyDB: Bool)
-	{
+	init(usePrettyDB: Bool) {
 		self.usePrettyDB = usePrettyDB
 		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.mpdbridge", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
@@ -44,94 +41,79 @@ final class MPDBridge
 	}
 
 	// MARK: - Public
-	func initialize() -> Result<Bool, MPDConnectionError>
-	{
+	func initialize() -> Result<Bool, MPDConnectionError> {
 		// Sanity check 1
-		if MPDConnection.isValid(connection)
-		{
+		if MPDConnection.isValid(connection) {
 			return .success(true)
 		}
 
 		// Sanity check 2
-		guard let server = server else
-		{
+		guard let server = server else {
 			return .failure(MPDConnectionError(.invalidServerParameters, Message(content: NYXLocalizedString("lbl_message_no_mpd_server"), type: .error)))
 		}
 
 		// Connect
 		connection = MPDConnection(server)
 		let ret = connection.connect()
-		switch ret
-		{
-			case .failure(let error):
-				connection = nil
-				return .failure(error)
-			case .success( _):
-				connection.delegate = self
-				startTimer(200)
-				return .success(true)
+		switch ret {
+		case .failure(let error):
+			connection = nil
+			return .failure(error)
+		case .success:
+			connection.delegate = self
+			startTimer(200)
+			return .success(true)
 		}
 	}
 
-	func deinitialize()
-	{
+	func deinitialize() {
 		stopTimer()
-		if connection != nil
-		{
+		if connection != nil {
 			connection.delegate = nil
 			connection.disconnect()
 			connection = nil
 		}
 	}
 
-	func reinitialize() -> Result<Bool, MPDConnectionError>
-	{
+	func reinitialize() -> Result<Bool, MPDConnectionError> {
 		deinitialize()
 		return initialize()
 	}
 
-	func getCurrentTrack() -> Track?
-	{
+	func getCurrentTrack() -> Track? {
 		return queue.sync { self.currentTrack }
 	}
 
-	func getCurrentAlbum() -> Album?
-	{
+	func getCurrentAlbum() -> Album? {
 		return queue.sync { self.currentAlbum }
 	}
 
-	func getCurrentState() -> PlayerState
-	{
+	func getCurrentState() -> PlayerState {
 		return queue.sync { self.currentState }
 	}
 
-	func entitiesForType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void)
-	{
+	func entitiesForType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void) {
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			var entities: [MusicalEntity]? = nil
-			switch type
-			{
-				case .albums:
-					entities = strongSelf._albums
-				case .artists:
-					entities = strongSelf._artists
-				case .albumsartists:
-					entities = strongSelf._albumsartists
-				case .genres:
-					entities = strongSelf._genres
-				case .playlists:
-					break // Playlists can be modified from the app, need to be dynamic
-				default:
-					return
+			var entities: [MusicalEntity]?
+			switch type {
+			case .albums:
+				entities = strongSelf._albums
+			case .artists:
+				entities = strongSelf._artists
+			case .albumsartists:
+				entities = strongSelf._albumsartists
+			case .genres:
+				entities = strongSelf._genres
+			case .playlists:
+				break // Playlists can be modified from the app, need to be dynamic
+			default:
+				return
 			}
 
-			if let entities = entities
-			{
+			if let entities = entities {
 				callback(entities)
-			}
-			else
-			{
+			} else {
 				strongSelf.getListForMusicalEntityType(type) { (entities) in
 					callback(entities)
 				}
@@ -139,157 +121,136 @@ final class MPDBridge
 		}
 	}
 
-	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping ([Album]) -> Void)
-	{
+	func getAlbumsForGenre(_ genre: Genre, firstOnly: Bool, callback: @escaping ([Album]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getAlbumsForGenre(genre, firstOnly: firstOnly)
-			switch result
-			{
-				case .failure( _):
-					break
-				case .success(let list):
-					genre.albums = list
-					callback(list)
+			switch result {
+			case .failure:
+				break
+			case .success(let list):
+				genre.albums = list
+				callback(list)
 			}
 		}
 	}
 
-	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping ([Album]) -> Void)
-	{
+	func getAlbumsForArtist(_ artist: Artist, isAlbumArtist: Bool = false, callback: @escaping ([Album]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getAlbumsForArtist(artist, isAlbumArtist: isAlbumArtist)
-			switch result
-			{
-				case .failure( _):
-					break
-				case .success(let list):
-					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-					let albums = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
-					artist.albums = albums
-					callback(albums)
+			switch result {
+			case .failure:
+				break
+			case .success(let list):
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				let albums = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
+				artist.albums = albums
+				callback(albums)
 			}
 		}
 	}
 
-	func getArtistsForGenre(_ genre: Genre, isAlbumArtist: Bool, callback: @escaping ([Artist]) -> Void)
-	{
+	func getArtistsForGenre(_ genre: Genre, isAlbumArtist: Bool, callback: @escaping ([Artist]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getArtistsForGenre(genre, isAlbumArtist: isAlbumArtist)
-			switch result
-			{
-				case .failure( _):
-					break
-				case .success(let list):
-					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
-					callback(list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) }))
+			switch result {
+			case .failure:
+				break
+			case .success(let list):
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				callback(list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) }))
 			}
 		}
 	}
 
-	func getPathForAlbum(_ album: Album, callback: @escaping () -> Void)
-	{
+	func getPathForAlbum(_ album: Album, callback: @escaping () -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getPathForAlbum(album)
-			switch result
-			{
-				case .failure( _):
-					break
-				case .success(let path):
-					album.path = path
-					callback()
+			switch result {
+			case .failure:
+				break
+			case .success(let path):
+				album.path = path
+				callback()
 			}
 		}
 	}
 
-	func getPathForAlbum2(_ album: Album, callback: @escaping (Bool, String?) -> Void) -> DispatchWorkItem?
-	{
-		var dwi: DispatchWorkItem? = nil
+	func getPathForAlbum2(_ album: Album, callback: @escaping (Bool, String?) -> Void) -> DispatchWorkItem? {
+		var dwi: DispatchWorkItem?
 
 		guard MPDConnection.isValid(connection) else { return dwi }
 
 		dwi = DispatchWorkItem { [weak self] in
-			guard let strongSelf = self else
-			{
+			guard let strongSelf = self else {
 				callback(false, nil)
 				return
 			}
 
-			if dwi!.isCancelled
-			{
+			if dwi!.isCancelled {
 				Logger.shared.log(string: "cancelling work item for <\(album)>")
 				callback(false, nil)
 				return
 			}
 
-			if mpd_search_db_songs(strongSelf.connection.connection, true) == false
-			{
+			if mpd_search_db_songs(strongSelf.connection.connection, true) == false {
 				callback(false, nil)
 				return
 			}
 
-			if dwi!.isCancelled
-			{
+			if dwi!.isCancelled {
 				Logger.shared.log(string: "cancelling work item for [mpd_search_db_songs] <\(album)>")
 				mpd_search_cancel(strongSelf.connection.connection)
 				callback(false, nil)
 				return
 			}
 
-			if mpd_search_add_tag_constraint(strongSelf.connection.connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false
-			{
+			if mpd_search_add_tag_constraint(strongSelf.connection.connection, MPD_OPERATOR_DEFAULT, MPD_TAG_ALBUM, album.name) == false {
 				callback(false, nil)
 				return
 			}
 
-			if dwi!.isCancelled
-			{
+			if dwi!.isCancelled {
 				Logger.shared.log(string: "cancelling work item for [mpd_search_add_tag_constraint] <\(album)>")
 				mpd_search_cancel(strongSelf.connection.connection)
 				callback(false, nil)
 				return
 			}
 
-			if mpd_search_commit(strongSelf.connection.connection) == false
-			{
+			if mpd_search_commit(strongSelf.connection.connection) == false {
 				callback(false, nil)
 				return
 			}
 
-			if dwi!.isCancelled
-			{
+			if dwi!.isCancelled {
 				Logger.shared.log(string: "cancelling work item for [mpd_search_commit] <\(album)>")
 				mpd_response_finish(strongSelf.connection.connection)
 				callback(false, nil)
 				return
 			}
 
-			var path: String? = nil
-			if let song = mpd_recv_song(strongSelf.connection.connection)
-			{
-				if let uri = mpd_song_get_uri(song)
-				{
+			var path: String?
+			if let song = mpd_recv_song(strongSelf.connection.connection) {
+				if let uri = mpd_song_get_uri(song) {
 					let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: uri), count: Int(strlen(uri)), deallocator: .none)
-					if let name = String(data: dataTemp, encoding: .utf8)
-					{
+					if let name = String(data: dataTemp, encoding: .utf8) {
 						path = URL(fileURLWithPath: name).deletingLastPathComponent().path
 					}
 				}
 			}
 
-			if mpd_connection_get_error(strongSelf.connection.connection) != MPD_ERROR_SUCCESS || mpd_response_finish(strongSelf.connection.connection) == false
-			{
+			if mpd_connection_get_error(strongSelf.connection.connection) != MPD_ERROR_SUCCESS || mpd_response_finish(strongSelf.connection.connection) == false {
 				callback(false, nil)
 				return
 			}
@@ -303,78 +264,65 @@ final class MPDBridge
 		return dwi
 	}
 
-	func getTracksForAlbums(_ albums: [Album], callback: @escaping ([Track]?) -> Void)
-	{
+	func getTracksForAlbums(_ albums: [Album], callback: @escaping ([Track]?) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			for album in albums
-			{
+			for album in albums {
 				let result = strongSelf.connection.getTracksForAlbum(album)
-				switch result
-				{
-					case .failure( _):
-						album.tracks = nil
-						callback(nil)
-					case .success(let tracks):
-						album.tracks = tracks
-						callback(tracks)
+				switch result {
+				case .failure:
+					album.tracks = nil
+					callback(nil)
+				case .success(let tracks):
+					album.tracks = tracks
+					callback(tracks)
 				}
 			}
 		}
 	}
 
-	func getTracksForPlaylist(_ playlist: Playlist, callback: @escaping ([Track]?) -> Void)
-	{
+	func getTracksForPlaylist(_ playlist: Playlist, callback: @escaping ([Track]?) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getTracksForPlaylist(playlist)
-			switch result
-			{
-				case .failure( _):
-					callback(nil)
-				case .success(let tracks):
-					playlist.tracks = tracks
-					callback(tracks)
+			switch result {
+			case .failure:
+				callback(nil)
+			case .success(let tracks):
+				playlist.tracks = tracks
+				callback(tracks)
 			}
 		}
 	}
 
-	func getMetadatasForAlbum(_ album: Album, callback: @escaping () -> Void)
-	{
+	func getMetadatasForAlbum(_ album: Album, callback: @escaping () -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
-			do
-			{
+			do {
 				let result = try strongSelf.connection.getMetadatasForAlbum(album)
-				switch result
-				{
-					case .failure( _):
-						break
-					case .success(let metadatas):
-						if let artist = metadatas["artist"] as! String?
-						{
-							album.artist = artist
-						}
-						if let year = metadatas["year"] as! String?
-						{
-							album.year = year
-						}
-						if let genre = metadatas["genre"] as! String?
-						{
-							album.genre = genre
-						}
+				switch result {
+				case .failure:
+					break
+				case .success(let metadatas):
+					if let artist = metadatas["artist"] as! String? {
+						album.artist = artist
+					}
+					if let year = metadatas["year"] as! String? {
+						album.year = year
+					}
+					if let genre = metadatas["genre"] as! String? {
+						album.genre = genre
+					}
 
-						callback()
+					callback()
 				}
-			}
-			catch
-			{
+			} catch {
 				DispatchQueue.main.async {
 					_ = strongSelf.reinitialize()
 				}
@@ -382,45 +330,40 @@ final class MPDBridge
 		}
 	}
 
-	func updateDatabase(_ callback: @escaping (Bool) -> Void)
-	{
+	func updateDatabase(_ callback: @escaping (Bool) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.updateDatabase()
-			switch result
-			{
-				case .failure( _):
-					callback(false)
-				case .success( _):
-					callback(true)
+			switch result {
+			case .failure:
+				callback(false)
+			case .success:
+				callback(true)
 			}
 		}
 	}
 
-	func createPlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
-	{
+	func createPlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.createPlaylist(named: name)
-			switch result
-			{
-				case .failure( _):
-					DispatchQueue.main.async {
-						_ = strongSelf.reinitialize()
-					}
-				case .success( _):
-					break
+			switch result {
+			case .failure:
+				DispatchQueue.main.async {
+					_ = strongSelf.reinitialize()
+				}
+			case .success:
+				break
 			}
 			callback(result)
 		}
 	}
 
-	func deletePlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
-	{
+	func deletePlaylist(named name: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -430,8 +373,7 @@ final class MPDBridge
 		}
 	}
 
-	func rename(playlist: Playlist, withNewName newName: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
-	{
+	func rename(playlist: Playlist, withNewName newName: String, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -441,8 +383,7 @@ final class MPDBridge
 		}
 	}
 
-	func addTrack(to playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
-	{
+	func addTrack(to playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -452,8 +393,7 @@ final class MPDBridge
 		}
 	}
 
-	func removeTrack(from playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void)
-	{
+	func removeTrack(from playlist: Playlist, track: Track, _ callback: @escaping (Result<Bool, MPDConnectionError>) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -464,8 +404,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Playing
-	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool)
-	{
+	func playAlbum(_ album: Album, shuffle: Bool, loop: Bool) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -474,8 +413,7 @@ final class MPDBridge
 		}
 	}
 
-	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool)
-	{
+	func playTracks(_ tracks: [Track], shuffle: Bool, loop: Bool) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -484,8 +422,7 @@ final class MPDBridge
 		}
 	}
 
-	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0)
-	{
+	func playPlaylist(_ playlist: Playlist, shuffle: Bool, loop: Bool, position: UInt32 = 0) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -494,8 +431,7 @@ final class MPDBridge
 		}
 	}
 
-	func playTrackAtPosition(_ position: UInt32)
-	{
+	func playTrackAtPosition(_ position: UInt32) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -504,8 +440,7 @@ final class MPDBridge
 		}
 	}
 
-	func play()
-	{
+	func play() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -515,8 +450,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Pausing
-	@objc func togglePause()
-	{
+	@objc func togglePause() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -525,8 +459,7 @@ final class MPDBridge
 		}
 	}
 
-	@objc func stop()
-	{
+	@objc func stop() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -536,8 +469,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Add to queue
-	func addAlbumToQueue(_ album: Album)
-	{
+	func addAlbumToQueue(_ album: Album) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -547,8 +479,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Repeat
-	func setRepeat(_ loop: Bool)
-	{
+	func setRepeat(_ loop: Bool) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -557,8 +488,7 @@ final class MPDBridge
 		}
 	}
 
-	func toggleRepeat()
-	{
+	func toggleRepeat() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -568,8 +498,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Random
-	func setRandom(_ random: Bool)
-	{
+	func setRandom(_ random: Bool) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -578,8 +507,7 @@ final class MPDBridge
 		}
 	}
 
-	func toggleRandom()
-	{
+	func toggleRandom() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -589,8 +517,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Tracks navigation
-	@objc func requestNextTrack()
-	{
+	@objc func requestNextTrack() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -599,8 +526,7 @@ final class MPDBridge
 		}
 	}
 
-	@objc func requestPreviousTrack()
-	{
+	@objc func requestPreviousTrack() {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -609,16 +535,14 @@ final class MPDBridge
 		}
 	}
 
-	func getSongsOfCurrentQueue(callback: @escaping ([Track]) -> Void)
-	{
+	func getSongsOfCurrentQueue(callback: @escaping ([Track]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getSongsOfCurrentQueue()
-			switch result
-			{
-			case .failure( _):
+			switch result {
+			case .failure:
 				break
 			case .success(let tracks):
 				callback(tracks)
@@ -627,8 +551,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Track position
-	func setTrackPosition(_ position: Int, trackPosition: UInt32)
-	{
+	func setTrackPosition(_ position: Int, trackPosition: UInt32) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
@@ -638,33 +561,29 @@ final class MPDBridge
 	}
 
 	// MARK: - Volume
-	func setVolume(_ volume: Int, callback: @escaping (Bool) -> Void)
-	{
+	func setVolume(_ volume: Int, callback: @escaping (Bool) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.setVolume(UInt32(volume))
-			switch result
-			{
-			case .failure( _):
+			switch result {
+			case .failure:
 				callback(false)
-			case .success( _):
+			case .success:
 				callback(true)
 			}
 		}
 	}
 
-	func getVolume(callback: @escaping (Int) -> Void)
-	{
+	func getVolume(callback: @escaping (Int) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let result = strongSelf.connection.getVolume()
-			switch result
-			{
-			case .failure( _):
+			switch result {
+			case .failure:
 				break
 			case .success(let volume):
 				callback(volume)
@@ -673,8 +592,7 @@ final class MPDBridge
 	}
 
 	// MARK: - Private
-	private func startTimer(_ interval: Int)
-	{
+	private func startTimer(_ interval: Int) {
 		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: queue)
 		timer.schedule(deadline: .now(), repeating: .milliseconds(interval))
 		timer.setEventHandler { [weak self] in
@@ -684,28 +602,23 @@ final class MPDBridge
 		timer.resume()
 	}
 
-	private func stopTimer()
-	{
-		if timer != nil
-		{
+	private func stopTimer() {
+		if timer != nil {
 			timer.cancel()
 			timer = nil
 		}
 	}
 
-	private func getListForMusicalEntityType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void)
-	{
+	private func getListForMusicalEntityType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 
 			// Using mpd_pretty_db.py script
-			if strongSelf.usePrettyDB && type == .albums
-			{
+			if strongSelf.usePrettyDB && type == .albums {
 				let albumsWithPath = PrettyDBManager.albums()
-				if albumsWithPath.count > 0
-				{
+				if albumsWithPath.count > 0 {
 					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 					let good = albumsWithPath.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
 					strongSelf._albums = good
@@ -715,15 +628,13 @@ final class MPDBridge
 			}
 
 			let result = strongSelf.connection.getListForMusicalEntityType(type)
-			switch result
-			{
-			case .failure( _):
+			switch result {
+			case .failure:
 				break
 			case .success(let list):
 				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 				let entities = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
-				switch type
-				{
+				switch type {
 				case .albums:
 					strongSelf._albums = entities as? [Album]
 				case .artists:
@@ -742,74 +653,61 @@ final class MPDBridge
 		}
 	}
 
-	private func playerInformations()
-	{
+	private func playerInformations() {
 		guard MPDConnection.isValid(connection) else { return }
 
-		do
-		{
+		do {
 			let result = try connection.getPlayerInfos()
-			switch result
-			{
-				case .failure(let error):
-					Logger.shared.log(error: error)
-				case .success(let result):
-					guard let infos = result else { return }
-					let status = infos[PLAYER_STATUS_KEY] as! Int
-					let track = infos[PLAYER_TRACK_KEY] as! Track
-					let album = infos[PLAYER_ALBUM_KEY] as! Album
-					let random = infos[PLAYER_RANDOM_KEY] as! Bool
-					let loop = infos[PLAYER_REPEAT_KEY] as! Bool
+			switch result {
+			case .failure(let error):
+				Logger.shared.log(error: error)
+			case .success(let result):
+				guard let infos = result else { return }
+				let status = infos[PLAYER_STATUS_KEY] as! Int
+				let track = infos[PLAYER_TRACK_KEY] as! Track
+				let album = infos[PLAYER_ALBUM_KEY] as! Album
+				let random = infos[PLAYER_RANDOM_KEY] as! Bool
+				let loop = infos[PLAYER_REPEAT_KEY] as! Bool
 
-					// Track changed
-					if currentTrack == nil || (currentTrack != nil && track != currentTrack!)
-					{
-						NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
-					}
+				// Track changed
+				if currentTrack == nil || (currentTrack != nil && track != currentTrack!) {
+					NotificationCenter.default.postOnMainThreadAsync(name: .playingTrackChanged, object: nil, userInfo: infos)
+				}
 
-					// Status changed
-					if currentState.status.rawValue != status
-					{
-						NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
-					}
+				// Status changed
+				if currentState.status.rawValue != status {
+					NotificationCenter.default.postOnMainThreadAsync(name: .playerStatusChanged, object: nil, userInfo: infos)
+				}
 
-					currentState = PlayerState(status: PlayerStatus(rawValue: status)!, isRandom: random, isRepeat: loop)
-					currentTrack = track
-					currentAlbum = album
-					NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
+				currentState = PlayerState(status: PlayerStatus(rawValue: status)!, isRandom: random, isRepeat: loop)
+				currentTrack = track
+				currentAlbum = album
+				NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
 			}
-		}
-		catch let error
-		{
+		} catch let error {
 			Logger.shared.log(error: error)
 		}
 	}
 
 	// MARK: - Notifications
-	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
-	{
-		if let server = aNotification.object as? MPDServer
-		{
+	@objc func audioServerConfigurationDidChange(_ aNotification: Notification) {
+		if let server = aNotification.object as? MPDServer {
 			self.server = server
 			_ = reinitialize()
 		}
 	}
 
-	@objc func applicationDidEnterBackground(_ aNotification: Notification)
-	{
+	@objc func applicationDidEnterBackground(_ aNotification: Notification) {
 		deinitialize()
 	}
 
-	@objc func applicationWillEnterForeground(_ aNotification: Notification)
-	{
+	@objc func applicationWillEnterForeground(_ aNotification: Notification) {
 		_ = reinitialize()
 	}
 }
 
-extension MPDBridge: MPDConnectionDelegate
-{
-	func albumMatchingName(_ name: String) -> Album?
-	{
+extension MPDBridge: MPDConnectionDelegate {
+	func albumMatchingName(_ name: String) -> Album? {
 		return _albums?.filter { $0.name == name }.first
 	}
 }

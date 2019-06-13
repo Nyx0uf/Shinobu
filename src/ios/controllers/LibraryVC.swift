@@ -1,15 +1,12 @@
 import UIKit
 
-
-final class LibraryVC: MusicalCollectionVC
-{
+final class LibraryVC: MusicalCollectionVC {
 	// MARK: - Private properties
 	// Audio server changed
 	private var serverChanged = false
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		super.init(mpdBridge: MPDBridge(usePrettyDB: Settings.shared.bool(forKey: .pref_usePrettyDB)))
 
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
@@ -18,8 +15,7 @@ final class LibraryVC: MusicalCollectionVC
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Servers button
@@ -35,57 +31,47 @@ final class LibraryVC: MusicalCollectionVC
 		NotificationCenter.default.addObserver(self, selector: #selector(showAlbum(_:)), name: .showAlbumNotification, object: nil)
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		// Initialize the mpd connection
-		if mpdBridge.server == nil
-		{
-			if let server = ServersManager().getSelectedServer()
-			{
+		if mpdBridge.server == nil {
+			if let server = ServersManager().getSelectedServer() {
 				// Data source
 				mpdBridge.server = server.mpd
 				let resultDataSource = mpdBridge.initialize()
-				switch resultDataSource
-				{
-					case .failure(let error):
-						MessageView.shared.showWithMessage(message: error.message)
-					case .success(_):
-						if dataSource.musicalEntityType != .albums
-						{
-							// Always fetch the albums list
-							mpdBridge.entitiesForType(.albums) { (_) in }
-						}
+				switch resultDataSource {
+				case .failure(let error):
+					MessageView.shared.showWithMessage(message: error.message)
+				case .success:
+					if dataSource.musicalEntityType != .albums {
+						// Always fetch the albums list
+						mpdBridge.entitiesForType(.albums) { (_) in }
+					}
 
-						mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
-							DispatchQueue.main.async {
-								self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-								self.updateNavigationTitle()
-								self.updateNavigationButtons()
-							}
+					mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
+						DispatchQueue.main.async {
+							self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
+							self.updateNavigationTitle()
+							self.updateNavigationButtons()
 						}
+					}
 				}
-			}
-			else
-			{
+			} else {
 				Logger.shared.log(type: .information, message: "No MPD server registered or enabled yet")
 				showServersListAction(nil)
 			}
 		}
 
 		// Deselect cell
-		if let idxs = collectionView.collectionView.indexPathsForSelectedItems
-		{
-			for indexPath in idxs
-			{
+		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
+			for indexPath in idxs {
 				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
 			}
 		}
 
 		// Audio server changed
-		if serverChanged
-		{
+		if serverChanged {
 			// Refresh view
 			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 				DispatchQueue.main.async {
@@ -100,272 +86,257 @@ final class LibraryVC: MusicalCollectionVC
 		}
 	}
 
-	override func viewWillDisappear(_ animated: Bool)
-	{
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
 		OperationManager.shared.cancelAllOperations()
 	}
 
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask
-	{
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
 
 	// MARK: - Gestures
-	override func doubleTap(_ gest: UITapGestureRecognizer)
-	{
-		if gest.state != .ended
-		{
+	override func doubleTap(_ gest: UITapGestureRecognizer) {
+		if gest.state != .ended {
 			return
 		}
 
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
-		{
-			switch dataSource.musicalEntityType
-			{
-				case .albums:
-					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-					mpdBridge.playAlbum(album, shuffle: false, loop: false)
-				case .artists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
-						}
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView)) {
+			switch dataSource.musicalEntityType {
+			case .albums:
+				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
+				mpdBridge.playAlbum(album, shuffle: false, loop: false)
+			case .artists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .albumsartists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
-						}
+				}
+			case .albumsartists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .genres:
-					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
-					mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-							let ar = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
-						}
+				}
+			case .genres:
+				let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
+				mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+						let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .playlists:
-					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-					mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
-				default:
-					break
+				}
+			case .playlists:
+				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
+				mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
+			default:
+				break
 			}
 		}
 	}
 
-	override func longPress(_ gest: UILongPressGestureRecognizer)
-	{
-		if longPressRecognized
-		{
+	override func longPress(_ gest: UILongPressGestureRecognizer) {
+		if longPressRecognized {
 			return
 		}
 		longPressRecognized = true
 
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView))
-		{
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView)) {
 			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
 			cell.longPressed = true
 
 			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (action) in
+			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (_) in
 				self.longPressRecognized = false
 				cell.longPressed = false
 			}
 			alertController.addAction(cancelAction)
 
-			switch dataSource.musicalEntityType
-			{
-				case .albums:
-					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
-						self.longPressRecognized = false
-						cell.longPressed = false
+			switch dataSource.musicalEntityType {
+			case .albums:
+				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
+				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(playAction)
+				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(shuffleAction)
+				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
+					self.mpdBridge.addAlbumToQueue(album)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(addQueueAction)
+			case .artists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
 					}
-					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
-						self.longPressRecognized = false
-						cell.longPressed = false
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(playAction)
+				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
 					}
-					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title:NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						self.mpdBridge.addAlbumToQueue(album)
-						self.longPressRecognized = false
-						cell.longPressed = false
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(shuffleAction)
+				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
 					}
-					alertController.addAction(addQueueAction)
-				case .artists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(addQueueAction)
+			case .albumsartists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(playAction)
+				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(shuffleAction)
+				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(addQueueAction)
+			case .genres:
+				let genre = self.dataSource.currentItemAtIndexPath(indexPath) as! Genre
+				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(playAction)
+				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(shuffleAction)
+				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in genre.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(addQueueAction)
+			case .playlists:
+				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
+				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
+					self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(playAction)
+				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
+					self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(shuffleAction)
+				let renameAction = UIAlertAction(title: NYXLocalizedString("lbl_rename_playlist"), style: .default) { (_) in
+					self.renamePlaylistAction(playlist: playlist)
+				}
+				alertController.addAction(renameAction)
+				let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (_) in
+					self.mpdBridge.deletePlaylist(named: playlist.name) { [weak self] (result) in
+						guard let strongSelf = self else { return }
+						switch result {
+						case .failure(let error):
+							DispatchQueue.main.async {
+								MessageView.shared.showWithMessage(message: error.message)
+							}
+						case .success:
+							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
+								DispatchQueue.main.async {
+									strongSelf.setItems(entities, forMusicalEntityType: .playlists)
+									strongSelf.updateNavigationTitle()
+								}
 							}
 						}
-						self.longPressRecognized = false
-						cell.longPressed = false
 					}
-					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap { $0.tracks }.flatMap{ $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							for album in artist.albums
-							{
-								strongSelf.mpdBridge.addAlbumToQueue(album)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(addQueueAction)
-				case .albumsartists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-								let ar = artist.albums.compactMap { $0.tracks }.flatMap{ $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							for album in artist.albums
-							{
-								strongSelf.mpdBridge.addAlbumToQueue(album)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(addQueueAction)
-				case .genres:
-					let genre = self.dataSource.currentItemAtIndexPath(indexPath) as! Genre
-					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-								let ar = genre.albums.compactMap { $0.tracks }.flatMap{ $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: false, loop: false)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-								let ar = genre.albums.compactMap { $0.tracks }.flatMap{ $0 }
-								strongSelf.mpdBridge.playTracks(ar, shuffle: true, loop: false)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(shuffleAction)
-					let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (action) in
-						self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-							guard let strongSelf = self else { return }
-							for album in genre.albums
-							{
-								strongSelf.mpdBridge.addAlbumToQueue(album)
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(addQueueAction)
-				case .playlists:
-					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-					let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action) in
-						self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(playAction)
-					let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action) in
-						self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(shuffleAction)
-					let renameAction = UIAlertAction(title: NYXLocalizedString("lbl_rename_playlist"), style: .default) { (action) in
-						self.renamePlaylistAction(playlist: playlist)
-					}
-					alertController.addAction(renameAction)
-					let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action) in
-						self.mpdBridge.deletePlaylist(named: playlist.name) { [weak self] (result) in
-							guard let strongSelf = self else { return }
-							switch result
-							{
-								case .failure(let error):
-									DispatchQueue.main.async {
-										MessageView.shared.showWithMessage(message: error.message)
-									}
-								case .success( _):
-									strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
-										DispatchQueue.main.async {
-											strongSelf.setItems(entities, forMusicalEntityType: .playlists)
-											strongSelf.updateNavigationTitle()
-										}
-									}
-							}
-						}
-						self.longPressRecognized = false
-						cell.longPressed = false
-					}
-					alertController.addAction(deleteAction)
-				default:
-					break
+					self.longPressRecognized = false
+					cell.longPressed = false
+				}
+				alertController.addAction(deleteAction)
+			default:
+				break
 			}
 
 			present(alertController, animated: true, completion: nil)
@@ -373,60 +344,53 @@ final class LibraryVC: MusicalCollectionVC
 	}
 
 	// MARK: - Buttons actions
-	@objc func showServersListAction(_ sender: Any?)
-	{
-		let vc = ServersListVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: vc)
-		vc.modalPresentationStyle = .overFullScreen
-		vc.modalTransitionStyle = .coverVertical
+	@objc func showServersListAction(_ sender: Any?) {
+		let svc = ServersListVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: svc)
+		svc.modalPresentationStyle = .overFullScreen
+		svc.modalTransitionStyle = .coverVertical
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
-	@objc func showSettingsAction(_ sender: Any?)
-	{
-		let vc = SettingsVC()
-		let nvc = NYXNavigationController(rootViewController: vc)
-		vc.modalPresentationStyle = .fullScreen
-		vc.modalTransitionStyle = .flipHorizontal
+	@objc func showSettingsAction(_ sender: Any?) {
+		let svc = SettingsVC()
+		let nvc = NYXNavigationController(rootViewController: svc)
+		svc.modalPresentationStyle = .fullScreen
+		svc.modalTransitionStyle = .flipHorizontal
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
-	@objc func createPlaylistAction(_ sender: Any?)
-	{
+	@objc func createPlaylistAction(_ sender: Any?) {
 		let alertController = NYXAlertController(title: NYXLocalizedString("lbl_create_playlist_name"), message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
-			if String.isNullOrWhiteSpace(textField.text)
-			{
+			if String.isNullOrWhiteSpace(textField.text) {
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
-			}
-			else
-			{
+			} else {
 				self.mpdBridge.createPlaylist(named: textField.text!) { (result) in
-					switch result
-					{
-						case .failure(let error):
+					switch result {
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
 							}
-						case .success( _):
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: .playlists)
-									self.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}
 		})
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField() { (textField) in
+		alertController.addTextField { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_create_playlist_placeholder")
 			textField.textAlignment = .left
 		}
@@ -434,24 +398,22 @@ final class LibraryVC: MusicalCollectionVC
 		self.present(alertController, animated: true, completion: nil)
 	}
 
-	override func updateNavigationTitle()
-	{
+	override func updateNavigationTitle() {
 		mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 			var title = ""
-			switch self.dataSource.musicalEntityType
-			{
-				case .albums:
-					title = NYXLocalizedString("lbl_albums")
-				case .artists:
-					title = NYXLocalizedString("lbl_artists")
-				case .albumsartists:
-					title = NYXLocalizedString("lbl_albumartists")
-				case .genres:
-					title = NYXLocalizedString("lbl_genres")
-				case .playlists:
-					title = NYXLocalizedString("lbl_playlists")
-				default:
-					break
+			switch self.dataSource.musicalEntityType {
+			case .albums:
+				title = NYXLocalizedString("lbl_albums")
+			case .artists:
+				title = NYXLocalizedString("lbl_artists")
+			case .albumsartists:
+				title = NYXLocalizedString("lbl_albumartists")
+			case .genres:
+				title = NYXLocalizedString("lbl_genres")
+			case .playlists:
+				title = NYXLocalizedString("lbl_playlists")
+			default:
+				break
 			}
 			DispatchQueue.main.async {
 				self.titleView.setMainText(title, detailText: "(\(entities.count))")
@@ -459,60 +421,51 @@ final class LibraryVC: MusicalCollectionVC
 		}
 	}
 
-	private func updateNavigationButtons()
-	{
+	private func updateNavigationButtons() {
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
-		if dataSource.musicalEntityType == .playlists
-		{
+		if dataSource.musicalEntityType == .playlists {
 			// Create playlist button
 			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
 			createButton.accessibilityLabel = NYXLocalizedString("lbl_create_playlist")
 			navigationItem.rightBarButtonItems = [searchButton, createButton]
-		}
-		else
-		{
+		} else {
 			navigationItem.rightBarButtonItems = [searchButton]
 		}
 	}
 
-	private func renamePlaylistAction(playlist: Playlist)
-	{
+	private func renamePlaylistAction(playlist: Playlist) {
 		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
-			if String.isNullOrWhiteSpace(textField.text)
-			{
+			if String.isNullOrWhiteSpace(textField.text) {
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
-			}
-			else
-			{
+			} else {
 				self.mpdBridge.rename(playlist: playlist, withNewName: textField.text!) { (result) in
-					switch result
-					{
-						case .failure(let error):
+					switch result {
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
 							}
-						case .success( _):
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: .playlists)
-									self.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}
 		})
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField() { (textField) in
+		alertController.addTextField { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_rename_playlist_placeholder")
 			textField.textAlignment = .left
 		}
@@ -521,19 +474,16 @@ final class LibraryVC: MusicalCollectionVC
 	}
 
 	// MARK: - Notifications
-	@objc func audioServerConfigurationDidChange(_ aNotification: Notification)
-	{
+	@objc func audioServerConfigurationDidChange(_ aNotification: Notification) {
 		serverChanged = true
 	}
 
-	override func didSelectDisplayType(_ typeAsInt: Int)
-	{
+	override func didSelectDisplayType(_ typeAsInt: Int) {
 		// Hide
 		changeTypeAction(nil)
 		// Ignore if type did not change
 		let type = MusicalEntityType(rawValue: typeAsInt)
-		if dataSource.musicalEntityType == type
-		{
+		if dataSource.musicalEntityType == type {
 			return
 		}
 
@@ -543,12 +493,9 @@ final class LibraryVC: MusicalCollectionVC
 		mpdBridge.entitiesForType(type) { (entities) in
 			DispatchQueue.main.async {
 				self.setItems(entities, forMusicalEntityType: type)
-				if self.dataSource.items.count == 0
-				{
+				if self.dataSource.items.count == 0 {
 					self.collectionView.collectionView.contentOffset = CGPoint(0, 64)
-				}
-				else
-				{
+				} else {
 					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 				}
 
@@ -558,65 +505,55 @@ final class LibraryVC: MusicalCollectionVC
 		}
 	}
 
-	@objc func showArtist(_ aNotification: Notification)
-	{
+	@objc func showArtist(_ aNotification: Notification) {
 		guard let artistName = aNotification.object as? String else { return }
 
-		let vc = AlbumsListVC(artist: Artist(name: artistName), isAlbumArtist: false, mpdBridge: mpdBridge)
-		navigationController?.pushViewController(vc, animated: true)
+		let avc = AlbumsListVC(artist: Artist(name: artistName), isAlbumArtist: false, mpdBridge: mpdBridge)
+		navigationController?.pushViewController(avc, animated: true)
 	}
 
-	@objc func showAlbum(_ aNotification: Notification)
-	{
+	@objc func showAlbum(_ aNotification: Notification) {
 		guard let album = aNotification.object as? Album else { return }
 
-		let vc = AlbumDetailVC(album: album, mpdBridge: mpdBridge)
-		navigationController?.pushViewController(vc, animated: true)
+		let avc = AlbumDetailVC(album: album, mpdBridge: mpdBridge)
+		navigationController?.pushViewController(avc, animated: true)
 	}
 }
 
 // MARK: - MusicalCollectionViewDelegate
-extension LibraryVC
-{
-	override func didSelectEntity(_ entity: AnyObject)
-	{
-		switch dataSource.musicalEntityType
-		{
-			case .albums:
-				let vc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(vc, animated: true)
-			case .artists:
-				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(vc, animated: true)
-			case .albumsartists:
-				let vc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(vc, animated: true)
-			case .genres:
-				let vc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(vc, animated: true)
-			case .playlists:
-				let vc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(vc, animated: true)
-			default:
-				break
+extension LibraryVC {
+	override func didSelectEntity(_ entity: AnyObject) {
+		switch dataSource.musicalEntityType {
+		case .albums:
+			let avc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .artists:
+			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .albumsartists:
+			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .genres:
+			let gvc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(gvc, animated: true)
+		case .playlists:
+			let pvc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(pvc, animated: true)
+		default:
+			break
 		}
 	}
 }
 
 // MARK: - UIResponder
-extension LibraryVC
-{
-	override var canBecomeFirstResponder: Bool
-	{
+extension LibraryVC {
+	override var canBecomeFirstResponder: Bool {
 		return true
 	}
 
-	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?)
-	{
-		if motion == .motionShake
-		{
-			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false
-			{
+	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+		if motion == .motionShake {
+			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false {
 				return
 			}
 
@@ -626,8 +563,7 @@ extension LibraryVC
 
 				guard let url = randomAlbum.localCoverURL else { return }
 
-				if let image = UIImage.loadFromFileURL(url)
-				{
+				if let image = UIImage.loadFromFileURL(url) {
 					DispatchQueue.main.async {
 						let size = CGSize(256, 256)
 						let imageView = UIImageView(frame: CGRect((UIScreen.main.bounds.width - size.width) / 2, (UIScreen.main.bounds.height - size.height) / 2, size))
@@ -643,29 +579,25 @@ extension LibraryVC
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension LibraryVC
-{
-	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController?
-	{
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath)
-		{
+extension LibraryVC {
+	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath) {
 			previewingContext.sourceRect = cellAttributes.frame
-			switch dataSource.musicalEntityType
-			{
-				case .albums:
-					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-					return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
-				case .artists, .albumsartists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					return AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
-				case .genres:
-					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
-					return GenreDetailVC(genre: genre, mpdBridge: mpdBridge)
-				case .playlists:
-					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-					return PlaylistDetailVC(playlist: playlist, mpdBridge: mpdBridge)
-				default:
-					break
+			switch dataSource.musicalEntityType {
+			case .albums:
+				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
+				return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
+			case .artists, .albumsartists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				return AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
+			case .genres:
+				let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
+				return GenreDetailVC(genre: genre, mpdBridge: mpdBridge)
+			case .playlists:
+				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
+				return PlaylistDetailVC(playlist: playlist, mpdBridge: mpdBridge)
+			default:
+				break
 			}
 		}
 		return nil

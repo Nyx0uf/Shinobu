@@ -1,14 +1,11 @@
 import UIKit
 
-
-final class InteractableImageView: UIImageView
-{
+final class InteractableImageView: UIImageView {
 	// MARK: - Public properties
 	// Delegate
-	weak var delegate: InteractableImageViewDelegate? = nil
+	weak var delegate: InteractableImageViewDelegate?
 
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		self.isUserInteractionEnabled = true
@@ -23,16 +20,13 @@ final class InteractableImageView: UIImageView
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - Gestures
-	@objc func singleTap(_ gesture: UITapGestureRecognizer)
-	{
-		if gesture.state == .ended
-		{
+	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
+		if gesture.state == .ended {
 			delegate?.didTap()
 		}
 	}
 }
 
-protocol InteractableImageViewDelegate: class
-{
+protocol InteractableImageViewDelegate: class {
 	func didTap()
 }

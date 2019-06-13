@@ -1,20 +1,17 @@
 import UIKit
 
-
-final class ContainerVC : UIViewController
-{
+final class ContainerVC: UIViewController {
 	private var libraryVC: LibraryVC!
 	private var playerVC: PlayerVC!
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 		self.view.backgroundColor = .green
 
 		libraryVC = LibraryVC()
-		let nc = NYXNavigationController(rootViewController: libraryVC)
-		self.add(nc)
+		let nvc = NYXNavigationController(rootViewController: libraryVC)
+		self.add(nvc)
 
 		playerVC = PlayerVC(mpdBridge: libraryVC.mpdBridge)
 		self.add(playerVC)
@@ -22,20 +19,16 @@ final class ContainerVC : UIViewController
 		initializeTheming()
 	}
 
-	override var preferredStatusBarStyle: UIStatusBarStyle
-	{
-		if playerVC != nil && libraryVC != nil
-		{
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		if playerVC != nil && libraryVC != nil {
 			return playerVC.isMinified ? libraryVC.preferredStatusBarStyle : playerVC.preferredStatusBarStyle
 		}
 		return themedStatusBarStyle ?? .default
 	}
 }
 
-extension ContainerVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension ContainerVC: Themed {
+	func applyTheme(_ theme: Theme) {
 		themedStatusBarStyle = theme.statusBarStyle
 		setNeedsStatusBarAppearanceUpdate()
 	}

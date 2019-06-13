@@ -1,9 +1,7 @@
 import UIKit
 import NotificationCenter
 
-
-final class TodayViewController: UIViewController, NCWidgetProviding
-{
+final class TodayViewController: UIViewController, NCWidgetProviding {
 	// MARK: - Private properties
 	// Track title
 	@IBOutlet private var lblTrackTitle: UILabel!
@@ -22,22 +20,19 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	// MPD data source
 	private var mpdBridge = MPDBridge(usePrettyDB: false)
 
-	required init?(coder aDecoder: NSCoder)
-	{
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
 		Settings.shared.initialize()
 	}
 
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		btnNext.accessibilityLabel = NYXLocalizedString("lbl_next_track")
 		btnPrevious.accessibilityLabel = NYXLocalizedString("lbl_previous_track")
 
-		guard let server = ServersManager().getSelectedServer() else
-		{
+		guard let server = ServersManager().getSelectedServer() else {
 			disableAllBecauseCantWork()
 			return
 		}
@@ -45,70 +40,55 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		// Data source
 		mpdBridge.server = server.mpd
 		let resultDataSource = mpdBridge.initialize()
-		switch resultDataSource
-		{
-			case .failure(_):
-				disableAllBecauseCantWork()
-			case .success(_):
-				mpdBridge.entitiesForType(.albums) { (_) in }
-				NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
+		switch resultDataSource {
+		case .failure:
+			disableAllBecauseCantWork()
+		case .success:
+			mpdBridge.entitiesForType(.albums) { (_) in }
+			NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		}
 	}
 
-	func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void))
-	{
+	func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
 		let ret = updateFields()
 		completionHandler(ret ? NCUpdateResult.newData : NCUpdateResult.failed)
 	}
 
 	// MARK: - Actions
-	@IBAction func togglePauseAction(_ sender: Any?)
-	{
+	@IBAction func togglePauseAction(_ sender: Any?) {
 		mpdBridge.togglePause()
 	}
 
-	@IBAction func nextTrackAction(_ sender: Any?)
-	{
+	@IBAction func nextTrackAction(_ sender: Any?) {
 		mpdBridge.requestNextTrack()
 	}
 
-	@IBAction func previousTrackAction(_ sender: Any?)
-	{
+	@IBAction func previousTrackAction(_ sender: Any?) {
 		mpdBridge.requestPreviousTrack()
 	}
 
 	// MARK: - Private
-	private func updateFields() -> Bool
-	{
+	private func updateFields() -> Bool {
 		var ret = true
-		if let track = mpdBridge.getCurrentTrack()
-		{
+		if let track = mpdBridge.getCurrentTrack() {
 			lblTrackTitle.text = track.name
 			lblTrackArtist.text = track.artist
-		}
-		else
-		{
+		} else {
 			ret = false
 		}
 
-		if let album = mpdBridge.getCurrentAlbum()
-		{
+		if let album = mpdBridge.getCurrentAlbum() {
 			lblAlbumName.text = album.name
 			handleCoverForAlbum(album)
-		}
-		else
-		{
+		} else {
 			ret = false
 		}
 
-		if mpdBridge.getCurrentState().status == .paused
-		{
+		if mpdBridge.getCurrentState().status == .paused {
 			let imgPlay = #imageLiteral(resourceName: "btn-play")
 			btnPlay.setImage(imgPlay, for: .normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
-		}
-		else
-		{
+		} else {
 			let imgPause = #imageLiteral(resourceName: "btn-pause")
 			btnPlay.setImage(imgPause, for: .normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
@@ -117,33 +97,25 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		return ret
 	}
 
-	private func handleCoverForAlbum(_ album: Album)
-	{
-		guard let coverURL = album.localCoverURL else
-		{
+	private func handleCoverForAlbum(_ album: Album) {
+		guard let coverURL = album.localCoverURL else {
 			return
 		}
 
-		if let cover = UIImage.loadFromFileURL(coverURL)
-		{
+		if let cover = UIImage.loadFromFileURL(coverURL) {
 			imageView.image = cover
-		}
-		else
-		{
+		} else {
 			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
 			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
-			if album.path != nil
-			{
-				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
+			if album.path != nil {
+				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (_: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.imageView.image = thumbnail
 					}
 				}
-			}
-			else
-			{
+			} else {
 				mpdBridge.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (cover: UIImage, thumbnail: UIImage) in
+					self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (_: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.imageView.image = thumbnail
 						}
@@ -153,21 +125,18 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 		}
 	}
 
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?)
-	{
-		var op = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
-		op.processCallback = { (cover: UIImage, thumbnail: UIImage) in
-			if let block = callback
-			{
+	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) {
+		var cop = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
+		cop.processCallback = { (cover: UIImage, thumbnail: UIImage) in
+			if let block = callback {
 				block(cover, thumbnail)
 			}
 		}
 
-		op.submit()
+		cop.submit()
 	}
 
-	private func disableAllBecauseCantWork()
-	{
+	private func disableAllBecauseCantWork() {
 		btnPlay.isEnabled = false
 		btnNext.isEnabled = false
 		btnPrevious.isEnabled = false
@@ -177,8 +146,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding
 	}
 
 	// MARK: - Notification
-	@objc private func playingTrackNotification(_ notification: Notification)
-	{
+	@objc private func playingTrackNotification(_ notification: Notification) {
 		_ = updateFields()
 	}
 }

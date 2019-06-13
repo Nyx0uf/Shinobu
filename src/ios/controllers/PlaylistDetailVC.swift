@@ -1,8 +1,6 @@
 import UIKit
 
-
-final class PlaylistDetailVC: NYXViewController
-{
+final class PlaylistDetailVC: NYXViewController {
 	// MARK: - Private properties
 	// Selected playlist
 	private let playlist: Playlist
@@ -16,8 +14,7 @@ final class PlaylistDetailVC: NYXViewController
 	private let mpdBridge: MPDBridge
 
 	// MARK: - Initializers
-	init(playlist: Playlist, mpdBridge: MPDBridge)
-	{
+	init(playlist: Playlist, mpdBridge: MPDBridge) {
 		self.playlist = playlist
 		self.mpdBridge = mpdBridge
 
@@ -27,18 +24,14 @@ final class PlaylistDetailVC: NYXViewController
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Color under navbar
 		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
-		if navigationController == nil
-		{
+		if navigationController == nil {
 			defaultHeight = 0
-		}
-		else
-		{
+		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		}
 		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
@@ -60,21 +53,17 @@ final class PlaylistDetailVC: NYXViewController
 		initializeTheming()
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		// Update header
 		updateHeader()
 
 		// Get songs list if needed
-		if let tracks = playlist.tracks
-		{
+		if let tracks = playlist.tracks {
 			updateNavigationTitle()
 			tableView.tracks = tracks
-		}
-		else
-		{
+		} else {
 			mpdBridge.getTracksForPlaylist(playlist) { (tracks) in
 				DispatchQueue.main.async {
 					self.updateNavigationTitle()
@@ -85,8 +74,7 @@ final class PlaylistDetailVC: NYXViewController
 	}
 
 	// MARK: - Private
-	private func updateHeader()
-	{
+	private func updateHeader() {
 		// Update header view
 		let backgroundColor = UIColor(rgb: playlist.name.djb2())
 		headerView.backgroundColor = backgroundColor
@@ -94,62 +82,52 @@ final class PlaylistDetailVC: NYXViewController
 
 		let string = playlist.name
 		let bgColor = UIColor(rgb: string.djb2())
-		if let img = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: headerView.size.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: headerView.size)
-		{
+		if let img = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: headerView.size.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: headerView.size) {
 			headerView.image = img
 		}
 	}
 
-	override func updateNavigationTitle()
-	{
-		if let tracks = playlist.tracks
-		{
+	override func updateNavigationTitle() {
+		if let tracks = playlist.tracks {
 			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
 			let minutes = total.seconds / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
-		}
-		else
-		{
+		} else {
 			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
 		}
 	}
 
-	private func renamePlaylistAction()
-	{
+	private func renamePlaylistAction() {
 		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
 
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
 			let textField = alertController.textFields![0] as UITextField
 
-			if String.isNullOrWhiteSpace(textField.text)
-			{
+			if String.isNullOrWhiteSpace(textField.text) {
 				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
 				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
 				self.present(errorAlert, animated: true, completion: nil)
-			}
-			else
-			{
+			} else {
 				self.mpdBridge.rename(playlist: self.playlist, withNewName: textField.text!) { [weak self] (result) in
 					guard let strongSelf = self else { return }
-					switch result
-					{
-						case .failure(let error):
+					switch result {
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						strongSelf.mpdBridge.entitiesForType(.playlists) { (_) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								strongSelf.updateNavigationTitle()
 							}
-						case .success( _):
-							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									strongSelf.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}
 		})
 		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
 
-		alertController.addTextField() { (textField) in
+		alertController.addTextField { (textField) in
 			textField.placeholder = NYXLocalizedString("lbl_rename_playlist_placeholder")
 			textField.textAlignment = .left
 		}
@@ -159,27 +137,22 @@ final class PlaylistDetailVC: NYXViewController
 }
 
 // MARK: - UITableViewDelegate
-extension PlaylistDetailVC: UITableViewDelegate
-{
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension PlaylistDetailVC: UITableViewDelegate {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
 		// Dummy cell
 		guard let tracks = playlist.tracks else { return }
-		if indexPath.row >= tracks.count
-		{
+		if indexPath.row >= tracks.count {
 			return
 		}
 
 		// Toggle play / pause for the current track
-		if let currentPlayingTrack = mpdBridge.getCurrentTrack()
-		{
+		if let currentPlayingTrack = mpdBridge.getCurrentTrack() {
 			let selectedTrack = tracks[indexPath.row]
-			if selectedTrack == currentPlayingTrack
-			{
+			if selectedTrack == currentPlayingTrack {
 				mpdBridge.togglePause()
 				return
 			}
@@ -188,31 +161,28 @@ extension PlaylistDetailVC: UITableViewDelegate
 		mpdBridge.playPlaylist(playlist, shuffle: false, loop: false, position: UInt32(indexPath.row))
 	}
 
-	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-	{
+	func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		// Dummy cell
 		guard let tracks = playlist.tracks else { return nil }
-		if indexPath.row >= tracks.count
-		{
+		if indexPath.row >= tracks.count {
 			return nil
 		}
 
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist")) { (action, view, completionHandler ) in
+		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist")) { (_, _, completionHandler ) in
 			self.mpdBridge.removeTrack(from: self.playlist, track: tracks[indexPath.row]) { [weak self] (result) in
 				guard let strongSelf = self else { return }
-				switch result
-				{
-					case .failure(let error):
+				switch result {
+				case .failure(let error):
+					DispatchQueue.main.async {
+						MessageView.shared.showWithMessage(message: error.message)
+					}
+				case .success:
+					strongSelf.mpdBridge.getTracksForPlaylist(strongSelf.playlist) { (tracks) in
 						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: error.message)
+							strongSelf.updateNavigationTitle()
+							strongSelf.tableView.tracks = strongSelf.playlist.tracks!
 						}
-					case .success( _):
-						strongSelf.mpdBridge.getTracksForPlaylist(strongSelf.playlist) { (tracks) in
-							DispatchQueue.main.async {
-								strongSelf.updateNavigationTitle()
-								strongSelf.tableView.tracks = strongSelf.playlist.tracks!
-							}
-						}
+					}
 				}
 			}
 
@@ -226,32 +196,29 @@ extension PlaylistDetailVC: UITableViewDelegate
 }
 
 // MARK: - Peek & Pop
-extension PlaylistDetailVC
-{
-	override var previewActionItems: [UIPreviewActionItem]
-	{
-		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (action, viewController) in
+extension PlaylistDetailVC {
+	override var previewActionItems: [UIPreviewActionItem] {
+		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
 			self.mpdBridge.playPlaylist(self.playlist, shuffle: false, loop: false)
 		}
 
-		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (action, viewController) in
+		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
 			self.mpdBridge.playPlaylist(self.playlist, shuffle: true, loop: false)
 		}
 
-		let renameAction = UIPreviewAction(title: NYXLocalizedString("lbl_rename_playlisr"), style: .default) { (action, viewController) in
+		let renameAction = UIPreviewAction(title: NYXLocalizedString("lbl_rename_playlisr"), style: .default) { (_, _) in
 			self.renamePlaylistAction()
 		}
 
-		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (action, viewController) in
+		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (_, _) in
 			self.mpdBridge.deletePlaylist(named: self.playlist.name) { (result) in
-				switch result
-				{
-					case .failure(let error):
-						DispatchQueue.main.async {
-							MessageView.shared.showWithMessage(message: error.message)
-						}
-					case .success( _):
-						break
+				switch result {
+				case .failure(let error):
+					DispatchQueue.main.async {
+						MessageView.shared.showWithMessage(message: error.message)
+					}
+				case .success:
+					break
 				}
 			}
 		}
@@ -260,18 +227,14 @@ extension PlaylistDetailVC
 	}
 }
 
-extension PlaylistDetailVC: TracksListTableViewDelegate
-{
-	func getCurrentTrack() -> Track?
-	{
+extension PlaylistDetailVC: TracksListTableViewDelegate {
+	func getCurrentTrack() -> Track? {
 		return mpdBridge.getCurrentTrack()
 	}
 }
 
-extension PlaylistDetailVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension PlaylistDetailVC: Themed {
+	func applyTheme(_ theme: Theme) {
 
 	}
 }

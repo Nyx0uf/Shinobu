@@ -1,8 +1,7 @@
 import UIKit
 
 // MARK: - Notifications name
-extension Notification.Name
-{
+extension Notification.Name {
 	static let currentPlayingTrack = Notification.Name("CurrentPlayingTrack")
 	static let playingTrackChanged = Notification.Name("PlayingTrackChanged")
 	static let playerStatusChanged = Notification.Name("PlayerStatusChanged")

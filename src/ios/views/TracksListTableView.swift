@@ -1,20 +1,14 @@
 import UIKit
 
-
-protocol TracksListTableViewDelegate: class
-{
+protocol TracksListTableViewDelegate: class {
 	func getCurrentTrack() -> Track?
 }
 
-
-final class TracksListTableView: UITableView
-{
+final class TracksListTableView: UITableView {
 	// MARK: - Public properties
 	// Tracks list
-	var tracks = [Track]()
-	{
-		didSet
-		{
+	var tracks = [Track]() {
+		didSet {
 			DispatchQueue.main.async {
 				self.reloadData()
 			}
@@ -27,8 +21,7 @@ final class TracksListTableView: UITableView
 	//
 	weak var myDelegate: TracksListTableViewDelegate?
 
-	override init(frame: CGRect, style: UITableView.Style)
-	{
+	override init(frame: CGRect, style: UITableView.Style) {
 		super.init(frame: frame, style: style)
 
 		self.dataSource = self
@@ -43,33 +36,27 @@ final class TracksListTableView: UITableView
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	deinit
-	{
+	deinit {
 		NotificationCenter.default.removeObserver(self)
 	}
 
 	// MARK: - Private
-	@objc func playingTrackChangedNotification(_ notification: Notification)
-	{
+	@objc func playingTrackChangedNotification(_ notification: Notification) {
 		reloadData()
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension TracksListTableView: UITableViewDataSource
-{
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
+extension TracksListTableView: UITableViewDataSource {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return useDummy ? tracks.count + 1 : tracks.count
 	}
 
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrackTableViewCell
 
 		// Dummy to let some space for the mini player
-		if useDummy && indexPath.row == tracks.count
-		{
+		if useDummy && indexPath.row == tracks.count {
 			cell.lblTitle.text = ""
 			cell.lblTrack.text = ""
 			cell.lblDuration.text = ""
@@ -94,14 +81,11 @@ extension TracksListTableView: UITableViewDataSource
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
 		let currentTrack = myDelegate?.getCurrentTrack()
-		if currentTrack != nil && currentTrack == track
-		{
+		if currentTrack != nil && currentTrack == track {
 			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .bold)
 			cell.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .heavy)
 			cell.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .regular)
-		}
-		else
-		{
+		} else {
 			cell.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .regular)
 			cell.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .medium)
 			cell.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .light)
@@ -109,12 +93,10 @@ extension TracksListTableView: UITableViewDataSource
 
 		// Accessibility
 		var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
-		if minutes > 0
-		{
+		if minutes > 0 {
 			stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
 		}
-		if seconds > 0
-		{
+		if seconds > 0 {
 			stra += "\(seconds) \(seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
 		}
 		cell.accessibilityLabel = stra
@@ -127,10 +109,8 @@ extension TracksListTableView: UITableViewDataSource
 	}
 }
 
-extension TracksListTableView: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension TracksListTableView: Themed {
+	func applyTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 		reloadData()
 	}

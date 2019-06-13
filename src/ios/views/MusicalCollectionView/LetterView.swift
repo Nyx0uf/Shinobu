@@ -1,25 +1,18 @@
 import UIKit
 
-
-final class LetterView: UIView
-{
+final class LetterView: UIView {
 	// MARK: - Public roperties
-	var letter = ""
-	{
-		didSet
-		{
+	var letter = "" {
+		didSet {
 			self.letterLayer.string = letter
 		}
 	}
 	// selected state
-	var isSelected = false
-	{
-		didSet
-		{
+	var isSelected = false {
+		didSet {
 			self.letterLayer.font = UIFont.systemFont(ofSize: self.big ? 16 : 12, weight: self.isSelected ? .black : .semibold)
 			self.letterLayer.foregroundColor = self.isSelected ? themeProvider.currentTheme.backgroundColor.cgColor : themeProvider.currentTheme.tableCellMainLabelTextColor.cgColor
-			if self.big
-			{
+			if self.big {
 				self.blurEffectView.isHidden = !self.isSelected
 			}
 		}
@@ -34,14 +27,12 @@ final class LetterView: UIView
 	private var big = false
 
 	// MARK: - Initializers
-	init(frame: CGRect, letter: String, big: Bool = false)
-	{
+	init(frame: CGRect, letter: String, big: Bool = false) {
 		super.init(frame: frame)
 
 		// Blur background
 		self.big = big
-		if big
-		{
+		if big {
 			self.enableCorners(withDivisor: 4)
 
 			self.blurEffectView = UIVisualEffectView()
@@ -67,45 +58,35 @@ final class LetterView: UIView
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
 
-extension LetterView: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension LetterView: Themed {
+	func applyTheme(_ theme: Theme) {
 		letterLayer.foregroundColor = theme.tableCellMainLabelTextColor.cgColor
 
-		if big
-		{
+		if big {
 			blurEffectView.effect = theme.blurEffectAlt
 		}
 	}
 }
 
-fileprivate final class CenteredTextLayer: CATextLayer
-{
-	public override init()
-	{
+fileprivate final class CenteredTextLayer: CATextLayer {
+	public override init() {
 		super.init()
 	}
 
-	override init(layer: Any)
-	{
+	override init(layer: Any) {
 		super.init(layer: layer)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var font: CFTypeRef?
-	{
-		didSet
-		{
+	override var font: CFTypeRef? {
+		didSet {
 			self.fontSize = (self.font as? UIFont)?.pointSize ?? 12
 		}
 	}
 
-	public override func draw(in ctx: CGContext)
-	{
-		guard let text = string as? NSString, let font = font as? UIFont else
-		{
+	public override func draw(in ctx: CGContext) {
+		guard let text = string as? NSString, let font = font as? UIFont else {
 			super.draw(in: ctx)
 			return
 		}

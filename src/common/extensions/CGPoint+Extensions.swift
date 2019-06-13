@@ -1,11 +1,8 @@
 import CoreGraphics
 
-
-extension CGPoint
-{
+extension CGPoint {
 	// MARK: - Initializers
-	public init(_ x: CGFloat, _ y: CGFloat)
-	{
+	public init(_ x: CGFloat, _ y: CGFloat) {
 		self.init(x: x, y: y)
 	}
 }

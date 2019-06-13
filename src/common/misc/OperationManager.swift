@@ -1,35 +1,29 @@
 import Foundation
 import UIKit
 
-
-final class OperationManager
-{
+final class OperationManager {
 	// Singletion instance
 	static let shared = OperationManager()
 	// Global operation queue
 	private var operationQueue: OperationQueue! = nil
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		operationQueue = OperationQueue()
 		operationQueue.maxConcurrentOperationCount = OperationQueue.defaultMaxConcurrentOperationCount
 	}
 
 	// MARK: - Public
-	func addOperation(_ operation: Operation)
-	{
+	func addOperation(_ operation: Operation) {
 		operationQueue.addOperation(operation)
 	}
 
-	func addOperations(_ operations: [Operation], waitUntilFinished: Bool = false)
-	{
+	func addOperations(_ operations: [Operation], waitUntilFinished: Bool = false) {
 		operationQueue.addOperations(operations, waitUntilFinished: waitUntilFinished)
 
 	}
 
-	func cancelAllOperations()
-	{
+	func cancelAllOperations() {
 		operationQueue.cancelAllOperations()
 	}
 }

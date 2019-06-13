@@ -1,21 +1,16 @@
 import UIKit
 
+private let space = CGFloat(4)
 
-fileprivate let space = CGFloat(4)
-
-
-final class ImagedLabel: UIControl
-{
+final class ImagedLabel: UIControl {
 	// MARK: - Public properties
 	// Label
 	private(set) var label = UILabel()
 	// Image
 	private(set) var imageView = UIImageView()
 	// Alignment (lbl & image)
-	var align = NSTextAlignment.left
-	{
-		didSet
-		{
+	var align = NSTextAlignment.left {
+		didSet {
 			self.label.textAlignment = align
 			self.updateFrames()
 		}
@@ -24,137 +19,107 @@ final class ImagedLabel: UIControl
 	var underlined = false
 
 	// MARK: - Properties override
-	override var frame: CGRect
-	{
-		didSet
-		{
+	override var frame: CGRect {
+		didSet {
 			self.updateFrames()
 		}
 	}
 
 	// MARK: - UILabel properties
 	// Text
-	public var text: String?
-	{
-		get
-		{
+	public var text: String? {
+		get {
 			return self.label.text
 		}
-		set
-		{
+		set {
 			self.label.text = newValue
 
-			if let s = newValue
-			{
-				if underlined
-				{
+			if let s = newValue {
+				if underlined {
 					let attributedText = NSMutableAttributedString(string: s)
-					attributedText.addAttribute(NSAttributedString.Key.underlineStyle , value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: s.count))
+					attributedText.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: NSRange(location: 0, length: s.count))
 					self.attributedText = attributedText
 				}
 			}
 		}
 	}
 	// Attributed text
-	public var attributedText: NSAttributedString?
-	{
-		get
-		{
+	public var attributedText: NSAttributedString? {
+		get {
 			return self.label.attributedText
 		}
-		set
-		{
+		set {
 			self.label.attributedText = newValue
 		}
 	}
 	// Text color
-	public var textColor: UIColor!
-	{
-		get
-		{
+	public var textColor: UIColor! {
+		get {
 			return self.label.textColor
 		}
-		set
-		{
+		set {
 			self.label.textColor = newValue
 		}
 	}
 	// Highlighted text color
-	public var highlightedTextColor: UIColor?
-	{
-		get
-		{
+	public var highlightedTextColor: UIColor? {
+		get {
 			return self.label.highlightedTextColor
 		}
-		set
-		{
+		set {
 			self.label.highlightedTextColor = newValue
 		}
 	}
 	// Font
-	public var font: UIFont!
-	{
-		get
-		{
+	public var font: UIFont! {
+		get {
 			return self.label.font
 		}
-		set
-		{
+		set {
 			self.label.font = newValue
 		}
 	}
 
 	// MARK: - UIImageView properties
 	// Image
-	public var image: UIImage?
-	{
-		get
-		{
+	public var image: UIImage? {
+		get {
 			return self.imageView.image
 		}
-		set
-		{
+		set {
 			self.imageView.image = newValue
 		}
 	}
 	// Highlighted Image
-	public var highlightedImage: UIImage?
-	{
-		get
-		{
+	public var highlightedImage: UIImage? {
+		get {
 			return self.imageView.highlightedImage
 		}
-		set
-		{
+		set {
 			self.imageView.highlightedImage = newValue
 		}
 	}
 
 	// MARK: - Override
-	override var isHighlighted: Bool
-	{
-		willSet
-		{
+	override var isHighlighted: Bool {
+		willSet {
 			self.label.isHighlighted = newValue
 			self.imageView.isHighlighted = newValue
 		}
-		didSet
-		{
+		didSet {
 			self.label.isHighlighted = self.isHighlighted
 			self.imageView.isHighlighted = self.isHighlighted
 		}
 	}
 
 	// MARK: - Initializers
-	init()
-	{
+	init() {
 		super.init(frame: .zero)
 
 		commonInit()
 	}
 
-	override init(frame: CGRect)
-	{
+	override init(frame: CGRect) {
 		super.init(frame: frame)
 
 		commonInit()
@@ -162,8 +127,7 @@ final class ImagedLabel: UIControl
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	private func commonInit()
-	{
+	private func commonInit() {
 		self.imageView.frame = CGRect(.zero, frame.height, frame.height)
 		self.addSubview(self.imageView)
 
@@ -181,34 +145,26 @@ final class ImagedLabel: UIControl
 	}
 
 	// MARK: - Gestures
-	@objc func singleTap(_ gest: UITapGestureRecognizer)
-	{
-		if gest.state == .ended
-		{
+	@objc func singleTap(_ gest: UITapGestureRecognizer) {
+		if gest.state == .ended {
 			sendActions(for: .touchUpInside)
 		}
 	}
 
 	// MARK: - Private
-	private func updateFrames()
-	{
-		if align == .left
-		{
+	private func updateFrames() {
+		if align == .left {
 			imageView.frame = CGRect(.zero, frame.height, frame.height)
 			label.frame = CGRect(imageView.maxX + space, 0, frame.width - imageView.maxX - space, frame.height)
-		}
-		else
-		{
+		} else {
 			imageView.frame = CGRect(frame.width - frame.height, 0, frame.height, frame.height)
 			label.frame = CGRect(.zero, frame.width - frame.height - space, frame.height)
 		}
 	}
 }
 
-extension ImagedLabel: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension ImagedLabel: Themed {
+	func applyTheme(_ theme: Theme) {
 
 	}
 }

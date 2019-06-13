@@ -1,19 +1,15 @@
 import UIKit
 
-
-final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout
-{
+final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout {
 	private static let margin = CGFloat(12)
 
-	override init()
-	{
+	override init() {
 		super.init()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override func prepare()
-	{
+	override func prepare() {
 		super.prepare()
 
 		scrollDirection = .vertical
@@ -29,31 +25,26 @@ final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout
 		Settings.shared.set(size, forKey: .coversSize)
 	}
 
-	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint
-	{
+	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
 		return collectionView?.contentOffset ?? .zero
 	}
 }
 
-final class MusicalCollectionView: UIView
-{
+final class MusicalCollectionView: UIView {
 	// MARK: - Public roperties
 	// Collection view
 	var collectionView = UICollectionView(frame: .zero, collectionViewLayout: MusicalCollectionViewFlowLayout())
 	//
 	var indexView = TitlesIndexView(frame: .zero)
 	// Type of entities displayed
-	var musicalEntityType = MusicalEntityType.albums
-	{
-		didSet
-		{
+	var musicalEntityType = MusicalEntityType.albums {
+		didSet {
 			self.collectionView.register(MusicalEntityCollectionViewCell.self, forCellWithReuseIdentifier: musicalEntityType.cellIdentifier())
 		}
 	}
 
 	// MARK: - Initializers
-	init(frame: CGRect, musicalEntityType: MusicalEntityType)
-	{
+	init(frame: CGRect, musicalEntityType: MusicalEntityType) {
 		super.init(frame: frame)
 
 		let widthIndexView = CGFloat(20)
@@ -70,48 +61,39 @@ final class MusicalCollectionView: UIView
 
 		initializeTheming()
 	}
-	
+
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	func reloadData()
-	{
+	func reloadData() {
 		collectionView.reloadData()
 	}
 
-	func setIndexTitles(_ titles: [String], selectedIndex: Int = 0)
-	{
+	func setIndexTitles(_ titles: [String], selectedIndex: Int = 0) {
 		indexView.setTitles(titles, selectedIndex: selectedIndex)
 	}
 
-	func setCurrentIndex(_ index: Int)
-	{
+	func setCurrentIndex(_ index: Int) {
 		indexView.setCurrentIndex(index)
 	}
 
-	func updateLayout()
-	{
+	func updateLayout() {
 		collectionView.collectionViewLayout.invalidateLayout()
 		collectionView.collectionViewLayout = MusicalCollectionViewFlowLayout()
 	}
 }
 
-extension MusicalCollectionView: TitlesIndexViewDelegate
-{
-	func didSelectIndex(_ index: Int)
-	{
+extension MusicalCollectionView: TitlesIndexViewDelegate {
+	func didSelectIndex(_ index: Int) {
 		collectionView.scrollToItem(at: IndexPath(row: 0, section: index), at: .top, animated: false)
 	}
 
-	func didScrollToIndex(_ index: Int)
-	{
+	func didScrollToIndex(_ index: Int) {
 		collectionView.scrollToItem(at: IndexPath(row: 0, section: index), at: .top, animated: false)
 	}
 }
 
-extension MusicalCollectionView: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension MusicalCollectionView: Themed {
+	func applyTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 		collectionView.backgroundColor = theme.backgroundColor
 		indexView.backgroundColor = theme.backgroundColor

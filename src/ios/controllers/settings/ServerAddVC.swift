@@ -1,11 +1,8 @@
 import UIKit
 
-
 private let headerSectionHeight: CGFloat = 32
 
-
-final class ServerAddVC: NYXTableViewController
-{
+final class ServerAddVC: NYXTableViewController {
 	// MARK: - Private properties
 	// MPD Server name
 	private var tfMPDName: UITextField!
@@ -37,8 +34,7 @@ final class ServerAddVC: NYXTableViewController
 	private let serversManager: ServersManager
 
 	// MARK: - Initializers
-	init(mpdBridge: MPDBridge)
-	{
+	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
 		self.serversManager = ServersManager()
 
@@ -48,8 +44,7 @@ final class ServerAddVC: NYXTableViewController
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	// MARK: - UIViewController
-	override func viewDidLoad()
-	{
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		// Navigation bar title
@@ -119,32 +114,27 @@ final class ServerAddVC: NYXTableViewController
 		initializeTheming()
 	}
 
-	override func viewWillAppear(_ animated: Bool)
-	{
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
 		updateFields()
 	}
 
-	override func viewWillDisappear(_ animated: Bool)
-	{
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 
-		if isMovingFromParent
-		{
+		if isMovingFromParent {
 			self.validateSettingsAction(nil)
 		}
 	}
 
 	// MARK: - Buttons actions
-	@objc func validateSettingsAction(_ sender: Any?)
-	{
+	@objc func validateSettingsAction(_ sender: Any?) {
 		view.endEditing(true)
 
 		// Check server name
-		guard let serverName = tfMPDName.text , serverName.count > 0 else
-		{
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_name"), preferredStyle: .alert)
+		guard let serverName = tfMPDName.text, serverName.count > 0 else {
+			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message: NYXLocalizedString("lbl_alert_servercfg_error_name"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
 			navigationController?.present(alertController, animated: true, completion: nil)
@@ -152,9 +142,8 @@ final class ServerAddVC: NYXTableViewController
 		}
 
 		// Check MPD hostname / ip
-		guard let ip = tfMPDHostname.text , ip.count > 0 else
-		{
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
+		guard let ipa = tfMPDHostname.text, ipa.count > 0 else {
+			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message: NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 			alertController.addAction(cancelAction)
 			navigationController?.present(alertController, animated: true, completion: nil)
@@ -163,36 +152,29 @@ final class ServerAddVC: NYXTableViewController
 
 		// Check MPD port
 		var port = UInt16(6600)
-		if let strPort = tfMPDPort.text, let p = UInt16(strPort)
-		{
-			port = p
+		if let strPort = tfMPDPort.text, let uiport = UInt16(strPort) {
+			port = uiport
 		}
 
 		// Check MPD password (optional)
 		var password = ""
-		if let strPassword = tfMPDPassword.text , strPassword.count > 0
-		{
+		if let strPassword = tfMPDPassword.text, strPassword.count > 0 {
 			password = strPassword
 		}
 
-		let mpdServer = MPDServer(hostname: ip, port: port, password: password)
+		let mpdServer = MPDServer(hostname: ipa, port: port, password: password)
 		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
-		switch result
-		{
-		case .failure( _):
+		switch result {
+		case .failure:
 			break
-		case .success( _):
-			if let _ = selectedServer
-			{
+		case .success:
+			if selectedServer != nil {
 				selectedServer?.mpd = mpdServer
-				if selectedServer?.name != serverName
-				{
+				if selectedServer?.name != serverName {
 					selectedServer?.name = serverName
 				}
-			}
-			else
-			{
+			} else {
 				selectedServer = ShinobuServer(name: serverName, mpd: mpdServer)
 			}
 
@@ -203,52 +185,40 @@ final class ServerAddVC: NYXTableViewController
 		}
 
 		// Check web URL (optional)
-		if let strURL = tfWEBHostname.text , String.isNullOrWhiteSpace(strURL) == false
-		{
+		if let strURL = tfWEBHostname.text, String.isNullOrWhiteSpace(strURL) == false {
 			var port = UInt16(80)
-			if let strPort = tfWEBPort.text, let p = UInt16(strPort)
-			{
-				port = p
+			if let strPort = tfWEBPort.text, let uiport = UInt16(strPort) {
+				port = uiport
 			}
 
 			var coverName = "cover.jpg"
-			if let cn = tfWEBCoverName.text , String.isNullOrWhiteSpace(cn) == false
-			{
-				if String.isNullOrWhiteSpace(URL(fileURLWithPath: cn).pathExtension) == false
-				{
-					coverName = cn
+			if let covn = tfWEBCoverName.text, String.isNullOrWhiteSpace(covn) == false {
+				if String.isNullOrWhiteSpace(URL(fileURLWithPath: covn).pathExtension) == false {
+					coverName = covn
 				}
 			}
 			let webServer = CoverServer(hostname: strURL, port: port, coverName: coverName)
 			selectedServer?.covers = webServer
 
-			if selectedServer != nil
-			{
+			if selectedServer != nil {
 				serversManager.handleServer(selectedServer!)
-			}
-			else
-			{
-				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message:NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
+			} else {
+				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message: NYXLocalizedString("lbl_alert_servercfg_error_msg"), preferredStyle: .alert)
 				let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel)
 				alertController.addAction(cancelAction)
 				navigationController?.present(alertController, animated: true, completion: nil)
 				return
 			}
-		}
-		else
-		{
-			if selectedServer != nil
-			{
+		} else {
+			if selectedServer != nil {
 				selectedServer?.covers = nil
 				serversManager.handleServer(selectedServer!)
 			}
 		}
 	}
 
-	@objc func browserZeroConfAction(_ sender: Any?)
-	{
-		if zeroConfVC == nil
-		{
+	@objc func browserZeroConfAction(_ sender: Any?) {
+		if zeroConfVC == nil {
 			zeroConfVC = ZeroConfBrowserVC()
 		}
 		zeroConfVC?.delegate = self
@@ -258,20 +228,16 @@ final class ServerAddVC: NYXTableViewController
 	}
 
 	// MARK: - Notifications
-	@objc func keyboardDidShowNotification(_ aNotification: Notification)
-	{
-		if keyboardVisible
-		{
+	@objc func keyboardDidShowNotification(_ aNotification: Notification) {
+		if keyboardVisible {
 			return
 		}
 
-		guard let info = aNotification.userInfo else
-		{
+		guard let info = aNotification.userInfo else {
 			return
 		}
 
-		guard let value = info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue? else
-		{
+		guard let value = info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue? else {
 			return
 		}
 
@@ -280,20 +246,16 @@ final class ServerAddVC: NYXTableViewController
 		keyboardVisible = true
 	}
 
-	@objc func keyboardDidHideNotification(_ aNotification: Notification)
-	{
-		if keyboardVisible == false
-		{
+	@objc func keyboardDidHideNotification(_ aNotification: Notification) {
+		if keyboardVisible == false {
 			return
 		}
 
-		guard let info = aNotification.userInfo else
-		{
+		guard let info = aNotification.userInfo else {
 			return
 		}
 
-		guard let value = info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue? else
-		{
+		guard let value = info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue? else {
 			return
 		}
 
@@ -302,16 +264,13 @@ final class ServerAddVC: NYXTableViewController
 		keyboardVisible = false
 	}
 
-	@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification)
-	{
+	@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification) {
 		updateOutputsLabel()
 	}
 
 	// MARK: - Private
-	private func updateFields()
-	{
-		if let server = selectedServer
-		{
+	private func updateFields() {
+		if let server = selectedServer {
 			tfMPDName.text = server.name
 			tfMPDHostname.text = server.mpd.hostname
 			tfMPDPort.text = String(server.mpd.port)
@@ -322,9 +281,7 @@ final class ServerAddVC: NYXTableViewController
 			tfWEBCoverName.text = server.covers?.coverName ?? "cover.jpg"
 
 			updateOutputsLabel()
-		}
-		else
-		{
+		} else {
 			tfMPDName.text = ""
 			tfMPDHostname.text = ""
 			tfMPDPort.text = "6600"
@@ -339,31 +296,26 @@ final class ServerAddVC: NYXTableViewController
 		updateCacheLabel()
 	}
 
-	private func clearCache(confirm: Bool)
-	{
-		if confirm
-		{
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_purge_cache_title"), message:NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle: .alert)
+	private func clearCache(confirm: Bool) {
+		if confirm {
+			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_purge_cache_title"), message: NYXLocalizedString("lbl_alert_purge_cache_msg"), preferredStyle: .alert)
 			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel)
 			alertController.addAction(cancelAction)
-			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (action) in
-				ImageCache.shared.clear() { (success) in
+			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive) { (_) in
+				ImageCache.shared.clear { (_) in
 					self.updateCacheLabel()
 				}
 			}
 			alertController.addAction(okAction)
 			present(alertController, animated: true, completion: nil)
-		}
-		else
-		{
-			ImageCache.shared.clear() { (success) in
+		} else {
+			ImageCache.shared.clear { (_) in
 				self.updateCacheLabel()
 			}
 		}
 	}
 
-	private func updateCacheLabel()
-	{
+	private func updateCacheLabel() {
 		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else { return }
 		DispatchQueue.global().async {
 			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
@@ -374,164 +326,129 @@ final class ServerAddVC: NYXTableViewController
 		}
 	}
 
-	private func updateOutputsLabel()
-	{
-		guard let _ = selectedServer else { return }
+	private func updateOutputsLabel() {
+		guard selectedServer != nil else { return }
 
 		let cnn = MPDConnection(selectedServer!.mpd)
 		let result = cnn.connect()
-		switch result
-		{
-			case .failure( _):
+		switch result {
+		case .failure:
+			break
+		case .success:
+			let res = cnn.getAvailableOutputs()
+			switch res {
+			case .failure:
 				break
-			case .success( _):
-				let r = cnn.getAvailableOutputs()
-				switch r
-				{
-					case .failure( _):
-						break
-					case .success(let outputs):
-						if outputs.count == 0
-						{
-							lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
-							return
-						}
-						let enabledOutputs = outputs.filter { $0.enabled }
-						if enabledOutputs.count == 0
-						{
-							lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
-							return
-						}
-						let text = enabledOutputs.reduce("", { $0 + $1.name + ", " })
-						let x = text[..<text.index(text.endIndex, offsetBy: -2)]
-						lblMPDOutput.text = String(x)
+			case .success(let outputs):
+				if outputs.count == 0 {
+					lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
+					return
 				}
-				cnn.disconnect()
+				let enabledOutputs = outputs.filter { $0.enabled }
+				if enabledOutputs.count == 0 {
+					lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
+					return
+				}
+				let text = enabledOutputs.reduce("", { $0 + $1.name + ", " })
+				let x = text[..<text.index(text.endIndex, offsetBy: -2)]
+				lblMPDOutput.text = String(x)
+			}
+			cnn.disconnect()
 		}
 	}
 }
 
 // MARK: - ZeroConfBrowserVCDelegate
-extension ServerAddVC: ZeroConfBrowserVCDelegate
-{
-	func audioServerDidChange(with server: ShinobuServer)
-	{
+extension ServerAddVC: ZeroConfBrowserVCDelegate {
+	func audioServerDidChange(with server: ShinobuServer) {
 		clearCache(confirm: false)
 		selectedServer = server
 	}
 }
 
 // MARK: - UITableViewDataSource
-extension ServerAddVC
-{
-	override func numberOfSections(in tableView: UITableView) -> Int
-	{
+extension ServerAddVC {
+	override func numberOfSections(in tableView: UITableView) -> Int {
 		return 3
 	}
-	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-	{
-		switch section
-		{
-			case 0:
-				return 1
-			case 1:
-				return 5
-			case 2:
-				return 4
-			default:
-				return 0
+
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		switch section {
+		case 0:
+			return 1
+		case 1:
+			return 5
+		case 2:
+			return 4
+		default:
+			return 0
 		}
 	}
-	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-	{
+
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cellIdentifier = "\(indexPath.section):\(indexPath.row)"
 		var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
-		if cell == nil
-		{
+		if cell == nil {
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
 
-			if indexPath.section == 0
-			{
-				if indexPath.row == 0
-				{
+			if indexPath.section == 0 {
+				if indexPath.row == 0 {
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(tfMPDName)
 					tfMPDName.frame = CGRect(16, 0, UIScreen.main.bounds.width - 32, 44)
 				}
-			}
-			else if indexPath.section == 1
-			{
-				if indexPath.row == 0
-				{
+			} else if indexPath.section == 1 {
+				if indexPath.row == 0 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_host")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDHostname)
 					tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 1
-				{
+				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_port")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDPort)
 					tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 2
-				{
+				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_password")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDPassword)
 					tfMPDPassword.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 3
-				{
+				} else if indexPath.row == 3 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_output")
 					cell?.selectionStyle = .none
 					cell?.addSubview(lblMPDOutput)
 					lblMPDOutput.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 4
-				{
+				} else if indexPath.row == 4 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_update_db")
 					cell?.textLabel?.textAlignment = .center
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
-					let v = UIView()
-					v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
-					cell?.selectedBackgroundView = v
+					let view = UIView()
+					view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+					cell?.selectedBackgroundView = view
 				}
-			}
-			else
-			{
-				if indexPath.row == 0
-				{
+			} else {
+				if indexPath.row == 0 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_host")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBHostname)
 					tfWEBHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 1
-				{
+				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_port")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBPort)
 					tfWEBPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 2
-				{
+				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_covername")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBCoverName)
 					tfWEBCoverName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-				}
-				else if indexPath.row == 3
-				{
+				} else if indexPath.row == 3 {
 					cell?.textLabel?.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(cacheSize) / 1048576))\(NYXLocalizedString("lbl_megabytes")))"
 					cell?.textLabel?.textAlignment = .center
 					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .black)
-					let v = UIView()
-					v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
-					cell?.selectedBackgroundView = v
+					let view = UIView()
+					view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
+					cell?.selectedBackgroundView = view
 				}
 			}
 		}
@@ -540,44 +457,26 @@ extension ServerAddVC
 		cell?.backgroundColor = themeProvider.currentTheme.tableCellColor
 		cell?.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 
-		if indexPath.section == 0
-		{
-			if indexPath.row == 0
-			{
+		if indexPath.section == 0 {
+			if indexPath.row == 0 {
 				tfMPDName.frame = CGRect(16, 0, UIScreen.main.bounds.width - 32, 44)
 			}
-		}
-		else if indexPath.section == 1
-		{
-			if indexPath.row == 0
-			{
+		} else if indexPath.section == 1 {
+			if indexPath.row == 0 {
 				tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-			}
-			else if indexPath.row == 1
-			{
+			} else if indexPath.row == 1 {
 				tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-			}
-			else if indexPath.row == 2
-			{
+			} else if indexPath.row == 2 {
 				tfMPDPassword.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-			}
-			else if indexPath.row == 3
-			{
+			} else if indexPath.row == 3 {
 				lblMPDOutput.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
-		}
-		else
-		{
-			if indexPath.row == 0
-			{
+		} else {
+			if indexPath.row == 0 {
 				tfWEBHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-			}
-			else if indexPath.row == 1
-			{
+			} else if indexPath.row == 1 {
 				tfWEBPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
-			}
-			else if indexPath.row == 2
-			{
+			} else if indexPath.row == 2 {
 				tfWEBCoverName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			}
 		}
@@ -587,58 +486,45 @@ extension ServerAddVC
 }
 
 // MARK: - UITableViewDelegate
-extension ServerAddVC
-{
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-	{
+extension ServerAddVC {
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
-		if indexPath.section == 1 && indexPath.row == 3
-		{
-			guard let cell = tableView.cellForRow(at: indexPath) else
-			{
+		if indexPath.section == 1 && indexPath.row == 3 {
+			guard let cell = tableView.cellForRow(at: indexPath) else {
 				return
 			}
 
 			guard let server = selectedServer else { return }
 
-			let vc = AudioOutputsListVC(mpdServer: server.mpd)
-			vc.modalPresentationStyle = .popover
-			if let popController = vc.popoverPresentationController
-			{
+			let avc = AudioOutputsListVC(mpdServer: server.mpd)
+			avc.modalPresentationStyle = .popover
+			if let popController = avc.popoverPresentationController {
 				popController.permittedArrowDirections = .up
 				popController.sourceRect = cell.bounds
 				popController.sourceView = cell
 				popController.delegate = self
 				popController.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
-				present(vc, animated: true, completion: nil)
+				present(avc, animated: true, completion: nil)
 			}
-		}
-		else if indexPath.section == 1 && indexPath.row == 4
-		{
-			mpdBridge.updateDatabase() { (succeeded) in
+		} else if indexPath.section == 1 && indexPath.row == 4 {
+			mpdBridge.updateDatabase { (succeeded) in
 				DispatchQueue.main.async {
-					if succeeded == false
-					{
+					if succeeded == false {
 						MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_alert_update_mpd_failed"), type: .error))
-					}
-					else
-					{
+					} else {
 						MessageView.shared.showWithMessage(message: Message(content: NYXLocalizedString("lbl_alert_update_mpd_succeeded"), type: .success))
 					}
 				}
 			}
-		}
-		else if indexPath.section == 2 && indexPath.row == 3
-		{
+		} else if indexPath.section == 2 && indexPath.row == 3 {
 			clearCache(confirm: true)
 		}
 	}
 
-	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView?
-	{
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 
@@ -649,71 +535,48 @@ extension ServerAddVC
 		label.textAlignment = .center
 		dummy.addSubview(label)
 
-		if section == 0
-		{
+		if section == 0 {
 			label.text = NYXLocalizedString("lbl_server_name").uppercased()
-		}
-		else if section == 1
-		{
+		} else if section == 1 {
 			label.text = NYXLocalizedString("lbl_server_section_server").uppercased()
-		}
-		else
-		{
+		} else {
 			label.text = NYXLocalizedString("lbl_server_section_cover").uppercased()
 		}
 
 		return dummy
 	}
 
-	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
-	{
+	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return headerSectionHeight
 	}
 
-	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView?
-	{
+	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		let dummy = UIView(frame: CGRect(0, 0, tableView.width, headerSectionHeight))
 		dummy.backgroundColor = tableView.backgroundColor
 		return dummy
 	}
 
-	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat
-	{
+	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 		return headerSectionHeight
 	}
 }
 
 // MARK: - UITextFieldDelegate
-extension ServerAddVC: UITextFieldDelegate
-{
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool
-	{
-		if textField === tfMPDName
-		{
+extension ServerAddVC: UITextFieldDelegate {
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		if textField === tfMPDName {
 			tfMPDHostname.becomeFirstResponder()
-		}
-		else if textField === tfMPDHostname
-		{
+		} else if textField === tfMPDHostname {
 			tfMPDPort.becomeFirstResponder()
-		}
-		else if textField === tfMPDPort
-		{
+		} else if textField === tfMPDPort {
 			tfMPDPassword.becomeFirstResponder()
-		}
-		else if textField === tfMPDPassword
-		{
+		} else if textField === tfMPDPassword {
 			textField.resignFirstResponder()
-		}
-		else if textField === tfWEBHostname
-		{
+		} else if textField === tfWEBHostname {
 			tfWEBPort.becomeFirstResponder()
-		}
-		else if textField === tfWEBPort
-		{
+		} else if textField === tfWEBPort {
 			tfWEBCoverName.becomeFirstResponder()
-		}
-		else
-		{
+		} else {
 			textField.resignFirstResponder()
 		}
 		return true
@@ -721,18 +584,14 @@ extension ServerAddVC: UITextFieldDelegate
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
-extension ServerAddVC: UIPopoverPresentationControllerDelegate
-{
-	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle
-	{
+extension ServerAddVC: UIPopoverPresentationControllerDelegate {
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
 		return .none
 	}
 }
 
-extension ServerAddVC: Themed
-{
-	func applyTheme(_ theme: Theme)
-	{
+extension ServerAddVC: Themed {
+	func applyTheme(_ theme: Theme) {
 		view.backgroundColor = theme.backgroundColor
 		tableView.backgroundColor = theme.backgroundColor
 		tableView.separatorColor = theme.tableSeparatorColor

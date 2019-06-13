@@ -1,23 +1,18 @@
 import Foundation
 
-struct PrettyDBAlbum
-{
+struct PrettyDBAlbum {
 	let name: String
 	let path: String
 }
 
-final class PrettyDBManager
-{
-	static func albums() -> [Album]
-	{
+final class PrettyDBManager {
+	static func albums() -> [Album] {
 		let serversManager = ServersManager()
-		guard let server = serversManager.getSelectedServer()?.covers else
-		{
+		guard let server = serversManager.getSelectedServer()?.covers else {
 			return []
 		}
 
-		guard let url = server.URLWithPath("_mpd.json") else
-		{
+		guard let url = server.URLWithPath("_mpd.json") else {
 			return []
 		}
 
@@ -38,34 +33,34 @@ final class PrettyDBManager
 
 		_ = semaphore.wait(timeout: .distantFuture)
 
-		guard let resp = response, resp.statusCode == 200 else
-		{
+		guard let resp = response, resp.statusCode == 200 else {
 			return []
 		}
 
-		if let _ = error
-		{
+		if error != nil {
 			return []
 		}
 
-		guard let json = data else
-		{
+		guard let json = data else {
 			return []
 		}
 
-		let a = try! JSONSerialization.jsonObject(with: json, options: [])
-		guard let alb = a as? [[String: String]] else {
+		do {
+			let data2 = try JSONSerialization.jsonObject(with: json, options: [])
+			guard let albs = data2 as? [[String: String]] else {
+				return []
+			}
+
+			var albums = [Album]()
+			for album in albs {
+				let alo = Album(name: album["name"] ?? "")
+				alo.path = album["path"]
+				albums.append(alo)
+			}
+
+			return albums
+		} catch {
 			return []
 		}
-
-		var albums = [Album]()
-		for album in alb
-		{
-			let x = Album(name: album["name"] ?? "")
-			x.path = album["path"]
-			albums.append(x)
-		}
-
-		return albums
 	}
 }

@@ -1,10 +1,7 @@
 import Foundation
 
-
-struct Message: CustomStringConvertible
-{
-	public enum MessageType
-	{
+struct Message: CustomStringConvertible {
+	public enum MessageType {
 		case error
 		case warning
 		case information
@@ -16,14 +13,12 @@ struct Message: CustomStringConvertible
 	// Message type
 	let type: MessageType
 
-	init(content: String, type: MessageType)
-	{
+	init(content: String, type: MessageType) {
 		self.content = content
 		self.type = type
 	}
 
-	public var description: String
-	{
+	public var description: String {
 		return "[\(type)] \(content)"
 	}
 }
