@@ -53,8 +53,7 @@ final class Logger {
 		print("[\(file)]:[\(line)] => \(message)")
 #endif
 
-		if Settings.shared.bool(forKey: .pref_enableLogging) == false
-		{
+		if Settings.shared.bool(forKey: .pref_enableLogging) == false {
 			return
 		}
 

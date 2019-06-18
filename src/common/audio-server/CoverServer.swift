@@ -66,7 +66,7 @@ struct CoverServer: Codable, Equatable {
 		}
 
 		if tmp != "/" {
-			urlPath +=  "/" + coverName
+			urlPath += "/" + coverName
 		} else {
 			urlPath += coverName
 		}
