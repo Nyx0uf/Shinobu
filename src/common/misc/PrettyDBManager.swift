@@ -58,7 +58,10 @@ final class PrettyDBManager {
 
 			var albums = [Album]()
 			for album in albs {
-				guard let name = album["name"], let year = album["year"], let artist = album["artist"], let genre = album["genre"], let path = album["path"] else { continue }
+				guard let name = album["name"], let path = album["path"] else { continue }
+				let year = album["year"] ?? ""
+				let artist = album["artist"] ?? ""
+				let genre = album["genre"] ?? ""
 				let alo = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(alo)
 			}
