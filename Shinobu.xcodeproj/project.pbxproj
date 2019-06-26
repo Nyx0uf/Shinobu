@@ -12,6 +12,10 @@
 		43147ED7227B410400486588 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
 		43147ED8227B415300486588 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
 		4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
+		433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
+		433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
+		433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
+		433EAE2222C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
 		434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E517521D56CF000CD88F7 /* AppDelegate.swift */; };
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 		434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
@@ -161,6 +165,8 @@
 /* Begin PBXFileReference section */
 		430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServerTableViewCell.swift; sourceTree = "<group>"; };
 		430141E12229307300C68075 /* ServersManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersManager.swift; sourceTree = "<group>"; };
+		433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedObject.swift; sourceTree = "<group>"; };
+		433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedArray.swift; sourceTree = "<group>"; };
 		434E513121D56BF400CD88F7 /* connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connection.h; sourceTree = "<group>"; };
 		434E513221D56BF400CD88F7 /* protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = protocol.h; sourceTree = "<group>"; };
 		434E513321D56BF400CD88F7 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
@@ -328,6 +334,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		433EAE1C22C3BA86009AE208 /* threading */ = {
+			isa = PBXGroup;
+			children = (
+				433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */,
+				43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */,
+				433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */,
+			);
+			path = threading;
+			sourceTree = "<group>";
+		};
 		434E512F21D56BF400CD88F7 /* libmpdclient */ = {
 			isa = PBXGroup;
 			children = (
@@ -553,6 +569,7 @@
 		4358B03E21EB44E2009A3BBF /* misc */ = {
 			isa = PBXGroup;
 			children = (
+				433EAE1C22C3BA86009AE208 /* threading */,
 				4358B04621EB44E2009A3BBF /* CountedObject.swift */,
 				4358B04B21EB44E2009A3BBF /* Duration.swift */,
 				4358B03F21EB44E2009A3BBF /* ImageCache.swift */,
@@ -563,7 +580,6 @@
 				435715F822AE6625001ED982 /* PrettyDBManager.swift */,
 				4358B04721EB44E2009A3BBF /* Settings.swift */,
 				43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */,
-				43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */,
 				4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */,
 			);
 			path = misc;
@@ -860,6 +876,7 @@
 				4358B06F21EB47A8009A3BBF /* AudioOutputsListVC.swift in Sources */,
 				43B0EE7F227099D200F35115 /* CoverOperations.swift in Sources */,
 				4358B08621EB47C2009A3BBF /* AlbumHeaderView.swift in Sources */,
+				433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */,
 				435715F922AE6625001ED982 /* PrettyDBManager.swift in Sources */,
 				4358B02021EB42B4009A3BBF /* String+Extensions.swift in Sources */,
 				4358B05621EB44E2009A3BBF /* OperationManager.swift in Sources */,
@@ -918,6 +935,7 @@
 				430141E22229307300C68075 /* ServersManager.swift in Sources */,
 				4358B01F21EB42B4009A3BBF /* CGSize+Extensions.swift in Sources */,
 				4358B03621EB44C5009A3BBF /* Track.swift in Sources */,
+				433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */,
 				43793091226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */,
 				43C3E808226262F900F6F058 /* ContainerVC.swift in Sources */,
 				4358B05021EB44E2009A3BBF /* Logger.swift in Sources */,
@@ -939,6 +957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */,
 				435715FA22AE7810001ED982 /* PrettyDBManager.swift in Sources */,
 				43147ED8227B415300486588 /* OperationManager.swift in Sources */,
 				43147ED7227B410400486588 /* CoverOperations.swift in Sources */,
@@ -972,6 +991,7 @@
 				43FAE5B1224E5DDA006843E9 /* MusicalEntity.swift in Sources */,
 				43FAE5B2224E5DDA006843E9 /* Playlist.swift in Sources */,
 				43FAE5B3224E5DDA006843E9 /* Track.swift in Sources */,
+				433EAE2222C3BBA3009AE208 /* ThreadedArray.swift in Sources */,
 				43FAE5A1224E5D45006843E9 /* TodayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
