@@ -38,8 +38,8 @@ final class AlbumDetailVC: NYXViewController {
 		view.addSubview(colorView)
 
 		// Album header view
-		let coverSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: Settings.shared.data(forKey: .coversSize)!) as? NSValue
-		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, view.width, coverSize?.cgSizeValue.height ?? defaultHeight), coverSize: (coverSize?.cgSizeValue)!)
+		let coverSize = CGFloat(Settings.shared.integer(forKey: .coversSize))
+		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, view.width, coverSize), coverSize: CGSize(coverSize, coverSize))
 		view.addSubview(headerView)
 
 		// Tableview
@@ -65,7 +65,7 @@ final class AlbumDetailVC: NYXViewController {
 			mpdBridge.getTracksForAlbums([album]) { [weak self] (tracks) in
 				DispatchQueue.main.async {
 					self?.updateNavigationTitle()
-					self?.tableView.tracks = self?.album.tracks ?? []
+					self?.tableView.tracks = tracks ?? []
 				}
 			}
 		}

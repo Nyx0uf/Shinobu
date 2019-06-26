@@ -81,34 +81,29 @@ final class Settings {
 
 	// MARK: - Private
 	private func registerDefaultSettings() {
-		do {
-			let coversDirectoryPath = "covers"
-			let columns_ios = 2
-			let width_ios = CGFloat(180)
-			let columns_tvos = CGFloat(5)
-			let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
-			let defaultsValues: [String: Any] = try [
-				Settings.Key.selectedServerName.rawValue: "",
-				Settings.Key.coversDirectory.rawValue: coversDirectoryPath,
-				Settings.Key.coversSize.rawValue: NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_ios, width_ios)), requiringSecureCoding: false),
-				Settings.Key.coversSize_TVOS.rawValue: NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(width_tvos, width_tvos)), requiringSecureCoding: false),
-				Settings.Key.pref_fuzzySearch.rawValue: false,
-				Settings.Key.pref_enableLogging.rawValue: false,
-				Settings.Key.pref_shakeToPlayRandom.rawValue: false,
-				Settings.Key.pref_numberOfColumns.rawValue: columns_ios,
-				Settings.Key.pref_themeDark.rawValue: true,
-				Settings.Key.pref_tintColor.rawValue: TintColorType.orange.rawValue,
-				Settings.Key.pref_usePrettyDB.rawValue: true,
-				Settings.Key.lastTypeLibrary.rawValue: MusicalEntityType.albums.rawValue,
-				Settings.Key.lastTypeGenre.rawValue: MusicalEntityType.albums.rawValue
-			]
+		let coversDirectoryPath = "covers"
+		let columns_ios = 2
+		let width_ios = CGFloat(180)
+		let columns_tvos = CGFloat(5)
+		let width_tvos = ceil(((UIScreen.main.bounds.width * (2.0 / 3.0)) / columns_tvos) - (2 * 50))
+		let defaultsValues: [String: Any] = [
+			Settings.Key.selectedServerName.rawValue: "",
+			Settings.Key.coversDirectory.rawValue: coversDirectoryPath,
+			Settings.Key.coversSize.rawValue: Int(width_ios),
+			Settings.Key.coversSize_TVOS.rawValue: Int(width_tvos),
+			Settings.Key.pref_fuzzySearch.rawValue: false,
+			Settings.Key.pref_enableLogging.rawValue: false,
+			Settings.Key.pref_shakeToPlayRandom.rawValue: false,
+			Settings.Key.pref_numberOfColumns.rawValue: columns_ios,
+			Settings.Key.pref_themeDark.rawValue: true,
+			Settings.Key.pref_tintColor.rawValue: TintColorType.orange.rawValue,
+			Settings.Key.pref_usePrettyDB.rawValue: true,
+			Settings.Key.lastTypeLibrary.rawValue: MusicalEntityType.albums.rawValue,
+			Settings.Key.lastTypeGenre.rawValue: MusicalEntityType.albums.rawValue
+		]
 
-			defaults.register(defaults: defaultsValues)
-			defaults.synchronize()
-		} catch let error {
-			Logger.shared.log(error: error)
-			fatalError("Failed to register default preferences")
-		}
+		defaults.register(defaults: defaultsValues)
+		defaults.synchronize()
 	}
 
 	public func createDirectories() {

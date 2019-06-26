@@ -51,8 +51,9 @@ final class PlayerVC: NYXViewController {
 	// Motion effects
 	private let motionEffectX = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
 	private let motionEffectY = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
-	// Tap
+	// Taps
 	private let singleTap = UITapGestureRecognizer()
+	private let doubleTap = UITapGestureRecognizer()
 	// Up next
 	private let lblNextTrack = AutoScrollLabel()
 	private let lblNextAlbumArtist = AutoScrollLabel()
@@ -136,7 +137,7 @@ final class PlayerVC: NYXViewController {
 
 		// Queue button
 		btnQueue.frame = CGRect(marginX, view.height - miniHeight, miniBaseHeight, miniBaseHeight)
-		btnQueue.addTarget(self, action: #selector(bla(_:)), for: .touchUpInside)
+		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
 		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: themeProvider.currentTheme.navigationTitleTextColor, selectedTintColor: themeProvider.currentTheme.tintColor)
 		blurEffectView.contentView.addSubview(btnQueue)
 
@@ -265,6 +266,13 @@ final class PlayerVC: NYXViewController {
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
 		tapableView.addGestureRecognizer(singleTap)
 
+		// Double tap in minified view to directly show up next
+		doubleTap.numberOfTapsRequired = 2
+		doubleTap.numberOfTouchesRequired = 1
+		doubleTap.addTarget(self, action: #selector(doubleTap(_:)))
+		tapableView.addGestureRecognizer(doubleTap)
+		singleTap.require(toFail: doubleTap)
+
 		// Useless motion effect
 		motionEffectX.minimumRelativeValue = 20
 		motionEffectX.maximumRelativeValue = -20
@@ -314,15 +322,10 @@ final class PlayerVC: NYXViewController {
 		}
 	}
 
-	@objc func bla(_ sender: Any?) {
-//		var start = Date()
-//		for _ in 0...100
-//		{
-//			let img = imgCover?.smartCropped(toSize: coverView.size)
-//		}
-//		var end = Date()
-//		var executionTime = end.timeIntervalSince(start)
-//		print("Execution time: \(executionTime)")
+	@objc func showUpNextAction(_ sender: Any?) {
+		let uvc = UpNextVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: uvc)
+		present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func showArtistAction(_ sender: Any?) {
@@ -346,6 +349,12 @@ final class PlayerVC: NYXViewController {
 		}
 	}
 
+	@objc func doubleTap(_ gesture: UITapGestureRecognizer) {
+		if gesture.state == .ended {
+			showUpNextAction(nil)
+		}
+	}
+
 	// MARK: - Notifications
 	@objc func playingTrackNotification(_ aNotification: Notification?) {
 		guard let notif = aNotification, let userInfos = notif.userInfo else { return }
@@ -354,6 +363,8 @@ final class PlayerVC: NYXViewController {
 
 		if isMinified { // Components to update when minified
 			progress.width = (CGFloat(elapsed) * (view.width - coverView.width)) / CGFloat(track.duration.seconds)
+			guard let isRandom = userInfos[PLAYER_RANDOM_KEY] as? Bool else { return }
+			doubleTap.isEnabled = isRandom == false
 		} else { // Components to update when full screen
 			// Update track position slider if not panning the slider
 			if !sliderTrack.isHighlighted && !sliderTrack.isSelected {
@@ -458,6 +469,8 @@ final class PlayerVC: NYXViewController {
 
 			self.lblNextTrack.alpha = state.isRandom ? 0 : 1
 			self.lblNextAlbumArtist.alpha = state.isRandom ? 0 : 1
+			self.btnQueue.alpha = state.isRandom ? 0 : 1
+			self.doubleTap.isEnabled = state.isRandom == false
 		}, completion: nil)
 	}
 
@@ -543,6 +556,7 @@ final class PlayerVC: NYXViewController {
 				self.coverView.addMotionEffect(self.motionEffectX)
 				self.coverView.addMotionEffect(self.motionEffectY)
 			})
+			self.doubleTap.isEnabled = false
 		} else {
 			let lblsHeightTotal = CGFloat(18 + 4 + 16)
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
@@ -575,6 +589,7 @@ final class PlayerVC: NYXViewController {
 				self.coverView.removeMotionEffect(self.motionEffectX)
 				self.coverView.removeMotionEffect(self.motionEffectY)
 			})
+			self.doubleTap.isEnabled = true
 		}
 		isMinified.toggle()
 	}

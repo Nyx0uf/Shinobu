@@ -33,6 +33,15 @@ final class Album: MusicalEntity {
 		super.init(name: name)
 	}
 
+	init(name: String, path: String, artist: String, genre: String, year: String) {
+		self.artist = artist
+		self.genre = genre
+		self.year = year
+		self.uniqueIdentifier = ""
+		self.path = path
+		super.init(name: name)
+	}
+
 	// MARK: - Hashable
 	override public func hash(into hasher: inout Hasher) {
 		let value = name.djb2() ^ Int32(genre.hashValue) ^ Int32(year.hashValue)

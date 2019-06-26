@@ -105,17 +105,17 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 		if let cover = UIImage.loadFromFileURL(coverURL) {
 			imageView.image = cover
 		} else {
-			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
-			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
+			let imgWidth = CGFloat(Settings.shared.integer(forKey: .coversSize))
+			let cropSize = CGSize(imgWidth, imgWidth)
 			if album.path != nil {
-				downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (_: UIImage, thumbnail: UIImage) in
+				downloadCoverForAlbum(album, cropSize: cropSize) { (_: UIImage, thumbnail: UIImage) in
 					DispatchQueue.main.async {
 						self.imageView.image = thumbnail
 					}
 				}
 			} else {
 				mpdBridge.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize: (cropSize?.cgSizeValue)!) { (_: UIImage, thumbnail: UIImage) in
+					self.downloadCoverForAlbum(album, cropSize: cropSize) { (_: UIImage, thumbnail: UIImage) in
 						DispatchQueue.main.async {
 							self.imageView.image = thumbnail
 						}

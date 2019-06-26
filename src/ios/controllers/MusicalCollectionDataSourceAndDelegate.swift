@@ -137,10 +137,10 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 				return
 			}
 
-			let sizeAsData = Settings.shared.data(forKey: .coversSize)!
-			let cropSize = try! NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSValue.self], from: sizeAsData) as? NSValue
+			let imgWidth = CGFloat(Settings.shared.integer(forKey: .coversSize))
+			let cropSize = CGSize(imgWidth, imgWidth)
 			if album.path != nil {
-				downloadCoverForAlbum(album, indexPath, cropSize: (cropSize?.cgSizeValue)!) { (_, thumbnail) in
+				downloadCoverForAlbum(album, indexPath, cropSize: cropSize) { (_, thumbnail) in
 					DispatchQueue.main.async {
 						self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
 					}
@@ -149,7 +149,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 				let dwi = mpdBridge.getPathForAlbum2(album) { (success, _) in
 					self.pathsOperation.removeValue(forKey: indexPath)
 					if success {
-						self.downloadCoverForAlbum(album, indexPath, cropSize: (cropSize?.cgSizeValue)!) { (_, thumbnail) in
+						self.downloadCoverForAlbum(album, indexPath, cropSize: cropSize) { (_, thumbnail) in
 							DispatchQueue.main.async {
 								self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
 							}

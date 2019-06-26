@@ -22,7 +22,12 @@ final class PrettyDBManager {
 
 		let semaphore = DispatchSemaphore(value: 0)
 
-		let dataTask = URLSession.shared.dataTask(with: url) {
+		let config = URLSessionConfiguration.default
+		config.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+		config.urlCache = nil
+		let session = URLSession.init(configuration: config)
+
+		let dataTask = session.dataTask(with: url) {
 			data = $0
 			response = $1 as? HTTPURLResponse
 			error = $2
@@ -53,8 +58,8 @@ final class PrettyDBManager {
 
 			var albums = [Album]()
 			for album in albs {
-				let alo = Album(name: album["name"] ?? "")
-				alo.path = album["path"]
+				guard let name = album["name"], let year = album["year"], let artist = album["artist"], let genre = album["genre"], let path = album["path"] else { continue }
+				let alo = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(alo)
 			}
 

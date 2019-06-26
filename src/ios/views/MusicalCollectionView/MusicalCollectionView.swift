@@ -21,8 +21,7 @@ final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout {
 		let itemWidth = ((collectionView.bounds.size.width - marginsAndInsets) / CGFloat(columns)).rounded(.down)
 		itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
 
-		let size = try! NSKeyedArchiver.archivedData(withRootObject: NSValue(cgSize: CGSize(itemWidth, itemWidth)), requiringSecureCoding: false)
-		Settings.shared.set(size, forKey: .coversSize)
+		Settings.shared.set(Int(itemWidth), forKey: .coversSize)
 	}
 
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
