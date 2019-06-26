@@ -6,7 +6,7 @@ final class ThreadedArray<T>: ThreadedObject<[T]> {
 	}
 
 	public convenience init() {
-		self.init([Element]())
+		self.init([T]())
 	}
 
 	public func append(_ newElement: Array<T>.Element) {
