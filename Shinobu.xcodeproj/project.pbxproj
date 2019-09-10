@@ -738,6 +738,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 43FAE5AB224E5D45006843E9 /* Build configuration list for PBXNativeTarget "Shinobu-Widget" */;
 			buildPhases = (
+				4348C59223279A1F00A87A16 /* SwiftLint */,
 				43FAE597224E5D45006843E9 /* Sources */,
 				43FAE598224E5D45006843E9 /* Frameworks */,
 				43FAE599224E5D45006843E9 /* Resources */,
@@ -823,6 +824,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4348C59223279A1F00A87A16 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		43781B4F22B156A400ACE098 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
