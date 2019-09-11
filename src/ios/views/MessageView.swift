@@ -17,14 +17,14 @@ final class MessageView: UIView {
 	// MARK: - Initializers
 	override init(frame f: CGRect) {
 		let statusHeight: CGFloat
-		if let top = UIApplication.shared.keyWindow?.safeAreaInsets.top {
+		if let top = UIApplication.shared.mainWindow?.safeAreaInsets.top {
 			statusHeight = top < 20 ? 20 : top
 		} else {
 			statusHeight = 20
 		}
 
 		let height = statusHeight + 44
-		let frame = CGRect(0, -height, (UIApplication.shared.keyWindow?.frame.width)!, height)
+		let frame = CGRect(0, -height, (UIApplication.shared.mainWindow?.frame.width)!, height)
 
 		super.init(frame: frame)
 

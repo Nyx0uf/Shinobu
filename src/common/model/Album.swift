@@ -9,13 +9,7 @@ final class Album: MusicalEntity {
 	// Album release date
 	var year: String = ""
 	// Album path
-	var path: String? {
-		didSet {
-			if let p = self.path {
-				self.uniqueIdentifier = "\(self.name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:#€").lowercased())_\(p.sha256())"
-			}
-		}
-	}
+	var path: String?
 	// Album tracks
 	var tracks: [Track]?
 	// Album UUID
@@ -37,8 +31,8 @@ final class Album: MusicalEntity {
 		self.artist = artist
 		self.genre = genre
 		self.year = year
-		self.uniqueIdentifier = ""
 		self.path = path
+		self.uniqueIdentifier = "\(name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:#€").lowercased())_\(path.sha256())"
 		super.init(name: name)
 	}
 

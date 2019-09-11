@@ -512,7 +512,7 @@ final class PlayerVC: NYXViewController {
 
 			updateUpNext(after: mpdBridge.getCurrentTrack()?.position ?? 0)
 
-			let y = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
+			let y = UIApplication.shared.mainWindow?.safeAreaInsets.top ?? 0
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
 				self.view.y = 0
 

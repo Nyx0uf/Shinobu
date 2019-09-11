@@ -579,7 +579,7 @@ extension LibraryVC {
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension LibraryVC {
+/*extension LibraryVC {
 	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath) {
 			previewingContext.sourceRect = cellAttributes.frame
@@ -603,3 +603,4 @@ extension LibraryVC {
 		return nil
 	}
 }
+*/

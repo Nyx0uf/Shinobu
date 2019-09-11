@@ -91,7 +91,7 @@ extension AlbumsListVC {
 }
 
 // MARK: - UIViewControllerPreviewingDelegate
-extension AlbumsListVC {
+/*extension AlbumsListVC {
 	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath) {
 			previewingContext.sourceRect = cellAttributes.frame
@@ -101,7 +101,7 @@ extension AlbumsListVC {
 		}
 		return nil
 	}
-}
+}*/
 
 // MARK: - Peek & Pop
 extension AlbumsListVC {

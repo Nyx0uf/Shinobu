@@ -1,6 +1,6 @@
 [![Twitter: @Nyx0uf](https://img.shields.io/badge/contact-@Nyx0uf-blue.svg?style=flat)](https://twitter.com/Nyx0uf) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Nyx0uf/shinobu/blob/master/LICENSE) [![Swift Version](https://img.shields.io/badge/Swift-5.0-orange.svg)]() [![Build Status](https://travis-ci.com/Nyx0uf/shinobu.svg?token=B17m6ZTXBssj71u81LbU&branch=master)](https://travis-ci.com/Nyx0uf/shinobu)
 
-**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server and requires *iOS 12.4*. It is designed to be fast (loading my 3000 albums library happens in an instant).
+**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server and requires *iOS 13.0*. It is designed to be fast (loading my 3000 albums library happens in an instant).
 
 I develop this app on my free time and for my personal need, you can ask for features but if I don't see the point I won't implement it.
 

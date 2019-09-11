@@ -68,7 +68,7 @@ class MusicalCollectionVC: NYXViewController {
 
 		// Collection view
 		var miniHeight = CGFloat(44)
-		if let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom {
+		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
 		}
 
@@ -168,7 +168,7 @@ class MusicalCollectionVC: NYXViewController {
 		if traitCollection.forceTouchCapability == .available {
 			collectionView.removeGestureRecognizer(longPress)
 			longPress.isEnabled = false
-			previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
+			//previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
 		} else {
 			collectionView.addGestureRecognizer(longPress)
 			longPress.isEnabled = true

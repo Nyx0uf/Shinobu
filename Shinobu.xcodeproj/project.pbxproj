@@ -107,6 +107,7 @@
 		43E31299226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
 		43E3129A226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
 		43E571DC22B92DD3003C1E5E /* UpNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E571DB22B92DD3003C1E5E /* UpNextVC.swift */; };
+		43EF1AA8232922B100A2FE10 /* UIApplication+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */; };
 		43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */; };
 		43FAE59E224E5D45006843E9 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43FAE59D224E5D45006843E9 /* NotificationCenter.framework */; };
 		43FAE5A1224E5D45006843E9 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FAE5A0224E5D45006843E9 /* TodayViewController.swift */; };
@@ -303,6 +304,7 @@
 		43E31298226F16DE00985C0B /* CGImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+Extensions.swift"; sourceTree = "<group>"; };
 		43E571DB22B92DD3003C1E5E /* UpNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpNextVC.swift; sourceTree = "<group>"; };
 		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Extensions.swift"; sourceTree = "<group>"; };
 		43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYXNavigationTitleView.swift; sourceTree = "<group>"; };
 		43FAE59B224E5D45006843E9 /* ShinobuWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShinobuWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FAE59D224E5D45006843E9 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
@@ -526,6 +528,7 @@
 				4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */,
 				4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */,
 				4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */,
+				43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -940,6 +943,7 @@
 				43E571DC22B92DD3003C1E5E /* UpNextVC.swift in Sources */,
 				43C3E80D2265FFAD00F6F058 /* ImagedSlider.swift in Sources */,
 				4358B02621EB42B4009A3BBF /* NotificationCenter+Extensions.swift in Sources */,
+				43EF1AA8232922B100A2FE10 /* UIApplication+Extensions.swift in Sources */,
 				4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */,
 				43B8BAAB22564E980033EA5D /* Button.swift in Sources */,
 				4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */,
@@ -1246,6 +1250,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1293,6 +1298,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1338,6 +1344,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1386,6 +1393,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
