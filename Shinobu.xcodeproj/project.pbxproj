@@ -219,7 +219,6 @@
 		434E517521D56CF000CD88F7 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		434E517B21D56CFA00CD88F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		434E517C21D56CFA00CD88F7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		434E517E21D56CFA00CD88F7 /* bridgingheader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridgingheader.h; sourceTree = "<group>"; };
 		434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "liblibmpdclient-ios.a"; sourceTree = "<group>"; };
 		434E518B21D5719700CD88F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		434E518C21D5720100CD88F7 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = fr; path = fr.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -465,7 +464,6 @@
 		434E517D21D56CFA00CD88F7 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				434E517E21D56CFA00CD88F7 /* bridgingheader.h */,
 				4358B09021EB9CD1009A3BBF /* Localizable.strings */,
 			);
 			path = common;
@@ -1263,7 +1261,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1310,7 +1308,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O3";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1359,7 +1357,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG WIDGET";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1408,7 +1406,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WIDGET;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = rsrc/common/bridgingheader.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O3";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 5.0;

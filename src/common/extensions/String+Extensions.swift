@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 extension String {
 	// MARK: Removal of characters
@@ -34,16 +35,8 @@ extension String {
 
 	// MARK: - Hash functions
 	func sha256() -> String {
-		var digest = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-		if let data = data(using: String.Encoding.utf8) {
-			CC_SHA256((data as NSData).bytes, CC_LONG(data.count), &digest)
-		}
-
-		var ret = ""
-		for i in 0 ..< Int(CC_SHA256_DIGEST_LENGTH) {
-			ret += String(format: "%02x", digest[i])
-		}
-		return ret
+		let data = Data(self.utf8)
+		return SHA256.hash(data: data).description
 	}
 
 	func djb2() -> Int32 {
