@@ -16,21 +16,6 @@ private let gray_preBias: [Int16] = [0, 0, 0, 0]
 private let gray_postBias = Int32(0)
 
 extension CGImage {
-	func vImageFormat() -> vImage_CGImageFormat? {
-		guard let colorSpace = self.colorSpace else {
-			return nil
-		}
-
-		return vImage_CGImageFormat(
-			bitsPerComponent: UInt32(self.bitsPerComponent),
-			bitsPerPixel: UInt32(self.bitsPerPixel),
-			colorSpace: Unmanaged.passRetained(colorSpace),
-			bitmapInfo: self.bitmapInfo,
-			version: 0,
-			decode: nil,
-			renderingIntent: self.renderingIntent)
-	}
-
 	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false) -> CGImage? {
 		let sourceWidth = CGFloat(width)
 		let sourceHeight = CGFloat(height)
@@ -66,19 +51,13 @@ extension CGImage {
 		guard let cgImage = originalRect != sourceRect ? self.cropping(to: sourceRect) : self else { return nil }
 
 		// Source & destination vImage buffers
-		var sourceBuffer = vImage_Buffer()
-		var destinationBuffer = vImage_Buffer()
+		guard let format = vImage_CGImageFormat(cgImage: self) else { return nil }
+		guard var sourceBuffer = try? vImage_Buffer(cgImage: self, format: format) else { return nil }
+		guard var destinationBuffer = try? vImage_Buffer(width: Int(fitSize.width * UIScreen.main.scale), height: Int(fitSize.height * UIScreen.main.scale), bitsPerPixel: format.bitsPerPixel) else { return nil }
 
 		defer {
-			free(destinationBuffer.data)
-			free(sourceBuffer.data)
-		}
-
-		guard var format = cgImage.vImageFormat() else { return nil }
-		guard vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, cgImage, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
-
-		guard vImageBuffer_Init(&destinationBuffer, UInt(fitSize.height * UIScreen.main.scale), UInt(fitSize.width * UIScreen.main.scale), format.bitsPerPixel, vImage_Flags(kvImageNoFlags)) == kvImageNoError else {
-			return nil
+			destinationBuffer.free()
+			sourceBuffer.free()
 		}
 
 		if cgImage.alphaInfo == .premultipliedFirst || cgImage.alphaInfo == .premultipliedLast { // Premultiplied case
@@ -89,36 +68,25 @@ extension CGImage {
 			guard vImageScale_ARGB8888(&sourceBuffer, &destinationBuffer, nil, vImage_Flags(highQuality ? kvImageHighQualityResampling : kvImageNoFlags)) == kvImageNoError else { return nil }
 		}
 
-		guard let result = vImageCreateCGImageFromBuffer(&destinationBuffer, &format, nil, nil, vImage_Flags(kvImageNoFlags), nil) else { return nil }
-
-		return result.takeRetainedValue()
+		return try? destinationBuffer.createCGImage(format: format)
 	}
 
 	public func grayscaled() -> CGImage? {
 		// Source & destination vImage buffers
-		var sourceBuffer = vImage_Buffer()
-		var destinationBuffer = vImage_Buffer()
+		guard let format = vImage_CGImageFormat(cgImage: self) else { return nil }
+		guard var sourceBuffer = try? vImage_Buffer(cgImage: self, format: format) else { return nil }
+		guard var destinationBuffer = try? vImage_Buffer(width: Int(sourceBuffer.width), height: Int(sourceBuffer.height), bitsPerPixel: 8) else { return nil }
 
 		defer {
-			free(destinationBuffer.data)
-			free(sourceBuffer.data)
+			destinationBuffer.free()
+			sourceBuffer.free()
 		}
-
-		// Create vImage src buffer
-		guard var format = self.vImageFormat() else { return nil }
-		guard vImageBuffer_InitWithCGImage(&sourceBuffer, &format, nil, self, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
-
-		// Create vImage dst buffer
-		guard vImageBuffer_Init(&destinationBuffer, sourceBuffer.height, sourceBuffer.width, 8, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
 
 		guard vImageMatrixMultiply_ARGB8888ToPlanar8(&sourceBuffer, &destinationBuffer, &gray_coefficientsMatrix, gray_divisor, gray_preBias, gray_postBias, vImage_Flags(kvImageNoFlags)) == kvImageNoError else { return nil }
 
 		// Create a 1-channel, 8-bit grayscale format that's used to generate a displayable image
-		var monoFormat = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 8, colorSpace: Unmanaged.passRetained(CGColorSpaceCreateDeviceGray()), bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue), version: 0, decode: nil, renderingIntent: .defaultIntent)
+		let monoFormat = vImage_CGImageFormat(bitsPerComponent: 8, bitsPerPixel: 8, colorSpace: Unmanaged.passRetained(CGColorSpaceCreateDeviceGray()), bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue), version: 0, decode: nil, renderingIntent: .defaultIntent)
 
-		// Create a Core Graphics image from the grayscale destination buffer
-		guard let result = vImageCreateCGImageFromBuffer(&destinationBuffer, &monoFormat, nil, nil, vImage_Flags(kvImageNoFlags), nil) else { return nil }
-
-		return result.takeRetainedValue()
+		return try? destinationBuffer.createCGImage(format: monoFormat)
 	}
 }
