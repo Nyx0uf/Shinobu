@@ -70,16 +70,16 @@ final class MessageView: UIView {
 			switch message.type {
 			case .error:
 				self.backgroundColor = UIColor(rgb: 0x941100)
-				self.imageView.image = #imageLiteral(resourceName: "icon_error").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = #imageLiteral(resourceName: "icon_error").withTintColor(UIColor(rgb: 0xFFFFFF))
 			case .warning:
 				self.backgroundColor = UIColor(rgb: 0xF3AF22)
-				self.imageView.image = #imageLiteral(resourceName: "icon_warning").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = #imageLiteral(resourceName: "icon_warning").withTintColor(UIColor(rgb: 0xFFFFFF))
 			case .information:
 				self.backgroundColor = UIColor(rgb: 0x0096FF)
-				self.imageView.image = #imageLiteral(resourceName: "icon_infos").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = #imageLiteral(resourceName: "icon_infos").withTintColor(UIColor(rgb: 0xFFFFFF))
 			case .success:
 				self.backgroundColor = UIColor(rgb: 0x008F00)
-				self.imageView.image = #imageLiteral(resourceName: "icon_success").tinted(withColor: UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = #imageLiteral(resourceName: "icon_success").withTintColor(UIColor(rgb: 0xFFFFFF))
 			}
 			self.label.backgroundColor = self.backgroundColor
 		}, completion: { (_) in

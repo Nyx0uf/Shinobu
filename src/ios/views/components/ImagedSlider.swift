@@ -53,9 +53,9 @@ final class ImagedSlider: Slider {
 
 	// MARK: - Public
 	func setImages(min: UIImage, mid: UIImage, max: UIImage) {
-		imageMin = min.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor(rgb: 0xFFFFFF))
-		imageMid = mid.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor(rgb: 0xFFFFFF))
-		imageMax = max.withRenderingMode(.alwaysTemplate).tinted(withColor: UIColor(rgb: 0xFFFFFF))
+		imageMin = min.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
+		imageMid = mid.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
+		imageMax = max.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
 		updateImage()
 	}
 

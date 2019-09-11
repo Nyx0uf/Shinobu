@@ -170,8 +170,8 @@ final class PlayerVC: NYXViewController {
 
 		// Artist (full)
 		lblArtist.frame = CGRect(marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
-		lblArtist.image = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.navigationTitleTextColor)
-		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.tintColor)
+		lblArtist.image = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.navigationTitleTextColor)
+		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.tintColor)
 		lblArtist.textColor = themeProvider.currentTheme.navigationTitleTextColor
 		lblArtist.highlightedTextColor = themeProvider.currentTheme.tintColor
 		lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
@@ -183,8 +183,8 @@ final class PlayerVC: NYXViewController {
 		// Album (full)
 		lblAlbum.align = .right
 		lblAlbum.frame = CGRect(lblArtist.maxX + marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
-		lblAlbum.image = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.navigationTitleTextColor)
-		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).tinted(withColor: themeProvider.currentTheme.tintColor)
+		lblAlbum.image = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.navigationTitleTextColor)
+		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.tintColor)
 		lblAlbum.textColor = themeProvider.currentTheme.navigationTitleTextColor
 		lblAlbum.highlightedTextColor = themeProvider.currentTheme.tintColor
 		lblAlbum.font = UIFont.systemFont(ofSize: 12, weight: .semibold)

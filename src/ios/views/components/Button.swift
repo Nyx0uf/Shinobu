@@ -44,20 +44,20 @@ final class Button: UIControl {
 		willSet {
 			if self.isSelected {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
 		}
 
 		didSet {
 			if self.isSelected {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
 		}
 	}
@@ -66,20 +66,20 @@ final class Button: UIControl {
 		willSet {
 			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
 		}
 
 		didSet {
 			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.tinted(withColor: self.selectedTintColor)
+				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.tinted(withColor: self.tintColor)
+				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
 		}
 	}
@@ -89,6 +89,6 @@ final class Button: UIControl {
 		self.image = img.withRenderingMode(.alwaysTemplate)
 		self.tintColor = tintColor
 		self.selectedTintColor = selectedTintColor
-		imageView.image = self.image.tinted(withColor: tintColor)
+		imageView.image = self.image.withTintColor(tintColor)
 	}
 }

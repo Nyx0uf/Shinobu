@@ -14,21 +14,6 @@ extension UIImage {
 	}
 
 	// MARK: - Filtering
-	func tinted(withColor color: UIColor, opacity: CGFloat = 0) -> UIImage? {
-		let renderer = UIGraphicsImageRenderer(size: size)
-		return renderer.image { (_) in
-			let rect = CGRect(.zero, self.size)
-			color.set()
-			UIRectFill(rect)
-
-			draw(in: rect, blendMode: .destinationIn, alpha: 1)
-
-			if opacity > 0 {
-				draw(in: rect, blendMode: .sourceAtop, alpha: opacity)
-			}
-		}
-	}
-
 	public func grayscaled() -> UIImage? {
 		guard let imgRef = cgImage else { return nil }
 

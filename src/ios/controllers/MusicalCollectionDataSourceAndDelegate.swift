@@ -196,7 +196,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource {
 		case .albums:
 			handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
 		case .artists, .albumsartists:
-			cell.image = #imageLiteral(resourceName: "img-artists").tinted(withColor: cell.imageTintColor)
+			cell.image = #imageLiteral(resourceName: "img-artists").withTintColor(cell.imageTintColor)
 		case .genres:
 			let string = entity.name[0..<2].uppercased()
 			let backgroundColor = UIColor(rgb: string.djb2())
