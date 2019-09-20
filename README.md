@@ -2,7 +2,7 @@
 
 **Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server and requires *iOS 13.0*. It is designed to be fast (loading my 3000 albums library happens in an instant).
 
-I develop this app on my free time and for my personal need, you can ask for features but if I don't see the point I won't implement it.
+I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
 I won't submit it to the App Store because I don't have 100€ to spare nor the time to deal with Apple's validation process. So if you want to use this app you will have to download the code and build it yourself.
 
