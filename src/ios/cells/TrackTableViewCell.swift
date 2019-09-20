@@ -46,24 +46,14 @@ final class TrackTableViewCell: UITableViewCell {
 		self.lblTitle.heightAnchor.constraint(equalToConstant: 18).isActive = true
 
 		self.separator = UIView()
-		self.separator.backgroundColor = UIColor(rgb: 0x000000)
-		self.contentView.addSubview(self.separator)
-		self.separator.translatesAutoresizingMaskIntoConstraints = false
-		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8).isActive = true
-		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
-		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0).isActive = true
-		self.separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
-
-		initializeTheming()
+		self.separator.backgroundColor = .separator
+		//self.contentView.addSubview(self.separator)
+//		self.separator.translatesAutoresizingMaskIntoConstraints = false
+//		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8).isActive = true
+//		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
+//		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0).isActive = true
+//		self.separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-}
-
-extension TrackTableViewCell: Themed {
-	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-		contentView.backgroundColor = theme.backgroundColor
-		separator.backgroundColor = theme.tableSeparatorColor
-	}
 }

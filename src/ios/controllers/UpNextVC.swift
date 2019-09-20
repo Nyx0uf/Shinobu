@@ -30,8 +30,6 @@ final class UpNextVC: NYXTableViewController {
 		titleView.setMainText("Up Next", detailText: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
-
-		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -81,8 +79,8 @@ extension UpNextVC {
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = UpNextTableViewCell(style: .default, reuseIdentifier: "fr.whine.shinobu.cell.upnext")
-		cell.backgroundColor = themeProvider.currentTheme.backgroundColor
-		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColor
+		cell.backgroundColor = .systemBackground
+		cell.contentView.backgroundColor = cell.backgroundColor
 
 		let track = tracks[indexPath.row]
 		cell.lblTrack?.text = track.name
@@ -117,8 +115,5 @@ extension UpNextVC {
 
 extension UpNextVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		tableView.backgroundColor = theme.backgroundColor
-		tableView.separatorColor = theme.tableSeparatorColor
-		tableView.tintColor = theme.tintColor
 	}
 }

@@ -95,7 +95,6 @@ final class Settings {
 			Settings.Key.pref_enableLogging.rawValue: false,
 			Settings.Key.pref_shakeToPlayRandom.rawValue: false,
 			Settings.Key.pref_numberOfColumns.rawValue: columns_ios,
-			Settings.Key.pref_themeDark.rawValue: true,
 			Settings.Key.pref_tintColor.rawValue: TintColorType.orange.rawValue,
 			Settings.Key.pref_usePrettyDB.rawValue: true,
 			Settings.Key.lastTypeLibrary.rawValue: MusicalEntityType.albums.rawValue,
@@ -133,7 +132,6 @@ extension Settings.Key {
 	static let pref_shakeToPlayRandom = Settings.Key("pref_shakeToPlayRandom")
 	static let pref_enableLogging = Settings.Key("pref_enableLogging")
 	static let pref_numberOfColumns = Settings.Key("pref_numberOfColumns")
-	static let pref_themeDark = Settings.Key("pref_themeDark")
 	static let pref_tintColor = Settings.Key("pref_tintColor")
 	static let pref_usePrettyDB = Settings.Key("pref_usePrettyDB")
 	static let lastTypeLibrary = Settings.Key("lastTypeLibrary")

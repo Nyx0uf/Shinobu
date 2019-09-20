@@ -29,7 +29,7 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 				})
 			} else {
 				UIView.animate(withDuration: 0.2, delay: 0.0, options: .curveEaseOut, animations: {
-					self.label.textColor = self.themeProvider.currentTheme.tableCellMainLabelTextColor
+					self.label.textColor = .secondaryLabel
 					let anim = CABasicAnimation(keyPath: "borderWidth")
 					anim.fromValue = 1
 					anim.toValue = 0
@@ -72,6 +72,7 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 		super.init(frame: frame)
 
 		self.isAccessibilityElement = true
+		self.backgroundColor = .systemGroupedBackground
 
 		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20))
 		self.imageView.isAccessibilityElement = false
@@ -79,9 +80,11 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 		self.contentView.addSubview(self.imageView)
 
 		self.label = UILabel(frame: CGRect(0, self.imageView.maxY, frame.width, 20))
+		self.label.backgroundColor = self.backgroundColor
 		self.label.isAccessibilityElement = false
 		self.label.textAlignment = .center
 		self.label.font = UIFont.systemFont(ofSize: 10, weight: .semibold)
+		self.label.textColor = .secondaryLabel
 		self.contentView.addSubview(self.label)
 
 		initializeTheming()
@@ -97,11 +100,6 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 
 extension MusicalEntityCollectionViewCell: Themed {
 	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-		label.textColor = theme.tableCellMainLabelTextColor
-		label.backgroundColor = theme.backgroundColor
-		imageView.backgroundColor = theme.collectionImageViewBackgroundColor
 		imageView.layer.borderColor = theme.tintColor.cgColor
-		imageTintColor = theme.backgroundColor
 	}
 }

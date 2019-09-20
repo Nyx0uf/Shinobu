@@ -34,6 +34,21 @@ final class LibraryVC: MusicalCollectionVC {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
+		checkInit()
+	}
+
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+
+		OperationManager.shared.cancelAllOperations()
+	}
+
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+		return [.portrait, .portraitUpsideDown]
+	}
+
+	// MARK: - Private
+	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
 			if let server = ServersManager().getSelectedServer() {
@@ -84,20 +99,6 @@ final class LibraryVC: MusicalCollectionVC {
 
 			serverChanged = false
 		}
-	}
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-
-		OperationManager.shared.cancelAllOperations()
-	}
-
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return [.portrait, .portraitUpsideDown]
-	}
-
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
 	}
 
 	// MARK: - Gestures
@@ -345,18 +346,16 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Buttons actions
 	@objc func showServersListAction(_ sender: Any?) {
-		let svc = ServersListVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: svc)
-		svc.modalPresentationStyle = .overFullScreen
-		svc.modalTransitionStyle = .coverVertical
+		let serversListVC = ServersListVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: serversListVC)
+		nvc.presentationController?.delegate = self
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func showSettingsAction(_ sender: Any?) {
-		let svc = SettingsVC()
-		let nvc = NYXNavigationController(rootViewController: svc)
-		svc.modalPresentationStyle = .fullScreen
-		svc.modalTransitionStyle = .flipHorizontal
+		let settingsVC = SettingsVC(style: .grouped)
+		let nvc = NYXNavigationController(rootViewController: settingsVC)
+		nvc.presentationController?.delegate = self
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
@@ -604,3 +603,10 @@ extension LibraryVC {
 	}
 }
 */
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+extension LibraryVC: UIAdaptivePresentationControllerDelegate {
+	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+		checkInit()
+	}
+}

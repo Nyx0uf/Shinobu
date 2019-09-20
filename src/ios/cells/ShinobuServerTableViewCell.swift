@@ -40,7 +40,7 @@ final class ShinobuServerTableViewCell: UITableViewCell {
 		if selected {
 			label.textColor = themeProvider.currentTheme.tintColor
 		} else {
-			label.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+			label.textColor = .label
 		}
 	}
 
@@ -50,17 +50,13 @@ final class ShinobuServerTableViewCell: UITableViewCell {
 		if highlighted {
 			label.textColor = themeProvider.currentTheme.tintColor
 		} else {
-			label.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+			label.textColor = .label
 		}
 	}
 }
 
 extension ShinobuServerTableViewCell: Themed {
 	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-		contentView.backgroundColor = theme.backgroundColor
-		label.textColor = theme.tableCellMainLabelTextColor
-		toggle.tintColor = theme.switchTintColor
 		toggle.onTintColor = theme.tintColor
 	}
 }

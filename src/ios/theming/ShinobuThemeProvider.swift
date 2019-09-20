@@ -18,8 +18,8 @@ final class ShinobuThemeProvider: ThemeProvider {
 
 	// MARK: - Initializers
 	init() {
-		let dark = Settings.shared.bool(forKey: .pref_themeDark)
-		theme = SubscribableValue<Theme>(value: dark ? .dark : .light)
+		let t = Theme(tintColor: colorForTintColorType(TintColorType(rawValue: Settings.shared.integer(forKey: .pref_tintColor))!))
+		theme = SubscribableValue<Theme>(value: t)
 	}
 
 	// MARK: - Public

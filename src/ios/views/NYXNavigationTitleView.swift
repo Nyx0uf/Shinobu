@@ -64,7 +64,7 @@ final class NYXNavigationTitleView: UIButton {
 
 	// MARK: - Private
 	private func updateDisplay() {
-		let color = (isHighlighted || isSelected) ? themeProvider.currentTheme.tintColor : themeProvider.currentTheme.navigationTitleTextColor
+		let color = (isHighlighted || isSelected) ? themeProvider.currentTheme.tintColor : .label
 
 		if let detailText = self.detailText {
 			label.numberOfLines = 2

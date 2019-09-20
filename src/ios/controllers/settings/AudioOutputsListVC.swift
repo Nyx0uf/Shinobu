@@ -20,19 +20,16 @@ final class AudioOutputsListVC: NYXTableViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
-	}
-
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		tableView.tintColor = themeProvider.currentTheme.tintColor
+		tableView.backgroundColor = .secondarySystemBackground
+		tableView.separatorColor = .separator
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.tableFooterView = UIView()
-
-		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -70,13 +67,13 @@ extension AudioOutputsListVC {
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
-		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
+		cell.backgroundColor = .secondarySystemBackground
+		cell.contentView.backgroundColor = cell.backgroundColor
 
 		let output = outputs[indexPath.row]
 
 		cell.textLabel?.text = output.name
-		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.textLabel?.textColor = .label
 		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.accessoryType = output.enabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
@@ -122,8 +119,5 @@ extension AudioOutputsListVC {
 
 extension AudioOutputsListVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		tableView.separatorColor = theme.backgroundColor
-		tableView.backgroundColor = theme.backgroundColorAlt
-		tableView.tintColor = theme.tintColor
 	}
 }

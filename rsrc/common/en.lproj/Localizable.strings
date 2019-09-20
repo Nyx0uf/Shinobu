@@ -28,7 +28,8 @@
 "lbl_repeat_enable" = "Enable repeat";
 "lbl_repeat_disable" = "Disable repeat";
 "lbl_header_server_cfg" = "Server configuration";
-"lbl_header_server_zeroconf" = "Nearby servers";
+"lbl_header_server_zeroconf" = "Nearby server";
+"lbl_header_servers_zeroconf" = "Nearby servers";
 "lbl_search_zeroconf" = "Search nearby servers";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Behaviour";
@@ -106,7 +107,8 @@
 
 "lbl_message_no_mpd_server" = "No MPD server configured";
 
-"lbl_header_server_list" = "Servers list";
+"lbl_header_server_list" = "Server";
+"lbl_header_servers_list" = "Servers";
 "lbl_current_selected_server" = "the current selected server";
 "lbl_current_selected_server_not" = "not the current selected server";
 "lbl_add_mpd_server" = "Add a server";

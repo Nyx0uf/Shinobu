@@ -44,13 +44,11 @@ final class PlaylistDetailVC: NYXViewController {
 
 		// Tableview
 		tableView = TracksListTableView(frame: CGRect(0, headerView.maxY, view.width, view.height - headerView.maxY), style: .plain)
-		tableView.useDummy = true
+		//tableView.useDummy = true
 		tableView.delegate = self
 		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
 		view.addSubview(tableView)
-
-		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {

@@ -48,14 +48,15 @@ final class ImagedSlider: Slider {
 		self.imageView.frame = CGRect((frame.width - frame.height) / 2, 0, frame.height, frame.height)
 		self.imageView.backgroundColor = .clear
 		self.imageView.contentMode = .center
+		self.imageView.tintColor = .label
 		self.addSubview(self.imageView)
 	}
 
 	// MARK: - Public
 	func setImages(min: UIImage, mid: UIImage, max: UIImage) {
-		imageMin = min.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
-		imageMid = mid.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
-		imageMax = max.withRenderingMode(.alwaysTemplate).withTintColor(UIColor(rgb: 0xFFFFFF))
+		imageMin = min.withRenderingMode(.alwaysTemplate)
+		imageMid = mid.withRenderingMode(.alwaysTemplate)
+		imageMax = max.withRenderingMode(.alwaysTemplate)
 		updateImage()
 	}
 

@@ -34,6 +34,10 @@ final class ServersListVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		self.navigationItem.titleView = nil
+		self.title = NYXLocalizedString("lbl_header_servers_list")
+		self.navigationController?.navigationBar.prefersLargeTitles = true
+
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
@@ -49,8 +53,7 @@ final class ServersListVC: NYXTableViewController {
 		tableView.register(ShinobuServerTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.rowHeight = 64
-
-		initializeTheming()
+		tableView.tableFooterView = UIView()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -62,6 +65,10 @@ final class ServersListVC: NYXTableViewController {
 	// MARK: - Buttons actions
 	@objc func closeAction(_ sender: Any?) {
 		dismiss(animated: true, completion: nil)
+		// lol ugly
+		if let p = navigationController?.presentationController {
+			p.delegate?.presentationControllerDidDismiss?(p)
+		}
 	}
 
 	@objc func addMpdServerAction(_ sender: Any?) {
@@ -77,12 +84,12 @@ final class ServersListVC: NYXTableViewController {
 		tableView.reloadData()
 
 		// Navigation bar title
-		titleView.setMainText(NYXLocalizedString("lbl_header_server_list"), detailText: "(\(servers.count))")
+		self.title = "\(servers.count) \(NYXLocalizedString(servers.count == 1 ? "lbl_header_server_list" : "lbl_header_servers_list"))"
 	}
 
 	private func showServerVC(with server: ShinobuServer?) {
 		if addServerVC == nil {
-			addServerVC = ServerAddVC(mpdBridge: mpdBridge)
+			addServerVC = ServerAddVC(style: .grouped, mpdBridge: mpdBridge)
 		}
 
 		if let avc = addServerVC {
@@ -116,6 +123,7 @@ extension ServersListVC {
 		cell.toggle.tag = indexPath.row
 		cell.toggle.addTarget(self, action: #selector(toggleServer(_:)), for: .valueChanged)
 		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.isSelected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
+
 		let view = UIView()
 		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
 		cell.selectedBackgroundView = view
@@ -155,10 +163,5 @@ extension ServersListVC {
 
 extension ServersListVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		view.backgroundColor = theme.backgroundColor
-		tableView.backgroundColor = theme.backgroundColor
-		tableView.separatorColor = theme.tableSeparatorColor
-
-		tableView.reloadData()
 	}
 }

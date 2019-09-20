@@ -11,7 +11,7 @@ final class LetterView: UIView {
 	var isSelected = false {
 		didSet {
 			self.letterLayer.font = UIFont.systemFont(ofSize: self.big ? 16 : 12, weight: self.isSelected ? .black : .semibold)
-			self.letterLayer.foregroundColor = self.isSelected ? themeProvider.currentTheme.backgroundColor.cgColor : themeProvider.currentTheme.tableCellMainLabelTextColor.cgColor
+			self.letterLayer.foregroundColor = self.isSelected ? UIColor(named: "labelInverted")!.cgColor : UIColor.secondaryLabel.cgColor
 			if self.big {
 				self.blurEffectView.isHidden = !self.isSelected
 			}
@@ -60,10 +60,10 @@ final class LetterView: UIView {
 
 extension LetterView: Themed {
 	func applyTheme(_ theme: Theme) {
-		letterLayer.foregroundColor = theme.tableCellMainLabelTextColor.cgColor
+		letterLayer.foregroundColor = UIColor(named: "labelInverted")!.cgColor
 
 		if big {
-			blurEffectView.effect = theme.blurEffectAlt
+			blurEffectView.effect = self.traitCollection.userInterfaceStyle == .light ? UIBlurEffect(style: .dark) : UIBlurEffect(style: .extraLight)
 		}
 	}
 }

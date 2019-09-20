@@ -26,7 +26,8 @@ final class TracksListTableView: UITableView {
 
 		self.dataSource = self
 		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-		self.separatorStyle = .none
+		//self.separatorStyle = .none
+		self.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
 		self.rowHeight = 44
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
@@ -66,9 +67,9 @@ extension TracksListTableView: UITableViewDataSource {
 		}
 
 		cell.separator.isHidden = false
-		cell.lblTitle.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
-		cell.lblTrack.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
-		cell.lblDuration.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.lblTitle.textColor = .label
+		cell.lblTrack.textColor = .label
+		cell.lblDuration.textColor = .label
 		cell.lblTitle.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.lblTrack.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.lblDuration.highlightedTextColor = themeProvider.currentTheme.tintColor
@@ -111,7 +112,6 @@ extension TracksListTableView: UITableViewDataSource {
 
 extension TracksListTableView: Themed {
 	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
 		reloadData()
 	}
 }

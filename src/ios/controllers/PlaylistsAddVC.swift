@@ -19,26 +19,22 @@ final class PlaylistsAddVC: NYXTableViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return Settings.shared.bool(forKey: .pref_themeDark) ? .lightContent : .default
-	}
-
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		navigationController?.navigationBar.isTranslucent = false
+		navigationController?.navigationBar.barTintColor = .tertiarySystemBackground
 
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.separatorColor = .separator
 		tableView.tableFooterView = UIView()
 
 		// Create playlist button
 		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
 		createButton.accessibilityLabel = NYXLocalizedString("lbl_create_playlist")
 		navigationItem.rightBarButtonItems = [createButton]
-
-		initializeTheming()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -91,7 +87,7 @@ final class PlaylistsAddVC: NYXTableViewController {
 		mpdBridge.entitiesForType(.playlists) { (entities) in
 			DispatchQueue.main.async {
 				self.playlists = entities as! [Playlist]
-				self.titleView.setMainText(NYXLocalizedString("lbl_playlists"), detailText: "(\(entities.count))")
+				self.titleView.setMainText("\(entities.count) \(NYXLocalizedString(entities.count == 1 ? "lbl_playlist" : "lbl_playlists"))", detailText: nil)
 				self.tableView.reloadData()
 			}
 		}
@@ -106,13 +102,11 @@ extension PlaylistsAddVC {
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-		cell.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
-		cell.contentView.backgroundColor = themeProvider.currentTheme.backgroundColorAlt
 
 		let playlist = playlists[indexPath.row]
 
 		cell.textLabel?.text = playlist.name
-		cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+		cell.textLabel?.textColor = .label
 		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.textLabel?.isAccessibilityElement = false
 		cell.accessibilityLabel = playlist.name
@@ -154,8 +148,5 @@ extension PlaylistsAddVC {
 
 extension PlaylistsAddVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		navigationController?.navigationBar.barTintColor = theme.backgroundColorAlt
-		tableView.separatorColor = theme.backgroundColor
-		tableView.backgroundColor = theme.backgroundColorAlt
 	}
 }

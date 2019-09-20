@@ -46,13 +46,17 @@ final class MusicalCollectionView: UIView {
 	init(frame: CGRect, musicalEntityType: MusicalEntityType) {
 		super.init(frame: frame)
 
+		self.backgroundColor = .systemGroupedBackground
+
 		let widthIndexView = CGFloat(20)
 		self.collectionView.frame = CGRect(0, 0, frame.width - widthIndexView, frame.height)
 		self.collectionView.isPrefetchingEnabled = false
 		self.collectionView.showsVerticalScrollIndicator = false
+		self.collectionView.backgroundColor = self.backgroundColor
 		self.addSubview(collectionView)
 
 		self.indexView.frame = CGRect(self.collectionView.frame.width, 64, widthIndexView, frame.height - 64)
+		self.indexView.backgroundColor = self.backgroundColor
 		self.indexView.delegate = self
 		self.addSubview(indexView)
 
@@ -93,9 +97,6 @@ extension MusicalCollectionView: TitlesIndexViewDelegate {
 
 extension MusicalCollectionView: Themed {
 	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-		collectionView.backgroundColor = theme.backgroundColor
-		indexView.backgroundColor = theme.backgroundColor
 		collectionView.reloadData()
 	}
 }

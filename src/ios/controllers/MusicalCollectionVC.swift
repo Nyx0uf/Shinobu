@@ -287,9 +287,9 @@ extension MusicalCollectionVC: TypeChoiceViewDelegate {
 
 extension MusicalCollectionVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		view.backgroundColor = theme.backgroundColor
-		searchView.backgroundColor = theme.backgroundColor
+		view.backgroundColor = .systemGroupedBackground
+		searchView.backgroundColor = .systemGroupedBackground
 		searchBar.tintColor = theme.tintColor
-		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = theme.tableCellMainLabelTextColor
+		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = .secondaryLabel
 	}
 }

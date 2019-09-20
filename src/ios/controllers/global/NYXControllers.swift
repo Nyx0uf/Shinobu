@@ -43,8 +43,6 @@ final class NYXNavigationController: UINavigationController, Themed {
 	}
 
 	func applyTheme(_ theme: Theme) {
-		themedStatusBarStyle = theme.statusBarStyle
-		navigationBar.barStyle = theme.navigationBarStyle
 		navigationBar.isTranslucent = true
 		navigationBar.tintColor = theme.tintColor
 		setNeedsStatusBarAppearanceUpdate()
@@ -53,12 +51,11 @@ final class NYXNavigationController: UINavigationController, Themed {
 
 class NYXTableViewController: UITableViewController {
 	// Navigation title
-	private(set) var titleView: NYXNavigationTitleView! = nil
+	private(set) var titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -67,15 +64,15 @@ class NYXTableViewController: UITableViewController {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-
-		if let navigationBar = navigationController?.navigationBar {
-			if let shadowImageView = findShadowImage(under: navigationBar) {
-				shadowImageView.isHidden = true
-			}
-		}
-	}
+//	override func viewWillAppear(_ animated: Bool) {
+//		super.viewWillAppear(animated)
+//
+//		if let navigationBar = navigationController?.navigationBar {
+//			if let shadowImageView = findShadowImage(under: navigationBar) {
+//				shadowImageView.isHidden = true
+//			}
+//		}
+//	}
 
 	func updateNavigationTitle() {
 
@@ -84,12 +81,11 @@ class NYXTableViewController: UITableViewController {
 
 class NYXViewController: UIViewController {
 	// Navigation title
-	private(set) var titleView: NYXNavigationTitleView! = nil
+	private(set) var titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 		titleView.isEnabled = false
 		navigationItem.titleView = titleView
 	}
@@ -101,11 +97,11 @@ class NYXViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
-		if let navigationBar = navigationController?.navigationBar {
-			if let shadowImageView = findShadowImage(under: navigationBar) {
-				shadowImageView.isHidden = true
-			}
-		}
+//		if let navigationBar = navigationController?.navigationBar {
+//			if let shadowImageView = findShadowImage(under: navigationBar) {
+//				shadowImageView.isHidden = true
+//			}
+//		}
 	}
 
 	func updateNavigationTitle() {
@@ -113,28 +109,11 @@ class NYXViewController: UIViewController {
 	}
 }
 
-class NYXAlertController: UIAlertController, Themed {
+class NYXAlertController: UIAlertController {
 	private var themedStatusBarStyle: UIStatusBarStyle?
-
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		if let themedStatusBarStyle = themedStatusBarStyle {
-			return themedStatusBarStyle
-		}
-		return .default
-	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
-	}
-
-	override func viewDidLoad() {
-		super.viewDidLoad()
-
-		initializeTheming()
-	}
-
-	func applyTheme(_ theme: Theme) {
-		themedStatusBarStyle = theme.statusBarStyle
 	}
 }
 

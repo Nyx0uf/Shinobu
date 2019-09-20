@@ -28,7 +28,8 @@
 "lbl_repeat_enable" = "Activer la lecture en boucle";
 "lbl_repeat_disable" = "Désactiver la lecture en boucle";
 "lbl_header_server_cfg" = "Configuration serveur";
-"lbl_header_server_zeroconf" = "Serveurs découverts";
+"lbl_header_server_zeroconf" = "Serveur découvert";
+"lbl_header_servers_zeroconf" = "Serveurs découvert";
 "lbl_search_zeroconf" = "Chercher des serveurs à proximité";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Comportement";
@@ -106,7 +107,8 @@
 
 "lbl_message_no_mpd_server" = "Pas de serveur MPD configuré";
 
-"lbl_header_server_list" = "Liste des serveurs";
+"lbl_header_server_list" = "Serveur";
+"lbl_header_servers_list" = "Serveurs";
 "lbl_current_selected_server" = "le serveur sélectionné actuellement";
 "lbl_current_selected_server_not" = "actuellement désélectionné";
 "lbl_add_mpd_server" = "Ajouter un serveur";

@@ -140,8 +140,6 @@ final class ImagedLabel: UIControl {
 		singleTap.numberOfTouchesRequired = 1
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
 		self.addGestureRecognizer(singleTap)
-
-		initializeTheming()
 	}
 
 	// MARK: - Gestures
@@ -160,11 +158,5 @@ final class ImagedLabel: UIControl {
 			imageView.frame = CGRect(frame.width - frame.height, 0, frame.height, frame.height)
 			label.frame = CGRect(.zero, frame.width - frame.height - space, frame.height)
 		}
-	}
-}
-
-extension ImagedLabel: Themed {
-	func applyTheme(_ theme: Theme) {
-
 	}
 }

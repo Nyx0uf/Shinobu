@@ -72,6 +72,8 @@ final class PlayerVC: NYXViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		self.overrideUserInterfaceStyle = .dark
+
 		let width = UIScreen.main.bounds.width
 		if let bottom = (UIApplication.shared.delegate as! AppDelegate).window?.safeAreaInsets.bottom {
 			miniHeight += bottom
@@ -109,14 +111,14 @@ final class PlayerVC: NYXViewController {
 		btnNext.frame = CGRect(view.frame.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2, miniBaseHeight, miniBaseHeight)
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		btnNext.isAccessibilityElement = true
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnNext)
 
 		// Previous button
 		btnPrevious.frame = CGRect(view.frame.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2, miniBaseHeight, miniBaseHeight)
 		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
 		btnPrevious.isAccessibilityElement = true
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnPrevious.alpha = 0
 		blurEffectView.contentView.addSubview(btnPrevious)
 
@@ -125,20 +127,20 @@ final class PlayerVC: NYXViewController {
 		btnPlay.addTarget(self, action: #selector(changePlaybackAction(_:)), for: .touchUpInside)
 		btnPlay.tag = PlayerStatus.stopped.rawValue
 		btnPlay.isAccessibilityElement = true
-		btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnPlay)
 
 		// Stop button
 		btnStop.frame = CGRect(width - marginX - miniBaseHeight, btnPlay.y, miniBaseHeight, miniBaseHeight)
 		btnStop.addTarget(mpdBridge, action: #selector(MPDBridge.stop), for: .touchUpInside)
-		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnStop.alpha = 0
 		blurEffectView.contentView.addSubview(btnStop)
 
 		// Queue button
 		btnQueue.frame = CGRect(marginX, view.height - miniHeight, miniBaseHeight, miniBaseHeight)
 		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
-		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: themeProvider.currentTheme.navigationTitleTextColor, selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnQueue)
 
 		// Track label (minified)
@@ -170,10 +172,10 @@ final class PlayerVC: NYXViewController {
 
 		// Artist (full)
 		lblArtist.frame = CGRect(marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
-		lblArtist.image = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.navigationTitleTextColor)
-		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.tintColor)
-		lblArtist.textColor = themeProvider.currentTheme.navigationTitleTextColor
-		lblArtist.highlightedTextColor = themeProvider.currentTheme.tintColor
+		lblArtist.image = #imageLiteral(resourceName: "img-mic").withTintColor(.white)
+		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
+		lblArtist.textColor = .secondaryLabel
+		lblArtist.highlightedTextColor = .label
 		lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
 		lblArtist.underlined = true
 		lblArtist.alpha = 0
@@ -183,10 +185,10 @@ final class PlayerVC: NYXViewController {
 		// Album (full)
 		lblAlbum.align = .right
 		lblAlbum.frame = CGRect(lblArtist.maxX + marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
-		lblAlbum.image = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.navigationTitleTextColor)
-		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withRenderingMode(.alwaysTemplate).withTintColor(themeProvider.currentTheme.tintColor)
-		lblAlbum.textColor = themeProvider.currentTheme.navigationTitleTextColor
-		lblAlbum.highlightedTextColor = themeProvider.currentTheme.tintColor
+		lblAlbum.image = #imageLiteral(resourceName: "img-album").withTintColor(.white)
+		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withTintColor(.label)
+		lblAlbum.textColor = .secondaryLabel
+		lblAlbum.highlightedTextColor = .label
 		lblAlbum.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
 		lblAlbum.underlined = true
 		lblAlbum.alpha = 0
@@ -218,14 +220,14 @@ final class PlayerVC: NYXViewController {
 
 		// Repeat button
 		btnRepeat.frame = CGRect(width - marginX - miniBaseHeight, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
-		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.alpha = 0
 		self.blurEffectView.contentView.addSubview(btnRepeat)
 
 		// Random button
 		btnRandom.frame = CGRect(marginX, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
-		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.alpha = 0
 		blurEffectView.contentView.addSubview(btnRandom)
@@ -241,7 +243,7 @@ final class PlayerVC: NYXViewController {
 		lblNextTrack.frame = CGRect(btnQueue.maxX + marginX, btnQueue.y, width - btnQueue.maxX - marginX - marginX - marginX - miniBaseHeight, 20)
 		lblNextTrack.textAlignment = .center
 		lblNextTrack.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-		lblNextTrack.textColor = themeProvider.currentTheme.navigationTitleTextColor
+		lblNextTrack.textColor = .secondaryLabel
 		lblNextTrack.isAccessibilityElement = false
 		lblNextTrack.scrollSpeed = 60
 		blurEffectView.contentView.addSubview(lblNextTrack)
@@ -250,7 +252,7 @@ final class PlayerVC: NYXViewController {
 		lblNextAlbumArtist.frame = CGRect(btnQueue.maxX + marginX, lblNextTrack.maxY, width - btnQueue.maxX - marginX - marginX - marginX - miniBaseHeight, 20)
 		lblNextAlbumArtist.textAlignment = .center
 		lblNextAlbumArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
-		lblNextAlbumArtist.textColor = themeProvider.currentTheme.navigationTitleTextColor
+		lblNextAlbumArtist.textColor = .secondaryLabel
 		lblNextAlbumArtist.isAccessibilityElement = false
 		blurEffectView.contentView.addSubview(lblNextAlbumArtist)
 
@@ -282,8 +284,10 @@ final class PlayerVC: NYXViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
+	}
 
-		initializeTheming()
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		return .lightContent
 	}
 
 	// MARK: - Buttons actions
@@ -435,7 +439,7 @@ final class PlayerVC: NYXViewController {
 	private func updatePlayPauseState() {
 		let status = mpdBridge.getCurrentState().status
 		if status == .paused || status == .stopped {
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: .secondaryLabel, selectedTintColor: .label)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 
 			DispatchQueue.global(qos: .userInteractive).async {
@@ -445,7 +449,7 @@ final class PlayerVC: NYXViewController {
 				}
 			}
 		} else {
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: themeProvider.currentTheme.tintColor)
+			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: .secondaryLabel, selectedTintColor: .label)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 
 			UIView.transition(with: coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = self.imgCover }, completion: nil)
@@ -555,6 +559,7 @@ final class PlayerVC: NYXViewController {
 			}, completion: { (_) in
 				self.coverView.addMotionEffect(self.motionEffectX)
 				self.coverView.addMotionEffect(self.motionEffectY)
+				self.setNeedsStatusBarAppearanceUpdate()
 			})
 			self.doubleTap.isEnabled = false
 		} else {
@@ -588,6 +593,7 @@ final class PlayerVC: NYXViewController {
 			}, completion: { (_) in
 				self.coverView.removeMotionEffect(self.motionEffectX)
 				self.coverView.removeMotionEffect(self.motionEffectY)
+				self.setNeedsStatusBarAppearanceUpdate()
 			})
 			self.doubleTap.isEnabled = true
 		}
@@ -595,8 +601,20 @@ final class PlayerVC: NYXViewController {
 	}
 }
 
-extension PlayerVC: Themed {
-	func applyTheme(_ theme: Theme) {
-
-	}
-}
+//extension PlayerVC: Themed {
+//	func applyTheme(_ theme: Theme) {
+//		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(theme.tintColor)
+//		lblArtist.highlightedTextColor = theme.tintColor
+//		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withTintColor(theme.tintColor)
+//		lblAlbum.highlightedTextColor = theme.tintColor
+//
+//		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//		btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: theme.tintColor)
+//
+//		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
+//	}
+//}

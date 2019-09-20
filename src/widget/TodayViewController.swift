@@ -49,6 +49,13 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 		}
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+
+		btnNext.setImage(#imageLiteral(resourceName: "btn-next").withTintColor(.label), for: .normal)
+		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous").withTintColor(.label), for: .normal)
+	}
+
 	func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
 		let ret = updateFields()
 		completionHandler(ret ? NCUpdateResult.newData : NCUpdateResult.failed)
@@ -85,11 +92,11 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 		}
 
 		if mpdBridge.getCurrentState().status == .paused {
-			let imgPlay = #imageLiteral(resourceName: "btn-play")
+			let imgPlay = #imageLiteral(resourceName: "btn-play").withTintColor(.label)
 			btnPlay.setImage(imgPlay, for: .normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 		} else {
-			let imgPause = #imageLiteral(resourceName: "btn-pause")
+			let imgPause = #imageLiteral(resourceName: "btn-pause").withTintColor(.label)
 			btnPlay.setImage(imgPause, for: .normal)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 		}

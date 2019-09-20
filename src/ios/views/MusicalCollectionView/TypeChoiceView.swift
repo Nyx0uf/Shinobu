@@ -70,11 +70,11 @@ extension TypeChoiceView: UITableViewDataSource {
 		}
 		cell.textLabel?.text = title
 		if type == selectedMusicalEntityType {
-			cell.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+			cell.textLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
 			cell.textLabel?.textColor = themeProvider.currentTheme.tintColor
 		} else {
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-			cell.textLabel?.textColor = themeProvider.currentTheme.tableCellMainLabelTextColor
+			cell.textLabel?.textColor = .white
 			cell.textLabel?.layer.cornerRadius = 0
 			cell.textLabel?.backgroundColor = cell.backgroundColor
 		}
@@ -105,6 +105,5 @@ extension TypeChoiceView: UITableViewDelegate {
 
 extension TypeChoiceView: Themed {
 	func applyTheme(_ theme: Theme) {
-
 	}
 }

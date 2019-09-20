@@ -180,6 +180,6 @@ final class TitlesIndexView: UIView {
 
 extension TitlesIndexView: Themed {
 	func applyTheme(_ theme: Theme) {
-		overlayView.effect = theme.blurEffectAlt
+		overlayView.effect = self.traitCollection.userInterfaceStyle == .light ? UIBlurEffect(style: .dark) : UIBlurEffect(style: .extraLight)
 	}
 }

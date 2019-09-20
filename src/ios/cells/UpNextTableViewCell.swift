@@ -42,22 +42,7 @@ final class UpNextTableViewCell: UITableViewCell {
 		self.lblArtistAlbum.trailingAnchor.constraint(equalTo: self.lblDuration.leadingAnchor, constant: 8).isActive = true
 		self.lblArtistAlbum.topAnchor.constraint(equalTo: self.lblTrack.bottomAnchor, constant: 2).isActive = true
 		self.lblArtistAlbum.heightAnchor.constraint(equalToConstant: 16).isActive = true
-
-		initializeTheming()
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-}
-
-extension UpNextTableViewCell: Themed {
-	func applyTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-		contentView.backgroundColor = theme.backgroundColor
-		lblTrack.textColor = theme.tableCellMainLabelTextColor
-		lblTrack.backgroundColor = theme.backgroundColor
-		lblDuration.textColor = theme.tableCellMainLabelTextColor
-		lblDuration.backgroundColor = theme.backgroundColor
-		lblArtistAlbum.textColor = theme.tableCellMainLabelTextColor
-		lblArtistAlbum.backgroundColor = theme.backgroundColor
-	}
 }

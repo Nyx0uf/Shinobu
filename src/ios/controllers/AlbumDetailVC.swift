@@ -44,7 +44,7 @@ final class AlbumDetailVC: NYXViewController {
 
 		// Tableview
 		tableView = TracksListTableView(frame: CGRect(0, headerView.maxY, view.width, view.height - headerView.maxY), style: .plain)
-		tableView.useDummy = true
+		//tableView.useDummy = true
 		tableView.delegate = self
 		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
@@ -132,11 +132,7 @@ extension AlbumDetailVC: UITableViewDelegate {
 		}
 
 		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_add_to_playlist")) { (_, _, completionHandler) in
-			self.mpdBridge.entitiesForType(.playlists) { (entities) in
-				if entities.count == 0 {
-					return
-				}
-
+			self.mpdBridge.entitiesForType(.playlists) { (_ ) in
 				DispatchQueue.main.async {
 					guard let cell = tableView.cellForRow(at: indexPath) else {
 						return
@@ -151,7 +147,7 @@ extension AlbumDetailVC: UITableViewDelegate {
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
 						popController.delegate = self
-						popController.backgroundColor = self.themeProvider.currentTheme.backgroundColorAlt
+						//popController.backgroundColor = .tertiarySystemBackground
 						tvc.preferredContentSize = CGSize(300, 200)
 						self.present(tvc, animated: true, completion: nil)
 					}
@@ -159,7 +155,7 @@ extension AlbumDetailVC: UITableViewDelegate {
 			}
 			completionHandler(true)
 		}
-		action.image = #imageLiteral(resourceName: "btn-playlist-add")
+		action.image = #imageLiteral(resourceName: "btn-playlist-add").withTintColor(.label)
 		action.backgroundColor = self.themeProvider.currentTheme.tintColor
 
 		return UISwipeActionsConfiguration(actions: [action])
@@ -173,23 +169,23 @@ extension AlbumDetailVC: UIPopoverPresentationControllerDelegate {
 }
 
 // MARK: - Peek & Pop
-extension AlbumDetailVC {
-	override var previewActionItems: [UIPreviewActionItem] {
-		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
-			self.mpdBridge.playAlbum(self.album, shuffle: false, loop: false)
-		}
-
-		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
-			self.mpdBridge.playAlbum(self.album, shuffle: true, loop: false)
-		}
-
-		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_, _) in
-			self.mpdBridge.addAlbumToQueue(self.album)
-		}
-
-		return [playAction, shuffleAction, addQueueAction]
-	}
-}
+//extension AlbumDetailVC {
+//	override var previewActionItems: [UIPreviewActionItem] {
+//		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
+//			self.mpdBridge.playAlbum(self.album, shuffle: false, loop: false)
+//		}
+//
+//		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
+//			self.mpdBridge.playAlbum(self.album, shuffle: true, loop: false)
+//		}
+//
+//		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_, _) in
+//			self.mpdBridge.addAlbumToQueue(self.album)
+//		}
+//
+//		return [playAction, shuffleAction, addQueueAction]
+//	}
+//}
 
 extension AlbumDetailVC: TracksListTableViewDelegate {
 	func getCurrentTrack() -> Track? {
@@ -199,6 +195,5 @@ extension AlbumDetailVC: TracksListTableViewDelegate {
 
 extension AlbumDetailVC: Themed {
 	func applyTheme(_ theme: Theme) {
-
 	}
 }
