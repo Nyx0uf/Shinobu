@@ -521,7 +521,6 @@ extension ServerAddVC {
 				popController.sourceRect = cell.bounds
 				popController.sourceView = cell
 				popController.delegate = self
-				popController.backgroundColor = .tertiarySystemBackground
 				present(avc, animated: true, completion: nil)
 			}
 		} else if indexPath.section == 1 && indexPath.row == 4 {

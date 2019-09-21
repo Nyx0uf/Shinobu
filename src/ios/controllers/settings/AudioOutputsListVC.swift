@@ -25,8 +25,6 @@ final class AudioOutputsListVC: NYXTableViewController {
 		super.viewDidLoad()
 
 		tableView.tintColor = themeProvider.currentTheme.tintColor
-		tableView.backgroundColor = .secondarySystemBackground
-		tableView.separatorColor = .separator
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.tableFooterView = UIView()
@@ -67,8 +65,6 @@ extension AudioOutputsListVC {
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-		cell.backgroundColor = .secondarySystemBackground
-		cell.contentView.backgroundColor = cell.backgroundColor
 
 		let output = outputs[indexPath.row]
 
