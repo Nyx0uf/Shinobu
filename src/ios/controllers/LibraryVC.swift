@@ -478,8 +478,6 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	override func didSelectDisplayType(_ typeAsInt: Int) {
-		// Hide
-		changeTypeAction(nil)
 		// Ignore if type did not change
 		let type = MusicalEntityType(rawValue: typeAsInt)
 		if dataSource.musicalEntityType == type {
@@ -492,12 +490,6 @@ final class LibraryVC: MusicalCollectionVC {
 		mpdBridge.entitiesForType(type) { (entities) in
 			DispatchQueue.main.async {
 				self.setItems(entities, forMusicalEntityType: type)
-				if self.dataSource.items.count == 0 {
-					self.collectionView.collectionView.contentOffset = CGPoint(0, 64)
-				} else {
-					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
-				}
-
 				self.updateNavigationTitle()
 				self.updateNavigationButtons()
 			}
@@ -577,35 +569,8 @@ extension LibraryVC {
 	}
 }
 
-// MARK: - UIViewControllerPreviewingDelegate
-/*extension LibraryVC {
-	override func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: location), let cellAttributes = collectionView.collectionView.layoutAttributesForItem(at: indexPath) {
-			previewingContext.sourceRect = cellAttributes.frame
-			switch dataSource.musicalEntityType {
-			case .albums:
-				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-				return AlbumDetailVC(album: album, mpdBridge: mpdBridge)
-			case .artists, .albumsartists:
-				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-				return AlbumsListVC(artist: artist, isAlbumArtist: dataSource.musicalEntityType == .albumsartists, mpdBridge: mpdBridge)
-			case .genres:
-				let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
-				return GenreDetailVC(genre: genre, mpdBridge: mpdBridge)
-			case .playlists:
-				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-				return PlaylistDetailVC(playlist: playlist, mpdBridge: mpdBridge)
-			default:
-				break
-			}
-		}
-		return nil
-	}
-}
-*/
-
 // MARK: - UIAdaptivePresentationControllerDelegate
-extension LibraryVC: UIAdaptivePresentationControllerDelegate {
+extension LibraryVC {
 	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
 	}

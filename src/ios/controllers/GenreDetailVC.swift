@@ -62,8 +62,6 @@ final class GenreDetailVC: MusicalCollectionVC {
 	}
 
 	override func didSelectDisplayType(_ typeAsInt: Int) {
-		// Hide
-		changeTypeAction(nil)
 		// Ignore if type did not change
 		let type = MusicalEntityType(rawValue: typeAsInt)
 		if dataSource.musicalEntityType == type {
@@ -88,12 +86,6 @@ final class GenreDetailVC: MusicalCollectionVC {
 			}
 		default:
 			break
-		}
-
-		if dataSource.items.count == 0 {
-			collectionView.collectionView.contentOffset = CGPoint(0, 64)
-		} else {
-			collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false) // Scroll to top
 		}
 	}
 }

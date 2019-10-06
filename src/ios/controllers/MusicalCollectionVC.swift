@@ -27,10 +27,6 @@ class MusicalCollectionVC: NYXViewController {
 		return [.albums, .artists, .albumsartists, .genres, .playlists]
 	}
 
-	// MARK: - Private properties
-	// View to change the type of items in the collection view
-	private var typeChoiceView: TypeChoiceView! = nil
-
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
@@ -92,11 +88,6 @@ class MusicalCollectionVC: NYXViewController {
 		collectionView.addGestureRecognizer(doubleTap)
 
 		if allowedMusicalEntityTypes.count > 1 {
-			let y = navigationController != nil ? (navigationController?.navigationBar.maxY)! : 0
-			typeChoiceView = TypeChoiceView(frame: CGRect(0, y, collectionView.width, CGFloat(allowedMusicalEntityTypes.count * 44)), musicalEntityTypes: allowedMusicalEntityTypes)
-			typeChoiceView.delegate = self
-			typeChoiceView.selectedMusicalEntityType = dataSource.musicalEntityType
-
 			titleView.isEnabled = true
 			titleView.addTarget(self, action: #selector(changeTypeAction(_:)), for: .touchUpInside)
 		}
@@ -139,27 +130,17 @@ class MusicalCollectionVC: NYXViewController {
 	}
 
 	@objc func changeTypeAction(_ sender: UIButton?) {
-		if typeChoiceView.superview != nil { // Is visible
-			UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, 0, self.collectionView.size)
-				//self.view.layoutIfNeeded()
-				if self.dataSource.items.count == 0 {
-					self.collectionView.collectionView.contentOffset = CGPoint(0, (self.navigationController?.navigationBar.maxY)!)
-				} else {
-					self.collectionView.collectionView.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-					self.collectionView.collectionView.contentOffset = CGPoint(0, -(self.navigationController?.navigationBar.maxY)!)
-				}
-			}, completion: { (_) in
-				self.typeChoiceView.removeFromSuperview()
-			})
-		} else { // Is hidden
-			typeChoiceView.tableView.reloadData()
-			view.insertSubview(typeChoiceView, belowSubview: collectionView)
-
-			UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-				self.collectionView.frame = CGRect(0, self.typeChoiceView.maxY, self.collectionView.size)
-				self.collectionView.collectionView.contentInset = .zero
-			}, completion: nil)
+		let avc = TypeChoiceVC(musicalEntityTypes: allowedMusicalEntityTypes)
+		avc.modalPresentationStyle = .popover
+		avc.delegate = self
+		avc.selectedMusicalEntityType = dataSource.musicalEntityType
+		if let popController = avc.popoverPresentationController {
+			popController.permittedArrowDirections = .up
+			popController.sourceRect = titleView.bounds
+			popController.sourceView = titleView
+			popController.delegate = self
+			avc.preferredContentSize = CGSize(280, CGFloat(44 * allowedMusicalEntityTypes.count))
+			present(avc, animated: true, completion: nil)
 		}
 	}
 
@@ -268,19 +249,8 @@ extension MusicalCollectionVC: MusicalCollectionDataSourceAndDelegateDelegate {
 	}
 }
 
-// MARK: - UIViewControllerPreviewingDelegate
-extension MusicalCollectionVC: UIViewControllerPreviewingDelegate {
-	public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		navigationController?.pushViewController(viewControllerToCommit, animated: true)
-	}
-
-	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		return nil
-	}
-}
-
 // MARK: - TypeChoiceViewDelegate
-extension MusicalCollectionVC: TypeChoiceViewDelegate {
+extension MusicalCollectionVC: TypeChoiceVCDelegate {
 	@objc func didSelectDisplayType(_ typeAsInt: Int) {
 	}
 }
@@ -291,5 +261,12 @@ extension MusicalCollectionVC: Themed {
 		searchView.backgroundColor = .systemGroupedBackground
 		searchBar.tintColor = theme.tintColor
 		(searchBar.value(forKey: "searchField") as? UITextField)?.textColor = .secondaryLabel
+	}
+}
+
+// MARK: - UIPopoverPresentationControllerDelegate
+extension MusicalCollectionVC: UIPopoverPresentationControllerDelegate {
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+		return .none
 	}
 }
