@@ -5,6 +5,8 @@ protocol MusicalCollectionDataSourceAndDelegateDelegate: class {
 	func didSelectEntity(_ entity: AnyObject)
 	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)
 	func didDisplayCellAtIndexPath(_ indexPath: IndexPath)
+	func shouldRenamePlaytlist(_ playlist: Playlist)
+	func shouldDeletePlaytlist(_ playlist: AnyObject)
 }
 
 final class MusicalCollectionDataSourceAndDelegate: NSObject {
@@ -241,4 +243,157 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 			downloadOperations.removeValue(forKey: indexPath)
 		}
 	}
+
+	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		return UIContextMenuConfiguration(identifier: nil, previewProvider: {
+			let cell = collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
+			return MusicalCellPreviewViewController(image: cell.image)
+		}, actionProvider: { (_) in
+
+			switch self.musicalEntityType {
+			case .albums:
+				let album = self.currentItemAtIndexPath(indexPath) as! Album
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play")) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
+				}
+
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random")) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
+				}
+
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add")) { (_) in
+					self.mpdBridge.addAlbumToQueue(album)
+				}
+
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			case .artists:
+				let artist = self.currentItemAtIndexPath(indexPath) as! Artist
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+				}
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+
+			case .albumsartists:
+				let artist = self.currentItemAtIndexPath(indexPath) as! Artist
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+				}
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add")) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			case .genres:
+				let genre = self.currentItemAtIndexPath(indexPath) as! Genre
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play")) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random")) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+				}
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add")) { (_) in
+					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in genre.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			case.playlists:
+				let playlist = self.currentItemAtIndexPath(indexPath) as! Playlist
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play")) { (_) in
+					self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random")) { (_) in
+					self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
+				}
+				let renameAction = UIAction(title: NYXLocalizedString("lbl_rename_playlist"), image: #imageLiteral(resourceName: "btn-search")) { (_) in
+					self.delegate?.shouldRenamePlaytlist(playlist)
+				}
+				let deleteAction = UIAction(title: NYXLocalizedString("lbl_delete_playlist"), image: UIImage(named: "btn-trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
+					self.delegate?.shouldDeletePlaytlist(playlist)
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, renameAction, deleteAction])
+			default:
+				return nil
+			}
+		})
+	}
+}
+
+fileprivate final class MusicalCellPreviewViewController: UIViewController {
+    private let imageView = UIImageView()
+
+    override func loadView() {
+        view = imageView
+    }
+
+    init(image: UIImage?) {
+        super.init(nibName: nil, bundle: nil)
+
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        imageView.image = image
+
+		preferredContentSize = image != nil ? image!.size : .zero
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }

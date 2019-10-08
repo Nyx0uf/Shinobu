@@ -4,7 +4,7 @@ class MusicalCollectionVC: NYXViewController {
 	// MARK: - Public properties
 	// Collection view
 	private(set) var collectionView: MusicalCollectionView!
-	// Collection viex's data source & delegate
+	// Collection view's data source & delegate
 	var dataSource: MusicalCollectionDataSourceAndDelegate!
 	// Search view
 	private(set) var searchView: UIView! = nil
@@ -14,12 +14,6 @@ class MusicalCollectionVC: NYXViewController {
 	private(set) var searchBarVisible = false
 	// Is currently searching, flag
 	private(set) var searching = false
-	// Long press gesture is recognized, flag
-	var longPressRecognized = false
-	// Previewing context for peek & pop
-	private(set) var previewingContext: UIViewControllerPreviewing! = nil
-	// Long press gesture for devices without force touch
-	private(set) var longPress: UILongPressGestureRecognizer! = nil
 	// MPD Data source
 	let mpdBridge: MPDBridge
 	// Allowed display types
@@ -74,12 +68,6 @@ class MusicalCollectionVC: NYXViewController {
 		collectionView.collectionView.dataSource = dataSource
 		view.addSubview(collectionView)
 
-		// Longpress
-		longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-		longPress.minimumPressDuration = 0.5
-		longPress.delaysTouchesBegan = true
-		updateLongpressState()
-
 		// Double tap
 		let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap(_:)))
 		doubleTap.numberOfTapsRequired = 2
@@ -112,10 +100,6 @@ class MusicalCollectionVC: NYXViewController {
 	}
 
 	// MARK: - Gestures
-	@objc func longPress(_ gest: UILongPressGestureRecognizer) {
-
-	}
-
 	@objc func doubleTap(_ gest: UITapGestureRecognizer) {
 	}
 
@@ -145,17 +129,6 @@ class MusicalCollectionVC: NYXViewController {
 	}
 
 	// MARK: - Public
-	func updateLongpressState() {
-		if traitCollection.forceTouchCapability == .available {
-			collectionView.removeGestureRecognizer(longPress)
-			longPress.isEnabled = false
-			//previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
-		} else {
-			collectionView.addGestureRecognizer(longPress)
-			longPress.isEnabled = true
-		}
-	}
-
 	func setItems(_ items: [MusicalEntity], forMusicalEntityType type: MusicalEntityType, reload: Bool = true) {
 		dataSource.setItems(items, forType: type)
 		collectionView.musicalEntityType = type
@@ -246,6 +219,47 @@ extension MusicalCollectionVC: MusicalCollectionDataSourceAndDelegateDelegate {
 
 	@objc func didDisplayCellAtIndexPath(_ indexPath: IndexPath) {
 		collectionView.setCurrentIndex(indexPath.section)
+	}
+
+	func shouldRenamePlaytlist(_ playlist: Playlist) {
+		let alertController = NYXAlertController(title: "\(NYXLocalizedString("lbl_rename_playlist")) \(playlist.name)", message: nil, preferredStyle: .alert)
+
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_save"), style: .default) { (alert) in
+			let textField = alertController.textFields![0] as UITextField
+
+			if String.isNullOrWhiteSpace(textField.text) {
+				let errorAlert = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_playlist_create_emptyname"), preferredStyle: .alert)
+				errorAlert.addAction(UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .cancel))
+				self.present(errorAlert, animated: true, completion: nil)
+			} else {
+				self.mpdBridge.rename(playlist: playlist, withNewName: textField.text!) { (result) in
+					switch result {
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
+							DispatchQueue.main.async {
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
+							}
+						}
+					}
+				}
+			}
+		})
+		alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel))
+
+		alertController.addTextField { (textField) in
+			textField.placeholder = NYXLocalizedString("lbl_rename_playlist_placeholder")
+			textField.textAlignment = .left
+		}
+
+		present(alertController, animated: true, completion: nil)
+	}
+
+	@objc func shouldDeletePlaytlist(_ playlist: AnyObject) {
 	}
 }
 

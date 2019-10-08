@@ -193,38 +193,6 @@ extension PlaylistDetailVC: UITableViewDelegate {
 	}
 }
 
-// MARK: - Peek & Pop
-extension PlaylistDetailVC {
-	override var previewActionItems: [UIPreviewActionItem] {
-		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
-			self.mpdBridge.playPlaylist(self.playlist, shuffle: false, loop: false)
-		}
-
-		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
-			self.mpdBridge.playPlaylist(self.playlist, shuffle: true, loop: false)
-		}
-
-		let renameAction = UIPreviewAction(title: NYXLocalizedString("lbl_rename_playlisr"), style: .default) { (_, _) in
-			self.renamePlaylistAction()
-		}
-
-		let deleteAction = UIPreviewAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (_, _) in
-			self.mpdBridge.deletePlaylist(named: self.playlist.name) { (result) in
-				switch result {
-				case .failure(let error):
-					DispatchQueue.main.async {
-						MessageView.shared.showWithMessage(message: error.message)
-					}
-				case .success:
-					break
-				}
-			}
-		}
-
-		return [playAction, shuffleAction, renameAction, deleteAction]
-	}
-}
-
 extension PlaylistDetailVC: TracksListTableViewDelegate {
 	func getCurrentTrack() -> Track? {
 		return mpdBridge.getCurrentTrack()
