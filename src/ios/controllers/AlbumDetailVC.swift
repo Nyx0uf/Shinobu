@@ -147,7 +147,6 @@ extension AlbumDetailVC: UITableViewDelegate {
 						popController.sourceRect = cell.bounds
 						popController.sourceView = cell
 						popController.delegate = self
-						//popController.backgroundColor = .tertiarySystemBackground
 						tvc.preferredContentSize = CGSize(300, 200)
 						self.present(tvc, animated: true, completion: nil)
 					}
@@ -167,25 +166,6 @@ extension AlbumDetailVC: UIPopoverPresentationControllerDelegate {
 		return .none
 	}
 }
-
-// MARK: - Peek & Pop
-//extension AlbumDetailVC {
-//	override var previewActionItems: [UIPreviewActionItem] {
-//		let playAction = UIPreviewAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_, _) in
-//			self.mpdBridge.playAlbum(self.album, shuffle: false, loop: false)
-//		}
-//
-//		let shuffleAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_, _) in
-//			self.mpdBridge.playAlbum(self.album, shuffle: true, loop: false)
-//		}
-//
-//		let addQueueAction = UIPreviewAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_, _) in
-//			self.mpdBridge.addAlbumToQueue(self.album)
-//		}
-//
-//		return [playAction, shuffleAction, addQueueAction]
-//	}
-//}
 
 extension AlbumDetailVC: TracksListTableViewDelegate {
 	func getCurrentTrack() -> Track? {

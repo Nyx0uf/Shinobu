@@ -148,202 +148,6 @@ final class LibraryVC: MusicalCollectionVC {
 		}
 	}
 
-	override func longPress(_ gest: UILongPressGestureRecognizer) {
-		if longPressRecognized {
-			return
-		}
-		longPressRecognized = true
-
-		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView)) {
-			let cell = collectionView.collectionView.cellForItem(at: indexPath) as! MusicalEntityCollectionViewCell
-			cell.longPressed = true
-
-			let alertController = NYXAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-			let cancelAction = UIAlertAction(title: NYXLocalizedString("lbl_cancel"), style: .cancel) { (_) in
-				self.longPressRecognized = false
-				cell.longPressed = false
-			}
-			alertController.addAction(cancelAction)
-
-			switch dataSource.musicalEntityType {
-			case .albums:
-				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
-					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(playAction)
-				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
-					self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(shuffleAction)
-				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
-					self.mpdBridge.addAlbumToQueue(album)
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(addQueueAction)
-			case .artists:
-				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(playAction)
-				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(shuffleAction)
-				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						for album in artist.albums {
-							strongSelf.mpdBridge.addAlbumToQueue(album)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(addQueueAction)
-			case .albumsartists:
-				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(playAction)
-				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(shuffleAction)
-				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						for album in artist.albums {
-							strongSelf.mpdBridge.addAlbumToQueue(album)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(addQueueAction)
-			case .genres:
-				let genre = self.dataSource.currentItemAtIndexPath(indexPath) as! Genre
-				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(playAction)
-				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-							let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(shuffleAction)
-				let addQueueAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), style: .default) { (_) in
-					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						for album in genre.albums {
-							strongSelf.mpdBridge.addAlbumToQueue(album)
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(addQueueAction)
-			case .playlists:
-				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-				let playAction = UIAlertAction(title: NYXLocalizedString("lbl_play"), style: .default) { (_) in
-					self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(playAction)
-				let shuffleAction = UIAlertAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), style: .default) { (_) in
-					self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(shuffleAction)
-				let renameAction = UIAlertAction(title: NYXLocalizedString("lbl_rename_playlist"), style: .default) { (_) in
-					self.renamePlaylistAction(playlist: playlist)
-				}
-				alertController.addAction(renameAction)
-				let deleteAction = UIAlertAction(title: NYXLocalizedString("lbl_delete_playlist"), style: .destructive) { (_) in
-					self.mpdBridge.deletePlaylist(named: playlist.name) { [weak self] (result) in
-						guard let strongSelf = self else { return }
-						switch result {
-						case .failure(let error):
-							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
-							}
-						case .success:
-							strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									strongSelf.setItems(entities, forMusicalEntityType: .playlists)
-									strongSelf.updateNavigationTitle()
-								}
-							}
-						}
-					}
-					self.longPressRecognized = false
-					cell.longPressed = false
-				}
-				alertController.addAction(deleteAction)
-			default:
-				break
-			}
-
-			present(alertController, animated: true, completion: nil)
-		}
-	}
-
 	// MARK: - Buttons actions
 	@objc func showServersListAction(_ sender: Any?) {
 		let serversListVC = ServersListVC(mpdBridge: mpdBridge)
@@ -532,6 +336,25 @@ extension LibraryVC {
 			navigationController?.pushViewController(pvc, animated: true)
 		default:
 			break
+		}
+	}
+
+	override func shouldDeletePlaytlist(_ playlist: AnyObject) {
+		self.mpdBridge.deletePlaylist(named: (playlist as! Playlist).name) { [weak self] (result) in
+			guard let strongSelf = self else { return }
+			switch result {
+			case .failure(let error):
+				DispatchQueue.main.async {
+					MessageView.shared.showWithMessage(message: error.message)
+				}
+			case .success:
+				strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
+					DispatchQueue.main.async {
+						strongSelf.setItems(entities, forMusicalEntityType: .playlists)
+						strongSelf.updateNavigationTitle()
+					}
+				}
+			}
 		}
 	}
 }
