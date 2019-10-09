@@ -365,7 +365,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 				let renameAction = UIAction(title: NYXLocalizedString("lbl_rename_playlist"), image: #imageLiteral(resourceName: "btn-search")) { (_) in
 					self.delegate?.shouldRenamePlaytlist(playlist)
 				}
-				let deleteAction = UIAction(title: NYXLocalizedString("lbl_delete_playlist"), image: UIImage(named: "btn-trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
+				let deleteAction = UIAction(title: NYXLocalizedString("lbl_delete_playlist"), image: #imageLiteral(resourceName: "btn-edit"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
 					self.delegate?.shouldDeletePlaytlist(playlist)
 				}
 				return UIMenu(title: "", children: [playAction, shuffleAction, renameAction, deleteAction])
