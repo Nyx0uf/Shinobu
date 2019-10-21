@@ -34,6 +34,8 @@ final class LibraryVC: MusicalCollectionVC {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
+		handleFirstLaunch()
+
 		checkInit()
 	}
 
@@ -48,6 +50,13 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	// MARK: - Private
+	private func handleFirstLaunch() {
+		if Settings.shared.bool(forKey: .veryFirstLaunch) == true {
+			Settings.shared.set(false, forKey: .veryFirstLaunch)
+			showServersListAction(nil)
+		}
+	}
+
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
@@ -72,9 +81,6 @@ final class LibraryVC: MusicalCollectionVC {
 						}
 					}
 				}
-			} else {
-				Logger.shared.log(type: .information, message: "No MPD server registered or enabled yet")
-				showServersListAction(nil)
 			}
 		}
 

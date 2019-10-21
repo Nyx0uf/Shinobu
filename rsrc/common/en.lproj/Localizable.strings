@@ -112,3 +112,6 @@
 "lbl_current_selected_server" = "the current selected server";
 "lbl_current_selected_server_not" = "not the current selected server";
 "lbl_add_mpd_server" = "Add a server";
+"lbl_add_one" = "Add one";
+"lbl_no_zc_servers" = "No nearby server found";
+"lbl_no_outputs" = "No outputs";

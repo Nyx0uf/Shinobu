@@ -105,11 +105,34 @@ final class ServersListVC: NYXTableViewController {
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: serversManager.getSelectedServer()?.mpd, userInfo: nil)
 	}
+
+	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
+		if isEmpty {
+			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+			emptyView.backgroundColor = tableView.backgroundColor
+
+			let btn = AwesomeButton(text: NYXLocalizedString("lbl_add_one"), font: UIFont.systemFont(ofSize: 32, weight: .ultraLight), symbolName: "plus.circle", symbolConfiguration: UIImage.SymbolConfiguration(pointSize: 64, weight: .ultraLight), imagePosition: .top)
+			btn.translatesAutoresizingMaskIntoConstraints = false
+			btn.tintColor = .label
+			btn.selectedTintColor = themeProvider.currentTheme.tintColor
+			btn.addTarget(self, action: #selector(addMpdServerAction(_:)), for: .touchUpInside)
+			emptyView.addSubview(btn)
+			btn.x = (emptyView.width - btn.width) / 2
+			btn.y = (emptyView.height - btn.height) / 2
+
+			tableView.backgroundView = emptyView
+			tableView.separatorStyle = .none
+		} else {
+			tableView.backgroundView = nil
+			tableView.separatorStyle = .singleLine
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
 extension ServersListVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		handleEmptyView(tableView: tableView, isEmpty: servers.count == 0)
 		return servers.count
 	}
 

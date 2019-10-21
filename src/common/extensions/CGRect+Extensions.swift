@@ -28,4 +28,9 @@ extension CGRect {
 		get { return origin.y }
 		set { origin.y = newValue }
 	}
+
+	// MARK: - Round / Ceil
+	func ceilled() -> CGRect {
+		return CGRect(origin.ceilled(), size.ceilled())
+	}
 }

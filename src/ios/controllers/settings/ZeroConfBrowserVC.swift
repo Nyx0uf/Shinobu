@@ -44,11 +44,36 @@ final class ZeroConfBrowserVC: NYXTableViewController {
 		super.viewWillDisappear(animated)
 		zeroConfExplorer.stopSearch()
 	}
+
+	// MARK: - Private
+	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
+		if isEmpty {
+			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+			emptyView.backgroundColor = tableView.backgroundColor
+
+			let lbl = UILabel(frame: .zero)
+			lbl.text = NYXLocalizedString("lbl_no_zc_servers")
+			lbl.font = UIFont.systemFont(ofSize: 32, weight: .ultraLight)
+			lbl.translatesAutoresizingMaskIntoConstraints = false
+			lbl.tintColor = .label
+			lbl.sizeToFit()
+			emptyView.addSubview(lbl)
+			lbl.x = (emptyView.width - lbl.width) / 2
+			lbl.y = (emptyView.height - lbl.height) / 2
+
+			tableView.backgroundView = emptyView
+			tableView.separatorStyle = .none
+		} else {
+			tableView.backgroundView = nil
+			tableView.separatorStyle = .singleLine
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
 extension ZeroConfBrowserVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		handleEmptyView(tableView: tableView, isEmpty: servers.count == 0)
 		return servers.count
 	}
 

@@ -64,16 +64,6 @@ class NYXTableViewController: UITableViewController {
 		return [.portrait, .portraitUpsideDown]
 	}
 
-//	override func viewWillAppear(_ animated: Bool) {
-//		super.viewWillAppear(animated)
-//
-//		if let navigationBar = navigationController?.navigationBar {
-//			if let shadowImageView = findShadowImage(under: navigationBar) {
-//				shadowImageView.isHidden = true
-//			}
-//		}
-//	}
-
 	func updateNavigationTitle() {
 
 	}
@@ -92,16 +82,6 @@ class NYXViewController: UIViewController {
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return [.portrait, .portraitUpsideDown]
-	}
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-
-//		if let navigationBar = navigationController?.navigationBar {
-//			if let shadowImageView = findShadowImage(under: navigationBar) {
-//				shadowImageView.isHidden = true
-//			}
-//		}
 	}
 
 	func updateNavigationTitle() {

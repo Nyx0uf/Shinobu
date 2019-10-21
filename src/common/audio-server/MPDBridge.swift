@@ -660,7 +660,7 @@ final class MPDBridge {
 			let result = try connection.getPlayerInfos()
 			switch result {
 			case .failure(let error):
-				Logger.shared.log(error: error)
+				Logger.shared.log(message: error.message)
 			case .success(let result):
 				guard let infos = result else { return }
 				let status = infos[PLAYER_STATUS_KEY] as! Int

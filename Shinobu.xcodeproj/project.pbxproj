@@ -97,6 +97,7 @@
 		43C3E80D2265FFAD00F6F058 /* ImagedSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E80C2265FFAD00F6F058 /* ImagedSlider.swift */; };
 		43C3E80F2265FFF000F6F058 /* LabeledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E80E2265FFF000F6F058 /* LabeledSlider.swift */; };
 		43C3E8112266009E00F6F058 /* ImagedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8102266009E00F6F058 /* ImagedLabel.swift */; };
+		43D61F892351B42B00D4A2DD /* AwesomeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D61F882351B42B00D4A2DD /* AwesomeButton.swift */; };
 		43D86E93234A14CA0083C522 /* TypeChoiceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D86E92234A14CA0083C522 /* TypeChoiceVC.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
@@ -293,6 +294,7 @@
 		43C3E80C2265FFAD00F6F058 /* ImagedSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagedSlider.swift; sourceTree = "<group>"; };
 		43C3E80E2265FFF000F6F058 /* LabeledSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledSlider.swift; sourceTree = "<group>"; };
 		43C3E8102266009E00F6F058 /* ImagedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagedLabel.swift; sourceTree = "<group>"; };
+		43D61F882351B42B00D4A2DD /* AwesomeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwesomeButton.swift; sourceTree = "<group>"; };
 		43D86E92234A14CA0083C522 /* TypeChoiceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeChoiceVC.swift; sourceTree = "<group>"; };
 		43DBD7FB22203501009B3B68 /* ServersListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersListVC.swift; sourceTree = "<group>"; };
 		43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServer.swift; sourceTree = "<group>"; };
@@ -656,6 +658,7 @@
 		43C3E80B2265FECE00F6F058 /* components */ = {
 			isa = PBXGroup;
 			children = (
+				43D61F882351B42B00D4A2DD /* AwesomeButton.swift */,
 				4358B07A21EB47C2009A3BBF /* AutoScrollLabel.swift */,
 				43B8BAAA22564E980033EA5D /* Button.swift */,
 				43C3E8102266009E00F6F058 /* ImagedLabel.swift */,
@@ -915,6 +918,7 @@
 				4358B02421EB42B4009A3BBF /* FileManager+Extensions.swift in Sources */,
 				43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */,
 				4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */,
+				43D61F892351B42B00D4A2DD /* AwesomeButton.swift in Sources */,
 				434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */,
 				4358B02C21EB42B4009A3BBF /* CoverServer.swift in Sources */,
 				4358B05921EB44E2009A3BBF /* Duration.swift in Sources */,

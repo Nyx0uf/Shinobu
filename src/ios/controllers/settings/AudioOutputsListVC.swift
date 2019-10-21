@@ -55,11 +55,34 @@ final class AudioOutputsListVC: NYXTableViewController {
 			cnn.disconnect()
 		}
 	}
+	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
+		if isEmpty {
+			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+			emptyView.backgroundColor = tableView.backgroundColor
+
+			let lbl = UILabel(frame: .zero)
+			lbl.text = NYXLocalizedString("lbl_no_outputs")
+			lbl.font = UIFont.systemFont(ofSize: 16, weight: .ultraLight)
+			lbl.translatesAutoresizingMaskIntoConstraints = false
+			lbl.tintColor = .label
+			lbl.sizeToFit()
+			emptyView.addSubview(lbl)
+			lbl.x = (emptyView.width - lbl.width) / 2
+			lbl.y = (emptyView.height - lbl.height) / 2
+
+			tableView.backgroundView = emptyView
+			tableView.separatorStyle = .none
+		} else {
+			tableView.backgroundView = nil
+			tableView.separatorStyle = .singleLine
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
 extension AudioOutputsListVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		handleEmptyView(tableView: tableView, isEmpty: outputs.count == 0)
 		return outputs.count
 	}
 

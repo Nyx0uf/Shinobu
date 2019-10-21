@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import UIKit
 
 extension String {
 	// MARK: Removal of characters
@@ -68,6 +69,13 @@ extension String {
 
 		let predicate = diacriticSensitive ? NSPredicate(format: "SELF LIKE %@", searchWithWildcards) : NSPredicate(format: "SELF LIKE[d] %@", searchWithWildcards)
 		return predicate.evaluate(with: sourceString)
+	}
+
+	func size(withFont font: UIFont) -> CGSize {
+		let constraintRect = CGSize(.greatestFiniteMagnitude, .greatestFiniteMagnitude)
+		let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
+
+		return boundingBox.size.ceilled()
 	}
 }
 
