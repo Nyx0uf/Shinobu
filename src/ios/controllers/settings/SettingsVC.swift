@@ -9,8 +9,6 @@ final class SettingsVC: NYXTableViewController {
 	private var swShake: UISwitch!
 	// Fuzzy search switch
 	private var swFuzzySearch: UISwitch!
-	// Logging switch
-	private var swLogging: UISwitch!
 	// Columns control
 	private var sColumns: UISegmentedControl!
 	// Buttons for the tint color
@@ -39,12 +37,9 @@ final class SettingsVC: NYXTableViewController {
 		swFuzzySearch = UISwitch()
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
 
-		swLogging = UISwitch()
-		swLogging.addTarget(self, action: #selector(toggleLogging(_:)), for: .valueChanged)
-
 		sColumns = UISegmentedControl(items: ["2", "3"])
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
-		sColumns.frame = CGRect(0, 0, 64, swLogging.height)
+		sColumns.frame = CGRect(0, 0, 64, swFuzzySearch.height)
 
 		let margin = CGFloat(4)
 		var x = view.width - CGFloat(32 * TintColorType.allCases.count) - CGFloat(margin * CGFloat(TintColorType.allCases.count)) - 16
@@ -88,11 +83,6 @@ final class SettingsVC: NYXTableViewController {
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
 	}
 
-	@objc func toggleLogging(_ sender: Any?) {
-		let logging = Settings.shared.bool(forKey: .pref_enableLogging)
-		Settings.shared.set(!logging, forKey: .pref_enableLogging)
-	}
-
 	@objc func toggleColumns(_ sender: Any?) {
 		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
 
@@ -125,51 +115,12 @@ final class SettingsVC: NYXTableViewController {
 
 		return (version, build)
 	}
-
-	private func sendLogs() {
-		if MFMailComposeViewController.canSendMail() {
-			guard let data = Logger.shared.export() else {
-				let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_alert_logsexport_fail_msg"), preferredStyle: .alert)
-				let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive)
-				alertController.addAction(okAction)
-				present(alertController, animated: true, completion: nil)
-				return
-			}
-
-			let mailComposerVC = MFMailComposeViewController()
-			mailComposerVC.mailComposeDelegate = self
-			mailComposerVC.setToRecipients(["blabla@gmail.com"])
-			mailComposerVC.setSubject("Shinobu logs")
-			mailComposerVC.addAttachmentData(data, mimeType: "text/plain", fileName: "logs.txt")
-
-			var message = "Shinobu \(applicationVersionAndBuild().version) (\(applicationVersionAndBuild().build))\niOS \(UIDevice.current.systemVersion)\n\n"
-			let server = ServersManager().getSelectedServer()
-			if let s = server {
-				message += "MPD server:\n\(s.mpd)\n\n"
-				Logger.shared.log(type: .error, message: "Failed to decode mpd server")
-			}
-
-			if let s = server, let w = s.covers {
-				message += "Cover server:\n\(w)\n\n"
-				Logger.shared.log(type: .error, message: "Failed to decode web server")
-			}
-			mailComposerVC.setMessageBody(message, isHTML: false)
-
-			present(mailComposerVC, animated: true, completion: nil)
-
-		} else {
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_error"), message: NYXLocalizedString("lbl_alert_nomailaccount_msg"), preferredStyle: .alert)
-			let okAction = UIAlertAction(title: NYXLocalizedString("lbl_ok"), style: .destructive)
-			alertController.addAction(okAction)
-			present(alertController, animated: true, completion: nil)
-		}
-	}
 }
 
 // MARK: - UITableViewDataSource
 extension SettingsVC {
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 5
+		return 4
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -181,8 +132,6 @@ extension SettingsVC {
 		case 2:
 			return 1
 		case 3:
-			return 2
-		case 4:
 			return 1
 		default:
 			return 0
@@ -223,16 +172,6 @@ extension SettingsVC {
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swFuzzySearch)
 				}
-			} else if indexPath.section == 3 {
-				if indexPath.row == 0 {
-					cell?.textLabel?.text = NYXLocalizedString("lbl_enable_logging")
-					cell?.selectionStyle = .none
-					cell?.contentView.addSubview(swLogging)
-				} else if indexPath.row == 1 {
-					cell?.textLabel?.text = NYXLocalizedString("lbl_send_logs")
-					cell?.textLabel?.textAlignment = .center
-					cell?.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-				}
 			} else {
 				if indexPath.row == 0 {
 					let version = applicationVersionAndBuild()
@@ -270,17 +209,6 @@ extension SettingsVC {
 				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
 				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
 			}
-		} else if indexPath.section == 3 {
-			if indexPath.row == 0 {
-				swLogging.frame = CGRect(UIScreen.main.bounds.width - 16 - swLogging.width, (cell!.height - swLogging.height) / 2, swLogging.size)
-				swLogging.isOn = Settings.shared.bool(forKey: .pref_enableLogging)
-			} else if indexPath.row == 1 {
-				cell?.textLabel?.backgroundColor = .clear
-				cell?.textLabel?.textColor = themeProvider.currentTheme.tintColor
-				let v = UIView()
-				v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
-				cell?.selectedBackgroundView = v
-			}
 		} else {
 			if indexPath.row == 0 {
 				cell?.textLabel?.textColor = .label
@@ -293,14 +221,6 @@ extension SettingsVC {
 
 // MARK: - UITableViewDelegate
 extension SettingsVC {
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		if indexPath.section == 3 && indexPath.row == 1 {
-			sendLogs()
-		}
-
-		tableView.deselectRow(at: indexPath, animated: true)
-	}
-
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
 		case 0:
@@ -309,17 +229,9 @@ extension SettingsVC {
 			return NYXLocalizedString("lbl_behaviour").uppercased()
 		case 2:
 			return NYXLocalizedString("lbl_search").uppercased()
-		case 3:
-			return NYXLocalizedString("lbl_troubleshoot").uppercased()
 		default:
 			return ""
 		}
-	}
-}
-
-extension SettingsVC: MFMailComposeViewControllerDelegate {
-	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-		controller.dismiss(animated: true, completion: nil)
 	}
 }
 
@@ -328,7 +240,6 @@ extension SettingsVC: Themed {
 		swShake.onTintColor = theme.tintColor
 		swPrettyDB.onTintColor = theme.tintColor
 		swFuzzySearch.onTintColor = theme.tintColor
-		swLogging.onTintColor = theme.tintColor
 
 		for btn in self.colorsButton {
 			btn.layer.borderColor = UIColor.label.cgColor

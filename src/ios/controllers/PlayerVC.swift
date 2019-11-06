@@ -98,6 +98,10 @@ final class PlayerVC: NYXViewController {
 		// Cover view
 		coverView.frame = CGRect(.zero, miniHeight, miniHeight)
 		coverView.isUserInteractionEnabled = true
+		coverView.layer.shadowColor = UIColor.black.cgColor
+		coverView.layer.shadowRadius = 4
+		coverView.layer.shadowOffset = .zero
+		coverView.layer.masksToBounds = false
 		blurEffectView.contentView.addSubview(coverView)
 
 		// Progress
@@ -538,6 +542,7 @@ final class PlayerVC: NYXViewController {
 				self.lblAlbum.alpha = 1
 
 				self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, width - 64)
+				self.coverView.layer.shadowOpacity = 1
 
 				self.btnPlay.origin = CGPoint((width - self.btnPlay.width) / 2, self.coverView.maxY + 20)
 				self.btnPrevious.origin = CGPoint(self.btnPlay.x - self.btnPrevious.width - 8, self.btnPlay.y)
@@ -577,6 +582,8 @@ final class PlayerVC: NYXViewController {
 				self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
 
 				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniHeight)
+
+				self.coverView.layer.shadowOpacity = 0
 
 				self.lblAlbumArtist.alpha = 1
 				self.lblTrack.alpha = 1

@@ -53,10 +53,6 @@ final class Logger {
 		print("[\(file)]:[\(line)] => \(message)")
 #endif
 
-		if Settings.shared.bool(forKey: .pref_enableLogging) == false {
-			return
-		}
-
 		DispatchQueue.global(qos: .background).async { [weak self] in
 			guard let strongSelf = self else { return }
 			let log = Log(type: type, date: strongSelf.dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
