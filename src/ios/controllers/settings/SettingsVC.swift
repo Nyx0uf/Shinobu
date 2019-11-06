@@ -61,12 +61,6 @@ final class SettingsVC: NYXTableViewController {
 		tableView.reloadData()
 	}
 
-	override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-		super.traitCollectionDidChange(previousTraitCollection)
-
-		themeProvider.currentTheme = themeProvider.currentTheme
-	}
-
 	// MARK: - IBActions
 	@objc func toggleShakeToPlay(_ sender: Any?) {
 		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
