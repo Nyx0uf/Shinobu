@@ -98,7 +98,7 @@ final class PlayerVC: NYXViewController {
 		// Cover view
 		coverView.frame = CGRect(.zero, miniHeight, miniHeight)
 		coverView.isUserInteractionEnabled = true
-		coverView.layer.shadowColor = UIColor.black.cgColor
+		coverView.layer.shadowColor = UIColor(rgb: 0x111111).cgColor
 		coverView.layer.shadowRadius = 4
 		coverView.layer.shadowOffset = .zero
 		coverView.layer.masksToBounds = false
