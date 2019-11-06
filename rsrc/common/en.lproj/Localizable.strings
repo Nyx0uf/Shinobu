@@ -115,3 +115,5 @@
 "lbl_add_one" = "Add one";
 "lbl_no_zc_servers" = "No nearby server found";
 "lbl_no_outputs" = "No outputs";
+"lbl_no_search_results" = "No results";
+"lbl_no_items" = "No items to display :(";
