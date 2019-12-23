@@ -36,93 +36,68 @@
  * Do not include this header directly.  Use mpd/client.h instead.
  */
 
-#ifndef MPD_DIRECTORY_H
-#define MPD_DIRECTORY_H
+#ifndef MPD_FINGERPRINT_H
+#define MPD_FINGERPRINT_H
 
 #include "compiler.h"
 
 #include <stdbool.h>
-#include <time.h>
+#include <stddef.h>
 
-struct mpd_pair;
 struct mpd_connection;
+struct mpd_pair;
 
-/**
- * \struct mpd_directory
- *
- * An opaque directory object.  This is a container for more songs,
- * directories or playlists.
- */
-struct mpd_directory;
+enum mpd_fingerprint_type {
+	MPD_FINGERPRINT_TYPE_UNKNOWN,
+	MPD_FINGERPRINT_TYPE_CHROMAPRINT,
+};
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * Duplicates a #mpd_directory object.
- *
- * @return the new object, or NULL on out of memory
- */
-mpd_malloc
-struct mpd_directory *
-mpd_directory_dup(const struct mpd_directory *directory);
-
-/**
- * Free memory allocated by the #mpd_directory object.
- */
-void mpd_directory_free(struct mpd_directory *directory);
-
-/**
- * Returns the path of this directory, relative to the MPD music
- * directory.  It does not begin with a slash.
+ * Parse a #mpd_pair name to check which fingerprint type it contains.
  */
 mpd_pure
-const char *
-mpd_directory_get_path(const struct mpd_directory *directory);
+enum mpd_fingerprint_type
+mpd_parse_fingerprint_type(const char *name);
 
 /**
- * @return the POSIX UTC time stamp of the last modification, or 0 if
- * that is unknown
+ * Sends the "getfingerprint" command to MPD.  Call mpd_recv_pair() to
+ * read response lines.  Use mpd_parse_fingerprint_type() to check
+ * each pair's name; the pair's value then contains the actual
+ * fingerprint.
  *
- * @since libmpdclient 2.9
- */
-mpd_pure
-time_t
-mpd_directory_get_last_modified(const struct mpd_directory *directory);
-
-/**
- * Begins parsing a new directory.
+ * @param connection a valid and connected #mpd_connection
+ * @param uri the song URI
+ * @return true on success
  *
- * @param pair the first pair in this directory (name must be "directory")
- * @return the new #mpd_entity object, or NULL on error (out of
- * memory, or pair name is not "directory")
- */
-mpd_malloc
-struct mpd_directory *
-mpd_directory_begin(const struct mpd_pair *pair);
-
-/**
- * Parses the pair, adding its information to the specified
- * #mpd_directory object.
- *
- * @return true if the pair was parsed and added to the directory (or if
- * the pair was not understood and ignored), false if this pair is the
- * beginning of the next directory
+ * @since libmpdclient 2.17, MPD 0.22
  */
 bool
-mpd_directory_feed(struct mpd_directory *directory,
-		   const struct mpd_pair *pair);
+mpd_send_getfingerprint(struct mpd_connection *connection, const char *uri);
 
 /**
- * Receives the next directory from the MPD server.
+ * Shortcut for mpd_send_getfingerprint(), mpd_recv_pair_named() and
+ * mpd_response_finish().
  *
- * @return a #mpd_directory object, or NULL on error or if the directory list is
- * finished
+ * @param connection a valid and connected #mpd_connection
+ * @param uri the song URI
+ * @param buffer a buffer for the fingerprint string
+ * @param buffer_size the size of the buffer (with enough room for a
+ * trailing null byte); if the buffer is too small, behavior is
+ * undefined; the library may truncate the string or fail
+ * @return a pointer to the buffer on success or NULL on error (or if
+ * there was no chromaprint in MPD's response)
+ *
+ * @since libmpdclient 2.17, MPD 0.22
  */
 mpd_malloc
-struct mpd_directory *
-mpd_recv_directory(struct mpd_connection *connection);
+const char *
+mpd_run_getfingerprint_chromaprint(struct mpd_connection *connection,
+				   const char *uri,
+				   char *buffer, size_t buffer_size);
 
 #ifdef __cplusplus
 }

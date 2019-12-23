@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,26 @@
 
 #include "compiler.h"
 
+#include <stdbool.h>
+#include <stddef.h>
+
 struct mpd_pair;
 struct mpd_connection;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * Reads the binary data response from the server.
+ * The size and binary pair must be already read from the input buffer.
+ *
+ * The caller must allocate length bytes of memory for data.
+ *
+ * @return true on success
+ */
+bool
+mpd_recv_binary(struct mpd_connection *connection, void *data, size_t length);
 
 /**
  * Reads the next #mpd_pair from the server.  Returns NULL if there

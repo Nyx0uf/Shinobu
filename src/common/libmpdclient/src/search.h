@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -90,6 +90,18 @@ mpd_search_db_songs(struct mpd_connection *connection, bool exact);
  */
 bool
 mpd_search_add_db_songs(struct mpd_connection *connection, bool exact);
+
+/**
+ * Search for songs in the database and adds the result to a playlist.
+ * Constraints may be specified with mpd_search_add_tag_constraint().
+ * Send the search command with mpd_search_commit().
+ *
+ * @param connection the connection to MPD
+ * @return true on success, false on error
+ */
+bool
+mpd_search_add_db_songs_to_playlist(struct mpd_connection *connection,
+				    const char *playlist_name);
 
 /**
  * Search for songs in the queue.
@@ -200,6 +212,20 @@ mpd_search_add_modified_since_constraint(struct mpd_connection *connection,
 					 time_t value);
 
 /**
+ * Add an expression string.
+ *
+ * @param connection a #mpd_connection
+ * @param expression the expression string; must be enclosed in
+ * parantheses
+ * @return true on success, false on error
+ *
+ * @since libmpdclient 2.15, MPD 0.21
+ */
+bool
+mpd_search_add_expression(struct mpd_connection *connection,
+			  const char *expression);
+
+/**
  * Group the results by the specified tag.
  *
  * @param connection a #mpd_connection
@@ -213,18 +239,34 @@ mpd_search_add_group_tag(struct mpd_connection *connection,
 			 enum mpd_tag_type type);
 
 /**
+ * Sort the results by the specified named attribute.
+ *
+ * @param connection a #mpd_connection
+ * @param name the attribute name to sort with; can be a tag name or
+ * "Last-Modified"
+ * @param descending sort in reverse order?
+ * @return true on success, false on error
+ *
+ * @since MPD 0.21, libmpdclient 2.15
+ */
+bool
+mpd_search_add_sort_name(struct mpd_connection *connection,
+			 const char *name, bool descending);
+
+/**
  * Sort the results by the specified tag.
  *
  * @param connection a #mpd_connection
  * @param type the tag type to sort with
- * @param reserved must be false
+ * @param descending sort in reverse order?
  * @return true on success, false on error
  *
- * @since libmpdclient 2.11
+ * @since MPD 0.21, libmpdclient 2.11; #descending since libmpdclient
+ * 2.15
  */
 bool
 mpd_search_add_sort_tag(struct mpd_connection *connection,
-			enum mpd_tag_type type, bool reserved);
+			enum mpd_tag_type type, bool descending);
 
 /**
  * Request only a portion of the result set.

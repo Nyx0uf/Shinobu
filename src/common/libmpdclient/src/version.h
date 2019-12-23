@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 #define MPD_VERSION_H
 
 #define LIBMPDCLIENT_MAJOR_VERSION 2
-#define LIBMPDCLIENT_MINOR_VERSION 13
+#define LIBMPDCLIENT_MINOR_VERSION 17
 #define LIBMPDCLIENT_PATCH_VERSION 0
 
 /**
