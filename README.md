@@ -28,7 +28,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - Apple TV version
 
 
-![screenshot](https://static.whine.fr/images/2019/shinobu1.gif)
+![screenshot](https://static.whine.fr/images/2019/shinobu2.gif)
 
 
 # INSTALLATION
