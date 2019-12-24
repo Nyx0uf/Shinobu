@@ -8,4 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: xcodebuild
-      run: xcodebuild clean build -project Shinobu.xcodeproj -scheme shinobu-ios -destination "platform=iOS Simulator,name=iPhone 11,OS=13.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
+      run: xcodebuild clean build -project Shinobu.xcodeproj -scheme shinobu-ios -destination "platform=iOS Simulator,name=iPhone 11,OS=13.2" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
