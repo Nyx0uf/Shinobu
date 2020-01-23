@@ -1,6 +1,6 @@
 [![Twitter: @Nyx0uf](https://img.shields.io/badge/contact-@Nyx0uf-blue.svg?style=flat)](https://twitter.com/Nyx0uf) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Nyx0uf/shinobu/blob/master/LICENSE) [![Swift Version](https://img.shields.io/badge/Swift-5.0-orange.svg)]()
 
-**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server and requires *iOS 13.0*. It is designed to be fast (loading my 3000 albums library happens in an instant).
+**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server and requires *iOS 13.2*. It is designed to be fast (loading my 3000 albums library happens in an instant).
 
 I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
@@ -9,7 +9,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 # FEATURES
 
 - Multi-server support (Can register many servers but control one at a time)
-- Browse (*albums*, *artists*, *albums artists*, *genres*, *playlists*)
+- Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
 - Search (*normal* / *fuzzy*)
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
 - Volume control
@@ -18,7 +18,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - Automatically find MPD server with Bonjour/Zeroconf
 - MPD Audio output selection
 - Widget
-- Normal & Dark modes, 5 tint colors
+- Normal & Dark modes, 5 tint colors (blue, green, pink, orange, yellow)
 - 🇬🇧 and 🇫🇷 localized
 
 
@@ -26,6 +26,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 - iPad version
 - Apple TV version
+- An App icon, I have 0 design skills, if someone wants to help
 
 
 ![screenshot](https://static.whine.fr/images/2019/shinobu2.gif)
