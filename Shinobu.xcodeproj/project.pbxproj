@@ -82,6 +82,7 @@
 		439ED9B6225D246F007F2F45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43B0EE7F227099D200F35115 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
+		43B81FC623B2624C008E8F95 /* DirectoriesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */; };
 		43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */; };
 		43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
 		43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */; };
@@ -283,6 +284,7 @@
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		43B0EE7E227099D200F35115 /* CoverOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverOperations.swift; sourceTree = "<group>"; };
+		43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoriesVC.swift; sourceTree = "<group>"; };
 		43B8BAAA22564E980033EA5D /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		43B8BAAD2257BE120033EA5D /* TitlesIndexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitlesIndexView.swift; sourceTree = "<group>"; };
 		43B8BAAF2257BF840033EA5D /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LetterView.swift; sourceTree = "<group>"; };
@@ -485,6 +487,7 @@
 				4384ECD62250E18800F3140C /* settings */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
 				4358B06321EB47A7009A3BBF /* AlbumsListVC.swift */,
+				43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */,
 				4358B06A21EB47A7009A3BBF /* GenreDetailVC.swift */,
 				4358B06821EB47A7009A3BBF /* LibraryVC.swift */,
 				4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */,
@@ -968,6 +971,7 @@
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,
+				43B81FC623B2624C008E8F95 /* DirectoriesVC.swift in Sources */,
 				43C3E8032260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
 				4358B02321EB42B4009A3BBF /* UIDevice+Extensions.swift in Sources */,
 				4358B04F21EB44E2009A3BBF /* KawaiiColors.swift in Sources */,

@@ -93,6 +93,7 @@ final class Settings {
 			Settings.Key.coversSize_TVOS.rawValue: Int(width_tvos),
 			Settings.Key.pref_fuzzySearch.rawValue: false,
 			Settings.Key.pref_shakeToPlayRandom.rawValue: false,
+			Settings.Key.pref_browseByDirectory.rawValue: false,
 			Settings.Key.pref_numberOfColumns.rawValue: columns_ios,
 			Settings.Key.pref_tintColor.rawValue: TintColorType.orange.rawValue,
 			Settings.Key.pref_usePrettyDB.rawValue: true,
@@ -130,6 +131,7 @@ extension Settings.Key {
 	static let coversSize_TVOS = Settings.Key("coversSize_TVOS")
 	static let pref_fuzzySearch = Settings.Key("pref_fuzzySearch")
 	static let pref_shakeToPlayRandom = Settings.Key("pref_shakeToPlayRandom")
+	static let pref_browseByDirectory = Settings.Key("pref_browseByDirectory")
 	static let pref_numberOfColumns = Settings.Key("pref_numberOfColumns")
 	static let pref_tintColor = Settings.Key("pref_tintColor")
 	static let pref_usePrettyDB = Settings.Key("pref_usePrettyDB")

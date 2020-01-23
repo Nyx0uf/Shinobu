@@ -6,8 +6,8 @@ final class LibraryVC: MusicalCollectionVC {
 	private var serverChanged = false
 
 	// MARK: - Initializers
-	init() {
-		super.init(mpdBridge: MPDBridge(usePrettyDB: Settings.shared.bool(forKey: .pref_usePrettyDB)))
+	override init(mpdBridge: MPDBridge) {
+		super.init(mpdBridge: mpdBridge)
 
 		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
 	}
@@ -85,14 +85,14 @@ final class LibraryVC: MusicalCollectionVC {
 		}
 
 		// Deselect cell
-		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
-			for indexPath in idxs {
-				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
-			}
-		}
+//		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
+//			for indexPath in idxs {
+//				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
+//			}
+//		}
 
 		// Audio server changed
-		if serverChanged {
+		//if serverChanged {
 			// Refresh view
 			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 				DispatchQueue.main.async {
@@ -104,7 +104,7 @@ final class LibraryVC: MusicalCollectionVC {
 			}
 
 			serverChanged = false
-		}
+		//}
 	}
 
 	// MARK: - Gestures
@@ -166,7 +166,8 @@ final class LibraryVC: MusicalCollectionVC {
 		let settingsVC = SettingsVC(style: .grouped)
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
-		navigationController?.present(nvc, animated: true, completion: nil)
+		//navigationController?.present(nvc, animated: true, completion: nil)
+		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?) {

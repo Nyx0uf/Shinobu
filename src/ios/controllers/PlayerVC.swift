@@ -68,6 +68,10 @@ final class PlayerVC: NYXViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
+	deinit {
+		NotificationCenter.default.removeObserver(self)
+	}
+
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -76,7 +80,7 @@ final class PlayerVC: NYXViewController {
 
 		let width = UIScreen.main.bounds.width
 		if let bottom = (UIApplication.shared.delegate as! AppDelegate).window?.safeAreaInsets.bottom {
-			miniHeight += bottom
+			miniHeight = miniBaseHeight + bottom
 		}
 
 		// Blurred background
@@ -262,8 +266,7 @@ final class PlayerVC: NYXViewController {
 
 		// tapableView
 		tapableView.isUserInteractionEnabled = true
-		tapableView.backgroundColor = .clear
-		tapableView.frame = CGRect(.zero, btnPlay.x, miniHeight)
+		tapableView.frame = CGRect(.zero, btnPlay.x, miniBaseHeight)
 		view.addSubview(tapableView)
 
 		// Single tap to request full player view
@@ -292,6 +295,10 @@ final class PlayerVC: NYXViewController {
 
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
+	}
+
+	override var prefersHomeIndicatorAutoHidden: Bool {
+		return true
 	}
 
 	// MARK: - Buttons actions
@@ -352,6 +359,7 @@ final class PlayerVC: NYXViewController {
 
 	// MARK: - Gestures
 	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
+		print(gesture)
 		if gesture.state == .ended {
 			toggleMinified()
 		}
@@ -581,7 +589,7 @@ final class PlayerVC: NYXViewController {
 				self.sliderTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
 				self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
 
-				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniHeight)
+				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniBaseHeight)
 
 				self.coverView.layer.shadowOpacity = 0
 

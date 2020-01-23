@@ -28,6 +28,18 @@ struct AudioOutput {
 	var enabled: Bool
 }
 
+enum MpdEntityType: Int {
+	case unknown = 0
+	case directory = 1
+	case song = 2
+	case playlist = 3
+	case image = 4
+}
+struct MpdEntity {
+	let name: String
+	let type: MpdEntityType
+}
+
 protocol MPDConnectionDelegate: class {
 	func albumMatchingName(_ name: String) -> Album?
 }
@@ -59,6 +71,7 @@ struct MPDConnectionError: Error {
 		case notPlaying
 		case getOutputsError
 		case toggleOutput
+		case getRootDirectoryListError
 	}
 
 	let kind: Kind
@@ -758,7 +771,7 @@ final class MPDConnection {
 		}
 	}
 
-	func getPlayerInfos() throws -> Result<[String: Any]?, MPDConnectionError> {
+	func getPlayerInfos(matchAlbum: Bool) throws -> Result<[String: Any]?, MPDConnectionError> {
 		guard let song = mpd_run_current_song(connection) else {
 			return .success(nil)
 		}
@@ -783,6 +796,8 @@ final class MPDConnection {
 			if let name = String(data: dataTemp, encoding: .utf8) {
 				if let album = delegate?.albumMatchingName(name) {
 					return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: album, PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
+				} else {
+					return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: Album(name: name), PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
 				}
 			}
 
@@ -836,6 +851,46 @@ final class MPDConnection {
 			return .success(true)
 		}
 		return .failure(MPDConnectionError(.updateError, getLastErrorMessageForConnection()))
+	}
+
+	// MARK: - Directories
+	func getDirectoryListAtPath(_ path: String?) -> Result<[MpdEntity], MPDConnectionError> {
+		if mpd_send_list_files(connection, path) == false {
+			return .failure(MPDConnectionError(.getRootDirectoryListError, getLastErrorMessageForConnection()))
+		}
+
+		var list = [MpdEntity]()
+
+		var entity = mpd_recv_entity(connection)
+		while entity != nil {
+			let ent_type = mpd_entity_get_type(entity)
+			if ent_type == MPD_ENTITY_TYPE_DIRECTORY {
+				if let dir = mpd_entity_get_directory(entity) {
+					if let tmp = mpd_directory_get_path(dir) {
+						let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp), count: Int(strlen(tmp)), deallocator: .none)
+						if let name = String(data: dataTemp, encoding: .utf8) {
+							list.append(MpdEntity(name: name, type: mpdEntityTypeToEntityType(ent_type, name)))
+						}
+					}
+				}
+			} else if ent_type == MPD_ENTITY_TYPE_SONG {
+				if let tmp = mpd_entity_get_song(entity) {
+					if let track = trackFromMPDSongObject(tmp) {
+						if track.uri != ".DS_Store" {
+							list.append(MpdEntity(name: track.uri, type: mpdEntityTypeToEntityType(ent_type, track.uri)))
+						}
+					}
+				}
+			}
+
+			entity = mpd_recv_entity(connection)
+		}
+
+		if mpd_connection_get_error(connection) != MPD_ERROR_SUCCESS || mpd_response_finish(connection) == false {
+			return .failure(MPDConnectionError(.getRootDirectoryListError, getLastErrorMessageForConnection()))
+		}
+
+		return .success(list)
 	}
 
 	// MARK: - Private
@@ -947,6 +1002,25 @@ final class MPDConnection {
 			return MPD_TAG_UNKNOWN
 		default:
 			return MPD_TAG_UNKNOWN
+		}
+	}
+
+	private func mpdEntityTypeToEntityType(_ type: mpd_entity_type, _ name: String) -> MpdEntityType {
+		let imgSuffixes = ["bmp", "gif", "jpeg", "jpg", "png", "tif", "tiff"]
+		if imgSuffixes.contains(where: name.contains) {
+			return .image
+		}
+		switch type {
+		case MPD_ENTITY_TYPE_DIRECTORY:
+			return .directory
+		case MPD_ENTITY_TYPE_UNKNOWN:
+			return .unknown
+		case MPD_ENTITY_TYPE_PLAYLIST:
+			return .playlist
+		case MPD_ENTITY_TYPE_SONG:
+			return .song
+		default:
+			return .unknown
 		}
 	}
 

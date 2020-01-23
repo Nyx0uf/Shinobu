@@ -5,6 +5,8 @@ final class MPDBridge {
 	// MARK: - Public properties
 	// MPD server
 	var server: MPDServer! = nil
+	// Browse by dir, not albums
+	var isDirectoryBased = false
 
 	// MARK: - Private properties
 	// MPD Connection
@@ -31,8 +33,9 @@ final class MPDBridge {
 	private var usePrettyDB = false
 
 	// MARK: - Initializers
-	init(usePrettyDB: Bool) {
+	init(usePrettyDB: Bool, isDirectoryBased: Bool) {
 		self.usePrettyDB = usePrettyDB
+		self.isDirectoryBased = isDirectoryBased
 		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.mpdbridge", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
@@ -591,6 +594,24 @@ final class MPDBridge {
 		}
 	}
 
+	// MARK: - Directories
+	func getDirectoryListAtPath(_ path: String?, callback: @escaping ([MpdEntity]) -> Void) {
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf.connection.getDirectoryListAtPath(path)
+			switch result {
+			case .failure:
+				break
+			case .success(let list):
+				let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
+				let entities = list.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
+				callback(entities)
+			}
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int) {
 		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: queue)
@@ -657,7 +678,7 @@ final class MPDBridge {
 		guard MPDConnection.isValid(connection) else { return }
 
 		do {
-			let result = try connection.getPlayerInfos()
+			let result = try connection.getPlayerInfos(matchAlbum: self.isDirectoryBased == false)
 			switch result {
 			case .failure(let error):
 				Logger.shared.log(message: error.message)

@@ -10,4 +10,5 @@ extension Notification.Name {
 	static let collectionViewLayoutShouldChange = Notification.Name("CollectionViewLayoutShouldChange")
 	static let showArtistNotification = Notification.Name("showArtistNotification")
 	static let showAlbumNotification = Notification.Name("showAlbumNotification")
+	static let changeBrowsingTypeNotification = Notification.Name("changeBrowsingTypeNotification")
 }

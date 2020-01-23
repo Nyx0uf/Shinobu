@@ -81,6 +81,7 @@
 "lbl_pref_theme_light" = "Light theme";
 "lbl_pref_theme_dark" = "Dark theme";
 "lbl_pref_tint_color" = "Tint color";
+"lbl_pref_browse_by_dir" = "Browse by directories";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";

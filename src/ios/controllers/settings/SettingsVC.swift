@@ -9,6 +9,8 @@ final class SettingsVC: NYXTableViewController {
 	private var swShake: UISwitch!
 	// Fuzzy search switch
 	private var swFuzzySearch: UISwitch!
+	// Browse by directory switch
+	private var swDirectory: UISwitch!
 	// Columns control
 	private var sColumns: UISegmentedControl!
 	// Buttons for the tint color
@@ -36,6 +38,9 @@ final class SettingsVC: NYXTableViewController {
 
 		swFuzzySearch = UISwitch()
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
+
+		swDirectory = UISwitch()
+		swDirectory.addTarget(self, action: #selector(toggleBrowseDir(_:)), for: .valueChanged)
 
 		sColumns = UISegmentedControl(items: ["2", "3"])
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
@@ -75,6 +80,12 @@ final class SettingsVC: NYXTableViewController {
 	@objc func toggleFuzzySearch(_ sender: Any?) {
 		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
+	}
+
+	@objc func toggleBrowseDir(_ sender: Any?) {
+		let browseByDir = Settings.shared.bool(forKey: .pref_browseByDirectory)
+		Settings.shared.set(!browseByDir, forKey: .pref_browseByDirectory)
+		NotificationCenter.default.postOnMainThreadAsync(name: .changeBrowsingTypeNotification, object: nil)
 	}
 
 	@objc func toggleColumns(_ sender: Any?) {
@@ -122,7 +133,7 @@ extension SettingsVC {
 		case 0:
 			return 2
 		case 1:
-			return 2
+			return 3
 		case 2:
 			return 1
 		case 3:
@@ -159,6 +170,10 @@ extension SettingsVC {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swShake)
+				} else if indexPath.row == 2 {
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_browse_by_dir")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swDirectory)
 				}
 			} else if indexPath.section == 2 {
 				if indexPath.row == 0 {
@@ -197,6 +212,9 @@ extension SettingsVC {
 			} else if indexPath.row == 1 {
 				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
 				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
+			} else if indexPath.row == 2 {
+				swDirectory.frame = CGRect(UIScreen.main.bounds.width - 16 - swDirectory.width, (cell!.height - swDirectory.height) / 2, swDirectory.size)
+				swDirectory.isOn = Settings.shared.bool(forKey: .pref_browseByDirectory)
 			}
 		} else if indexPath.section == 2 {
 			if indexPath.row == 0 {
@@ -234,6 +252,7 @@ extension SettingsVC: Themed {
 		swShake.onTintColor = theme.tintColor
 		swPrettyDB.onTintColor = theme.tintColor
 		swFuzzySearch.onTintColor = theme.tintColor
+		swDirectory.onTintColor = theme.tintColor
 
 		for btn in self.colorsButton {
 			btn.layer.borderColor = UIColor.label.cgColor

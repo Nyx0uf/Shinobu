@@ -55,6 +55,7 @@ final class AudioOutputsListVC: NYXTableViewController {
 			cnn.disconnect()
 		}
 	}
+
 	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
 		if isEmpty {
 			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
