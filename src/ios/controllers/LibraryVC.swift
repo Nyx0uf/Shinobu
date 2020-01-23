@@ -166,7 +166,6 @@ final class LibraryVC: MusicalCollectionVC {
 		let settingsVC = SettingsVC(style: .grouped)
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
-		//navigationController?.present(nvc, animated: true, completion: nil)
 		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
 	}
 
