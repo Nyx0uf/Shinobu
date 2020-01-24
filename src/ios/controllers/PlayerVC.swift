@@ -402,23 +402,23 @@ final class PlayerVC: NYXViewController {
 
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let album = userInfos[PLAYER_ALBUM_KEY] as? Album else { return }
 
-		lblTrack.text = track.name
-		sliderTrack.label.text = track.name
-		sliderTrack.maximumValue = CGFloat(track.duration.seconds)
-		lblAlbumArtist.text = "\(track.artist) — \(album.name)"
-		lblArtist.text = track.artist
-		lblAlbum.text = album.name
-
 		// Update cover if from another album (playlist case)
-		let imv = view as? UIImageView
 		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
 		if album.path != nil {
 			var cop = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
 			cop.processCallback = { (cover, thumbnail) in
 				DispatchQueue.main.async {
 					self.imgCover = thumbnail
-					self.coverView.image = thumbnail
-					imv?.image = cover
+					UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+						self.coverView.image = thumbnail
+						(self.view as? UIImageView)?.image = cover
+						self.lblTrack.text = track.name
+						self.sliderTrack.label.text = track.name
+						self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
+						self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
+						self.lblArtist.text = track.artist
+						self.lblAlbum.text = album.name
+					}, completion: nil)
 					self.updatePlayPauseState()
 				}
 			}
@@ -429,8 +429,16 @@ final class PlayerVC: NYXViewController {
 				cop.processCallback = { (cover, thumbnail) in
 					DispatchQueue.main.async {
 						self.imgCover = thumbnail
-						self.coverView.image = thumbnail
-						imv?.image = cover
+						UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+							self.coverView.image = thumbnail
+							(self.view as? UIImageView)?.image = cover
+							self.lblTrack.text = track.name
+							self.sliderTrack.label.text = track.name
+							self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
+							self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
+							self.lblArtist.text = track.artist
+							self.lblAlbum.text = album.name
+						}, completion: nil)
 						self.updatePlayPauseState()
 					}
 				}
@@ -457,14 +465,17 @@ final class PlayerVC: NYXViewController {
 			DispatchQueue.global(qos: .userInteractive).async {
 				let grayscaled = self.imgCover?.grayscaled()
 				DispatchQueue.main.async {
-					UIView.transition(with: self.coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = grayscaled }, completion: nil)
+					UIView.transition(with: self.coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = grayscaled
+					}, completion: nil)
 				}
 			}
 		} else {
 			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: .secondaryLabel, selectedTintColor: .label)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 
-			UIView.transition(with: coverView, duration: 0.35, options: .transitionCrossDissolve, animations: { self.coverView.image = self.imgCover }, completion: nil)
+			UIView.transition(with: coverView, duration: 0.35, options: .transitionCrossDissolve, animations: {
+				self.coverView.image = self.imgCover
+			}, completion: nil)
 		}
 		btnPlay.tag = status.rawValue
 	}
