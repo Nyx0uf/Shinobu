@@ -20,12 +20,12 @@ extension CGRect {
 
 	// MARK: - Shortcuts
 	public var x: CGFloat {
-		get { return origin.x }
+		get { origin.x }
 		set { origin.x = newValue }
 	}
 
 	public var y: CGFloat {
-		get { return origin.y }
+		get { origin.y }
 		set { origin.y = newValue }
 	}
 

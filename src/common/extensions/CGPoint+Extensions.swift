@@ -8,6 +8,6 @@ extension CGPoint {
 
 	// MARK: - Round / Ceil
 	func ceilled() -> CGPoint {
-		CGPoint(CoreGraphics.ceil(x), CoreGraphics.ceil(y))
+		CGPoint(ceil(x), ceil(y))
 	}
 }

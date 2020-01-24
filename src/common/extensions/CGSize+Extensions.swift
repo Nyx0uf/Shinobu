@@ -8,7 +8,7 @@ extension CGSize {
 
 	// MARK: - Round / Ceil
 	func ceilled() -> CGSize {
-		CGSize(CoreGraphics.ceil(width), CoreGraphics.ceil(height))
+		CGSize(ceil(width), ceil(height))
 	}
 }
 
