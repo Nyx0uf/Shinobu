@@ -45,12 +45,12 @@ final class Album: MusicalEntity {
 
 extension Album: CustomStringConvertible {
 	var description: String {
-		"\nName: <\(name)>\nArtist: <\(artist)>\nGenre: <\(genre)>\nYear: <\(year)>\nPath: <\(String(describing: path))>\n"
+		"\nName: \(name)\nArtist: \(artist)\nGenre: \(genre)\nYear: \(year)\nPath: \(String(describing: path))\n"
 	}
 }
 
 extension Album {
 	static func == (lhs: Album, rhs: Album) -> Bool {
-		(lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre)
+		lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.year == rhs.year && lhs.genre == rhs.genre
 	}
 }
