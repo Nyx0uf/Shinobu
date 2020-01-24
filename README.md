@@ -42,14 +42,14 @@ To install **Shinobu** you will need macOS, so you have two choices, either you 
 4. Plug your iPhone and hit the Build & Run button
 
 
-# MPD PRETTY DB
+# PRETTY MPD DB
 
-**pretty_mpd_db.py** is a python 3 script which generate a JSON file containing all the albums (*name* and *path*) of your mpd library.
+**pretty_mpd_db.py** is a python script which generates a JSON file containing all the albums (*name* and *path*) of your mpd library.
 It allows loading covers faster because all the albums paths will be known. Otherwise to have an album path, the app needs to query the songs of the album to get the path, this is due to the design of the mpd api.
 
 Usage :
 
-    mpd_pretty_db.py -d mpd_music_directory_in_your_mpd_conf
+    pretty_mpd_db.py -d mpd_music_directory_in_your_mpd_conf
 
 # LICENSE
 
