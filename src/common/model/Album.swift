@@ -32,7 +32,7 @@ final class Album: MusicalEntity {
 		self.genre = genre
 		self.year = year
 		self.path = path
-		self.uniqueIdentifier = "\(name.removing(charactersOf: "\"'\\/?!<>|+*=&()[]{}$:#€").lowercased())_\(path.sha256())"
+		self.uniqueIdentifier = path.sha256()
 		super.init(name: name)
 	}
 
