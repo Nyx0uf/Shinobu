@@ -67,6 +67,14 @@ class NYXTableViewController: UITableViewController {
 	func updateNavigationTitle() {
 
 	}
+
+	func heightForMiniPlayer() -> CGFloat {
+		var miniHeight = CGFloat(44)
+		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
+			miniHeight += bottom
+		}
+		return miniHeight
+	}
 }
 
 class NYXViewController: UIViewController {
@@ -86,6 +94,14 @@ class NYXViewController: UIViewController {
 
 	func updateNavigationTitle() {
 
+	}
+
+	func heightForMiniPlayer() -> CGFloat {
+		var miniHeight = CGFloat(44)
+		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
+			miniHeight += bottom
+		}
+		return miniHeight
 	}
 }
 
