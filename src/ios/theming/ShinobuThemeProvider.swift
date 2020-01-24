@@ -41,6 +41,6 @@ final class ShinobuThemeProvider: ThemeProvider {
 
 extension Themed where Self: AnyObject {
 	var themeProvider: ShinobuThemeProvider {
-		return ShinobuThemeProvider.shared
+		ShinobuThemeProvider.shared
 	}
 }

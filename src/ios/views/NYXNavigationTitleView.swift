@@ -52,7 +52,7 @@ final class NYXNavigationTitleView: UIButton {
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
 	override var intrinsicContentSize: CGSize {
-		return UIView.layoutFittingExpandedSize
+		UIView.layoutFittingExpandedSize
 	}
 
 	// MARK: - Public

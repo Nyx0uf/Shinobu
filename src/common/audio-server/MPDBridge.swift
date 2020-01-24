@@ -84,15 +84,15 @@ final class MPDBridge {
 	}
 
 	func getCurrentTrack() -> Track? {
-		return queue.sync { self.currentTrack }
+		queue.sync { self.currentTrack }
 	}
 
 	func getCurrentAlbum() -> Album? {
-		return queue.sync { self.currentAlbum }
+		queue.sync { self.currentAlbum }
 	}
 
 	func getCurrentState() -> PlayerState {
-		return queue.sync { self.currentState }
+		queue.sync { self.currentState }
 	}
 
 	func entitiesForType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void) {
@@ -729,6 +729,6 @@ final class MPDBridge {
 
 extension MPDBridge: MPDConnectionDelegate {
 	func albumMatchingName(_ name: String) -> Album? {
-		return _albums?.filter { $0.name == name }.first
+		_albums?.filter { $0.name == name }.first
 	}
 }

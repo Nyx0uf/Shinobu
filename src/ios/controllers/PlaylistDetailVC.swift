@@ -195,7 +195,7 @@ extension PlaylistDetailVC: UITableViewDelegate {
 
 extension PlaylistDetailVC: TracksListTableViewDelegate {
 	func getCurrentTrack() -> Track? {
-		return mpdBridge.getCurrentTrack()
+		mpdBridge.getCurrentTrack()
 	}
 }
 

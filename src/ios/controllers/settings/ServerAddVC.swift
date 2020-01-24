@@ -574,7 +574,7 @@ extension ServerAddVC: UITextFieldDelegate {
 // MARK: - UIPopoverPresentationControllerDelegate
 extension ServerAddVC: UIPopoverPresentationControllerDelegate {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-		return .none
+		.none
 	}
 }
 

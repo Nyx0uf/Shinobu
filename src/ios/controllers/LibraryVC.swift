@@ -46,7 +46,7 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return [.portrait, .portraitUpsideDown]
+		[.portrait, .portraitUpsideDown]
 	}
 
 	// MARK: - Private
@@ -369,7 +369,7 @@ extension LibraryVC {
 // MARK: - UIResponder
 extension LibraryVC {
 	override var canBecomeFirstResponder: Bool {
-		return true
+		true
 	}
 
 	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {

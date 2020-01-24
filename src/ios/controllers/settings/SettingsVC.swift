@@ -299,6 +299,6 @@ fileprivate final class ColorButton: UIButton {
 	}
 
 	override var buttonType: UIButton.ButtonType {
-		return .custom
+		.custom
 	}
 }

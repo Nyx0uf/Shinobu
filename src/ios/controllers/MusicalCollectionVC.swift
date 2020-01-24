@@ -214,7 +214,7 @@ extension MusicalCollectionVC: MusicalCollectionDataSourceAndDelegateDelegate {
 	}
 
 	@objc func isSearching(actively: Bool) -> Bool {
-		return actively ? (searching && searchBar.isFirstResponder) : searching
+		actively ? (searching && searchBar.isFirstResponder) : searching
 	}
 
 	@objc func didSelectEntity(_ entity: AnyObject) {
@@ -285,6 +285,6 @@ extension MusicalCollectionVC: Themed {
 // MARK: - UIPopoverPresentationControllerDelegate
 extension MusicalCollectionVC: UIPopoverPresentationControllerDelegate {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-		return .none
+		.none
 	}
 }

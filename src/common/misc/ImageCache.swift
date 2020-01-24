@@ -48,7 +48,7 @@ final class ImageCache {
 	// MARK: - Subscripting
 	subscript(key: String) -> UIImage? {
 		get {
-			return cache[key]
+			cache[key]
 		}
 		set {
 			cache[key] = newValue

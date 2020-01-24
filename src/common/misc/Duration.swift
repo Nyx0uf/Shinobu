@@ -16,7 +16,7 @@ struct Duration {
 
 	// MARK: - Public
 	func minutesRepresentation() -> (minutes: UInt, seconds: UInt) {
-		return (seconds / 60, seconds % 60)
+		(seconds / 60, seconds % 60)
 	}
 
 	func minutesRepresentationAsString(_ delim: String = ":") -> String {
@@ -60,13 +60,13 @@ struct Duration {
 
 extension Duration: Equatable {
 	static func == (lhs: Duration, rhs: Duration) -> Bool {
-		return lhs.seconds == rhs.seconds
+		lhs.seconds == rhs.seconds
 	}
 }
 
 extension Duration: Comparable {
 	static func < (lhs: Duration, rhs: Duration) -> Bool {
-		return lhs.seconds < rhs.seconds
+		lhs.seconds < rhs.seconds
 	}
 }
 
@@ -78,15 +78,15 @@ extension Duration: Hashable {
 
 extension Duration: CustomStringConvertible {
 	var description: String {
-		return String(seconds)
+		String(seconds)
 	}
 }
 
 // MARK: - Maths
 func + (lhs: Duration, rhs: Duration) -> Duration {
-	return Duration(seconds: lhs.seconds + rhs.seconds)
+	Duration(seconds: lhs.seconds + rhs.seconds)
 }
 
 func - (lhs: Duration, rhs: Duration) -> Duration {
-	return Duration(seconds: lhs.seconds - rhs.seconds)
+	Duration(seconds: lhs.seconds - rhs.seconds)
 }

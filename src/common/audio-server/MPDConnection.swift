@@ -83,7 +83,7 @@ struct MPDConnectionError: Error {
 	}
 
 	public var localizedDescription: String {
-		return message.description
+		message.description
 	}
 }
 

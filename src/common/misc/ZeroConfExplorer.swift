@@ -55,7 +55,7 @@ final class ZeroConfExplorer: NSObject {
 	}
 
 	private func isResolved(_ server: MPDServer) -> Bool {
-		return String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
+		String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}
 }
 
@@ -123,9 +123,7 @@ extension ZeroConfExplorer: NetServiceDelegate {
 		}
 	}
 
-	func netService(_ sender: NetService, didNotResolve errorDict: [String: NSNumber]) {
-	}
+	func netService(_ sender: NetService, didNotResolve errorDict: [String: NSNumber]) {}
 
-	func netServiceDidStop(_ sender: NetService) {
-	}
+	func netServiceDidStop(_ sender: NetService) {}
 }

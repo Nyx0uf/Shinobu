@@ -35,19 +35,19 @@ final class Settings {
 	}
 
 	func bool(forKey: Settings.Key) -> Bool {
-		return defaults.bool(forKey: forKey.rawValue)
+		defaults.bool(forKey: forKey.rawValue)
 	}
 
 	func data(forKey: Settings.Key) -> Data? {
-		return defaults.data(forKey: forKey.rawValue)
+		defaults.data(forKey: forKey.rawValue)
 	}
 
 	func integer(forKey: Settings.Key) -> Int {
-		return defaults.integer(forKey: forKey.rawValue)
+		defaults.integer(forKey: forKey.rawValue)
 	}
 
 	func string(forKey: Settings.Key) -> String? {
-		return defaults.string(forKey: forKey.rawValue)
+		defaults.string(forKey: forKey.rawValue)
 	}
 
 	func set(_ value: Bool, forKey: Settings.Key) {
@@ -76,7 +76,7 @@ final class Settings {
 	}
 
 	func dictionaryRepresentation() -> [String: Any] {
-		return defaults.dictionaryRepresentation()
+		defaults.dictionaryRepresentation()
 	}
 
 	// MARK: - Private

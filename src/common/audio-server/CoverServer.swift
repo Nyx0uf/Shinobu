@@ -136,10 +136,10 @@ struct CoverServer: Codable, Equatable {
 
 extension CoverServer: CustomStringConvertible {
 	var description: String {
-		return "\(hostname):\(port) [\(coverName)]"
+		"\(hostname):\(port) [\(coverName)]"
 	}
 }
 
 func == (lhs: CoverServer, rhs: CoverServer) -> Bool {
-	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName)
+	lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.coverName == rhs.coverName
 }

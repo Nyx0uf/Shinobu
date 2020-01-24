@@ -50,7 +50,7 @@ final class TracksListTableView: UITableView {
 // MARK: - UITableViewDataSource
 extension TracksListTableView: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return useDummy ? tracks.count + 1 : tracks.count
+		useDummy ? tracks.count + 1 : tracks.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

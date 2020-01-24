@@ -25,7 +25,7 @@ final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout {
 	}
 
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-		return collectionView?.contentOffset ?? .zero
+		collectionView?.contentOffset ?? .zero
 	}
 }
 

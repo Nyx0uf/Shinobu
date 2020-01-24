@@ -11,6 +11,9 @@
 		430141E22229307300C68075 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
 		43147ED7227B410400486588 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
 		43147ED8227B415300486588 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
+		431C05BB23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
+		431C05BC23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
+		431C05BE23DB1B35000B844F /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */; };
 		4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
 		433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
 		433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
@@ -168,6 +171,8 @@
 /* Begin PBXFileReference section */
 		430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuServerTableViewCell.swift; sourceTree = "<group>"; };
 		430141E12229307300C68075 /* ServersManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServersManager.swift; sourceTree = "<group>"; };
+		431C05BA23DB14BA000B844F /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedObject.swift; sourceTree = "<group>"; };
 		433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedArray.swift; sourceTree = "<group>"; };
 		434E513121D56BF400CD88F7 /* connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connection.h; sourceTree = "<group>"; };
@@ -533,6 +538,7 @@
 				4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */,
 				4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */,
 				43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */,
+				431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -577,6 +583,7 @@
 			isa = PBXGroup;
 			children = (
 				433EAE1C22C3BA86009AE208 /* threading */,
+				431C05BA23DB14BA000B844F /* Cache.swift */,
 				4358B04621EB44E2009A3BBF /* CountedObject.swift */,
 				4358B04B21EB44E2009A3BBF /* Duration.swift */,
 				4358B03F21EB44E2009A3BBF /* ImageCache.swift */,
@@ -918,6 +925,7 @@
 				43DC9F22225CBCE300C6A8E5 /* SubscribableValue.swift in Sources */,
 				43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */,
 				4358B07721EB47A8009A3BBF /* ZeroConfBrowserVC.swift in Sources */,
+				431C05BB23DB14BA000B844F /* Cache.swift in Sources */,
 				4358B02421EB42B4009A3BBF /* FileManager+Extensions.swift in Sources */,
 				43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */,
 				4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */,
@@ -977,6 +985,7 @@
 				4358B04F21EB44E2009A3BBF /* KawaiiColors.swift in Sources */,
 				4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */,
 				43C3E806226224CB00F6F058 /* PlayerVC.swift in Sources */,
+				431C05BE23DB1B35000B844F /* UIScrollView+Extensions.swift in Sources */,
 				43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */,
 				4358B04C21EB44E2009A3BBF /* DownloadCoverOperation.swift in Sources */,
 			);
@@ -991,6 +1000,7 @@
 				43147ED8227B415300486588 /* OperationManager.swift in Sources */,
 				43147ED7227B410400486588 /* CoverOperations.swift in Sources */,
 				4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */,
+				431C05BC23DB14BA000B844F /* Cache.swift in Sources */,
 				439ED9B6225D246F007F2F45 /* Theme.swift in Sources */,
 				43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */,
 				43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */,

@@ -294,11 +294,11 @@ final class PlayerVC: NYXViewController {
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
+		.lightContent
 	}
 
 	override var prefersHomeIndicatorAutoHidden: Bool {
-		return true
+		true
 	}
 
 	// MARK: - Buttons actions
@@ -615,21 +615,3 @@ final class PlayerVC: NYXViewController {
 		isMinified.toggle()
 	}
 }
-
-//extension PlayerVC: Themed {
-//	func applyTheme(_ theme: Theme) {
-//		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(theme.tintColor)
-//		lblArtist.highlightedTextColor = theme.tintColor
-//		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withTintColor(theme.tintColor)
-//		lblAlbum.highlightedTextColor = theme.tintColor
-//
-//		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//		btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: theme.tintColor)
-//
-//		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: UIColor(rgb: 0xFFFFFF), selectedTintColor: theme.tintColor)
-//	}
-//}

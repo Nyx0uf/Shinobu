@@ -45,6 +45,6 @@ class MusicalEntity: Hashable {
 
 extension MusicalEntity: Equatable {
 	static func == (lhs: MusicalEntity, rhs: MusicalEntity) -> Bool {
-		return (lhs.name == rhs.name)
+		lhs.name == rhs.name
 	}
 }

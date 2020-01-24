@@ -2,11 +2,11 @@ import UIKit
 
 extension UIDevice {
 	func isPad() -> Bool {
-		return userInterfaceIdiom == .pad
+		userInterfaceIdiom == .pad
 	}
 
 	func isPhone() -> Bool {
-		return userInterfaceIdiom == .phone
+		userInterfaceIdiom == .phone
 	}
 
 	func isiPhoneX() -> Bool {

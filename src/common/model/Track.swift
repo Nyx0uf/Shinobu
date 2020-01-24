@@ -33,12 +33,12 @@ final class Track: MusicalEntity {
 
 extension Track: CustomStringConvertible {
 	var description: String {
-		return "Title: <\(name)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
+		"Title: <\(name)>\nArtist: <\(artist)>\nDuration: <\(duration)>\nTrack: <\(trackNumber)>\nURI: <\(uri)>\nPosition: <\(position)>"
 	}
 }
 
 extension Track {
 	static func == (lhs: Track, rhs: Track) -> Bool {
-		return (lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri)
+		lhs.name == rhs.name && lhs.artist == rhs.artist && lhs.duration == rhs.duration && lhs.uri == rhs.uri
 	}
 }

@@ -18,15 +18,15 @@ extension String {
 
 	// MARK: - NULL check
 	static func isNullOrEmpty(_ value: String?) -> Bool {
-		return value == nil || (value?.isEmpty)!
+		value == nil || (value?.isEmpty)!
 	}
 
 	static func isNullOrWhiteSpace(_ value: String?) -> Bool {
-		return isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
+		isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	func isEmptyOrWhiteSpace() -> Bool {
-		return isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).count == 0
+		isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	static func random(length: Int) -> String {
@@ -41,7 +41,7 @@ extension String {
 	}
 
 	func djb2() -> Int32 {
-		return utf8.reduce(5381) { ($0 << 5) &+ $0 &+ Int32($1) }
+		utf8.reduce(5381) { ($0 << 5) &+ $0 &+ Int32($1) }
 	}
 
 	func fuzzySearch(withString searchString: String, diacriticSensitive: Bool = false, caseSensitive: Bool = false) -> Bool {
@@ -80,5 +80,5 @@ extension String {
 }
 
 func NYXLocalizedString(_ key: String) -> String {
-	return NSLocalizedString(key, comment: "")
+	NSLocalizedString(key, comment: "")
 }

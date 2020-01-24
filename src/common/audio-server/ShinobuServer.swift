@@ -52,10 +52,10 @@ struct ShinobuServer: Codable, Equatable {
 
 extension ShinobuServer: CustomStringConvertible {
 	var description: String {
-		return name
+		name
 	}
 }
 
 func == (lhs: ShinobuServer, rhs: ShinobuServer) -> Bool {
-	return (lhs.mpd == rhs.mpd)
+	lhs.mpd == rhs.mpd
 }

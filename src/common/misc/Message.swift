@@ -19,6 +19,6 @@ struct Message: CustomStringConvertible {
 	}
 
 	public var description: String {
-		return "[\(type)] \(content)"
+		"[\(type)] \(content)"
 	}
 }

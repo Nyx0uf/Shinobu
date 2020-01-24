@@ -13,12 +13,12 @@ final class Artist: MusicalEntity {
 
 extension Artist: CustomStringConvertible {
 	var description: String {
-		return "Name: <\(name)>\nNumber of albums: <\(albums.count)>"
+		"Name: <\(name)>\nNumber of albums: <\(albums.count)>"
 	}
 }
 
 extension Artist {
 	static func == (lhs: Artist, rhs: Artist) -> Bool {
-		return (lhs.name == rhs.name)
+		lhs.name == rhs.name
 	}
 }

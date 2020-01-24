@@ -13,6 +13,6 @@ final class Playlist: MusicalEntity {
 
 extension Playlist {
 	static func == (lhs: Playlist, rhs: Playlist) -> Bool {
-		return (lhs.name == rhs.name)
+		lhs.name == rhs.name
 	}
 }

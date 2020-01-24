@@ -31,6 +31,6 @@ extension CGRect {
 
 	// MARK: - Round / Ceil
 	func ceilled() -> CGRect {
-		return CGRect(origin.ceilled(), size.ceilled())
+		CGRect(origin.ceilled(), size.ceilled())
 	}
 }

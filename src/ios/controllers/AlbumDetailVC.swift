@@ -163,13 +163,13 @@ extension AlbumDetailVC: UITableViewDelegate {
 
 extension AlbumDetailVC: UIPopoverPresentationControllerDelegate {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-		return .none
+		.none
 	}
 }
 
 extension AlbumDetailVC: TracksListTableViewDelegate {
 	func getCurrentTrack() -> Track? {
-		return mpdBridge.getCurrentTrack()
+		mpdBridge.getCurrentTrack()
 	}
 }
 

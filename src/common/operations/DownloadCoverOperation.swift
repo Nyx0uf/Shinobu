@@ -27,7 +27,7 @@ final class DownloadCoverOperation: Operation {
 	}
 	// Session
 	private var localURLSession: Foundation.URLSession {
-		return Foundation.URLSession(configuration: localURLSessionConfiguration, delegate: self, delegateQueue: nil)
+		Foundation.URLSession(configuration: localURLSessionConfiguration, delegate: self, delegateQueue: nil)
 	}
 	// URL
 	private var coverURL: URL?
@@ -86,7 +86,7 @@ final class DownloadCoverOperation: Operation {
 
 	// MARK: - Private
 	override var description: String {
-		return "DownloadCoverOperation for <\(album.name)>"
+		"DownloadCoverOperation for <\(album.name)>"
 	}
 }
 

@@ -61,7 +61,7 @@ class NYXTableViewController: UITableViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return [.portrait, .portraitUpsideDown]
+		[.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -81,7 +81,7 @@ class NYXViewController: UIViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return [.portrait, .portraitUpsideDown]
+		[.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -93,7 +93,7 @@ class NYXAlertController: UIAlertController {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return [.portrait, .portraitUpsideDown]
+		[.portrait, .portraitUpsideDown]
 	}
 }
 

@@ -84,7 +84,7 @@ class Slider: UIControl {
 // MARK: - Tracking
 extension Slider {
 	override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-		return true
+		true
 	}
 
 	override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {

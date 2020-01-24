@@ -93,7 +93,7 @@ final class AutoScrollLabel: UIView {
 		}
 	}
 	public override var intrinsicContentSize: CGSize {
-		return CGSize(width: 0, height: self.mainLabel.intrinsicContentSize.height)
+		CGSize(0, self.mainLabel.intrinsicContentSize.height)
 	}
 
 	// MARK: - Initializers

@@ -35,10 +35,10 @@ struct MPDServer: Codable, Equatable {
 
 extension MPDServer: CustomStringConvertible {
 	var description: String {
-		return "\(hostname):\(port)\n"
+		"\(hostname):\(port)\n"
 	}
 }
 
 func == (lhs: MPDServer, rhs: MPDServer) -> Bool {
-	return (lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password)
+	lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password
 }

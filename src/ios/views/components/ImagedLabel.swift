@@ -29,7 +29,7 @@ final class ImagedLabel: UIControl {
 	// Text
 	public var text: String? {
 		get {
-			return self.label.text
+			self.label.text
 		}
 		set {
 			self.label.text = newValue
@@ -46,7 +46,7 @@ final class ImagedLabel: UIControl {
 	// Attributed text
 	public var attributedText: NSAttributedString? {
 		get {
-			return self.label.attributedText
+			self.label.attributedText
 		}
 		set {
 			self.label.attributedText = newValue
@@ -55,7 +55,7 @@ final class ImagedLabel: UIControl {
 	// Text color
 	public var textColor: UIColor! {
 		get {
-			return self.label.textColor
+			self.label.textColor
 		}
 		set {
 			self.label.textColor = newValue
@@ -64,7 +64,7 @@ final class ImagedLabel: UIControl {
 	// Highlighted text color
 	public var highlightedTextColor: UIColor? {
 		get {
-			return self.label.highlightedTextColor
+			self.label.highlightedTextColor
 		}
 		set {
 			self.label.highlightedTextColor = newValue
@@ -73,7 +73,7 @@ final class ImagedLabel: UIControl {
 	// Font
 	public var font: UIFont! {
 		get {
-			return self.label.font
+			self.label.font
 		}
 		set {
 			self.label.font = newValue
@@ -84,7 +84,7 @@ final class ImagedLabel: UIControl {
 	// Image
 	public var image: UIImage? {
 		get {
-			return self.imageView.image
+			self.imageView.image
 		}
 		set {
 			self.imageView.image = newValue
@@ -93,7 +93,7 @@ final class ImagedLabel: UIControl {
 	// Highlighted Image
 	public var highlightedImage: UIImage? {
 		get {
-			return self.imageView.highlightedImage
+			self.imageView.highlightedImage
 		}
 		set {
 			self.imageView.highlightedImage = newValue

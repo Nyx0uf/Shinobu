@@ -63,6 +63,6 @@ final class ProcessCoverOperation: Operation {
 	}
 
 	override var description: String {
-		return "ProcessCoverOperation for <\(album.name)>"
+		"ProcessCoverOperation for <\(album.name)>"
 	}
 }
