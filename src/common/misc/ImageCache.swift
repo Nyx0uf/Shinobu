@@ -6,11 +6,11 @@ final class ImageCache {
 	static let shared = ImageCache()
 
 	// MARK: - Private properties
-	private let cache: NSCache<AnyObject, UIImage>
+	private let cache: Cache<String, UIImage>
 
 	// MARK: - Initializers
 	init() {
-		self.cache = NSCache()
+		self.cache = Cache<String, UIImage>()
 		self.cache.countLimit = 60
 		// URL cache
 		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
@@ -38,7 +38,7 @@ final class ImageCache {
 			try FileManager.default.removeItem(at: coversDirectoryURL)
 			try FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
 			URLCache.shared.removeAllCachedResponses()
-			self.cache.removeAllObjects()
+			cache.removeAllValues()
 		} catch _ {
 			Logger.shared.log(type: .error, message: "Can't delete cover cache")
 			success = false
@@ -48,12 +48,10 @@ final class ImageCache {
 	// MARK: - Subscripting
 	subscript(key: String) -> UIImage? {
 		get {
-			return cache.object(forKey: key as AnyObject)
+			return cache[key]
 		}
-		set (newValue) {
-			if let img = newValue {
-				cache.setObject(img, forKey: key as AnyObject)
-			}
+		set {
+			cache[key] = newValue
 		}
 	}
 }
