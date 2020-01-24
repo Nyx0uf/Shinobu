@@ -59,12 +59,7 @@ class MusicalCollectionVC: NYXViewController {
 		}
 
 		// Collection view
-		var miniHeight = CGFloat(44)
-		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
-			miniHeight += bottom
-		}
-
-		self.view.frame = CGRect(.zero, view.width, view.height - miniHeight)
+		self.view.frame = CGRect(.zero, view.width, view.height - heightForMiniPlayer())
 		collectionView = MusicalCollectionView(frame: view.bounds, musicalEntityType: dataSource.musicalEntityType)
 		collectionView.collectionView.delegate = dataSource
 		collectionView.collectionView.dataSource = dataSource
