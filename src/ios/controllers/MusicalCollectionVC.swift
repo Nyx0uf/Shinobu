@@ -14,6 +14,8 @@ class MusicalCollectionVC: NYXViewController {
 	private(set) var searchBarVisible = false
 	// Is currently searching, flag
 	private(set) var searching = false
+	// The type choice menu is displayed
+	var navMenuDisplayed = true
 	// MPD Data source
 	let mpdBridge: MPDBridge
 	// Allowed display types
@@ -124,7 +126,9 @@ class MusicalCollectionVC: NYXViewController {
 			popController.sourceView = titleView
 			popController.delegate = self
 			avc.preferredContentSize = CGSize(280, CGFloat(44 * allowedMusicalEntityTypes.count))
-			present(avc, animated: true, completion: nil)
+			present(avc, animated: true, completion: {
+				self.navMenuDisplayed = true
+			})
 		}
 	}
 

@@ -91,20 +91,20 @@ final class LibraryVC: MusicalCollectionVC {
 //			}
 //		}
 
-		// Audio server changed
-		//if serverChanged {
+		// When entity type menu was displayed
+		if navMenuDisplayed == false {
 			// Refresh view
 			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 				DispatchQueue.main.async {
 					self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-					self.collectionView.collectionView.setContentOffset(.zero, animated: false) // Scroll to top
+					self.collectionView.collectionView.scrollToTop(animated: true)
 					self.updateNavigationTitle()
 					self.updateNavigationButtons()
 				}
 			}
-
+			navMenuDisplayed = false
 			serverChanged = false
-		//}
+		}
 	}
 
 	// MARK: - Gestures
@@ -287,25 +287,6 @@ final class LibraryVC: MusicalCollectionVC {
 		serverChanged = true
 	}
 
-	override func didSelectDisplayType(_ typeAsInt: Int) {
-		// Ignore if type did not change
-		let type = MusicalEntityType(rawValue: typeAsInt)
-		if dataSource.musicalEntityType == type {
-			return
-		}
-
-		Settings.shared.set(typeAsInt, forKey: .lastTypeLibrary)
-
-		// Refresh view
-		mpdBridge.entitiesForType(type) { (entities) in
-			DispatchQueue.main.async {
-				self.setItems(entities, forMusicalEntityType: type)
-				self.updateNavigationTitle()
-				self.updateNavigationButtons()
-			}
-		}
-	}
-
 	@objc func showArtist(_ aNotification: Notification) {
 		guard let artistName = aNotification.object as? String else { return }
 
@@ -360,6 +341,26 @@ extension LibraryVC {
 						strongSelf.updateNavigationTitle()
 					}
 				}
+			}
+		}
+	}
+
+	override func didSelectDisplayType(_ typeAsInt: Int) {
+		// Ignore if type did not change
+		let type = MusicalEntityType(rawValue: typeAsInt)
+		if dataSource.musicalEntityType == type {
+			return
+		}
+
+		Settings.shared.set(typeAsInt, forKey: .lastTypeLibrary)
+
+		// Refresh view
+		mpdBridge.entitiesForType(type) { (entities) in
+			DispatchQueue.main.async {
+				self.setItems(entities, forMusicalEntityType: type)
+				self.updateNavigationTitle()
+				self.updateNavigationButtons()
+				self.collectionView.collectionView.scrollToTop(animated: true)
 			}
 		}
 	}
