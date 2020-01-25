@@ -27,6 +27,8 @@ final class PlaylistDetailVC: NYXViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		self.view.frame = CGRect(.zero, view.width, view.height - heightForMiniPlayer())
+
 		// Color under navbar
 		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
 		if navigationController == nil {
@@ -44,10 +46,10 @@ final class PlaylistDetailVC: NYXViewController {
 
 		// Tableview
 		tableView = TracksListTableView(frame: CGRect(0, headerView.maxY, view.width, view.height - headerView.maxY), style: .plain)
-		//tableView.useDummy = true
 		tableView.delegate = self
 		tableView.myDelegate = self
 		tableView.tableFooterView = UIView()
+		tableView.contentInsetAdjustmentBehavior = .never
 		view.addSubview(tableView)
 	}
 
