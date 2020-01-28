@@ -147,7 +147,7 @@ final class DirectoriesVC: NYXViewController {
 // MARK: - UITableViewDataSource
 extension DirectoriesVC: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		handleEmptyView(tableView: tableView, isEmpty: items.count == 0)
+		handleEmptyView(tableView: tableView, isEmpty: items.isEmpty)
 		return items.count
 	}
 

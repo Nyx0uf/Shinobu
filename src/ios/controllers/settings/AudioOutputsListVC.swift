@@ -83,7 +83,7 @@ final class AudioOutputsListVC: NYXTableViewController {
 // MARK: - UITableViewDataSource
 extension AudioOutputsListVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		handleEmptyView(tableView: tableView, isEmpty: outputs.count == 0)
+		handleEmptyView(tableView: tableView, isEmpty: outputs.isEmpty)
 		return outputs.count
 	}
 

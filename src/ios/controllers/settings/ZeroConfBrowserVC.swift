@@ -73,7 +73,7 @@ final class ZeroConfBrowserVC: NYXTableViewController {
 // MARK: - UITableViewDataSource
 extension ZeroConfBrowserVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		handleEmptyView(tableView: tableView, isEmpty: servers.count == 0)
+		handleEmptyView(tableView: tableView, isEmpty: servers.isEmpty)
 		return servers.count
 	}
 

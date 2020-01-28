@@ -22,11 +22,11 @@ extension String {
 	}
 
 	static func isNullOrWhiteSpace(_ value: String?) -> Bool {
-		isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
+		isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 	}
 
 	func isEmptyOrWhiteSpace() -> Bool {
-		isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).count == 0
+		isEmpty || trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 	}
 
 	static func random(length: Int) -> String {
@@ -45,7 +45,7 @@ extension String {
 	}
 
 	func fuzzySearch(withString searchString: String, diacriticSensitive: Bool = false, caseSensitive: Bool = false) -> Bool {
-		if searchString.count == 0 || count == 0 {
+		if searchString.isEmpty || isEmpty {
 			return false
 		}
 

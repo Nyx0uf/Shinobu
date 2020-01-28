@@ -189,7 +189,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource {
 	func numberOfSections(in collectionView: UICollectionView) -> Int {
 		let keys = searching ? orderedSearchResults.keys : orderedItems.keys
-		handleEmptyView(collectionView: collectionView, isEmpty: keys.count == 0)
+		handleEmptyView(collectionView: collectionView, isEmpty: keys.isEmpty)
 		return keys.count
 	}
 

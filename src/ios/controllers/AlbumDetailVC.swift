@@ -80,7 +80,7 @@ final class AlbumDetailVC: NYXViewController {
 		colorView.backgroundColor = headerView.backgroundColor
 
 		// Don't have all the metadatas
-		if album.artist.count == 0 {
+		if album.artist.isEmpty {
 			mpdBridge.getMetadatasForAlbum(album) { [weak self] in
 				DispatchQueue.main.async {
 					self?.updateHeader()
