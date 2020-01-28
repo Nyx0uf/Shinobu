@@ -85,6 +85,7 @@ class MusicalCollectionVC: NYXViewController {
 
 		if searchView != nil && searchView.superview == nil {
 			navigationController?.view.addSubview(searchView)
+			searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(dataSource.musicalEntityType.description.lowercased())"
 		}
 	}
 
@@ -102,12 +103,20 @@ class MusicalCollectionVC: NYXViewController {
 
 	// MARK: - Actions
 	@objc func showSearchBarAction(_ sender: Any?) {
-		UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
-			self.searchView.alpha = 1
-			self.searchBar.becomeFirstResponder()
-		}, completion: { (_) in
-			self.searchBarVisible = true
-		})
+		if Settings.shared.bool(forKey: .pref_contextualSearch) {
+			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
+				self.searchView.alpha = 1
+				self.searchBar.becomeFirstResponder()
+			}, completion: { (_) in
+				self.searchBarVisible = true
+			})
+		} else {
+			let vc = SearchVC(mpdBridge: mpdBridge)
+			vc.modalTransitionStyle = .crossDissolve
+			vc.modalPresentationStyle = .overCurrentContext
+			guard let rootVC = UIApplication.shared.delegate?.window??.rootViewController else { return }
+			rootVC.present(vc, animated: true, completion: nil)
+		}
 	}
 
 	@objc func changeTypeAction(_ sender: UIButton?) {

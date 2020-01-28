@@ -3,15 +3,17 @@ import MessageUI
 
 final class SettingsVC: NYXTableViewController {
 	// MARK: - Private properties
-	// Shake to play switch
+	// Use mpd_pretty_db switch
 	private var swPrettyDB: UISwitch!
 	// Shake to play switch
 	private var swShake: UISwitch!
 	// Fuzzy search switch
 	private var swFuzzySearch: UISwitch!
+	// Contextual search switch
+	private var swContextualSearch: UISwitch!
 	// Browse by directory switch
 	private var swDirectory: UISwitch!
-	// Columns control
+	// Number of columns control
 	private var sColumns: UISegmentedControl!
 	// Buttons for the tint color
 	private var colorsButton = [ColorButton]()
@@ -38,6 +40,9 @@ final class SettingsVC: NYXTableViewController {
 
 		swFuzzySearch = UISwitch()
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
+
+		swContextualSearch = UISwitch()
+		swContextualSearch.addTarget(self, action: #selector(toggleContextualSearch(_:)), for: .valueChanged)
 
 		swDirectory = UISwitch()
 		swDirectory.addTarget(self, action: #selector(toggleBrowseDir(_:)), for: .valueChanged)
@@ -80,6 +85,11 @@ final class SettingsVC: NYXTableViewController {
 	@objc func toggleFuzzySearch(_ sender: Any?) {
 		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
+	}
+
+	@objc func toggleContextualSearch(_ sender: Any?) {
+		let contextualSearch = Settings.shared.bool(forKey: .pref_contextualSearch)
+		Settings.shared.set(!contextualSearch, forKey: .pref_contextualSearch)
 	}
 
 	@objc func toggleBrowseDir(_ sender: Any?) {
@@ -135,7 +145,7 @@ extension SettingsVC {
 		case 1:
 			return 3
 		case 2:
-			return 1
+			return 2
 		case 3:
 			return 1
 		default:
@@ -180,6 +190,10 @@ extension SettingsVC {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swFuzzySearch)
+				} else if indexPath.row == 1 {
+					cell?.textLabel?.text = NYXLocalizedString("lbl_contextualsearch")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swContextualSearch)
 				}
 			} else {
 				if indexPath.row == 0 {
@@ -220,6 +234,9 @@ extension SettingsVC {
 			if indexPath.row == 0 {
 				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
 				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
+			} else if indexPath.row == 1 {
+				swContextualSearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swContextualSearch.width, (cell!.height - swContextualSearch.height) / 2, swContextualSearch.size)
+				swContextualSearch.isOn = Settings.shared.bool(forKey: .pref_contextualSearch)
 			}
 		} else {
 			if indexPath.row == 0 {
@@ -245,6 +262,29 @@ extension SettingsVC {
 			return ""
 		}
 	}
+
+	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+		if section == 2 {
+			return 44
+		} else {
+			return 0
+		}
+	}
+
+	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		if section == 2 {
+			let xMargin = CGFloat(4)
+			let yMargin = CGFloat(0)
+			let lbl = UILabel(frame: CGRect(xMargin, yMargin, tableView.width - (2 * xMargin), 44 - (2 * yMargin)))
+			lbl.numberOfLines = 5
+			lbl.font = UIFont.systemFont(ofSize: 12, weight: .light)
+			lbl.textAlignment = .center
+			lbl.text = NYXLocalizedString("help_search")
+			return lbl
+		} else {
+			return nil
+		}
+	}
 }
 
 extension SettingsVC: Themed {
@@ -252,6 +292,7 @@ extension SettingsVC: Themed {
 		swShake.onTintColor = theme.tintColor
 		swPrettyDB.onTintColor = theme.tintColor
 		swFuzzySearch.onTintColor = theme.tintColor
+		swContextualSearch.onTintColor = theme.tintColor
 		swDirectory.onTintColor = theme.tintColor
 
 		for btn in self.colorsButton {

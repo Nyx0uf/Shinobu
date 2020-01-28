@@ -99,7 +99,8 @@ final class Settings {
 			Settings.Key.pref_usePrettyDB.rawValue: true,
 			Settings.Key.lastTypeLibrary.rawValue: MusicalEntityType.albums.rawValue,
 			Settings.Key.lastTypeGenre.rawValue: MusicalEntityType.albums.rawValue,
-			Settings.Key.veryFirstLaunch.rawValue: true
+			Settings.Key.veryFirstLaunch.rawValue: true,
+			Settings.Key.pref_contextualSearch.rawValue: false
 		]
 
 		defaults.register(defaults: defaultsValues)
@@ -138,4 +139,5 @@ extension Settings.Key {
 	static let lastTypeLibrary = Settings.Key("lastTypeLibrary")
 	static let lastTypeGenre = Settings.Key("lastTypeGenre")
 	static let veryFirstLaunch = Settings.Key("pref_veryFirstLaunch")
+	static let pref_contextualSearch = Settings.Key("pref_contextualSearch")
 }

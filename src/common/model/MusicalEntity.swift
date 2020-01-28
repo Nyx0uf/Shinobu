@@ -27,6 +27,25 @@ struct MusicalEntityType: OptionSet {
 	}
 }
 
+extension MusicalEntityType: CustomStringConvertible {
+	var description: String {
+		switch self {
+		case .albums:
+			return NYXLocalizedString("lbl_albums")
+		case .artists:
+			return NYXLocalizedString("lbl_artists")
+		case .albumsartists:
+			return NYXLocalizedString("lbl_albumartists")
+		case .genres:
+			return NYXLocalizedString("lbl_genres")
+		case .playlists:
+			return NYXLocalizedString("lbl_playlists")
+		default:
+			return ""
+		}
+	}
+}
+
 class MusicalEntity: Hashable {
 	// MARK: - Public properties
 	// Name

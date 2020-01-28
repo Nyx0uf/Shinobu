@@ -118,3 +118,7 @@
 "lbl_no_outputs" = "No outputs";
 "lbl_no_search_results" = "No results";
 "lbl_no_items" = "No items to display :(";
+"lbl_search_library" = "Search library";
+"lbl_search" = "Search";
+"lbl_contextualsearch" = "Contextual search";
+"help_search" = "Contextual search: Search only within the collection displayed.\nEx: If your are displaying albums, only albums will be searched for.";

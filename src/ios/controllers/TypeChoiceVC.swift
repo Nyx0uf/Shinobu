@@ -34,7 +34,7 @@ final class TypeChoiceVC: NYXTableViewController {
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: - UITableViewDataSource
 extension TypeChoiceVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return musicalEntityTypes.count

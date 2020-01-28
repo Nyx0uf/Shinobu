@@ -68,16 +68,13 @@ final class LibraryVC: MusicalCollectionVC {
 				case .failure(let error):
 					MessageView.shared.showWithMessage(message: error.message)
 				case .success:
-					if dataSource.musicalEntityType != .albums {
-						// Always fetch the albums list
-						mpdBridge.entitiesForType(.albums) { (_) in }
-					}
-
-					mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
-						DispatchQueue.main.async {
-							self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-							self.updateNavigationTitle()
-							self.updateNavigationButtons()
+					mpdBridge.getAllEntities {
+						self.mpdBridge.entitiesForType(self.dataSource.musicalEntityType) { (entities) in
+							DispatchQueue.main.async {
+								self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
+								self.updateNavigationTitle()
+								self.updateNavigationButtons()
+							}
 						}
 					}
 				}
@@ -360,6 +357,7 @@ extension LibraryVC {
 				self.setItems(entities, forMusicalEntityType: type)
 				self.updateNavigationTitle()
 				self.updateNavigationButtons()
+				self.searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(type.description.lowercased())"
 				self.collectionView.collectionView.scrollToTop(animated: true)
 			}
 		}

@@ -359,7 +359,6 @@ final class PlayerVC: NYXViewController {
 
 	// MARK: - Gestures
 	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
-		print(gesture)
 		if gesture.state == .ended {
 			toggleMinified()
 		}

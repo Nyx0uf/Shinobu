@@ -95,6 +95,21 @@ final class MPDBridge {
 		queue.sync { self.currentState }
 	}
 
+	func getAllEntities(callback: @escaping () -> Void) {
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			strongSelf.getListForMusicalEntityType(.albums) { _ in
+				strongSelf.getListForMusicalEntityType(.artists) { _ in
+					strongSelf.getListForMusicalEntityType(.albumsartists) { _ in
+						strongSelf.getListForMusicalEntityType(.genres) { _ in
+							callback()
+						}
+					}
+				}
+			}
+		}
+	}
+
 	func entitiesForType(_ type: MusicalEntityType, callback: @escaping ([MusicalEntity]) -> Void) {
 		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
