@@ -95,6 +95,10 @@ final class SettingsVC: NYXTableViewController {
 	@objc func toggleBrowseDir(_ sender: Any?) {
 		let browseByDir = Settings.shared.bool(forKey: .pref_browseByDirectory)
 		Settings.shared.set(!browseByDir, forKey: .pref_browseByDirectory)
+		if browseByDir {
+			Settings.shared.set(false, forKey: .pref_shakeToPlayRandom)
+		}
+		swShake.isEnabled = swDirectory.isOn
 		NotificationCenter.default.postOnMainThreadAsync(name: .changeBrowsingTypeNotification, object: nil)
 	}
 
@@ -177,23 +181,23 @@ extension SettingsVC {
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swPrettyDB)
 				} else if indexPath.row == 1 {
-					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
-					cell?.selectionStyle = .none
-					cell?.contentView.addSubview(swShake)
-				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_browse_by_dir")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swDirectory)
+				} else if indexPath.row == 2 {
+					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swShake)
 				}
 			} else if indexPath.section == 2 {
 				if indexPath.row == 0 {
-					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
-					cell?.selectionStyle = .none
-					cell?.contentView.addSubview(swFuzzySearch)
-				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_contextualsearch")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swContextualSearch)
+				} else if indexPath.row == 1 {
+					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
+					cell?.selectionStyle = .none
+					cell?.contentView.addSubview(swFuzzySearch)
 				}
 			} else {
 				if indexPath.row == 0 {
@@ -224,19 +228,20 @@ extension SettingsVC {
 				swPrettyDB.frame = CGRect(UIScreen.main.bounds.width - 16 - swPrettyDB.width, (cell!.height - swPrettyDB.height) / 2, swPrettyDB.size)
 				swPrettyDB.isOn = Settings.shared.bool(forKey: .pref_usePrettyDB)
 			} else if indexPath.row == 1 {
-				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
-				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
-			} else if indexPath.row == 2 {
 				swDirectory.frame = CGRect(UIScreen.main.bounds.width - 16 - swDirectory.width, (cell!.height - swDirectory.height) / 2, swDirectory.size)
 				swDirectory.isOn = Settings.shared.bool(forKey: .pref_browseByDirectory)
+			} else if indexPath.row == 2 {
+				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
+				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
+				swShake.isEnabled = swDirectory.isOn
 			}
 		} else if indexPath.section == 2 {
 			if indexPath.row == 0 {
-				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
-				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
-			} else if indexPath.row == 1 {
 				swContextualSearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swContextualSearch.width, (cell!.height - swContextualSearch.height) / 2, swContextualSearch.size)
 				swContextualSearch.isOn = Settings.shared.bool(forKey: .pref_contextualSearch)
+			} else if indexPath.row == 1 {
+				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
+				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
 			}
 		} else {
 			if indexPath.row == 0 {
@@ -260,29 +265,6 @@ extension SettingsVC {
 			return NYXLocalizedString("lbl_search").uppercased()
 		default:
 			return ""
-		}
-	}
-
-	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-		if section == 2 {
-			return 44
-		} else {
-			return 0
-		}
-	}
-
-	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-		if section == 2 {
-			let xMargin = CGFloat(4)
-			let yMargin = CGFloat(0)
-			let lbl = UILabel(frame: CGRect(xMargin, yMargin, tableView.width - (2 * xMargin), 44 - (2 * yMargin)))
-			lbl.numberOfLines = 5
-			lbl.font = UIFont.systemFont(ofSize: 12, weight: .light)
-			lbl.textAlignment = .center
-			lbl.text = NYXLocalizedString("help_search")
-			return lbl
-		} else {
-			return nil
 		}
 	}
 }

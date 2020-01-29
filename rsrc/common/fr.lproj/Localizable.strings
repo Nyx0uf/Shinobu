@@ -121,4 +121,3 @@
 "lbl_search_library" = "Rechercher dans la bibliothèque";
 "lbl_search" = "Rechercher des";
 "lbl_contextualsearch" = "Recherche contextuelle";
-"help_search" = "Recherche contextuelle: La recherche s'effectue uniquement sur le type affiché.\nEx: Si la liste d'albums est affichée, la recherche s'effectuera uniquement sur les albums.";
