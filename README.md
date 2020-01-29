@@ -10,7 +10,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 - Multi-server support (Can register many servers but control one at a time)
 - Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
-- Search (*normal* / *fuzzy*)
+- Search, *global* or *contextual*, *normal* or *fuzzy*
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
 - Volume control
 - Playlists management (Create / Delete / Add to / Remove from)
@@ -36,20 +36,17 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 To install **Shinobu** you will need macOS, so you have two choices, either you have access to a Mac, or you run macOS on a Virtual Machine.
 
-1. Install the latest [Xcode version](https://itunes.apple.com/fr/app/xcode/id497799835?l=en&mt=12)
-2. Clone this repository
-3. Open *shinobu.xcodeproj*
-4. Plug your iPhone and hit the Build & Run button
+1. Install the latest [Xcode version](https://itunes.apple.com/fr/app/xcode/id497799835?l=en&mt=12).
+2. Clone this repository.
+3. Open *shinobu.xcodeproj*.
+4. Plug your iPhone and hit the Build & Run button.
+5. Head to the [wiki](https://github.com/Nyx0uf/shinobu/wiki) for app settings and configuration help.
 
 
-# PRETTY MPD DB
+# ISSUES
 
-**pretty_mpd_db.py** is a python script which generates a JSON file containing all the albums (*name* and *path*) of your mpd library.
-It allows loading covers faster because all the albums paths will be known. Otherwise to have an album path, the app needs to query the songs of the album to get the path, this is due to the design of the mpd api.
+Please open an [issue](https://github.com/Nyx0uf/shinobu/issues).
 
-Usage :
-
-    pretty_mpd_db.py -d mpd_music_directory_in_your_mpd_conf
 
 # LICENSE
 
