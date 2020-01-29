@@ -22,7 +22,7 @@ extension String {
 	}
 
 	static func isNullOrWhiteSpace(_ value: String?) -> Bool {
-		isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+		isNullOrEmpty(value) || value?.trimmingCharacters(in: .whitespacesAndNewlines).count == 0
 	}
 
 	func isEmptyOrWhiteSpace() -> Bool {
