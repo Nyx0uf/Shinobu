@@ -12,6 +12,8 @@ final class SearchVC: NYXViewController {
 	private var searchBar: UISearchBar! = nil
 	// Tableview for results
 	private var tableView: UITableView! = nil
+	// Close button
+	private var closeButton = UIButton(type: .custom)
 	// All MPD albums
 	private var albums = [Album]()
 	// All MPD artists
@@ -58,7 +60,12 @@ final class SearchVC: NYXViewController {
 		searchZone.frame = CGRect(10, y, view.width - 20, 44)
 		view.addSubview(searchZone)
 
-		searchBar = UISearchBar(frame: CGRect(0, 0, searchZone.width, 44))
+		closeButton.frame = CGRect(0, 0, 44, 44)
+		closeButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
+		closeButton.setImage(#imageLiteral(resourceName: "btn-close").withTintColor(themeProvider.currentTheme.tintColor), for: .normal)
+		searchZone.addSubview(closeButton)
+
+		searchBar = UISearchBar(frame: CGRect(0, closeButton.maxY, searchZone.width, 44))
 		searchBar.searchBarStyle = .minimal
 		searchBar.showsCancelButton = false
 		searchBar.delegate = self
@@ -108,6 +115,11 @@ final class SearchVC: NYXViewController {
 		super.viewWillDisappear(animated)
 	}
 
+	// MARK: - Buttons actions
+	@objc func closeAction(_ sender: Any?) {
+		dismiss(animated: true, completion: nil)
+	}
+
 	// MARK: - Notifications
 	@objc func keyboardWillShow(_ aNotification: Notification?) {
 		guard let notif = aNotification else { return }
@@ -119,12 +131,12 @@ final class SearchVC: NYXViewController {
 		y += UIApplication.shared.mainWindow?.safeAreaInsets.bottom ?? 0
 		UIView.animate(withDuration: duration, delay: 0, options: UIView.AnimationOptions(rawValue: curve << 16), animations: {
 			self.searchZone.height = (kbFrame.y - self.searchZone.y) - 10
-			self.tableView.height = self.searchZone.height - self.searchBar.height
+			self.tableView.height = self.searchZone.height - self.searchBar.height - self.closeButton.height
 		}, completion: nil)
 	}
 
 	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
-		self.dismiss(animated: true, completion: nil)
+		dismiss(animated: true, completion: nil)
 	}
 
 	// MARK: - Private
