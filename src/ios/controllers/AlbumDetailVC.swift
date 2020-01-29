@@ -56,6 +56,13 @@ final class AlbumDetailVC: NYXViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
+		if let navigationBar = navigationController?.navigationBar {
+			let appearance = UINavigationBarAppearance()
+			appearance.configureWithDefaultBackground()
+			appearance.shadowColor = .clear
+			navigationBar.standardAppearance = appearance
+		}
+
 		// Update header
 		updateHeader()
 

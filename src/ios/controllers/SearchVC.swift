@@ -73,7 +73,7 @@ final class SearchVC: NYXViewController {
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.tableFooterView = UIView()
-		searchZone.addSubview(tableView)
+	searchZone.addSubview(tableView)
 
 		// Single tap to request full player view
 		singleTap.numberOfTapsRequired = 1
@@ -138,6 +138,7 @@ final class SearchVC: NYXViewController {
 			lbl.font = UIFont.systemFont(ofSize: 32, weight: .ultraLight)
 			lbl.translatesAutoresizingMaskIntoConstraints = false
 			lbl.tintColor = .label
+			lbl.backgroundColor = emptyView.backgroundColor
 			lbl.sizeToFit()
 			emptyView.addSubview(lbl)
 			lbl.x = (emptyView.width - lbl.width) / 2
@@ -192,6 +193,7 @@ extension SearchVC: UITableViewDataSource {
 		cell.textLabel?.text = ent.name
 		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
 		cell.imageView?.image = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
+		cell.imageView?.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(.label).withTintColor(themeProvider.currentTheme.tintColor)
 
 		let view = UIView()
 		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
@@ -230,13 +232,13 @@ extension SearchVC: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let height = CGFloat(40)
 		let view = UIView(frame: CGRect(.zero, tableView.width, height))
-		view.backgroundColor = .systemGroupedBackground
+		view.backgroundColor = .systemBackground
 
 		let imgSize = CGFloat(32)
 		let imageView = UIImageView(frame: CGRect(8, (view.height - imgSize) / 2, imgSize, imgSize))
 		let label = UILabel(frame: CGRect(imageView.maxX + 8, 0, 200, view.height))
 		label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-		label.backgroundColor = .systemGroupedBackground
+		label.backgroundColor = view.backgroundColor
 		view.addSubview(imageView)
 		view.addSubview(label)
 
@@ -394,14 +396,12 @@ extension SearchVC: UISearchBarDelegate {
 
 extension SearchVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		searchZone.backgroundColor = .systemGroupedBackground
+		searchZone.backgroundColor = .systemBackground
 		tableView.backgroundColor = .systemBackground
 		searchBar.tintColor = theme.tintColor
-		searchBar.barTintColor = .systemGroupedBackground
-		searchBar.backgroundColor = .systemGroupedBackground
+		searchBar.setSearchBarColor(color: .systemBackground)
 		guard let searchField = (searchBar.value(forKey: "searchField") as? UITextField) else { return }
 		searchField.textColor = .secondaryLabel
-		searchField.backgroundColor = .systemGroupedBackground
-		searchBar.setSearchBarColor(color: .systemGroupedBackground)
+		searchField.backgroundColor = .systemBackground
 	}
 }

@@ -83,6 +83,13 @@ class MusicalCollectionVC: NYXViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 
+		if let navigationBar = navigationController?.navigationBar {
+			let opaqueAppearance = UINavigationBarAppearance()
+			opaqueAppearance.configureWithOpaqueBackground()
+			opaqueAppearance.shadowColor = .clear
+			navigationBar.standardAppearance = opaqueAppearance
+		}
+
 		if searchView != nil && searchView.superview == nil {
 			navigationController?.view.addSubview(searchView)
 			searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(dataSource.musicalEntityType.description.lowercased())"

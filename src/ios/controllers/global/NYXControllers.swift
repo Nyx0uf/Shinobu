@@ -43,7 +43,6 @@ final class NYXNavigationController: UINavigationController, Themed {
 	}
 
 	func applyTheme(_ theme: Theme) {
-		navigationBar.isTranslucent = true
 		navigationBar.tintColor = theme.tintColor
 		setNeedsStatusBarAppearanceUpdate()
 	}
