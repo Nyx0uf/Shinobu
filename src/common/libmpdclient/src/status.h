@@ -60,6 +60,31 @@ enum mpd_state {
 	MPD_STATE_PAUSE = 3,
 };
 
+/**
+ * MPD's single state.
+ *
+ * @since libmpdclient 2.18, MPD 0.21.
+ */
+enum mpd_single_state {
+	/** disabled */
+	MPD_SINGLE_OFF = 0,
+
+	/** enabled */
+	MPD_SINGLE_ON,
+
+	/**
+	 * enables single state (#MPD_SINGLE_ONESHOT) for a single song, then
+	 * MPD disables single state (#MPD_SINGLE_OFF) if the current song
+	 * has played and there is another song in the current playlist
+	 *
+	 * @since MPD 0.21
+	 **/
+	MPD_SINGLE_ONESHOT,
+
+	/** Unknown state */
+	MPD_SINGLE_UNKNOWN,
+};
+
 struct mpd_connection;
 struct mpd_pair;
 struct mpd_audio_format;
@@ -148,7 +173,25 @@ bool
 mpd_status_get_random(const struct mpd_status *status);
 
 /**
- * Returns true if single mode is on.
+ * Returns the current state of single mode on MPD.
+ *
+ * If the state is #MPD_SINGLE_ONESHOT, MPD will transition to #MPD_SINGLE_OFF
+ * after a song is played and if there is another song in the queue. The
+ * #mpd_status object will not be updated accordingly. In this case, you need
+ * to call mpd_send_status() and mpd_recv_status() again.
+ *
+ * @since MPD 0.21, libmpdclient 2.18.
+ */
+mpd_pure
+enum mpd_single_state
+mpd_status_get_single_state(const struct mpd_status *status);
+
+/**
+ * This function is deprecated as it does not distinguish the states of
+ * the single mode (added to MPD 0.21). Call mpd_status_get_single_state() in
+ * its place.
+ *
+ * Returns true if single mode is either on or in oneshot.
  */
 mpd_pure
 bool
@@ -193,7 +236,7 @@ unsigned
 mpd_status_get_crossfade(const struct mpd_status *status);
 
 /**
- * Returns mixrampdb setting in db.
+ * Returns mixrampdb setting in db. 0 means mixrampdb is disabled.
  *
  * @since libmpdclient 2.2
  */
@@ -202,7 +245,7 @@ float
 mpd_status_get_mixrampdb(const struct mpd_status *status);
 
 /**
- * Returns mixrampdelay setting in seconds.  Negative means mixramp is
+ * Returns mixrampdelay setting in seconds.  Negative means mixrampdelay is
  * disabled.
  *
  * @since libmpdclient 2.2
@@ -214,7 +257,8 @@ mpd_status_get_mixrampdelay(const struct mpd_status *status);
 /**
  * Returns the position of the currently playing song in the queue
  * (beginning with 0) if a song is currently selected (always the case when
- * state is PLAY or PAUSE).  If there is no current song, -1 is returned.
+ * state is MPD_STATE_PLAY or MPD_STATE_PAUSE).  If there is no current song,
+ * -1 is returned.
  */
 mpd_pure
 int
@@ -229,7 +273,7 @@ int
 mpd_status_get_song_id(const struct mpd_status *status);
 
 /**
- * The same as mpd_status_get_next_song_pos, but for the next song to be
+ * The same as mpd_status_get_song_pos(), but for the next song to be
  * played.
  *
  * @since libmpdclient 2.7
@@ -249,8 +293,12 @@ int
 mpd_status_get_next_song_id(const struct mpd_status *status);
 
 /**
+ * This function uses a deprecated feature of MPD, call
+ * mpd_status_get_elapsed_ms() instead.
+ *
  * Returns time in seconds that have elapsed in the currently playing/paused
- * song
+ * song.
+ *
  */
 mpd_pure
 unsigned
@@ -294,6 +342,14 @@ mpd_status_get_audio_format(const struct mpd_status *status);
 mpd_pure
 unsigned
 mpd_status_get_update_id(const struct mpd_status *status);
+
+/**
+ * Returns the name of the current partition or NULL if the server did
+ * not send a name.
+ */
+mpd_pure
+const char *
+mpd_status_get_partition(const struct mpd_status *status);
 
 /**
  * Returns the error message

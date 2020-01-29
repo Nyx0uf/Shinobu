@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,7 @@
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include <stddef.h>
 
 /**
  * Event bit mask for polling.
@@ -102,9 +103,9 @@ enum mpd_error
 mpd_async_get_error(const struct mpd_async *async);
 
 /**
- * If mpd_async_is_alive() returns false, this function returns the
- * human readable error message which caused this.  This message is
- * optional, and may be NULL.  The pointer is invalidated by
+ * If mpd_async_get_error() returns an error code other than #MPD_ERROR_SUCCESS,
+ * this function returns the human readable error message which caused this.
+ * This message is optional, and may be NULL.  The pointer is invalidated by
  * mpd_async_free().
  *
  * For #MPD_ERROR_SERVER, the error message is encoded in UTF-8.
@@ -148,10 +149,11 @@ mpd_async_get_fd(const struct mpd_async *async);
  *
  * @param async the #mpd_async object
  * @param keepalive whether TCP keepalives should be enabled
+ * @return true on success, false if setsockopt failed
  *
  * @since libmpdclient 2.10
  */
-void
+bool
 mpd_async_set_keepalive(struct mpd_async *async,
 			bool keepalive);
 
@@ -178,8 +180,9 @@ mpd_async_io(struct mpd_async *async, enum mpd_async_event events);
  * @param async the connection
  * @param command the command name, followed by arguments, terminated by
  * NULL
- * @param args the argument list
- * @return true on success, false if the buffer is full
+ * @param args the list of 'const char *' arguments
+ * @return true on success, false if the buffer is full or an error has
+ * previously occurred
  */
 bool
 mpd_async_send_command_v(struct mpd_async *async, const char *command,
@@ -190,8 +193,9 @@ mpd_async_send_command_v(struct mpd_async *async, const char *command,
  *
  * @param async the connection
  * @param command the command name, followed by arguments, terminated by
- * NULL
- * @return true on success, false if the buffer is full
+ * NULL. The arguments should be of type 'const char *'
+ * @return true on success, false if the buffer is full or an error has
+ * previously occurred
  */
 mpd_sentinel
 bool
@@ -202,12 +206,29 @@ mpd_async_send_command(struct mpd_async *async, const char *command, ...);
  * null-terminated, without the newline character.  The pointer is
  * only valid until the next async function is called.
  *
+ * You can use mpd_parser_new() and mpd_parser_feed() for parsing the line.
+ *
  * @param async the connection
  * @return a line on success, NULL otherwise
  */
 mpd_malloc
 char *
 mpd_async_recv_line(struct mpd_async *async);
+
+/**
+ * Copy raw data from the input buffer.  This can be used to receive
+ * binary data from MPD, such as album art.
+ *
+ * @param async the connection
+ * @param dest a buffer where this function will copy the data
+ * @param length of bytes to consume
+ * @return the number of bytes copied to the destination buffer (may
+ * be 0 if the input buffer was empty)
+ *
+ * @since libmpdclient 2.17
+ */
+size_t
+mpd_async_recv_raw(struct mpd_async *async, void *dest, size_t length);
 
 #ifdef __cplusplus
 }
