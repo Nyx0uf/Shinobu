@@ -46,7 +46,7 @@ final class SearchVC: NYXViewController {
 
 		view.frame = CGRect(.zero, view.width, view.height)
 		view.backgroundColor = .clear
-        view.isOpaque = false
+		view.isOpaque = false
 
 		// Blurred background
 		blurEffectView.effect = UIBlurEffect(style: traitCollection.userInterfaceStyle == .dark ? .dark : .light)
@@ -191,6 +191,7 @@ extension SearchVC: UITableViewDataSource {
 
 		cell.textLabel?.text = ent.name
 		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
+		cell.imageView?.image = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
 
 		let view = UIView()
 		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
@@ -213,7 +214,7 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		let sectionHeight = CGFloat(32)
+		let sectionHeight = CGFloat(40)
 		switch section {
 		case 0:
 			return albumsResults.isEmpty ? 0 : sectionHeight
@@ -227,10 +228,12 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let view = UIView(frame: CGRect(.zero, tableView.width, 32))
+		let height = CGFloat(40)
+		let view = UIView(frame: CGRect(.zero, tableView.width, height))
 		view.backgroundColor = .systemGroupedBackground
 
-		let imageView = UIImageView(frame: CGRect(8, (view.height - 24) / 2, 24, 24))
+		let imgSize = CGFloat(32)
+		let imageView = UIImageView(frame: CGRect(8, (view.height - imgSize) / 2, imgSize, imgSize))
 		let label = UILabel(frame: CGRect(imageView.maxX + 8, 0, 200, view.height))
 		label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		label.backgroundColor = .systemGroupedBackground
@@ -243,7 +246,7 @@ extension SearchVC: UITableViewDelegate {
 			imageView.image = #imageLiteral(resourceName: "img-album").withTintColor(.label)
 		case 1:
 			label.text = "\(artistsResults.count) \(artistsResults.count == 1 ? NYXLocalizedString("lbl_artist") : NYXLocalizedString("lbl_artists"))"
-			imageView.image = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
+			imageView.image = #imageLiteral(resourceName: "img-artist").withTintColor(.label)
 		case 2:
 			label.text = "\(albumsartistsResults.count) \(albumsartistsResults.count == 1 ? NYXLocalizedString("lbl_albumartist") : NYXLocalizedString("lbl_albumartists"))"
 			imageView.image = #imageLiteral(resourceName: "img-artists").withTintColor(.label)
@@ -260,6 +263,88 @@ extension SearchVC: UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		return UIView()
+	}
+
+	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { (_) in
+			switch indexPath.section {
+			case 0:
+			let album = self.albumsResults[indexPath.row]
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
+				}
+
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
+				}
+
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.addAlbumToQueue(album)
+				}
+
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			case 1:
+				let artist = self.artistsResults[indexPath.row]
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+				}
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			case 2:
+				let artist = self.albumsartists[indexPath.row]
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+				}
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
+						}
+					}
+				}
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						for album in artist.albums {
+							strongSelf.mpdBridge.addAlbumToQueue(album)
+						}
+					}
+				}
+				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
+			default:
+				return nil
+			}
+		})
 	}
 }
 
