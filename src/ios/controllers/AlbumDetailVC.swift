@@ -8,8 +8,6 @@ final class AlbumDetailVC: NYXViewController {
 	private var headerView: AlbumHeaderView! = nil
 	// Tableview for song list
 	private var tableView: TracksListTableView! = nil
-	// Dummy view to color the nav bar
-	private var colorView: UIView! = nil
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 
@@ -36,8 +34,6 @@ final class AlbumDetailVC: NYXViewController {
 		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		}
-		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
-		view.addSubview(colorView)
 
 		// Album header view
 		let coverSize = CGFloat(Settings.shared.integer(forKey: .coversSize))
@@ -55,13 +51,6 @@ final class AlbumDetailVC: NYXViewController {
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-
-		if let navigationBar = navigationController?.navigationBar {
-			let appearance = UINavigationBarAppearance()
-			appearance.configureWithDefaultBackground()
-			appearance.shadowColor = .clear
-			navigationBar.standardAppearance = appearance
-		}
 
 		// Update header
 		updateHeader()
@@ -84,7 +73,6 @@ final class AlbumDetailVC: NYXViewController {
 	private func updateHeader() {
 		// Update header view
 		headerView.updateHeaderWithAlbum(album)
-		colorView.backgroundColor = headerView.backgroundColor
 
 		// Don't have all the metadatas
 		if album.artist.isEmpty {

@@ -65,11 +65,7 @@ struct CoverServer: Codable, Equatable {
 			return nil
 		}
 
-		if tmp != "/" {
-			urlPath += "/" + coverName
-		} else {
-			urlPath += coverName
-		}
+		urlPath += (tmp != "/") ? "/" + coverName : coverName
 
 		urlComponents.path = urlPath
 

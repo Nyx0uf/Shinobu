@@ -409,7 +409,6 @@ final class PlayerVC: NYXViewController {
 				DispatchQueue.main.async {
 					self.imgCover = thumbnail
 					UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
-						self.coverView.image = thumbnail
 						(self.view as? UIImageView)?.image = cover
 						self.lblTrack.text = track.name
 						self.sliderTrack.label.text = track.name
@@ -429,7 +428,6 @@ final class PlayerVC: NYXViewController {
 					DispatchQueue.main.async {
 						self.imgCover = thumbnail
 						UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
-							self.coverView.image = thumbnail
 							(self.view as? UIImageView)?.image = cover
 							self.lblTrack.text = track.name
 							self.sliderTrack.label.text = track.name

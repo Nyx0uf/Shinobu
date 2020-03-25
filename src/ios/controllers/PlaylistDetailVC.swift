@@ -8,8 +8,6 @@ final class PlaylistDetailVC: NYXViewController {
 	private var headerView: UIImageView! = nil
 	// Tableview for song list
 	private var tableView: TracksListTableView! = nil
-	// Underlaying color view
-	private var colorView: UIView! = nil
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 
@@ -36,8 +34,6 @@ final class PlaylistDetailVC: NYXViewController {
 		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 		}
-		colorView = UIView(frame: CGRect(0, 0, view.width, navigationController?.navigationBar.frame.maxY ?? defaultHeight))
-		view.addSubview(colorView)
 
 		// Album header view
 		let coverSize = CGFloat(Settings.shared.integer(forKey: .coversSize))
@@ -78,7 +74,6 @@ final class PlaylistDetailVC: NYXViewController {
 		// Update header view
 		let backgroundColor = UIColor(rgb: playlist.name.djb2())
 		headerView.backgroundColor = backgroundColor
-		colorView.backgroundColor = backgroundColor
 
 		let string = playlist.name
 		let bgColor = UIColor(rgb: string.djb2())

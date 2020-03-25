@@ -14,8 +14,6 @@ final class TracksListTableView: UITableView {
 			}
 		}
 	}
-	// Should add a dummy cell at the end
-	var useDummy = false
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.track"
 	//
@@ -26,7 +24,7 @@ final class TracksListTableView: UITableView {
 
 		self.dataSource = self
 		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-		//self.separatorStyle = .none
+		self.separatorStyle = .none
 		self.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
 		self.rowHeight = 44
 
@@ -50,23 +48,13 @@ final class TracksListTableView: UITableView {
 // MARK: - UITableViewDataSource
 extension TracksListTableView: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		useDummy ? tracks.count + 1 : tracks.count
+		tracks.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrackTableViewCell
 
-		// Dummy to let some space for the mini player
-		if useDummy && indexPath.row == tracks.count {
-			cell.lblTitle.text = ""
-			cell.lblTrack.text = ""
-			cell.lblDuration.text = ""
-			cell.separator.isHidden = true
-			cell.selectionStyle = .none
-			return cell
-		}
-
-		cell.separator.isHidden = false
+		cell.isEvenCell = indexPath.row.isMultiple(of: 2)
 		cell.lblTitle.textColor = .label
 		cell.lblTrack.textColor = .label
 		cell.lblDuration.textColor = .label

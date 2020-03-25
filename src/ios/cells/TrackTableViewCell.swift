@@ -8,8 +8,13 @@ final class TrackTableViewCell: UITableViewCell {
 	private(set) var lblTitle: UILabel!
 	// Track duration
 	private(set) var lblDuration: UILabel!
-	// Separator
-	private(set) var separator: UIView!
+	//
+	var isEvenCell = false {
+		didSet {
+			backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
+			contentView.backgroundColor = backgroundColor
+		}
+	}
 
 	// MARK: - Initializers
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -44,15 +49,6 @@ final class TrackTableViewCell: UITableViewCell {
 		self.lblTitle.trailingAnchor.constraint(equalTo: self.lblDuration.leadingAnchor, constant: 8).isActive = true
 		self.lblTitle.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 13).isActive = true
 		self.lblTitle.heightAnchor.constraint(equalToConstant: 18).isActive = true
-
-		self.separator = UIView()
-		self.separator.backgroundColor = .separator
-		//self.contentView.addSubview(self.separator)
-//		self.separator.translatesAutoresizingMaskIntoConstraints = false
-//		self.separator.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8).isActive = true
-//		self.separator.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
-//		self.separator.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0).isActive = true
-//		self.separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
