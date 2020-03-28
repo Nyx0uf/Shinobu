@@ -3,17 +3,16 @@ import UIKit
 final class UpNextTableViewCell: UITableViewCell {
 	// MARK: - Public properties
 	// Track number
-	private(set) var lblTrack: UILabel!
+	private(set) var lblTrack = UILabel()
 	// Track title
-	private(set) var lblArtistAlbum: UILabel!
+	private(set) var lblArtistAlbum = UILabel()
 	// Track duration
-	private(set) var lblDuration: UILabel!
+	private(set) var lblDuration = UILabel()
 
 	// MARK: - Initializers
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		self.lblDuration = UILabel()
 		self.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .light)
 		self.lblDuration.textAlignment = .right
 		self.contentView.addSubview(self.lblDuration)
@@ -23,7 +22,6 @@ final class UpNextTableViewCell: UITableViewCell {
 		self.lblDuration.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15).isActive = true
 		self.lblDuration.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
 
-		self.lblTrack = UILabel()
 		self.lblTrack.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		self.lblTrack.textAlignment = .left
 		self.contentView.addSubview(self.lblTrack)
@@ -33,7 +31,6 @@ final class UpNextTableViewCell: UITableViewCell {
 		self.lblTrack.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 8).isActive = true
 		self.lblTrack.heightAnchor.constraint(equalToConstant: 18).isActive = true
 
-		self.lblArtistAlbum = UILabel()
 		self.lblArtistAlbum.font = UIFont.systemFont(ofSize: 12, weight: .regular)
 		self.lblArtistAlbum.textAlignment = .left
 		self.contentView.addSubview(self.lblArtistAlbum)

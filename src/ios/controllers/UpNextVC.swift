@@ -83,8 +83,8 @@ extension UpNextVC {
 		cell.contentView.backgroundColor = cell.backgroundColor
 
 		let track = tracks[indexPath.row]
-		cell.lblTrack?.text = track.name
-		cell.lblArtistAlbum?.text = "\(track.artist)"
+		cell.lblTrack.text = track.name
+		cell.lblArtistAlbum.text = "\(track.artist)"
 		let minutes = track.duration.minutesRepresentation().minutes
 		let seconds = track.duration.minutesRepresentation().seconds
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"

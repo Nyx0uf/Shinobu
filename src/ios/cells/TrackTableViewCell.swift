@@ -3,16 +3,15 @@ import UIKit
 final class TrackTableViewCell: UITableViewCell {
 	// MARK: - Public properties
 	// Track number
-	private(set) var lblTrack: UILabel!
+	private(set) var lblTrack = UILabel()
 	// Track title
-	private(set) var lblTitle: UILabel!
+	private(set) var lblTitle = UILabel()
 	// Track duration
-	private(set) var lblDuration: UILabel!
+	private(set) var lblDuration = UILabel()
 	//
 	var isEvenCell = false {
 		didSet {
 			backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
-			contentView.backgroundColor = backgroundColor
 		}
 	}
 
@@ -20,7 +19,6 @@ final class TrackTableViewCell: UITableViewCell {
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		self.lblTrack = UILabel()
 		self.lblTrack.font = UIFont.systemFont(ofSize: 10, weight: .regular)
 		self.lblTrack.textAlignment = .center
 		self.contentView.addSubview(self.lblTrack)
@@ -30,7 +28,6 @@ final class TrackTableViewCell: UITableViewCell {
 		self.lblTrack.heightAnchor.constraint(equalToConstant: 14).isActive = true
 		self.lblTrack.widthAnchor.constraint(equalToConstant: 18).isActive = true
 
-		self.lblDuration = UILabel()
 		self.lblDuration.font = UIFont.systemFont(ofSize: 10, weight: .light)
 		self.lblDuration.textAlignment = .right
 		self.contentView.addSubview(self.lblDuration)
@@ -40,7 +37,6 @@ final class TrackTableViewCell: UITableViewCell {
 		self.lblDuration.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15).isActive = true
 		self.lblDuration.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8).isActive = true
 
-		self.lblTitle = UILabel()
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .medium)
 		self.lblTitle.textAlignment = .left
 		self.contentView.addSubview(self.lblTitle)

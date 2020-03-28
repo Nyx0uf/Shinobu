@@ -3,7 +3,7 @@ import UIKit
 final class AlbumHeaderView: UIView {
 	// MARK: - Public properties
 	// Album cover
-	private(set) var image: UIImage!
+	private(set) var imageView: UIImageView!
 	// Album title
 	private(set) var lblTitle: UILabel!
 	// Album artist
@@ -21,46 +21,65 @@ final class AlbumHeaderView: UIView {
 
 		super.init(frame: frame)
 
-		lblTitle = UILabel(frame: .zero)
-		lblTitle.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-		lblTitle.numberOfLines = 2
+		self.backgroundColor = .systemGroupedBackground
+
+		self.imageView = UIImageView()
+		self.imageView.layer.cornerRadius = 10
+		self.imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.imageView.layer.masksToBounds = true
+		self.addSubview(imageView)
+		self.imageView.translatesAutoresizingMaskIntoConstraints = false
+		self.imageView.widthAnchor.constraint(equalToConstant: coverSize.width - 16).isActive = true
+		self.imageView.heightAnchor.constraint(equalToConstant: coverSize.height - 16).isActive = true
+		self.imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
+		self.imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8).isActive = true
+
+		let titleHeight = CGFloat(20)
+		let artistHeight = CGFloat(18)
+		let yearHeight = CGFloat(16)
+		let genreHeight = CGFloat(16)
+		let marginTop = CGFloat(5)
+		let horizontalAnchor = CGFloat(10)
+		let totalInfosHeight = titleHeight + artistHeight + yearHeight + genreHeight + (3 * marginTop)
+		let topAnchor = ((frame.height - totalInfosHeight) / 2).rounded()
+		self.lblTitle = UILabel(frame: .zero)
+		self.lblTitle.font = UIFont.systemFont(ofSize: 16, weight: .black)
+		self.lblTitle.textColor = .label
 		self.addSubview(lblTitle)
+		self.lblTitle.translatesAutoresizingMaskIntoConstraints = false
+		self.lblTitle.leadingAnchor.constraint(equalTo: self.imageView.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblTitle.topAnchor.constraint(equalTo: self.topAnchor, constant: topAnchor).isActive = true
 
-		lblArtist = UILabel(frame: .zero)
-		lblArtist.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+		self.lblArtist = UILabel(frame: .zero)
+		self.lblArtist.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+		self.lblArtist.textColor = .secondaryLabel
 		self.addSubview(lblArtist)
+		self.lblArtist.translatesAutoresizingMaskIntoConstraints = false
+		self.lblArtist.leadingAnchor.constraint(equalTo: self.imageView.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblArtist.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblArtist.topAnchor.constraint(equalTo: self.lblTitle.bottomAnchor, constant: marginTop).isActive = true
 
-		lblGenre = UILabel(frame: CGRect(coverSize.width + 4, frame.height - 16 - 4, 120, 16))
-		lblGenre.font = UIFont.systemFont(ofSize: 12, weight: .light)
-		self.addSubview(lblGenre)
-
-		lblYear = UILabel(frame: CGRect(frame.width - 48 - 4, frame.height - 16 - 4, 48, 16))
-		lblYear.textAlignment = .right
-		lblYear.font = UIFont.systemFont(ofSize: 12, weight: .light)
+		self.lblYear = UILabel(frame: .zero)
+		self.lblYear.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+		self.lblYear.textColor = .secondaryLabel
 		self.addSubview(lblYear)
+		self.lblYear.translatesAutoresizingMaskIntoConstraints = false
+		self.lblYear.leadingAnchor.constraint(equalTo: self.imageView.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblYear.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblYear.topAnchor.constraint(equalTo: self.lblArtist.bottomAnchor, constant: marginTop).isActive = true
+
+		self.lblGenre = UILabel(frame: .zero)
+		self.lblGenre.font = UIFont.systemFont(ofSize: 12, weight: .light)
+		self.lblGenre.textColor = .secondaryLabel
+		self.addSubview(lblGenre)
+		self.lblGenre.translatesAutoresizingMaskIntoConstraints = false
+		self.lblGenre.leadingAnchor.constraint(equalTo: self.imageView.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblGenre.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: horizontalAnchor).isActive = true
+		self.lblGenre.topAnchor.constraint(equalTo: self.lblYear.bottomAnchor, constant: marginTop).isActive = true
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-
-	// MARK: - Drawing
-	override func draw(_ dirtyRect: CGRect) {
-		guard image != nil else { return }
-		let imageRect = CGRect(.zero, coverSize)
-		image.draw(in: imageRect, blendMode: .sourceAtop, alpha: 1)
-
-		let context = UIGraphicsGetCurrentContext()
-		context?.saveGState()
-		context?.clip(to: imageRect)
-
-		let startPoint = CGPoint(imageRect.minX, imageRect.midY)
-		let endPoint = CGPoint(imageRect.maxX, imageRect.midY)
-		let color = backgroundColor!
-		let gradientColors: [CGColor] = [color.withAlphaComponent(0.05).cgColor, color.withAlphaComponent(0.75).cgColor, color.withAlphaComponent(0.9).cgColor]
-		let locations: [CGFloat] = [0, 0.9, 1]
-		let gradient = CGGradient(colorsSpace: CGColorSpace.NYXAppropriateColorSpace(), colors: gradientColors as CFArray, locations: locations)
-		context?.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
-		context?.restoreGState()
-	}
 
 	// MARK: - Public
 	func updateHeaderWithAlbum(_ album: Album) {
@@ -79,29 +98,7 @@ final class AlbumHeaderView: UIView {
 			let bgColor = UIColor(rgb: string.djb2())
 			image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
 		}
-		self.image = image
-
-		// Analyze colors
-		let kcs = KawaiiColors(image: image!, precision: 8, samplingEdge: .right)
-		kcs.analyze()
-		backgroundColor = kcs.edgeColor
-		lblTitle.textColor = kcs.primaryColor
-		lblTitle.backgroundColor = backgroundColor
-		lblArtist.textColor = kcs.secondaryColor
-		lblArtist.backgroundColor = backgroundColor
-		lblGenre.textColor = kcs.thirdColor
-		lblGenre.backgroundColor = backgroundColor
-		lblYear.textColor = kcs.thirdColor
-		lblYear.backgroundColor = backgroundColor
-
-		setNeedsDisplay()
-
-		// Update frame for title / artist
-		let aname = album.name as NSString
-		let width = frame.width - (coverSize.width + 8)
-		let rec = aname.boundingRect(with: CGSize(width, 40), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: lblTitle.font!], context: nil)
-		lblTitle.frame = CGRect(coverSize.width + 4, 4, ceil(rec.width), ceil(rec.height))
-		lblArtist.frame = CGRect(coverSize.width + 4, lblTitle.maxY + 4, width, 18)
+		imageView.image = image
 
 		lblTitle.text = album.name
 		lblArtist.text = album.artist

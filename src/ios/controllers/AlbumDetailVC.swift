@@ -33,10 +33,11 @@ final class AlbumDetailVC: NYXViewController {
 			defaultHeight = 0
 		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-play"), style: .done, target: self, action: #selector(playAlbumAction(sender:)))
 		}
 
 		// Album header view
-		let coverSize = CGFloat(Settings.shared.integer(forKey: .coversSize))
+		let coverSize = (view.width / 3).rounded()
 		headerView = AlbumHeaderView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, view.width, coverSize), coverSize: CGSize(coverSize, coverSize))
 		view.addSubview(headerView)
 
@@ -92,6 +93,12 @@ final class AlbumDetailVC: NYXViewController {
 		} else {
 			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
 		}
+	}
+
+	// MARK: - IBActions
+	@objc func playAlbumAction(sender: Any!) {
+		guard let tracks = album.tracks else { return }
+		mpdBridge.playTracks(tracks, shuffle: false, loop: false)
 	}
 }
 

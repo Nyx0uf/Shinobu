@@ -90,6 +90,7 @@ extension TracksListTableView: UITableViewDataSource {
 		}
 		cell.accessibilityLabel = stra
 
+		// Selection highlight
 		let v = UIView()
 		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
 		cell.selectedBackgroundView = v
