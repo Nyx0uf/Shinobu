@@ -4,17 +4,17 @@ import MessageUI
 final class SettingsVC: NYXTableViewController {
 	// MARK: - Private properties
 	// Use mpd_pretty_db switch
-	private var swPrettyDB: UISwitch!
+	private var swPrettyDB = UISwitch()
 	// Shake to play switch
-	private var swShake: UISwitch!
+	private var swShake = UISwitch()
 	// Fuzzy search switch
-	private var swFuzzySearch: UISwitch!
+	private var swFuzzySearch = UISwitch()
 	// Contextual search switch
-	private var swContextualSearch: UISwitch!
+	private var swContextualSearch = UISwitch()
 	// Browse by directory switch
-	private var swDirectory: UISwitch!
+	private var swDirectory = UISwitch()
 	// Number of columns control
-	private var sColumns: UISegmentedControl!
+	private var sColumns = UISegmentedControl(items: ["2", "3"])
 	// Buttons for the tint color
 	private var colorsButton = [ColorButton]()
 
@@ -32,22 +32,12 @@ final class SettingsVC: NYXTableViewController {
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
-		swShake = UISwitch()
 		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
-
-		swPrettyDB = UISwitch()
 		swPrettyDB.addTarget(self, action: #selector(toggleUsePrettyDB(_:)), for: .valueChanged)
-
-		swFuzzySearch = UISwitch()
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
-
-		swContextualSearch = UISwitch()
 		swContextualSearch.addTarget(self, action: #selector(toggleContextualSearch(_:)), for: .valueChanged)
-
-		swDirectory = UISwitch()
 		swDirectory.addTarget(self, action: #selector(toggleBrowseDir(_:)), for: .valueChanged)
 
-		sColumns = UISegmentedControl(items: ["2", "3"])
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
 		sColumns.frame = CGRect(0, 0, 64, swFuzzySearch.height)
 
@@ -72,37 +62,37 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	// MARK: - IBActions
-	@objc func toggleShakeToPlay(_ sender: Any?) {
+	@objc fileprivate func toggleShakeToPlay(_ sender: Any?) {
 		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
 	}
 
-	@objc func toggleUsePrettyDB(_ sender: Any?) {
+	@objc fileprivate func toggleUsePrettyDB(_ sender: Any?) {
 		let pretty = Settings.shared.bool(forKey: .pref_usePrettyDB)
 		Settings.shared.set(!pretty, forKey: .pref_usePrettyDB)
 	}
 
-	@objc func toggleFuzzySearch(_ sender: Any?) {
+	@objc fileprivate func toggleFuzzySearch(_ sender: Any?) {
 		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
 	}
 
-	@objc func toggleContextualSearch(_ sender: Any?) {
+	@objc fileprivate func toggleContextualSearch(_ sender: Any?) {
 		let contextualSearch = Settings.shared.bool(forKey: .pref_contextualSearch)
 		Settings.shared.set(!contextualSearch, forKey: .pref_contextualSearch)
 	}
 
-	@objc func toggleBrowseDir(_ sender: Any?) {
+	@objc fileprivate func toggleBrowseDir(_ sender: Any?) {
 		let browseByDir = Settings.shared.bool(forKey: .pref_browseByDirectory)
 		Settings.shared.set(!browseByDir, forKey: .pref_browseByDirectory)
 		if browseByDir {
 			Settings.shared.set(false, forKey: .pref_shakeToPlayRandom)
 		}
-		swShake.isEnabled = swDirectory.isOn
+		swShake.isEnabled = !swDirectory.isOn
 		NotificationCenter.default.postOnMainThreadAsync(name: .changeBrowsingTypeNotification, object: nil)
 	}
 
-	@objc func toggleColumns(_ sender: Any?) {
+	@objc fileprivate func toggleColumns(_ sender: Any?) {
 		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
 
 		ImageCache.shared.clear(nil)
@@ -117,9 +107,11 @@ final class SettingsVC: NYXTableViewController {
 
 		themeProvider.currentTheme.tintColor = colorForTintColorType(button.tintColorType)
 		themeProvider.currentTheme = themeProvider.currentTheme
+
+		UIImpactFeedbackGenerator().impactOccurred()
 	}
 
-	@objc func closeAction(_ sender: Any?) {
+	@objc fileprivate func closeAction(_ sender: Any?) {
 		dismiss(animated: true, completion: nil)
 		// lol ugly
 		if let p = navigationController?.presentationController {
@@ -174,30 +166,54 @@ extension SettingsVC {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_columns")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(sColumns)
+					sColumns.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: sColumns, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: sColumns, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				}
 			} else if indexPath.section == 1 {
 				if indexPath.row == 0 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_useprettydb")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swPrettyDB)
+					swPrettyDB.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: swPrettyDB, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: swPrettyDB, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_browse_by_dir")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swDirectory)
+					swDirectory.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: swDirectory, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: swDirectory, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_pref_shaketoplayrandom")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swShake)
+					swShake.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: swShake, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: swShake, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				}
 			} else if indexPath.section == 2 {
 				if indexPath.row == 0 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_contextualsearch")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swContextualSearch)
+					swContextualSearch.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: swContextualSearch, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: swContextualSearch, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_fuzzysearch")
 					cell?.selectionStyle = .none
 					cell?.contentView.addSubview(swFuzzySearch)
+					swFuzzySearch.translatesAutoresizingMaskIntoConstraints = false
+					let yConstraint = NSLayoutConstraint(item: swFuzzySearch, attribute: .centerY, relatedBy: .equal, toItem: cell!.contentView, attribute: .centerY, multiplier: 1, constant: 0)
+					let xConstraint = NSLayoutConstraint(item: swFuzzySearch, attribute: .trailing, relatedBy: .equal, toItem: cell!.contentView, attribute: .trailing, multiplier: 1, constant: -16)
+					NSLayoutConstraint.activate([xConstraint, yConstraint])
 				}
 			} else {
 				if indexPath.row == 0 {
@@ -220,27 +236,21 @@ extension SettingsVC {
 					btn.isSelected = btn.tintColorType.rawValue == tintAsInt
 				}
 			} else if indexPath.row == 1 {
-				sColumns.frame = CGRect(UIScreen.main.bounds.width - 16 - sColumns.width, (cell!.height - sColumns.height) / 2, sColumns.size)
 				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) - 2
 			}
 		} else if indexPath.section == 1 {
 			if indexPath.row == 0 {
-				swPrettyDB.frame = CGRect(UIScreen.main.bounds.width - 16 - swPrettyDB.width, (cell!.height - swPrettyDB.height) / 2, swPrettyDB.size)
 				swPrettyDB.isOn = Settings.shared.bool(forKey: .pref_usePrettyDB)
 			} else if indexPath.row == 1 {
-				swDirectory.frame = CGRect(UIScreen.main.bounds.width - 16 - swDirectory.width, (cell!.height - swDirectory.height) / 2, swDirectory.size)
 				swDirectory.isOn = Settings.shared.bool(forKey: .pref_browseByDirectory)
 			} else if indexPath.row == 2 {
-				swShake.frame = CGRect(UIScreen.main.bounds.width - 16 - swShake.width, (cell!.height - swShake.height) / 2, swShake.size)
 				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
-				swShake.isEnabled = swDirectory.isOn
+				swShake.isEnabled = !swDirectory.isOn
 			}
 		} else if indexPath.section == 2 {
 			if indexPath.row == 0 {
-				swContextualSearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swContextualSearch.width, (cell!.height - swContextualSearch.height) / 2, swContextualSearch.size)
 				swContextualSearch.isOn = Settings.shared.bool(forKey: .pref_contextualSearch)
 			} else if indexPath.row == 1 {
-				swFuzzySearch.frame = CGRect(UIScreen.main.bounds.width - 16 - swFuzzySearch.width, (cell!.height - swFuzzySearch.height) / 2, swFuzzySearch.size)
 				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
 			}
 		} else {

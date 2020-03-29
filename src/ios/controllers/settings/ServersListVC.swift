@@ -71,7 +71,7 @@ final class ServersListVC: NYXTableViewController {
 		}
 	}
 
-	@objc func addMpdServerAction(_ sender: Any?) {
+	@objc fileprivate func addMpdServerAction(_ sender: Any?) {
 		showServerVC(with: nil)
 	}
 
