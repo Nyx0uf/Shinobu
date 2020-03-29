@@ -24,6 +24,8 @@ final class TitlesIndexView: UIView {
 	private var isPanning = false
 	// Overlay over the selected letter
 	private var overlayView = UIVisualEffectView()
+	// Haptic feedbacks
+	private let impactFeedbackGenerator = UIImpactFeedbackGenerator()
 
 	// MARK: - Initializers
 	override init(frame: CGRect) {
@@ -163,6 +165,8 @@ final class TitlesIndexView: UIView {
 					bigLetterView.frame = CGRect(-width - 32, (letterView.y) - (bigLetterView.height - LETTER_VIEW_HEIGHT) / 2, OVERLAY_VIEW_HEIGHT, OVERLAY_VIEW_HEIGHT)
 					bigLetterView.letter = letterView.letter
 					delegate?.didScrollToIndex(letterView.tag)
+
+					impactFeedbackGenerator.impactOccurred()
 				}
 			}
 		default:
