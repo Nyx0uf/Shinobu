@@ -1,5 +1,4 @@
 import UIKit
-import MessageUI
 
 final class SettingsVC: NYXTableViewController {
 	// MARK: - Private properties
@@ -22,9 +21,9 @@ final class SettingsVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		self.navigationItem.titleView = nil
-		self.title = NYXLocalizedString("lbl_section_settings")
-		self.navigationController?.navigationBar.prefersLargeTitles = true
+		navigationItem.titleView = nil
+		title = NYXLocalizedString("lbl_section_settings")
+		navigationController?.navigationBar.prefersLargeTitles = true
 
 		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
@@ -38,7 +37,6 @@ final class SettingsVC: NYXTableViewController {
 		swFuzzySearch.addTarget(self, action: #selector(toggleFuzzySearch(_:)), for: .valueChanged)
 		swContextualSearch.addTarget(self, action: #selector(toggleContextualSearch(_:)), for: .valueChanged)
 		swDirectory.addTarget(self, action: #selector(toggleBrowseDir(_:)), for: .valueChanged)
-
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
 
 		let margin = CGFloat(4)
