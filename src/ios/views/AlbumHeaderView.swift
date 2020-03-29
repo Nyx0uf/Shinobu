@@ -21,7 +21,7 @@ final class AlbumHeaderView: UIView {
 
 		super.init(frame: frame)
 
-		self.backgroundColor = .systemGroupedBackground
+		self.backgroundColor = .systemBackground
 
 		self.imageView = UIImageView()
 		self.imageView.layer.cornerRadius = 10

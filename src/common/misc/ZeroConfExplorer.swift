@@ -57,6 +57,37 @@ final class ZeroConfExplorer: NSObject {
 	private func isResolved(_ server: MPDServer) -> Bool {
 		String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}
+
+	#if targetEnvironment(simulator)
+	private static func getIPAddress() -> String {
+        var address: String?
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        if getifaddrs(&ifaddr) == 0 {
+            var ptr = ifaddr
+            while ptr != nil {
+                defer { ptr = ptr?.pointee.ifa_next }
+
+                let interface = ptr?.pointee
+                let addrFamily = interface?.ifa_addr.pointee.sa_family
+                if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+
+                    // wifi = ["en0"]
+                    // wired = ["en2", "en3", "en4"]
+                    // cellular = ["pdp_ip0","pdp_ip1","pdp_ip2","pdp_ip3"]
+
+                    let name: String = String(cString: (interface!.ifa_name))
+                    if  name == "en0" || name == "en2" || name == "en3" || name == "en4" || name == "pdp_ip0" || name == "pdp_ip1" || name == "pdp_ip2" || name == "pdp_ip3" {
+                        var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                        getnameinfo(interface?.ifa_addr, socklen_t((interface?.ifa_addr.pointee.sa_len)!), &hostname, socklen_t(hostname.count), nil, socklen_t(0), NI_NUMERICHOST)
+                        address = String(cString: hostname)
+                    }
+                }
+            }
+            freeifaddrs(ifaddr)
+        }
+        return address ?? ""
+    }
+	#endif
 }
 
 // MARK: - NetServiceBrowserDelegate
@@ -115,6 +146,11 @@ extension ZeroConfExplorer: NetServiceDelegate {
 			}
 
 			if found {
+				#if targetEnvironment(simulator)
+				if ZeroConfExplorer.getIPAddress() == tmpIP {
+					tmpIP = "127.0.0.1"
+				}
+				#endif
 				let mpdServer = MPDServer(hostname: tmpIP, port: UInt16(sender.port))
 				let server = ShinobuServer(name: sender.name, mpd: mpdServer)
 				services[sender] = server
