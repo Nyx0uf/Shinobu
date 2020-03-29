@@ -31,6 +31,7 @@ final class SettingsVC: NYXTableViewController {
 		navigationItem.leftBarButtonItem = closeButton
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView.rowHeight = 44
 
 		swShake.addTarget(self, action: #selector(toggleShakeToPlay(_:)), for: .valueChanged)
 		swPrettyDB.addTarget(self, action: #selector(toggleUsePrettyDB(_:)), for: .valueChanged)
@@ -39,7 +40,6 @@ final class SettingsVC: NYXTableViewController {
 		swDirectory.addTarget(self, action: #selector(toggleBrowseDir(_:)), for: .valueChanged)
 
 		sColumns.addTarget(self, action: #selector(toggleColumns(_:)), for: .valueChanged)
-		sColumns.frame = CGRect(0, 0, 64, swFuzzySearch.height)
 
 		let margin = CGFloat(4)
 		var x = view.width - CGFloat(32 * TintColorType.allCases.count) - CGFloat(margin * CGFloat(TintColorType.allCases.count)) - 16
