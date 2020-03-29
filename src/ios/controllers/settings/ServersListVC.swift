@@ -34,9 +34,9 @@ final class ServersListVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		self.navigationItem.titleView = nil
-		self.title = NYXLocalizedString("lbl_header_servers_list")
-		self.navigationController?.navigationBar.prefersLargeTitles = true
+		navigationItem.titleView = nil
+		title = NYXLocalizedString("lbl_header_servers_list")
+		navigationController?.navigationBar.prefersLargeTitles = true
 
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
@@ -167,7 +167,7 @@ extension ServersListVC {
 	}
 
 	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-		let action = UIContextualAction(style: .normal, title: NYXLocalizedString("lbl_remove_from_playlist")) { [weak self] (_, _, completionHandler) in
+		let action = UIContextualAction(style: .destructive, title: NYXLocalizedString("lbl_remove_from_playlist")) { [weak self] (_, _, completionHandler) in
 
 			guard let strongSelf = self else { return }
 			let serverData = strongSelf.servers[indexPath.row]
@@ -177,8 +177,7 @@ extension ServersListVC {
 
 			completionHandler(true)
 		}
-		action.image = #imageLiteral(resourceName: "btn-trash")
-		action.backgroundColor = UIColor(rgb: 0x941100)
+		action.image = #imageLiteral(resourceName: "btn-trash").withRenderingMode(.alwaysTemplate)
 
 		return UISwipeActionsConfiguration(actions: [action])
 	}

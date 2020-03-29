@@ -333,7 +333,9 @@ final class ServerAddVC: NYXTableViewController {
 			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 			DispatchQueue.main.async {
 				self.cacheSize = size
-				self.tableView.reloadRows(at: [IndexPath(row: 3, section: 2)], with: .none)
+				if self.navigationController?.visibleViewController === self {
+					self.tableView.reloadRows(at: [IndexPath(row: 3, section: 2)], with: .none)
+				}
 			}
 		}
 	}

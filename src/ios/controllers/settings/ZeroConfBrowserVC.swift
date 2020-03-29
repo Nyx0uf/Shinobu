@@ -13,7 +13,7 @@ final class ZeroConfBrowserVC: NYXTableViewController {
 
 	// MARK: - Private properties
 	// Zeroconf explorer
-	private var zeroConfExplorer: ZeroConfExplorer! = nil
+	private var zeroConfExplorer = ZeroConfExplorer()
 	// List of servers found
 	private var servers = [ShinobuServer]()
 
@@ -21,27 +21,26 @@ final class ZeroConfBrowserVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		self.navigationItem.titleView = nil
-		self.title = NYXLocalizedString("lbl_header_servers_zeroconf")
-		self.navigationController?.navigationBar.prefersLargeTitles = true
+		navigationItem.titleView = nil
+		title = NYXLocalizedString("lbl_header_servers_zeroconf")
+		navigationController?.navigationBar.prefersLargeTitles = true
 
 		tableView.tintColor = themeProvider.currentTheme.tintColor
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.separatorColor = .separator
 		tableView.rowHeight = 64
 		tableView.tableFooterView = UIView()
-
-		zeroConfExplorer = ZeroConfExplorer()
-		zeroConfExplorer.delegate = self
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		zeroConfExplorer.delegate = self
 		zeroConfExplorer.searchForServices(type: "_mpd._tcp.")
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
+		zeroConfExplorer.delegate = nil
 		zeroConfExplorer.stopSearch()
 	}
 
