@@ -1,10 +1,5 @@
 import Foundation
 
-struct PrettyDBAlbum {
-	let name: String
-	let path: String
-}
-
 final class PrettyDBManager {
 	static func albums() -> [Album] {
 		let serversManager = ServersManager()
