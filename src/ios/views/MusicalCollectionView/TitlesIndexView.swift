@@ -135,6 +135,7 @@ final class TitlesIndexView: UIView {
 
 	// MARK: - Gestures
 	@objc func singleTap(_ gest: UITapGestureRecognizer) {
+		impactFeedbackGenerator.impactOccurred()
 		// Get letter view if any
 		let point = gest.location(in: self)
 		guard let letterView = letterViewAtPoint(point) else { return }
