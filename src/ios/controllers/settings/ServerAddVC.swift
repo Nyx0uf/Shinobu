@@ -25,7 +25,7 @@ final class ServerAddVC: NYXTableViewController {
 	// Indicate that the keyboard is visible, flag
 	private var keyboardVisible = false
 	// Zero conf VC
-	private var zeroConfVC: ZeroConfBrowserVC?
+	private var zeroConfVC = ZeroConfBrowserVC()
 	// Cache size
 	private var cacheSize: Int = 0
 	// MPD Data source
@@ -47,9 +47,9 @@ final class ServerAddVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		self.navigationItem.titleView = nil
-		self.title = NYXLocalizedString("lbl_header_server_cfg")
-		self.navigationController?.navigationBar.prefersLargeTitles = true
+		navigationItem.titleView = nil
+		title = NYXLocalizedString("lbl_header_server_cfg")
+		navigationController?.navigationBar.prefersLargeTitles = true
 
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
@@ -137,12 +137,12 @@ final class ServerAddVC: NYXTableViewController {
 		super.viewWillDisappear(animated)
 
 		if isMovingFromParent {
-			self.validateSettingsAction(nil)
+			validateSettingsAction(nil)
 		}
 	}
 
 	// MARK: - Buttons actions
-	@objc func validateSettingsAction(_ sender: Any?) {
+	@objc private func validateSettingsAction(_ sender: Any?) {
 		view.endEditing(true)
 
 		// Check server name
@@ -230,17 +230,14 @@ final class ServerAddVC: NYXTableViewController {
 		}
 	}
 
-	@objc func browserZeroConfAction(_ sender: Any?) {
-		if zeroConfVC == nil {
-			zeroConfVC = ZeroConfBrowserVC()
-		}
-		zeroConfVC?.delegate = self
-		zeroConfVC?.selectedServer = selectedServer
-		navigationController?.pushViewController(zeroConfVC!, animated: true)
+	@objc private func browserZeroConfAction(_ sender: Any?) {
+		zeroConfVC.delegate = self
+		zeroConfVC.selectedServer = selectedServer
+		navigationController?.pushViewController(zeroConfVC, animated: true)
 	}
 
 	// MARK: - Notifications
-	@objc func keyboardDidShowNotification(_ aNotification: Notification) {
+	@objc private func keyboardDidShowNotification(_ aNotification: Notification) {
 		if keyboardVisible {
 			return
 		}
@@ -258,7 +255,7 @@ final class ServerAddVC: NYXTableViewController {
 		keyboardVisible = true
 	}
 
-	@objc func keyboardDidHideNotification(_ aNotification: Notification) {
+	@objc private func keyboardDidHideNotification(_ aNotification: Notification) {
 		if keyboardVisible == false {
 			return
 		}
@@ -276,7 +273,7 @@ final class ServerAddVC: NYXTableViewController {
 		keyboardVisible = false
 	}
 
-	@objc func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification) {
+	@objc private func audioOutputConfigurationDidChangeNotification(_ aNotification: Notification) {
 		updateOutputsLabel()
 	}
 

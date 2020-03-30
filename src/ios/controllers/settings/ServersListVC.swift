@@ -63,7 +63,7 @@ final class ServersListVC: NYXTableViewController {
 	}
 
 	// MARK: - Buttons actions
-	@objc func closeAction(_ sender: Any?) {
+	@objc private func closeAction(_ sender: Any?) {
 		dismiss(animated: true, completion: nil)
 		// lol ugly
 		if let p = navigationController?.presentationController {
@@ -71,7 +71,7 @@ final class ServersListVC: NYXTableViewController {
 		}
 	}
 
-	@objc fileprivate func addMpdServerAction(_ sender: Any?) {
+	@objc private func addMpdServerAction(_ sender: Any?) {
 		showServerVC(with: nil)
 	}
 

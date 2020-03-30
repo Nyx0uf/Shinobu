@@ -60,27 +60,27 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	// MARK: - IBActions
-	@objc fileprivate func toggleShakeToPlay(_ sender: Any?) {
+	@objc private func toggleShakeToPlay(_ sender: Any?) {
 		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
 		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
 	}
 
-	@objc fileprivate func toggleUsePrettyDB(_ sender: Any?) {
+	@objc private func toggleUsePrettyDB(_ sender: Any?) {
 		let pretty = Settings.shared.bool(forKey: .pref_usePrettyDB)
 		Settings.shared.set(!pretty, forKey: .pref_usePrettyDB)
 	}
 
-	@objc fileprivate func toggleFuzzySearch(_ sender: Any?) {
+	@objc private func toggleFuzzySearch(_ sender: Any?) {
 		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
 		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
 	}
 
-	@objc fileprivate func toggleContextualSearch(_ sender: Any?) {
+	@objc private func toggleContextualSearch(_ sender: Any?) {
 		let contextualSearch = Settings.shared.bool(forKey: .pref_contextualSearch)
 		Settings.shared.set(!contextualSearch, forKey: .pref_contextualSearch)
 	}
 
-	@objc fileprivate func toggleBrowseDir(_ sender: Any?) {
+	@objc private func toggleBrowseDir(_ sender: Any?) {
 		let browseByDir = Settings.shared.bool(forKey: .pref_browseByDirectory)
 		Settings.shared.set(!browseByDir, forKey: .pref_browseByDirectory)
 		if browseByDir {
@@ -90,7 +90,7 @@ final class SettingsVC: NYXTableViewController {
 		NotificationCenter.default.postOnMainThreadAsync(name: .changeBrowsingTypeNotification, object: nil)
 	}
 
-	@objc fileprivate func toggleColumns(_ sender: Any?) {
+	@objc private func toggleColumns(_ sender: Any?) {
 		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
 
 		ImageCache.shared.clear(nil)
@@ -98,7 +98,7 @@ final class SettingsVC: NYXTableViewController {
 		NotificationCenter.default.postOnMainThreadAsync(name: .collectionViewLayoutShouldChange, object: nil)
 	}
 
-	@objc fileprivate func toggleTintColor(_ sender: ColorButton?) {
+	@objc private func toggleTintColor(_ sender: ColorButton?) {
 		guard let button = sender else { return }
 
 		Settings.shared.set(button.tintColorType.rawValue, forKey: .pref_tintColor)
@@ -109,7 +109,7 @@ final class SettingsVC: NYXTableViewController {
 		UIImpactFeedbackGenerator().impactOccurred()
 	}
 
-	@objc fileprivate func closeAction(_ sender: Any?) {
+	@objc private func closeAction(_ sender: Any?) {
 		dismiss(animated: true, completion: nil)
 		// lol ugly
 		if let p = navigationController?.presentationController {
@@ -294,7 +294,7 @@ extension SettingsVC: Themed {
 }
 
 fileprivate final class ColorButton: UIButton {
-	//
+	// Tint color
 	private(set) var tintColorType: TintColorType
 
 	init(frame: CGRect, tintColorType: TintColorType) {
