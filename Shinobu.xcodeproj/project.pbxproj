@@ -110,6 +110,7 @@
 		43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43DC9F20225CBC1600C6A8E5 /* ShinobuThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */; };
 		43DC9F22225CBCE300C6A8E5 /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */; };
+		43DEA1E02432263D007DCAB8 /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DEA1DF2432263D007DCAB8 /* SearchField.swift */; };
 		43E31299226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
 		43E3129A226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
 		43E571DC22B92DD3003C1E5E /* UpNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E571DB22B92DD3003C1E5E /* UpNextVC.swift */; };
@@ -312,6 +313,7 @@
 		43DC9F1D225CBBB700C6A8E5 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShinobuThemeProvider.swift; sourceTree = "<group>"; };
 		43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribableValue.swift; sourceTree = "<group>"; };
+		43DEA1DF2432263D007DCAB8 /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
 		43E31298226F16DE00985C0B /* CGImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+Extensions.swift"; sourceTree = "<group>"; };
 		43E571DB22B92DD3003C1E5E /* UpNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpNextVC.swift; sourceTree = "<group>"; };
 		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -680,6 +682,7 @@
 				43C3E8102266009E00F6F058 /* ImagedLabel.swift */,
 				43C3E80C2265FFAD00F6F058 /* ImagedSlider.swift */,
 				43C3E80E2265FFF000F6F058 /* LabeledSlider.swift */,
+				43DEA1DF2432263D007DCAB8 /* SearchField.swift */,
 				43C3E8092265BEEC00F6F058 /* Slider.swift */,
 			);
 			path = components;
@@ -915,6 +918,7 @@
 				4358B06F21EB47A8009A3BBF /* AudioOutputsListVC.swift in Sources */,
 				43B0EE7F227099D200F35115 /* CoverOperations.swift in Sources */,
 				4358B08621EB47C2009A3BBF /* AlbumHeaderView.swift in Sources */,
+				43DEA1E02432263D007DCAB8 /* SearchField.swift in Sources */,
 				433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */,
 				435715F922AE6625001ED982 /* PrettyDBManager.swift in Sources */,
 				4358B02021EB42B4009A3BBF /* String+Extensions.swift in Sources */,
