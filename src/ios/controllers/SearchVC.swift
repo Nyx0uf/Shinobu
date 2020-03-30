@@ -9,11 +9,10 @@ final class SearchVC: NYXViewController {
 	// Search view (searchbar + tableview)
 	private let searchZone = UIView()
 	// Search bar
-	private var searchBar: UISearchBar! = nil
+	//private var searchBar: UISearchBar! = nil
+	private var searchField: SearchField!
 	// Tableview for results
 	private var tableView: UITableView! = nil
-	// Close button
-	private var closeButton = UIButton(type: .custom)
 	// All MPD albums
 	private var albums = [Album]()
 	// All MPD artists
@@ -60,29 +59,23 @@ final class SearchVC: NYXViewController {
 		searchZone.frame = CGRect(10, y, view.width - 20, 44)
 		view.addSubview(searchZone)
 
-		closeButton.frame = CGRect(0, 0, 44, 44)
-		closeButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
-		closeButton.setImage(#imageLiteral(resourceName: "btn-close").withTintColor(themeProvider.currentTheme.tintColor), for: .normal)
-		searchZone.addSubview(closeButton)
-
-		searchBar = UISearchBar(frame: CGRect(0, closeButton.maxY, searchZone.width, 44))
-		searchBar.searchBarStyle = .minimal
-		searchBar.showsCancelButton = false
-		searchBar.delegate = self
-		searchBar.placeholder = NYXLocalizedString("lbl_search_library")
-		searchZone.addSubview(searchBar)
+		searchField = SearchField(frame: CGRect(0, 0, searchZone.width, 44))
+		searchField.delegate = self
+		searchField.placeholder = NYXLocalizedString("lbl_search_library")
+		searchField.cancelButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
+		searchZone.addSubview(searchField)
 		searchZone.enableCorners(withDivisor: 10)
 		searchZone.frame = CGRect(10, y, view.width - 20, 300)
 
-		tableView = UITableView(frame: CGRect(0, searchBar.maxY, searchZone.width, searchZone.height - searchBar.height), style: .plain)
+		tableView = UITableView(frame: CGRect(0, searchField.maxY, searchZone.width, searchZone.height - searchField.height), style: .plain)
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.search")
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.tableFooterView = UIView()
-	searchZone.addSubview(tableView)
+		searchZone.addSubview(tableView)
 
-		// Single tap to request full player view
+		// Single tap to close view
 		singleTap.numberOfTapsRequired = 1
 		singleTap.numberOfTouchesRequired = 1
 		singleTap.addTarget(self, action: #selector(singleTap(_:)))
@@ -108,16 +101,16 @@ final class SearchVC: NYXViewController {
 			self.albumsartists = entities as! [Artist]
 		})
 
-		searchBar.becomeFirstResponder()
-	}
-
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
+		_ = searchField.becomeFirstResponder()
 	}
 
 	// MARK: - Buttons actions
 	@objc func closeAction(_ sender: Any?) {
-		dismiss(animated: true, completion: nil)
+		if searchField.hasText {
+			searchField.clearText()
+		} else {
+			dismiss(animated: true, completion: nil)
+		}
 	}
 
 	// MARK: - Notifications
@@ -131,7 +124,7 @@ final class SearchVC: NYXViewController {
 		y += UIApplication.shared.mainWindow?.safeAreaInsets.bottom ?? 0
 		UIView.animate(withDuration: duration, delay: 0, options: UIView.AnimationOptions(rawValue: curve << 16), animations: {
 			self.searchZone.height = (kbFrame.y - self.searchZone.y) - 10
-			self.tableView.height = self.searchZone.height - self.searchBar.height - self.closeButton.height
+			self.tableView.height = self.searchZone.height - self.searchField.height
 		}, completion: nil)
 	}
 
@@ -363,35 +356,25 @@ extension SearchVC: UITableViewDelegate {
 	}
 }
 
-// MARK: - UISearchBarDelegate
-extension SearchVC: UISearchBarDelegate {
-	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-		searchBar.text = ""
-		searching = false
-		albumsResults.removeAll()
-		artistsResults.removeAll()
-		albumsartistsResults.removeAll()
-		tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .fade)
-	}
-
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		searchBar.resignFirstResponder()
-		searchBar.endEditing(true)
-		tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .fade)
-	}
-
-	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+// MARK: - SearchFieldDelegate
+extension SearchVC: SearchFieldDelegate {
+	func searchFieldTextDidBeginEditing() {
 		searching = true
 	}
 
-	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		if String.isNullOrWhiteSpace(searchText) {
+	func searchFieldTextDidEndEditing() {
+		searching = false
+	}
+
+	func textDidChange(text: String?) {
+		if String.isNullOrWhiteSpace(text) {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
 			albumsartistsResults.removeAll()
 			tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .fade)
 			return
 		}
+		guard let searchText = text else { return }
 
 		if Settings.shared.bool(forKey: .pref_fuzzySearch) {
 			albumsResults = albums.filter { $0.name.fuzzySearch(withString: searchText) }
@@ -411,10 +394,5 @@ extension SearchVC: Themed {
 	func applyTheme(_ theme: Theme) {
 		searchZone.backgroundColor = .systemBackground
 		tableView.backgroundColor = .systemBackground
-		searchBar.tintColor = theme.tintColor
-		searchBar.setSearchBarColor(color: .systemBackground)
-		guard let searchField = (searchBar.value(forKey: "searchField") as? UITextField) else { return }
-		searchField.textColor = .secondaryLabel
-		searchField.backgroundColor = .systemBackground
 	}
 }
