@@ -142,7 +142,8 @@ final class SearchVC: NYXViewController {
 	// MARK: - Private
 	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
 		if isEmpty {
-			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+			let emptyView = UIView(frame: tableView.bounds)
+			emptyView.translatesAutoresizingMaskIntoConstraints = false
 			emptyView.backgroundColor = tableView.backgroundColor
 
 			let lbl = UILabel(frame: .zero)
@@ -153,8 +154,8 @@ final class SearchVC: NYXViewController {
 			lbl.backgroundColor = emptyView.backgroundColor
 			lbl.sizeToFit()
 			emptyView.addSubview(lbl)
-			lbl.x = (emptyView.width - lbl.width) / 2
-			lbl.y = (emptyView.height - lbl.height) / 2
+			lbl.x = ceil((emptyView.width - lbl.width) / 2)
+			lbl.y = ceil((emptyView.height - lbl.height) / 2)
 
 			tableView.backgroundView = emptyView
 			tableView.separatorStyle = .none

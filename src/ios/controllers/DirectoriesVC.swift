@@ -122,18 +122,19 @@ final class DirectoriesVC: NYXViewController {
 
 	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
 		if isEmpty {
-			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+			let emptyView = UIView(frame: tableView.bounds)
+			emptyView.translatesAutoresizingMaskIntoConstraints = false
 			emptyView.backgroundColor = tableView.backgroundColor
 
 			let lbl = UILabel(frame: .zero)
-			lbl.text = ""//NYXLocalizedString(searching ? "lbl_no_search_results" : "lbl_no_items")
+			lbl.text = ""
 			lbl.font = UIFont.systemFont(ofSize: 16, weight: .ultraLight)
 			lbl.translatesAutoresizingMaskIntoConstraints = false
 			lbl.tintColor = .label
 			lbl.sizeToFit()
 			emptyView.addSubview(lbl)
-			lbl.x = (emptyView.width - lbl.width) / 2
-			lbl.y = (emptyView.height - lbl.height) / 2
+			lbl.x = ceil((emptyView.width - lbl.width) / 2)
+			lbl.y = ceil((emptyView.height - lbl.height) / 2)
 
 			tableView.backgroundView = emptyView
 			tableView.separatorStyle = .none

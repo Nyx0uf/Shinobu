@@ -113,21 +113,21 @@ final class AwesomeButton: UIControl {
 		let imageSize = self.image?.size ?? .zero
 		let textSize = self.text?.size(withFont: font) ?? .zero
 		let viewSize = AwesomeButton.sizeForSelf(imageSize: imageSize, textSize: textSize, imagePosition: imagePosition, space: space)
-		self.size = viewSize
+		self.size = viewSize.ceilled()
 
 		switch imagePosition {
 		case .top:
-			symbolView.frame = CGRect((viewSize.width - imageSize.width) / 2, 0, imageSize)
-			label.frame = CGRect((viewSize.width - textSize.width) / 2, imageSize.height, textSize)
+			symbolView.frame = CGRect((viewSize.width - imageSize.width) / 2, 0, imageSize).ceilled()
+			label.frame = CGRect((viewSize.width - textSize.width) / 2, imageSize.height, textSize).ceilled()
 		case .bottom:
-			symbolView.frame = CGRect((viewSize.width - imageSize.width) / 2, textSize.height, imageSize)
-			label.frame = CGRect((viewSize.width - textSize.width) / 2, 0, textSize)
+			symbolView.frame = CGRect((viewSize.width - imageSize.width) / 2, textSize.height, imageSize).ceilled()
+			label.frame = CGRect((viewSize.width - textSize.width) / 2, 0, textSize).ceilled()
 		case .left:
-			symbolView.frame = CGRect(0, (viewSize.height - imageSize.height) / 2, imageSize)
-			label.frame = CGRect(imageSize.width + space, (viewSize.height - textSize.height) / 2, textSize)
+			symbolView.frame = CGRect(0, (viewSize.height - imageSize.height) / 2, imageSize).ceilled()
+			label.frame = CGRect(imageSize.width + space, (viewSize.height - textSize.height) / 2, textSize).ceilled()
 		case .right:
-			symbolView.frame = CGRect(textSize.width + space, (viewSize.height - imageSize.height) / 2, imageSize)
-			label.frame = CGRect(0, (viewSize.height - textSize.height) / 2, textSize)
+			symbolView.frame = CGRect(textSize.width + space, (viewSize.height - imageSize.height) / 2, imageSize).ceilled()
+			label.frame = CGRect(0, (viewSize.height - textSize.height) / 2, textSize).ceilled()
 		}
 	}
 }

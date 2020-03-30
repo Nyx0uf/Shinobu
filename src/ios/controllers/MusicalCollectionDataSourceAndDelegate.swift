@@ -165,7 +165,8 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 
 	private func handleEmptyView(collectionView: UICollectionView, isEmpty: Bool) {
 		if isEmpty {
-			let emptyView = UIView(frame: CGRect(x: collectionView.center.x, y: collectionView.center.y, width: collectionView.bounds.size.width, height: collectionView.bounds.size.height))
+			let emptyView = UIView(frame: collectionView.bounds)
+			emptyView.translatesAutoresizingMaskIntoConstraints = false
 			emptyView.backgroundColor = collectionView.backgroundColor
 
 			let lbl = UILabel(frame: CGRect(.zero, collectionView.width / 2, 80))
@@ -176,8 +177,8 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 			lbl.text = NYXLocalizedString(searching ? "lbl_no_search_results" : "lbl_no_items")
 			lbl.backgroundColor = collectionView.backgroundColor
 			emptyView.addSubview(lbl)
-			lbl.x = (emptyView.width - lbl.width) / 2
-			lbl.y = (emptyView.height - lbl.height) / 2
+			lbl.x = ceil((emptyView.width - lbl.width) / 2)
+			lbl.y = ceil((emptyView.height - lbl.height) / 2)
 
 			collectionView.backgroundView = emptyView
 		} else {

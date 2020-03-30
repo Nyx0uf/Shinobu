@@ -108,8 +108,9 @@ final class ServersListVC: NYXTableViewController {
 
 	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {
 		if isEmpty {
-			let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-			emptyView.backgroundColor = tableView.backgroundColor
+			let emptyView = UIView(frame: tableView.bounds)
+			emptyView.translatesAutoresizingMaskIntoConstraints = false
+			tableView.backgroundView = emptyView
 
 			let btn = AwesomeButton(text: NYXLocalizedString("lbl_add_one"), font: UIFont.systemFont(ofSize: 32, weight: .ultraLight), symbolName: "plus.circle", symbolConfiguration: UIImage.SymbolConfiguration(pointSize: 64, weight: .ultraLight), imagePosition: .top)
 			btn.translatesAutoresizingMaskIntoConstraints = false
@@ -117,10 +118,10 @@ final class ServersListVC: NYXTableViewController {
 			btn.selectedTintColor = themeProvider.currentTheme.tintColor
 			btn.addTarget(self, action: #selector(addMpdServerAction(_:)), for: .touchUpInside)
 			emptyView.addSubview(btn)
-			btn.x = (emptyView.width - btn.width) / 2
-			btn.y = (emptyView.height - btn.height) / 2
+			btn.x = ceil((emptyView.width - btn.width) / 2)
+			btn.y = ceil((emptyView.height - btn.height) / 2)
 
-			tableView.backgroundView = emptyView
+			emptyView.backgroundColor = tableView.backgroundColor
 			tableView.separatorStyle = .none
 		} else {
 			tableView.backgroundView = nil
