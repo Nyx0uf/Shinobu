@@ -28,7 +28,7 @@ final class ImageCache {
 			success = false
 			return
 		}
-		guard let coversDirectoryName = Settings.shared.string(forKey: .coversDirectory) else {
+		guard let coversDirectoryName = AppDefaults.coversDirectory else {
 			success = false
 			return
 		}

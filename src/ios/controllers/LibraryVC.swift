@@ -9,7 +9,7 @@ final class LibraryVC: MusicalCollectionVC {
 	override init(mpdBridge: MPDBridge) {
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeLibrary)), delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeLibrary, delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -51,8 +51,7 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Private
 	private func handleFirstLaunch() {
-		if Settings.shared.bool(forKey: .veryFirstLaunch) == true {
-			Settings.shared.set(false, forKey: .veryFirstLaunch)
+		if AppDefaults.isFirstRun == true {
 			showServersListAction(nil)
 		}
 	}
@@ -297,6 +296,27 @@ final class LibraryVC: MusicalCollectionVC {
 		let avc = AlbumDetailVC(album: album, mpdBridge: mpdBridge)
 		navigationController?.pushViewController(avc, animated: true)
 	}
+
+	// MARK: - TypeChoiceVCDelegate
+	override func didSelectDisplayType(_ type: MusicalEntityType) {
+		// Ignore if type did not change
+		if dataSource.musicalEntityType == type {
+			return
+		}
+
+		AppDefaults.lastTypeLibrary = type
+
+		// Refresh view
+		mpdBridge.entitiesForType(type) { (entities) in
+			DispatchQueue.main.async {
+				self.setItems(entities, forMusicalEntityType: type)
+				self.updateNavigationTitle()
+				self.updateNavigationButtons()
+				self.searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(type.description.lowercased())"
+				self.collectionView.collectionView.scrollToTop(animated: true)
+			}
+		}
+	}
 }
 
 // MARK: - MusicalCollectionViewDelegate
@@ -341,27 +361,6 @@ extension LibraryVC {
 			}
 		}
 	}
-
-	override func didSelectDisplayType(_ typeAsInt: Int) {
-		// Ignore if type did not change
-		let type = MusicalEntityType(rawValue: typeAsInt)
-		if dataSource.musicalEntityType == type {
-			return
-		}
-
-		Settings.shared.set(typeAsInt, forKey: .lastTypeLibrary)
-
-		// Refresh view
-		mpdBridge.entitiesForType(type) { (entities) in
-			DispatchQueue.main.async {
-				self.setItems(entities, forMusicalEntityType: type)
-				self.updateNavigationTitle()
-				self.updateNavigationButtons()
-				self.searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(type.description.lowercased())"
-				self.collectionView.collectionView.scrollToTop(animated: true)
-			}
-		}
-	}
 }
 
 // MARK: - UIResponder
@@ -372,7 +371,7 @@ extension LibraryVC {
 
 	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
-			if Settings.shared.bool(forKey: .pref_shakeToPlayRandom) == false {
+			if AppDefaults.pref_shakeToPlayRandom == false {
 				return
 			}
 

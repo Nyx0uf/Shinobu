@@ -20,6 +20,8 @@
 		433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
 		433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
 		433EAE2222C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
+		434A169D24756A89001AB0AC /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
+		434A169E24756A89001AB0AC /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
 		434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E517521D56CF000CD88F7 /* AppDelegate.swift */; };
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 		434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
@@ -57,7 +59,6 @@
 		4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */; };
 		4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */; };
 		4358B05421EB44E2009A3BBF /* CountedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04621EB44E2009A3BBF /* CountedObject.swift */; };
-		4358B05521EB44E2009A3BBF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04721EB44E2009A3BBF /* Settings.swift */; };
 		4358B05621EB44E2009A3BBF /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
 		4358B05921EB44E2009A3BBF /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04B21EB44E2009A3BBF /* Duration.swift */; };
 		4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */; };
@@ -128,7 +129,6 @@
 		43FAE5B3224E5DDA006843E9 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03021EB44C4009A3BBF /* Track.swift */; };
 		43FAE5B4224E5DE5006843E9 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04B21EB44E2009A3BBF /* Duration.swift */; };
 		43FAE5B5224E5DED006843E9 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00A21EB42B4009A3BBF /* String+Extensions.swift */; };
-		43FAE5B6224E5DF5006843E9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04721EB44E2009A3BBF /* Settings.swift */; };
 		43FAE5B7224E5DF9006843E9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04221EB44E2009A3BBF /* Logger.swift */; };
 		43FAE5B8224E5DFD006843E9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00F21EB42B4009A3BBF /* CGPoint+Extensions.swift */; };
@@ -179,6 +179,7 @@
 		431C05BF23DCAECC000B844F /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedObject.swift; sourceTree = "<group>"; };
 		433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedArray.swift; sourceTree = "<group>"; };
+		434A169C24756A89001AB0AC /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		434E513121D56BF400CD88F7 /* connection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connection.h; sourceTree = "<group>"; };
 		434E513221D56BF400CD88F7 /* protocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = protocol.h; sourceTree = "<group>"; };
 		434E513321D56BF400CD88F7 /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
@@ -265,7 +266,6 @@
 		4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
 		4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Extensions.swift"; sourceTree = "<group>"; };
 		4358B04621EB44E2009A3BBF /* CountedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountedObject.swift; sourceTree = "<group>"; };
-		4358B04721EB44E2009A3BBF /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		4358B04821EB44E2009A3BBF /* OperationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
 		4358B04B21EB44E2009A3BBF /* Duration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Duration.swift; sourceTree = "<group>"; };
 		4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicalEntityCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -591,6 +591,7 @@
 			isa = PBXGroup;
 			children = (
 				433EAE1C22C3BA86009AE208 /* threading */,
+				434A169C24756A89001AB0AC /* AppDefaults.swift */,
 				431C05BA23DB14BA000B844F /* Cache.swift */,
 				4358B04621EB44E2009A3BBF /* CountedObject.swift */,
 				4358B04B21EB44E2009A3BBF /* Duration.swift */,
@@ -600,7 +601,6 @@
 				43A654CF224BAC860056A55A /* Message.swift */,
 				4358B04821EB44E2009A3BBF /* OperationManager.swift */,
 				435715F822AE6625001ED982 /* PrettyDBManager.swift */,
-				4358B04721EB44E2009A3BBF /* Settings.swift */,
 				43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */,
 				4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */,
 			);
@@ -956,7 +956,6 @@
 				4358B08821EB47C2009A3BBF /* InteractableImageView.swift in Sources */,
 				43D86E93234A14CA0083C522 /* TypeChoiceVC.swift in Sources */,
 				43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */,
-				4358B05521EB44E2009A3BBF /* Settings.swift in Sources */,
 				4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */,
 				4358B02D21EB42B4009A3BBF /* MPDBridge.swift in Sources */,
 				4358B07521EB47A8009A3BBF /* GenreDetailVC.swift in Sources */,
@@ -991,6 +990,7 @@
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,
+				434A169D24756A89001AB0AC /* AppDefaults.swift in Sources */,
 				43B81FC623B2624C008E8F95 /* DirectoriesVC.swift in Sources */,
 				43C3E8032260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
 				4358B02321EB42B4009A3BBF /* UIDevice+Extensions.swift in Sources */,
@@ -1026,6 +1026,7 @@
 				43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */,
 				43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */,
 				43E3129A226F16DE00985C0B /* CGImage+Extensions.swift in Sources */,
+				434A169E24756A89001AB0AC /* AppDefaults.swift in Sources */,
 				43C3E8042260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
 				43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */,
 				43FAE5BA224E5E0A006843E9 /* CGRect+Extensions.swift in Sources */,
@@ -1033,7 +1034,6 @@
 				43793092226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */,
 				43FAE5B8224E5DFD006843E9 /* Message.swift in Sources */,
 				43FAE5B7224E5DF9006843E9 /* Logger.swift in Sources */,
-				43FAE5B6224E5DF5006843E9 /* Settings.swift in Sources */,
 				43FAE5B5224E5DED006843E9 /* String+Extensions.swift in Sources */,
 				43FAE5B4224E5DE5006843E9 /* Duration.swift in Sources */,
 				43FAE5AE224E5DDA006843E9 /* Album.swift in Sources */,

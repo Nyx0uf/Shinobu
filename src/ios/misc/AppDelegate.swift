@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		// Init settings
-		Settings.shared.initialize()
+		AppDefaults.registerDefaults()
 
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = ContainerVC()

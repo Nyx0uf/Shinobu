@@ -1,6 +1,6 @@
 import UIKit
 
-class MusicalCollectionVC: NYXViewController {
+class MusicalCollectionVC: NYXViewController, TypeChoiceVCDelegate {
 	// MARK: - Public properties
 	// Collection view
 	private(set) var collectionView: MusicalCollectionView!
@@ -110,7 +110,7 @@ class MusicalCollectionVC: NYXViewController {
 
 	// MARK: - Actions
 	@objc func showSearchBarAction(_ sender: Any?) {
-		if Settings.shared.bool(forKey: .pref_contextualSearch) {
+		if AppDefaults.pref_contextualSearch {
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
 				self.searchView.alpha = 1
 				self.searchBar.becomeFirstResponder()
@@ -168,6 +168,10 @@ class MusicalCollectionVC: NYXViewController {
 		collectionView.updateLayout()
 		collectionView.reloadData()
 	}
+
+	// MARK: - TypeChoiceVCDelegate
+	func didSelectDisplayType(_ type: MusicalEntityType) {
+	}
 }
 
 // MARK: - UISearchBarDelegate
@@ -205,7 +209,7 @@ extension MusicalCollectionVC: UISearchBarDelegate {
 			return
 		}
 
-		if Settings.shared.bool(forKey: .pref_fuzzySearch) {
+		if AppDefaults.pref_fuzzySearch {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.fuzzySearch(withString: searchText) })
 		} else {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.lowercased().contains(searchText.lowercased()) })
@@ -275,12 +279,6 @@ extension MusicalCollectionVC: MusicalCollectionDataSourceAndDelegateDelegate {
 	}
 
 	@objc func shouldDeletePlaytlist(_ playlist: AnyObject) {
-	}
-}
-
-// MARK: - TypeChoiceViewDelegate
-extension MusicalCollectionVC: TypeChoiceVCDelegate {
-	@objc func didSelectDisplayType(_ typeAsInt: Int) {
 	}
 }
 

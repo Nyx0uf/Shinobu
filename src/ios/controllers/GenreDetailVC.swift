@@ -15,7 +15,7 @@ final class GenreDetailVC: MusicalCollectionVC {
 
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: MusicalEntityType(rawValue: Settings.shared.integer(forKey: .lastTypeGenre)), delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeGenre, delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -61,14 +61,14 @@ final class GenreDetailVC: MusicalCollectionVC {
 		searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(dataSource.musicalEntityType.description.lowercased())"
 	}
 
-	override func didSelectDisplayType(_ typeAsInt: Int) {
+	// MARK: - TypeChoiceVCDelegate
+	override func didSelectDisplayType(_ type: MusicalEntityType) {
 		// Ignore if type did not change
-		let type = MusicalEntityType(rawValue: typeAsInt)
 		if dataSource.musicalEntityType == type {
 			return
 		}
 
-		Settings.shared.set(typeAsInt, forKey: .lastTypeGenre)
+		AppDefaults.lastTypeGenre = type
 		switch type {
 		case .albums:
 			mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in

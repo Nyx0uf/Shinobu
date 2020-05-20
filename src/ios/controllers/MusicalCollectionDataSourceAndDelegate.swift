@@ -139,7 +139,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 				return
 			}
 
-			let imgWidth = CGFloat(Settings.shared.integer(forKey: .coversSize))
+			let imgWidth = AppDefaults.coversSize
 			let cropSize = CGSize(imgWidth, imgWidth)
 			if album.path != nil {
 				downloadCoverForAlbum(album, indexPath, cropSize: cropSize) { (_, thumbnail) in

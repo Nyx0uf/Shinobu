@@ -18,7 +18,7 @@ final class ShinobuThemeProvider: ThemeProvider {
 
 	// MARK: - Initializers
 	init() {
-		let t = Theme(tintColor: colorForTintColorType(TintColorType(rawValue: Settings.shared.integer(forKey: .pref_tintColor))!))
+		let t = Theme(tintColor: colorForTintColorType(AppDefaults.pref_tintColor))
 		theme = SubscribableValue<Theme>(value: t)
 	}
 

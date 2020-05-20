@@ -57,10 +57,9 @@ final class ContainerVC: UIViewController {
 			directoriesVC = nil
 		}
 
-		let settings = Settings.shared
-		self.mpdBridge = MPDBridge(usePrettyDB: settings.bool(forKey: .pref_usePrettyDB), isDirectoryBased: settings.bool(forKey: .pref_browseByDirectory))
+		self.mpdBridge = MPDBridge(usePrettyDB: AppDefaults.pref_usePrettyDB, isDirectoryBased: AppDefaults.pref_browseByDirectory)
 
-		if Settings.shared.bool(forKey: .pref_browseByDirectory) == false {
+		if AppDefaults.pref_browseByDirectory == false {
 			libraryVC = LibraryVC(mpdBridge: mpdBridge)
 			navController = NYXNavigationController(rootViewController: libraryVC)
 		} else {

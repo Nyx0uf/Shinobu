@@ -1,7 +1,7 @@
 import UIKit
 
 protocol TypeChoiceVCDelegate: class {
-	func didSelectDisplayType(_ typeAsInt: Int)
+	func didSelectDisplayType(_ type: MusicalEntityType)
 }
 
 final class TypeChoiceVC: NYXTableViewController {
@@ -86,7 +86,7 @@ extension TypeChoiceVC {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let type = musicalEntityTypes[indexPath.row]
 		selectedMusicalEntityType = type
-		delegate?.didSelectDisplayType(type.rawValue)
+		delegate?.didSelectDisplayType(type)
 		self.dismiss(animated: true, completion: nil)
 	}
 }

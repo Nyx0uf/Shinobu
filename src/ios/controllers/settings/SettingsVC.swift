@@ -43,7 +43,7 @@ final class SettingsVC: NYXTableViewController {
 		var x = view.width - CGFloat(32 * TintColorType.allCases.count) - CGFloat(margin * CGFloat(TintColorType.allCases.count)) - 16
 		for c in TintColorType.allCases {
 			let btn = ColorButton(frame: CGRect(x, 6, 32, 32), tintColorType: c)
-			btn.isSelected = c.rawValue == Settings.shared.integer(forKey: .pref_tintColor)
+			btn.isSelected = c == AppDefaults.pref_tintColor
 			btn.addTarget(self, action: #selector(toggleTintColor(_:)), for: .touchUpInside)
 			colorsButton.append(btn)
 
@@ -61,37 +61,33 @@ final class SettingsVC: NYXTableViewController {
 
 	// MARK: - IBActions
 	@objc private func toggleShakeToPlay(_ sender: Any?) {
-		let shake = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
-		Settings.shared.set(!shake, forKey: .pref_shakeToPlayRandom)
+		AppDefaults.pref_shakeToPlayRandom.toggle()
 	}
 
 	@objc private func toggleUsePrettyDB(_ sender: Any?) {
-		let pretty = Settings.shared.bool(forKey: .pref_usePrettyDB)
-		Settings.shared.set(!pretty, forKey: .pref_usePrettyDB)
+		AppDefaults.pref_usePrettyDB.toggle()
 	}
 
 	@objc private func toggleFuzzySearch(_ sender: Any?) {
-		let fuzzySearch = Settings.shared.bool(forKey: .pref_fuzzySearch)
-		Settings.shared.set(!fuzzySearch, forKey: .pref_fuzzySearch)
+		AppDefaults.pref_fuzzySearch.toggle()
 	}
 
 	@objc private func toggleContextualSearch(_ sender: Any?) {
-		let contextualSearch = Settings.shared.bool(forKey: .pref_contextualSearch)
-		Settings.shared.set(!contextualSearch, forKey: .pref_contextualSearch)
+		AppDefaults.pref_contextualSearch.toggle()
 	}
 
 	@objc private func toggleBrowseDir(_ sender: Any?) {
-		let browseByDir = Settings.shared.bool(forKey: .pref_browseByDirectory)
-		Settings.shared.set(!browseByDir, forKey: .pref_browseByDirectory)
+		let browseByDir = AppDefaults.pref_browseByDirectory
+		AppDefaults.pref_browseByDirectory = !browseByDir
 		if browseByDir {
-			Settings.shared.set(false, forKey: .pref_shakeToPlayRandom)
+			AppDefaults.pref_shakeToPlayRandom = false
 		}
 		swShake.isEnabled = !swDirectory.isOn
 		NotificationCenter.default.postOnMainThreadAsync(name: .changeBrowsingTypeNotification, object: nil)
 	}
 
 	@objc private func toggleColumns(_ sender: Any?) {
-		Settings.shared.set(sColumns.selectedSegmentIndex + 2, forKey: .pref_numberOfColumns)
+		AppDefaults.pref_numberOfColumns = sColumns.selectedSegmentIndex + 2
 
 		ImageCache.shared.clear(nil)
 
@@ -101,7 +97,7 @@ final class SettingsVC: NYXTableViewController {
 	@objc private func toggleTintColor(_ sender: ColorButton?) {
 		guard let button = sender else { return }
 
-		Settings.shared.set(button.tintColorType.rawValue, forKey: .pref_tintColor)
+		AppDefaults.pref_tintColor = button.tintColorType
 
 		themeProvider.currentTheme.tintColor = colorForTintColorType(button.tintColorType)
 		themeProvider.currentTheme = themeProvider.currentTheme
@@ -229,27 +225,27 @@ extension SettingsVC {
 
 		if indexPath.section == 0 {
 			if indexPath.row == 0 {
-				let tintAsInt = Settings.shared.integer(forKey: .pref_tintColor)
+				let tint = AppDefaults.pref_tintColor
 				for btn in colorsButton {
-					btn.isSelected = btn.tintColorType.rawValue == tintAsInt
+					btn.isSelected = btn.tintColorType == tint
 				}
 			} else if indexPath.row == 1 {
-				sColumns.selectedSegmentIndex = Settings.shared.integer(forKey: .pref_numberOfColumns) - 2
+				sColumns.selectedSegmentIndex = AppDefaults.pref_numberOfColumns - 2
 			}
 		} else if indexPath.section == 1 {
 			if indexPath.row == 0 {
-				swPrettyDB.isOn = Settings.shared.bool(forKey: .pref_usePrettyDB)
+				swPrettyDB.isOn = AppDefaults.pref_usePrettyDB
 			} else if indexPath.row == 1 {
-				swDirectory.isOn = Settings.shared.bool(forKey: .pref_browseByDirectory)
+				swDirectory.isOn = AppDefaults.pref_browseByDirectory
 			} else if indexPath.row == 2 {
-				swShake.isOn = Settings.shared.bool(forKey: .pref_shakeToPlayRandom)
+				swShake.isOn = AppDefaults.pref_shakeToPlayRandom
 				swShake.isEnabled = !swDirectory.isOn
 			}
 		} else if indexPath.section == 2 {
 			if indexPath.row == 0 {
-				swContextualSearch.isOn = Settings.shared.bool(forKey: .pref_contextualSearch)
+				swContextualSearch.isOn = AppDefaults.pref_contextualSearch
 			} else if indexPath.row == 1 {
-				swFuzzySearch.isOn = Settings.shared.bool(forKey: .pref_fuzzySearch)
+				swFuzzySearch.isOn = AppDefaults.pref_fuzzySearch
 			}
 		} else {
 			if indexPath.row == 0 {

@@ -23,7 +23,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 
-		Settings.shared.initialize()
+		AppDefaults.registerDefaults()
 	}
 
 	override func viewDidLoad() {
@@ -112,7 +112,7 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 		if let cover = UIImage.loadFromFileURL(coverURL) {
 			imageView.image = cover
 		} else {
-			let imgWidth = CGFloat(Settings.shared.integer(forKey: .coversSize))
+			let imgWidth = AppDefaults.coversSize
 			let cropSize = CGSize(imgWidth, imgWidth)
 			if album.path != nil {
 				downloadCoverForAlbum(album, cropSize: cropSize) { (_: UIImage, thumbnail: UIImage) in

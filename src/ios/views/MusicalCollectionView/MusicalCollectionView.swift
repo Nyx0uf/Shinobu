@@ -15,13 +15,13 @@ final class MusicalCollectionViewFlowLayout: UICollectionViewFlowLayout {
 		scrollDirection = .vertical
 		sectionInset = UIEdgeInsets(top: MusicalCollectionViewFlowLayout.margin, left: MusicalCollectionViewFlowLayout.margin, bottom: MusicalCollectionViewFlowLayout.margin, right: MusicalCollectionViewFlowLayout.margin)
 
-		let columns = Settings.shared.integer(forKey: .pref_numberOfColumns)
+		let columns = AppDefaults.pref_numberOfColumns
 		guard let collectionView = collectionView else { return }
 		let marginsAndInsets = sectionInset.left + sectionInset.right + collectionView.safeAreaInsets.left + collectionView.safeAreaInsets.right + minimumInteritemSpacing * CGFloat(columns - 1)
 		let itemWidth = ((collectionView.bounds.size.width - marginsAndInsets) / CGFloat(columns)).rounded(.down)
 		itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
 
-		Settings.shared.set(Int(itemWidth), forKey: .coversSize)
+		AppDefaults.coversSize = itemWidth
 	}
 
 	override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {

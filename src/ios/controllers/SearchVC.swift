@@ -376,7 +376,7 @@ extension SearchVC: SearchFieldDelegate {
 		}
 		guard let searchText = text else { return }
 
-		if Settings.shared.bool(forKey: .pref_fuzzySearch) {
+		if AppDefaults.pref_fuzzySearch {
 			albumsResults = albums.filter { $0.name.fuzzySearch(withString: searchText) }
 			artistsResults = artists.filter { $0.name.fuzzySearch(withString: searchText) }
 			albumsartistsResults = albumsartists.filter { $0.name.fuzzySearch(withString: searchText) }
