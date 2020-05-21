@@ -28,8 +28,8 @@
 "lbl_repeat_enable" = "Activer la lecture en boucle";
 "lbl_repeat_disable" = "Désactiver la lecture en boucle";
 "lbl_header_server_cfg" = "Configuration serveur";
-"lbl_header_server_zeroconf" = "Serveur découvert";
-"lbl_header_servers_zeroconf" = "Serveurs découvert";
+"lbl_header_server_zeroconf" = "Serveur trouvé";
+"lbl_header_servers_zeroconf" = "Serveurs trouvés";
 "lbl_search_zeroconf" = "Chercher des serveurs à proximité";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Comportement";

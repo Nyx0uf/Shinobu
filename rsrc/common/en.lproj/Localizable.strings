@@ -28,8 +28,8 @@
 "lbl_repeat_enable" = "Enable repeat";
 "lbl_repeat_disable" = "Disable repeat";
 "lbl_header_server_cfg" = "Server configuration";
-"lbl_header_server_zeroconf" = "Nearby server";
-"lbl_header_servers_zeroconf" = "Nearby servers";
+"lbl_header_server_zeroconf" = "server found";
+"lbl_header_servers_zeroconf" = "servers found";
 "lbl_search_zeroconf" = "Search nearby servers";
 "lbl_version" = "Version";
 "lbl_behaviour" = "Behaviour";
@@ -114,7 +114,7 @@
 "lbl_current_selected_server_not" = "not the current selected server";
 "lbl_add_mpd_server" = "Add a server";
 "lbl_add_one" = "Add one";
-"lbl_no_zc_servers" = "No nearby server found";
+"lbl_no_zc_servers" = "No server found";
 "lbl_no_outputs" = "No outputs";
 "lbl_no_search_results" = "No results";
 "lbl_no_items" = "No items to display :(";
