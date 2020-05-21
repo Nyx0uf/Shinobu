@@ -23,7 +23,6 @@ final class ZeroConfBrowserVC: NYXTableViewController {
 
 		navigationItem.titleView = nil
 		title = NYXLocalizedString("lbl_header_servers_zeroconf")
-		navigationController?.navigationBar.prefersLargeTitles = true
 
 		tableView.tintColor = themeProvider.currentTheme.tintColor
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)

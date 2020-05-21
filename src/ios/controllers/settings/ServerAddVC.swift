@@ -49,7 +49,6 @@ final class ServerAddVC: NYXTableViewController {
 
 		navigationItem.titleView = nil
 		title = NYXLocalizedString("lbl_header_server_cfg")
-		navigationController?.navigationBar.prefersLargeTitles = true
 
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")

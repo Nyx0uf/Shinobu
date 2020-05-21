@@ -84,7 +84,7 @@ final class DirectoriesVC: NYXViewController {
 	}
 
 	@objc func showSettingsAction(_ sender: Any?) {
-		let settingsVC = SettingsVC(style: .grouped)
+		let settingsVC = SettingsVC(style: .insetGrouped)
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
 		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)

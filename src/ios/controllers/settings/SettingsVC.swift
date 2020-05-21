@@ -23,7 +23,6 @@ final class SettingsVC: NYXTableViewController {
 
 		navigationItem.titleView = nil
 		title = NYXLocalizedString("lbl_section_settings")
-		navigationController?.navigationBar.prefersLargeTitles = true
 
 		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
@@ -220,14 +219,10 @@ extension SettingsVC {
 			}
 		}
 
-		cell?.backgroundColor = .secondarySystemGroupedBackground
-		cell?.textLabel?.textColor = .secondaryLabel
-
 		if indexPath.section == 0 {
 			if indexPath.row == 0 {
-				let tint = AppDefaults.pref_tintColor
 				for btn in colorsButton {
-					btn.isSelected = btn.tintColorType == tint
+					btn.isSelected = btn.tintColorType == AppDefaults.pref_tintColor
 				}
 			} else if indexPath.row == 1 {
 				sColumns.selectedSegmentIndex = AppDefaults.pref_numberOfColumns - 2
@@ -269,6 +264,19 @@ extension SettingsVC {
 			return NYXLocalizedString("lbl_search").uppercased()
 		default:
 			return ""
+		}
+	}
+
+	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		if indexPath.section == 0 {
+			if indexPath.row == 0 {
+				let margin = CGFloat(4)
+				var x = cell.width - CGFloat(32 * TintColorType.allCases.count) - CGFloat(margin * CGFloat(TintColorType.allCases.count)) - 16
+				for btn in colorsButton {
+					btn.frame = CGRect(x, 6, 32, 32)
+					x += 32 + margin
+				}
+			}
 		}
 	}
 }

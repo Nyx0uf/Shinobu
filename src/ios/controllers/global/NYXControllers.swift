@@ -52,6 +52,16 @@ class NYXTableViewController: UITableViewController {
 	// Navigation title
 	private(set) var titleView = NYXNavigationTitleView(frame: CGRect(.zero, 160, 44))
 
+	override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+	}
+
+	override init(style: UITableView.Style) {
+		super.init(style: style)
+	}
+
+	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
