@@ -37,7 +37,8 @@ extension String {
 	// MARK: - Hash functions
 	func sha256() -> String {
 		let data = Data(self.utf8)
-		return SHA256.hash(data: data).description
+		let hash = SHA256.hash(data: data)
+		return hash.map { String(format: "%02hhx", $0) }.joined()
 	}
 
 	func djb2() -> Int32 {
