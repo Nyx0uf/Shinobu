@@ -164,6 +164,23 @@ struct AppDefaults {
 		]
 
 		AppDefaults.shared.register(defaults: defaultsValues)
+		createDirectories()
+	}
+
+	fileprivate static func createDirectories() {
+		do {
+			guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {
+				fatalError("Failed to get cache directory")
+			}
+
+			guard let coversDirectoryPath = string(for: Key.coversDirectory) else {
+				fatalError("Failed to get covers directory")
+			}
+
+			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
+		} catch {
+			fatalError("Failed to create covers directory")
+		}
 	}
 }
 
