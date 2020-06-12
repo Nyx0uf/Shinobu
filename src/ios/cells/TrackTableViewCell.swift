@@ -11,7 +11,11 @@ final class TrackTableViewCell: UITableViewCell {
 	//
 	var isEvenCell = false {
 		didSet {
-			backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
+			if traitCollection.userInterfaceStyle == .dark {
+				backgroundColor = isEvenCell ? .black : UIColor(rgb: 0x121212)
+			} else {
+				backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
+			}
 		}
 	}
 
