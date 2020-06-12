@@ -26,21 +26,30 @@ final class SearchField: UIView {
 	// MARK: - Private properties
 	// Text field
 	private let textField = UITextField()
+	// Glass image
+	private let imageView = UIImageView()
 
 	// MARK: - Initializers
 	override init(frame: CGRect) {
 		let f = CGRect(frame.origin, frame.width, 44)
 		super.init(frame: f)
 
-		let xMargin = CGFloat(8)
-		textField.frame = CGRect(xMargin, 0, f.width - xMargin * 2 - f.height, f.height)
-		textField.delegate = self
-		textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-		self.addSubview(textField)
+		self.backgroundColor = traitCollection.userInterfaceStyle == .dark ? .black : .systemGroupedBackground
 
-		cancelButton.frame = CGRect(f.width - f.height, 0, f.height, f.height)
-		cancelButton.setImage(#imageLiteral(resourceName: "btn-close").withTintColor(themeProvider.currentTheme.tintColor), for: .normal)
-		self.addSubview(cancelButton)
+		self.imageView.frame = CGRect(0, 0, f.height, f.height)
+		self.imageView.image = #imageLiteral(resourceName: "search-icon").withTintColor(.tertiaryLabel)
+		self.imageView.contentMode = .center
+		self.addSubview(self.imageView)
+
+		self.textField.frame = CGRect(self.imageView.frame.width, 0, f.width - (2 * f.height), f.height)
+		self.textField.delegate = self
+		self.textField.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+		self.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+		self.addSubview(self.textField)
+
+		self.cancelButton.frame = CGRect(f.width - f.height, 0, f.height, f.height)
+		self.cancelButton.setImage(#imageLiteral(resourceName: "search-clear").withTintColor(themeProvider.currentTheme.tintColor), for: .normal)
+		self.addSubview(self.cancelButton)
 
 		initializeTheming()
 	}
@@ -69,6 +78,7 @@ final class SearchField: UIView {
 	}
 }
 
+// MARK: - UITextFieldDelegate
 extension SearchField: UITextFieldDelegate {
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		delegate?.searchFieldTextDidBeginEditing()
@@ -79,9 +89,10 @@ extension SearchField: UITextFieldDelegate {
 	}
 }
 
+// MARK: - Themed
 extension SearchField: Themed {
 	func applyTheme(_ theme: Theme) {
-		cancelButton.setImage(#imageLiteral(resourceName: "btn-close").withTintColor(theme.tintColor), for: .normal)
+		cancelButton.setImage(#imageLiteral(resourceName: "search-clear").withTintColor(theme.tintColor), for: .normal)
 		textField.tintColor = theme.tintColor
 	}
 }

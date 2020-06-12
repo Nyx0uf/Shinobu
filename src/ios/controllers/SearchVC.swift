@@ -1,15 +1,18 @@
 import UIKit
 
+private let margin = CGFloat(10)
+
 final class SearchVC: NYXViewController {
 	// MARK: - Private properties
 	// MPD Data source
 	private let mpdBridge: MPDBridge
-	// Blurred view
+	// Servers managerto get covers
+	private let serversManager: ServersManager
+	// Blurred background view
 	private let blurEffectView = UIVisualEffectView()
 	// Search view (searchbar + tableview)
-	private let searchZone = UIView()
-	// Search bar
-	//private var searchBar: UISearchBar! = nil
+	private let searchView = UIView()
+	// Custom search bar
 	private var searchField: SearchField!
 	// Tableview for results
 	private var tableView: UITableView! = nil
@@ -19,18 +22,25 @@ final class SearchVC: NYXViewController {
 	private var artists = [Artist]()
 	// All MPD album artists
 	private var albumsartists = [Artist]()
-	// Search results
+	// Albums search results
 	private var albumsResults = [Album]()
+	// Artists search results
 	private var artistsResults = [Artist]()
+	// Album artists search results
 	private var albumsartistsResults = [Artist]()
 	// Searching flag
 	private var searching = false
-	// Tap gesture to dismiss
+	// Single tap gesture to dismiss
 	private let singleTap = UITapGestureRecognizer()
+	// Frame of the keyboard when shown
+	private var keyboardFrame = CGRect.zero
+	// Is the search view displayed at full height
+	private var isFullHeight = false
 
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
+		self.serversManager = ServersManager()
 
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -50,30 +60,33 @@ final class SearchVC: NYXViewController {
 		view.isOpaque = false
 
 		// Blurred background
-		blurEffectView.effect = UIBlurEffect(style: traitCollection.userInterfaceStyle == .dark ? .dark : .light)
+		blurEffectView.effect = UIBlurEffect(style: .dark)
 		blurEffectView.frame = view.bounds
 		blurEffectView.isUserInteractionEnabled = true
 		view.addSubview(blurEffectView)
 
-		let y = UIApplication.shared.mainWindow?.safeAreaInsets.top ?? 0
-		searchZone.frame = CGRect(10, y, view.width - 20, 44)
-		view.addSubview(searchZone)
+		let y = margin + (UIApplication.shared.mainWindow?.safeAreaInsets.top ?? 0)
+		searchView.frame = CGRect(margin, y, view.width - (margin * 2), 44)
+		searchView.backgroundColor = traitCollection.userInterfaceStyle == .dark ? .black : .systemGroupedBackground
+		view.addSubview(searchView)
 
-		searchField = SearchField(frame: CGRect(0, 0, searchZone.width, 44))
+		searchField = SearchField(frame: CGRect(0, 0, searchView.width, 44))
 		searchField.delegate = self
 		searchField.placeholder = NYXLocalizedString("lbl_search_library")
 		searchField.cancelButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
-		searchZone.addSubview(searchField)
-		searchZone.enableCorners(withDivisor: 10)
-		searchZone.frame = CGRect(10, y, view.width - 20, 300)
+		searchView.addSubview(searchField)
+		searchView.layer.cornerRadius = 10
+		searchView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		searchView.clipsToBounds = true
 
-		tableView = UITableView(frame: CGRect(0, searchField.maxY, searchZone.width, searchZone.height - searchField.height), style: .plain)
-		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.search")
-		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+		tableView = UITableView(frame: CGRect(0, searchField.maxY, searchView.width, searchView.height - searchField.height), style: .plain)
+		tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.search")
+		tableView.rowHeight = 54
+		tableView.separatorStyle = .none
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.tableFooterView = UIView()
-		searchZone.addSubview(tableView)
+		searchView.addSubview(tableView)
 
 		// Single tap to close view
 		singleTap.numberOfTapsRequired = 1
@@ -117,17 +130,14 @@ final class SearchVC: NYXViewController {
 	@objc func keyboardWillShow(_ aNotification: Notification?) {
 		guard let notif = aNotification else { return }
 		guard let userInfos = notif.userInfo else { return }
-		guard let kbFrame = userInfos["UIKeyboardFrameEndUserInfoKey"] as? CGRect else { return }
 		guard let duration = userInfos["UIKeyboardAnimationDurationUserInfoKey"] as? Double else { return }
 		guard let curve = userInfos["UIKeyboardAnimationCurveUserInfoKey"] as? UInt else { return }
-		var y = UIApplication.shared.mainWindow?.safeAreaInsets.top ?? 0
-		y += UIApplication.shared.mainWindow?.safeAreaInsets.bottom ?? 0
-		UIView.animate(withDuration: duration, delay: 0, options: UIView.AnimationOptions(rawValue: curve << 16), animations: {
-			self.searchZone.height = (kbFrame.y - self.searchZone.y) - 10
-			self.tableView.height = self.searchZone.height - self.searchField.height
-		}, completion: nil)
+		guard let kbFrame = userInfos["UIKeyboardFrameEndUserInfoKey"] as? CGRect else { return }
+		keyboardFrame = kbFrame
+		adjustSearchView(duration: duration, animationCurve: curve)
 	}
 
+	// MARK: - Gestures
 	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
 		dismiss(animated: true, completion: nil)
 	}
@@ -140,7 +150,7 @@ final class SearchVC: NYXViewController {
 			emptyView.backgroundColor = tableView.backgroundColor
 
 			let lbl = UILabel(frame: .zero)
-			lbl.text = NYXLocalizedString("lbl_no_search_results")
+			lbl.text = self.searchField.hasText ? NYXLocalizedString("lbl_no_search_results") : ""
 			lbl.font = UIFont.systemFont(ofSize: 32, weight: .ultraLight)
 			lbl.translatesAutoresizingMaskIntoConstraints = false
 			lbl.tintColor = .label
@@ -151,10 +161,29 @@ final class SearchVC: NYXViewController {
 			lbl.y = ceil((emptyView.height - lbl.height) / 2)
 
 			tableView.backgroundView = emptyView
-			tableView.separatorStyle = .none
 		} else {
 			tableView.backgroundView = nil
-			tableView.separatorStyle = .singleLine
+		}
+	}
+
+	private func adjustSearchView(duration: Double = 0.4, animationCurve curve: UInt = 7) {
+		if searchField.hasText {
+			if isFullHeight == false {
+				isFullHeight = true
+				let fullHeight = (self.keyboardFrame.y - self.searchView.y) - margin
+				UIView.animate(withDuration: duration, delay: 0, options: UIView.AnimationOptions(rawValue: curve << 16), animations: {
+					self.searchView.height = fullHeight
+					self.tableView.height = fullHeight - self.searchField.height
+				}, completion: nil)
+			}
+		} else {
+			if isFullHeight == true {
+				isFullHeight = false
+				UIView.animate(withDuration: duration, delay: 0, options: UIView.AnimationOptions(rawValue: curve << 16), animations: {
+					self.searchView.height = 44
+					self.tableView.height = 0
+				}, completion: nil)
+			}
 		}
 	}
 }
@@ -181,29 +210,71 @@ extension SearchVC: UITableViewDataSource {
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.search", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.search", for: indexPath) as! SearchResultTableViewCell
+		cell.isEvenCell = indexPath.row.isMultiple(of: 2)
 
-		var ent: MusicalEntity
+		let ent: MusicalEntity
+		let img: UIImage
+		var highlight = true
 
 		switch indexPath.section {
 		case 0:
-			ent = albumsResults[indexPath.row]
+			let album = albumsResults[indexPath.row]
+			ent = album
+
+			if serversManager.getSelectedServer()?.covers != nil {
+				if let coverURL = album.localCoverURL {
+					if let cover = UIImage.loadFromFileURL(coverURL) {
+						img = cover.smartCropped(toSize: CGSize(40, 40), highQuality: false, screenScale: true)!
+						highlight = false
+					} else {
+						img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
+					}
+				} else {
+					img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
+				}
+			} else {
+				img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
+			}
 		case 1:
 			ent = artistsResults[indexPath.row]
+			img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
 		case 2:
 			ent = albumsartistsResults[indexPath.row]
+			img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
 		default:
 			return cell
 		}
 
-		cell.textLabel?.text = ent.name
-		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
-		cell.imageView?.image = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
-		cell.imageView?.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(.label).withTintColor(themeProvider.currentTheme.tintColor)
-
-		let view = UIView()
-		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
-		cell.selectedBackgroundView = view
+		cell.lblTitle.text = ent.name
+		cell.imgView.image = img
+		cell.imgView.highlightedImage = highlight ? img.withTintColor(themeProvider.currentTheme.tintColor) : img
+		cell.buttonAction = {
+			switch indexPath.section {
+			case 0:
+				self.mpdBridge.playAlbum(ent as! Album, shuffle: false, loop: false)
+			case 1:
+				let artist = ent as! Artist
+				self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+						guard let strongSelf = self else { return }
+						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+						}
+					}
+			case 2:
+				let artist = ent as! Artist
+				self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+					}
+				}
+			default:
+				return
+			}
+		}
 
 		return cell
 	}
@@ -222,7 +293,7 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		let sectionHeight = CGFloat(40)
+		let sectionHeight = CGFloat(44)
 		switch section {
 		case 0:
 			return albumsResults.isEmpty ? 0 : sectionHeight
@@ -236,33 +307,35 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let height = CGFloat(40)
-		let view = UIView(frame: CGRect(.zero, tableView.width, height))
-		view.backgroundColor = .systemBackground
+		let containerHeight = CGFloat(44)
+		let containerView = UIView(frame: CGRect(.zero, tableView.width, containerHeight))
+		containerView.backgroundColor = tableView.backgroundColor
 
-		let imgSize = CGFloat(32)
-		let imageView = UIImageView(frame: CGRect(8, (view.height - imgSize) / 2, imgSize, imgSize))
-		let label = UILabel(frame: CGRect(imageView.maxX + 8, 0, 200, view.height))
+		let imgHeight = CGFloat(40)
+		let imageView = UIImageView(frame: CGRect(15, (containerHeight - imgHeight) / 2, imgHeight, imgHeight))
+		imageView.contentMode = .center
+		let label = UILabel(frame: CGRect(imageView.maxX + 10, 0, 200, containerView.height))
 		label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-		label.backgroundColor = view.backgroundColor
-		view.addSubview(imageView)
-		view.addSubview(label)
+		label.backgroundColor = containerView.backgroundColor
+		label.textColor = .secondaryLabel
+		containerView.addSubview(imageView)
+		containerView.addSubview(label)
 
 		switch section {
 		case 0:
 			label.text = "\(albumsResults.count) \(albumsResults.count == 1 ? NYXLocalizedString("lbl_album") : NYXLocalizedString("lbl_albums"))"
-			imageView.image = #imageLiteral(resourceName: "img-album").withTintColor(.label)
+			imageView.image = #imageLiteral(resourceName: "search-header-album").withTintColor(.secondaryLabel)
 		case 1:
 			label.text = "\(artistsResults.count) \(artistsResults.count == 1 ? NYXLocalizedString("lbl_artist") : NYXLocalizedString("lbl_artists"))"
-			imageView.image = #imageLiteral(resourceName: "img-artist").withTintColor(.label)
+			imageView.image = #imageLiteral(resourceName: "search-header-artist").withTintColor(.secondaryLabel)
 		case 2:
 			label.text = "\(albumsartistsResults.count) \(albumsartistsResults.count == 1 ? NYXLocalizedString("lbl_albumartist") : NYXLocalizedString("lbl_albumartists"))"
-			imageView.image = #imageLiteral(resourceName: "img-artists").withTintColor(.label)
+			imageView.image = #imageLiteral(resourceName: "search-header-albumartists").withTintColor(.secondaryLabel)
 		default:
-			break
+			return nil
 		}
 
-		return view
+		return containerView
 	}
 
 	func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -273,11 +346,12 @@ extension SearchVC: UITableViewDelegate {
 		return UIView()
 	}
 
-	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { (_) in
+	// MARK: - Fix ugly glitch later
+	/*func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		return UIContextMenuConfiguration(identifier: "\(indexPath.section):\(indexPath.row)" as NSString, previewProvider: nil, actionProvider: { (_) in
 			switch indexPath.section {
 			case 0:
-			let album = self.albumsResults[indexPath.row]
+				let album = self.albumsResults[indexPath.row]
 				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
 					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				}
@@ -354,6 +428,34 @@ extension SearchVC: UITableViewDelegate {
 			}
 		})
 	}
+
+	func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		guard let identifier = configuration.identifier as? String else { return nil }
+
+		guard let section = Int(identifier.split(separator: ":").first!), let row = Int(identifier.split(separator: ":").last!) else { return nil }
+
+		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: section)) as? SearchResultTableViewCell else { return nil }
+
+		return UITargetedPreview(view: cell)
+	}
+
+	func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		guard let identifier = configuration.identifier as? String else { return nil }
+
+		guard let section = Int(identifier.split(separator: ":").first!), let row = Int(identifier.split(separator: ":").last!) else { return nil }
+
+		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: section)) as? SearchResultTableViewCell else { return nil }
+
+		return UITargetedPreview(view: cell)
+	}
+
+	func tableView(_ tableView: UITableView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+		guard let identifier = configuration.identifier as? String else { return }
+
+		guard let section = Int(identifier.split(separator: ":").first!), let row = Int(identifier.split(separator: ":").last!) else { return }
+
+		_ = tableView.cellForRow(at: IndexPath(row: row, section: section))
+	}*/
 }
 
 // MARK: - SearchFieldDelegate
@@ -367,6 +469,7 @@ extension SearchVC: SearchFieldDelegate {
 	}
 
 	func textDidChange(text: String?) {
+		adjustSearchView()
 		if String.isNullOrWhiteSpace(text) {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
@@ -390,9 +493,10 @@ extension SearchVC: SearchFieldDelegate {
 	}
 }
 
+// MARK: - Themed
 extension SearchVC: Themed {
 	func applyTheme(_ theme: Theme) {
-		searchZone.backgroundColor = .systemBackground
-		tableView.backgroundColor = .systemBackground
+		searchView.backgroundColor = traitCollection.userInterfaceStyle == .dark ? .black : .systemGroupedBackground
+		tableView.backgroundColor = searchView.backgroundColor
 	}
 }
