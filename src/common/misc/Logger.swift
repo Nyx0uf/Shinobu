@@ -33,18 +33,31 @@ final class Logger {
 	// Singletion instance
 	static let shared = Logger()
 	// Custom date formatter
-	private let dateFormatter: DateFormatter
+	private var dateFormatter: DateFormatter!
 	// Logs list
-	private var logs: [Log]
+	private var logs: [Log]! = nil
 	// Maximum logs countto keep
 	private let maxLogsCount = 1024
+	// Log queue
+	private let queue: DispatchQueue
 
 	// MARK: - Initializers
 	init() {
-		self.dateFormatter = DateFormatter()
-		self.dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.log", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+	}
 
-		self.logs = [Log]()
+	public func initialize() {
+		queue.sync { [weak self] in
+			guard let strongSelf = self else { return }
+			if strongSelf.logs == nil {
+				strongSelf.logs = []
+			}
+
+			if strongSelf.dateFormatter == nil {
+				strongSelf.dateFormatter = DateFormatter()
+				strongSelf.dateFormatter.dateFormat = "dd/MM/yy HH:mm:ss"
+			}
+		}
 	}
 
 	// MARK: - Public
@@ -53,7 +66,7 @@ final class Logger {
 		print("[\(file)]:[\(line)] => \(message)")
 #endif
 
-		DispatchQueue.global(qos: .background).async { [weak self] in
+		queue.async { [weak self] in
 			guard let strongSelf = self else { return }
 			let log = Log(type: type, date: strongSelf.dateFormatter.string(from: Date()), message: message, file: file, function: function, line: line)
 			strongSelf.handleLog(log)
@@ -70,11 +83,6 @@ final class Logger {
 
 	public func log(message: Message) {
 		log(type: .information, message: message.content)
-	}
-
-	public func export() -> Data? {
-		let str = logs.reduce("") { $0 + $1.description + "\n\n"}
-		return str.data(using: .utf8)
 	}
 
 	// MARK: - Private
