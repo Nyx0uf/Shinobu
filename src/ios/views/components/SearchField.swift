@@ -21,6 +21,12 @@ final class SearchField: UIView {
 		}
 		set {
 			self.textField.placeholder = newValue
+			if let s = newValue {
+				self.textField.attributedPlaceholder = NSAttributedString(string: s, attributes: [
+					.foregroundColor: UIColor.tertiaryLabel,
+					.font: UIFont.systemFont(ofSize: 14, weight: .semibold)
+				])
+			}
 		}
 	}
 	// MARK: - Private properties
@@ -43,7 +49,7 @@ final class SearchField: UIView {
 
 		self.textField.frame = CGRect(self.imageView.frame.width, 0, f.width - (2 * f.height), f.height)
 		self.textField.delegate = self
-		self.textField.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+		self.textField.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		self.textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
 		self.addSubview(self.textField)
 

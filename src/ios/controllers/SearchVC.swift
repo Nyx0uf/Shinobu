@@ -293,7 +293,7 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		let sectionHeight = CGFloat(44)
+		let sectionHeight = CGFloat(40)
 		switch section {
 		case 0:
 			return albumsResults.isEmpty ? 0 : sectionHeight
@@ -307,7 +307,7 @@ extension SearchVC: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let containerHeight = CGFloat(44)
+		let containerHeight = CGFloat(40)
 		let containerView = UIView(frame: CGRect(.zero, tableView.width, containerHeight))
 		containerView.backgroundColor = tableView.backgroundColor
 
@@ -315,7 +315,7 @@ extension SearchVC: UITableViewDelegate {
 		let imageView = UIImageView(frame: CGRect(15, (containerHeight - imgHeight) / 2, imgHeight, imgHeight))
 		imageView.contentMode = .center
 		let label = UILabel(frame: CGRect(imageView.maxX + 10, 0, 200, containerView.height))
-		label.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+		label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
 		label.backgroundColor = containerView.backgroundColor
 		label.textColor = .secondaryLabel
 		containerView.addSubview(imageView)
@@ -489,7 +489,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
 		}
 
-		tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .fade)
+		tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .none)
 	}
 }
 
