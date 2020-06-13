@@ -1279,7 +1279,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1331,7 +1331,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1377,7 +1377,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1426,7 +1426,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

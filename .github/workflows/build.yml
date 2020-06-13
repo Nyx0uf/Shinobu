@@ -8,6 +8,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Xcode version
-      run: sudo xcode-select -switch /Applications/Xcode_11.2.app
+      run: sudo xcode-select -switch /Applications/Xcode_11.5.app
     - name: xcodebuild
       run: xcodebuild clean build -project Shinobu.xcodeproj -scheme shinobu-ios -destination "platform=iOS Simulator,name=iPhone 11,OS=13.2" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
