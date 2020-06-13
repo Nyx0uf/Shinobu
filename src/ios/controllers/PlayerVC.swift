@@ -1,8 +1,11 @@
 import UIKit
 
-private let miniBaseHeight = CGFloat(44)
+private let miniBaseHeight = CGFloat(64)
 private var miniHeight = miniBaseHeight
+private let miniCoverMargin = CGFloat(8)
+private let miniCoverSize = miniBaseHeight - 2 * miniCoverMargin
 private let marginX = CGFloat(16)
+private let btnSize = CGFloat(44)
 
 final class PlayerVC: NYXViewController {
 	// MARK: - Public properties
@@ -97,31 +100,33 @@ final class PlayerVC: NYXViewController {
 		view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
 		view.layer.masksToBounds = true
 
-		// Cover view
-		coverView.frame = CGRect(.zero, miniHeight, miniHeight)
-		coverView.isUserInteractionEnabled = true
-		coverView.layer.shadowColor = UIColor(rgb: 0x111111).cgColor
-		coverView.layer.shadowRadius = 4
-		coverView.layer.shadowOffset = .zero
-		coverView.layer.masksToBounds = false
-		blurEffectView.contentView.addSubview(coverView)
-
 		// Progress
-		progress.frame = CGRect(coverView.maxX, 0, width - coverView.maxX, miniHeight)
+		progress.frame = CGRect(0, 0, width, miniHeight)
 		progress.effect = UIBlurEffect(style: .light)
 		progress.alpha = 1
 		progress.isUserInteractionEnabled = false
 		blurEffectView.contentView.addSubview(progress)
 
+		// Cover view
+		coverView.frame = CGRect(miniCoverMargin, miniCoverMargin, miniCoverSize, miniCoverSize)
+		coverView.isUserInteractionEnabled = true
+		coverView.layer.shadowColor = UIColor(rgb: 0x222222).cgColor
+		coverView.layer.shadowRadius = 1
+		coverView.layer.shadowOffset = CGSize(0, 1)
+		coverView.layer.cornerRadius = 5
+		coverView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		coverView.layer.masksToBounds = true
+		blurEffectView.contentView.addSubview(coverView)
+
 		// Next button
-		btnNext.frame = CGRect(view.frame.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2, miniBaseHeight, miniBaseHeight)
+		btnNext.frame = CGRect(view.frame.maxX - btnSize, (miniHeight - btnSize) / 2, btnSize, btnSize)
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		btnNext.isAccessibilityElement = true
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnNext)
 
 		// Previous button
-		btnPrevious.frame = CGRect(view.frame.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2, miniBaseHeight, miniBaseHeight)
+		btnPrevious.frame = CGRect(view.frame.maxX - btnSize, (miniHeight - btnSize) / 2, btnSize, btnSize)
 		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
 		btnPrevious.isAccessibilityElement = true
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: .secondaryLabel, selectedTintColor: .label)
@@ -129,7 +134,7 @@ final class PlayerVC: NYXViewController {
 		blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play / Pause button
-		btnPlay.frame = CGRect(btnNext.x - miniBaseHeight, btnNext.y, miniBaseHeight, miniBaseHeight)
+		btnPlay.frame = CGRect(btnNext.x - btnSize, btnNext.y, btnSize, btnSize)
 		btnPlay.addTarget(self, action: #selector(changePlaybackAction(_:)), for: .touchUpInside)
 		btnPlay.tag = PlayerStatus.stopped.rawValue
 		btnPlay.isAccessibilityElement = true
@@ -137,14 +142,14 @@ final class PlayerVC: NYXViewController {
 		blurEffectView.contentView.addSubview(btnPlay)
 
 		// Stop button
-		btnStop.frame = CGRect(width - marginX - miniBaseHeight, btnPlay.y, miniBaseHeight, miniBaseHeight)
+		btnStop.frame = CGRect(width - marginX - btnSize, btnPlay.y, btnSize, btnSize)
 		btnStop.addTarget(mpdBridge, action: #selector(MPDBridge.stop), for: .touchUpInside)
 		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnStop.alpha = 0
 		blurEffectView.contentView.addSubview(btnStop)
 
 		// Queue button
-		btnQueue.frame = CGRect(marginX, view.height - miniHeight, miniBaseHeight, miniBaseHeight)
+		btnQueue.frame = CGRect(marginX, view.height - miniHeight, btnSize, btnSize)
 		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
 		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnQueue)
@@ -225,28 +230,28 @@ final class PlayerVC: NYXViewController {
 		vev_remaining.alpha = 0
 
 		// Repeat button
-		btnRepeat.frame = CGRect(width - marginX - miniBaseHeight, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
+		btnRepeat.frame = CGRect(width - marginX - btnSize, btnPlay.maxY + 16, btnSize, btnSize)
 		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.alpha = 0
 		self.blurEffectView.contentView.addSubview(btnRepeat)
 
 		// Random button
-		btnRandom.frame = CGRect(marginX, btnPlay.maxY + 16, miniBaseHeight, miniBaseHeight)
+		btnRandom.frame = CGRect(marginX, btnPlay.maxY + 16, btnSize, btnSize)
 		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.alpha = 0
 		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Slider volume
-		sliderVolume.frame = CGRect(btnRandom.maxX + marginX, btnPlay.maxY + 16, btnRepeat.x - marginX - btnRandom.maxX - marginX, miniBaseHeight)
+		sliderVolume.frame = CGRect(btnRandom.maxX + marginX, btnPlay.maxY + 16, btnRepeat.x - marginX - btnRandom.maxX - marginX, btnSize)
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
 		blurEffectView.contentView.addSubview(sliderVolume)
 
 		// Next track
-		lblNextTrack.frame = CGRect(btnQueue.maxX + marginX, btnQueue.y, width - btnQueue.maxX - marginX - marginX - marginX - miniBaseHeight, 20)
+		lblNextTrack.frame = CGRect(btnQueue.maxX + marginX, btnQueue.y, width - btnQueue.maxX - marginX - marginX - marginX - btnSize, 20)
 		lblNextTrack.textAlignment = .center
 		lblNextTrack.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		lblNextTrack.textColor = .secondaryLabel
@@ -255,7 +260,7 @@ final class PlayerVC: NYXViewController {
 		blurEffectView.contentView.addSubview(lblNextTrack)
 
 		// Next artist + album
-		lblNextAlbumArtist.frame = CGRect(btnQueue.maxX + marginX, lblNextTrack.maxY, width - btnQueue.maxX - marginX - marginX - marginX - miniBaseHeight, 20)
+		lblNextAlbumArtist.frame = CGRect(btnQueue.maxX + marginX, lblNextTrack.maxY, width - btnQueue.maxX - marginX - marginX - marginX - btnSize, 20)
 		lblNextAlbumArtist.textAlignment = .center
 		lblNextAlbumArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
 		lblNextAlbumArtist.textColor = .secondaryLabel
@@ -557,17 +562,18 @@ final class PlayerVC: NYXViewController {
 
 				self.coverView.frame = CGRect(32, self.lblArtist.maxY + 16, width - 64, width - 64)
 				self.coverView.layer.shadowOpacity = 1
+				self.coverView.layer.masksToBounds = false
 
 				self.btnPlay.origin = CGPoint((width - self.btnPlay.width) / 2, self.coverView.maxY + 20)
 				self.btnPrevious.origin = CGPoint(self.btnPlay.x - self.btnPrevious.width - 8, self.btnPlay.y)
 				self.btnPrevious.alpha = 1
 				self.btnNext.origin = CGPoint(self.btnPlay.maxX + 8, self.btnPlay.y)
-				self.btnStop.origin = CGPoint(width - marginX - miniBaseHeight, self.btnPlay.y)
+				self.btnStop.origin = CGPoint(width - marginX - btnSize, self.btnPlay.y)
 				self.btnStop.alpha = 1
 
 				self.btnRandom.origin = CGPoint(marginX, self.btnPlay.maxY + 16)
 				self.btnRandom.alpha = 1
-				self.btnRepeat.origin = CGPoint(width - marginX - miniBaseHeight, self.btnRandom.y)
+				self.btnRepeat.origin = CGPoint(width - marginX - btnSize, self.btnRandom.y)
 				self.btnRepeat.alpha = 1
 				self.sliderVolume.origin = CGPoint(self.btnRandom.maxX + marginX, self.btnRandom.y)
 				self.sliderVolume.alpha = 1
@@ -586,18 +592,18 @@ final class PlayerVC: NYXViewController {
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
 				self.view.y = UIScreen.main.bounds.height - miniHeight
 
-				self.coverView.frame = CGRect(.zero, miniHeight, miniHeight)
+				self.coverView.frame = CGRect(miniCoverMargin, miniCoverMargin, miniCoverSize, miniCoverSize)
+				self.coverView.layer.shadowOpacity = 0
+				self.coverView.layer.masksToBounds = true
 
-				self.btnNext.origin = CGPoint(self.view.maxX - miniBaseHeight, (miniHeight - miniBaseHeight) / 2)
-				self.btnPlay.origin = CGPoint(self.btnNext.x - miniBaseHeight, self.btnNext.y)
+				self.btnNext.origin = CGPoint(self.view.maxX - btnSize, (miniHeight - btnSize) / 2)
+				self.btnPlay.origin = CGPoint(self.btnNext.x - btnSize, self.btnNext.y)
 
 				self.lblTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
 				self.sliderTrack.frame = CGRect(self.coverView.maxX + 8, (miniHeight - lblsHeightTotal) / 2, ((self.btnPlay.x + 8) - (self.coverView.maxX + 8)), 18)
 				self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
 
 				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniBaseHeight)
-
-				self.coverView.layer.shadowOpacity = 0
 
 				self.lblAlbumArtist.alpha = 1
 				self.lblTrack.alpha = 1
