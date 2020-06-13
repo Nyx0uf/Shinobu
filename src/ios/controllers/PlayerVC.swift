@@ -93,11 +93,9 @@ final class PlayerVC: NYXViewController {
 		view.addSubview(blurEffectView)
 
 		// Top corners radius
-		if UIDevice.current.isiPhoneX() {
-			view.layer.cornerRadius = 10
-			view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-			view.layer.masksToBounds = true
-		}
+		view.layer.cornerRadius = 10
+		view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+		view.layer.masksToBounds = true
 
 		// Cover view
 		coverView.frame = CGRect(.zero, miniHeight, miniHeight)
