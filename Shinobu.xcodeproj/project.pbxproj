@@ -81,6 +81,7 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
+		43616E482494E661002D6442 /* ld-hook in Resources */ = {isa = PBXBuildFile; fileRef = 43616E462494E661002D6442 /* ld-hook */; };
 		43793091226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
 		43793092226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
@@ -289,6 +290,7 @@
 		4358B08221EB47C2009A3BBF /* MessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43616E462494E661002D6442 /* ld-hook */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ld-hook"; sourceTree = "<group>"; };
 		43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessCoverOperation.swift; sourceTree = "<group>"; };
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 			isa = PBXGroup;
 			children = (
 				4358B09021EB9CD1009A3BBF /* Localizable.strings */,
+				43616E462494E661002D6442 /* ld-hook */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -840,6 +843,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43FAE5A4224E5D45006843E9 /* MainInterface.storyboard in Resources */,
+				43616E482494E661002D6442 /* ld-hook in Resources */,
 				43FAE5C8224E69FB006843E9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1289,7 +1293,7 @@
 					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
 				OTHER_LDFLAGS = (
-					"-fuse-ld=/usr/local/bin/zld",
+					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
 					"-Wl,-no_uuid",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
@@ -1386,6 +1390,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/src/common/libmpdclient/src",
+				);
+				OTHER_LDFLAGS = (
+					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
+					"-Wl,-no_uuid",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
