@@ -100,9 +100,30 @@ final class ServersListVC: NYXTableViewController {
 	@objc private func toggleServer(_ sender: UISwitch!) {
 		guard let swi = sender else { return }
 		serversManager.setSelectedServerName(swi.isOn ? servers[swi.tag].name : "")
+
+		if swi.isOn {
+			createCacheDirectory(for: servers[swi.tag].name)
+		}
+
 		refreshServers()
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: serversManager.getSelectedServer()?.mpd, userInfo: nil)
+	}
+
+	private func createCacheDirectory(for name: String) {
+		do {
+			guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else { return }
+
+			let coversDirectoryName = "covers_\(name)"
+			AppDefaults.coversDirectory = coversDirectoryName
+
+			let coverDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+			if FileManager.default.fileExists(atPath: coverDirectoryURL.path) == false {
+				try FileManager.default.createDirectory(at: coverDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+			}
+		} catch {
+			fatalError("Failed to create covers directory")
+		}
 	}
 
 	private func handleEmptyView(tableView: UITableView, isEmpty: Bool) {

@@ -150,7 +150,7 @@ struct AppDefaults {
 	static func registerDefaults() {
 		let defaultsValues: [String: Any] = [
 			Key.selectedServerName: "",
-			Key.coversDirectory: "covers",
+			Key.coversDirectory: "",
 			Key.coversSize: Double(180),
 			Key.lastTypeLibrary: MusicalEntityType.albums.rawValue,
 			Key.lastTypeGenre: MusicalEntityType.albums.rawValue,
@@ -164,23 +164,6 @@ struct AppDefaults {
 		]
 
 		AppDefaults.shared.register(defaults: defaultsValues)
-		createDirectories()
-	}
-
-	fileprivate static func createDirectories() {
-		do {
-			guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {
-				fatalError("Failed to get cache directory")
-			}
-
-			guard let coversDirectoryPath = string(for: Key.coversDirectory) else {
-				fatalError("Failed to get covers directory")
-			}
-
-			try FileManager.default.createDirectory(at: cachesDirectoryURL.appendingPathComponent(coversDirectoryPath), withIntermediateDirectories: true, attributes: nil)
-		} catch {
-			fatalError("Failed to create covers directory")
-		}
 	}
 }
 
