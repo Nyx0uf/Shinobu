@@ -5,6 +5,8 @@ private struct ServerData {
 	let name: String
 	// Is this the active server?
 	let isSelected: Bool
+	// Index in tableView
+	let index: Int
 }
 
 final class ServersListVC: NYXTableViewController {
@@ -14,7 +16,7 @@ final class ServersListVC: NYXTableViewController {
 	// Tableview cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.server"
 	// Add/Edit server VC
-	private var addServerVC: ServerAddVC?
+	private var addServerVC: ServerAddEditVC?
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// Servers manager
@@ -77,18 +79,24 @@ final class ServersListVC: NYXTableViewController {
 	// MARK: - Private
 	private func refreshServers() {
 		let serversList = serversManager.getServersList()
-
 		let enabledServerName = serversManager.getSelectedServerName()
-		servers = serversList.compactMap { ServerData(name: $0.name, isSelected: ($0.name == enabledServerName)) }
+
+		// ServerData is like a DTO, index will map to the tableView indexPath.row
+		servers.removeAll()
+		var index = 0
+		for server in serversList {
+			servers.append(ServerData(name: server.name, isSelected: (server.name == enabledServerName), index: index))
+			index += 1
+		}
 		tableView.reloadData()
 
 		// Navigation bar title
-		self.title = "\(servers.count) \(NYXLocalizedString(servers.count == 1 ? "lbl_header_server_list" : "lbl_header_servers_list"))"
+		title = "\(servers.count) \(NYXLocalizedString(servers.count == 1 ? "lbl_header_server_list" : "lbl_header_servers_list"))"
 	}
 
 	private func showServerVC(with server: ShinobuServer?) {
 		if addServerVC == nil {
-			addServerVC = ServerAddVC(style: .grouped, mpdBridge: mpdBridge)
+			addServerVC = ServerAddEditVC(mpdBridge: mpdBridge)
 		}
 
 		if let avc = addServerVC {
@@ -105,7 +113,17 @@ final class ServersListVC: NYXTableViewController {
 			createCacheDirectory(for: servers[swi.tag].name)
 		}
 
-		refreshServers()
+		// Do not reload tableView and animate the switches
+		// Mutating array in iteration is probably a bad idea though
+		for serverData in servers {
+			let cell = tableView.cellForRow(at: IndexPath(row: serverData.index, section: 0)) as! ShinobuServerTableViewCell
+			guard let toggle = cell.toggle else { continue }
+			if swi.tag != toggle.tag && toggle.isOn {
+				let s = ServerData(name: serverData.name, isSelected: false, index: serverData.index)
+				servers[serverData.index] = s
+				toggle.setOn(false, animated: true)
+			}
+		}
 
 		NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: serversManager.getSelectedServer()?.mpd, userInfo: nil)
 	}
@@ -164,7 +182,7 @@ extension ServersListVC {
 
 		cell.label.text = server.name
 		cell.toggle.isOn = server.isSelected
-		cell.toggle.tag = indexPath.row
+		cell.toggle.tag = server.index
 		cell.toggle.addTarget(self, action: #selector(toggleServer(_:)), for: .valueChanged)
 		cell.accessibilityLabel = "\(server.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(server.isSelected ? "lbl_current_selected_server" : "lbl_current_selected_server_not"))"
 
@@ -181,9 +199,9 @@ extension ServersListVC {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let serverData = servers[indexPath.row]
 		let shinobuServers = serversManager.getServersList()
-		let tmp = shinobuServers.filter { $0.name == serverData.name }
-		if tmp.count > 0 {
-			showServerVC(with: tmp[0])
+
+		if let server = shinobuServers.first(where: { $0.name == serverData.name }) {
+			showServerVC(with: server)
 		}
 	}
 
@@ -193,7 +211,8 @@ extension ServersListVC {
 			guard let strongSelf = self else { return }
 			let serverData = strongSelf.servers[indexPath.row]
 			if strongSelf.serversManager.removeServerByName(serverData.name) {
-				strongSelf.refreshServers()
+				strongSelf.servers.remove(at: serverData.index)
+				tableView.deleteRows(at: [indexPath], with: .automatic)
 			}
 
 			completionHandler(true)

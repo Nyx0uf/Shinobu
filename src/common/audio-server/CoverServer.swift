@@ -55,6 +55,7 @@ struct CoverServer: Codable, Equatable {
 		if String.isNullOrWhiteSpace(urlPath) || urlPath == "/" {
 			urlPath = path
 		} else {
+			// Ensure / suffix
 			if let first = urlPath.first, first != SLASH {
 				urlPath = "/" + urlPath
 			}
@@ -65,6 +66,7 @@ struct CoverServer: Codable, Equatable {
 			return nil
 		}
 
+		// Append coverName to URL
 		urlPath += (tmp != "/") ? "/" + coverName : coverName
 
 		urlComponents.path = urlPath
@@ -99,7 +101,7 @@ struct CoverServer: Codable, Equatable {
 			return nil
 		}
 		urlComponents.port = Int(port)
-		urlComponents.path = "\(path.first != nil && path.first! != "/" ? "/" : "")\(path)"
+		urlComponents.path = "\(path.first != nil && path.first! != "/" ? "/" : "")\(path)" // force / suffix
 
 		guard let tmpURL = urlComponents.url else {
 			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
@@ -111,22 +113,24 @@ struct CoverServer: Codable, Equatable {
 
 	// MARK: - Private
 	private static func sanitizeHostname(_ hostname: String, _ port: UInt16) -> String {
-		var h: String
+		// Ensure http/https suffix
+		var validHostname: String
 		if hostname.hasPrefix("http://") || hostname.hasPrefix("https://") {
-			h = hostname
+			validHostname = hostname
 		} else {
-			if port == 443 {
-				h = "https://" + hostname
+			if port == 443 || port == 8443 {
+				validHostname = "https://" + hostname
 			} else {
-				h = "http://" + hostname
+				validHostname = "http://" + hostname
 			}
 		}
 
-		if let last = h.last, last == SLASH {
-			h.removeLast()
+		// Strip trailling slash
+		if let last = validHostname.last, last == SLASH {
+			validHostname.removeLast()
 		}
 
-		return h
+		return validHostname
 	}
 }
 

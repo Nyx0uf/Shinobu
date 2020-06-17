@@ -22,22 +22,22 @@ struct PlayerState {
 	let isRepeat: Bool
 }
 
-struct AudioOutput {
+struct MPDOutput {
 	let id: Int
 	let name: String
 	var enabled: Bool
 }
 
-enum MpdEntityType: Int {
+enum MPDEntityType: Int {
 	case unknown = 0
 	case directory = 1
 	case song = 2
 	case playlist = 3
 	case image = 4
 }
-struct MpdEntity {
+struct MPDEntity {
 	let name: String
-	let type: MpdEntityType
+	let type: MPDEntityType
 }
 
 protocol MPDConnectionDelegate: class {
@@ -806,12 +806,12 @@ final class MPDConnection {
 	}
 
 	// MARK: - Outputs
-	func getAvailableOutputs() -> Result<[AudioOutput], MPDConnectionError> {
+	func getAvailableOutputs() -> Result<[MPDOutput], MPDConnectionError> {
 		if mpd_send_outputs(connection) == false {
 			return .failure(MPDConnectionError(.getOutputsError, getLastErrorMessageForConnection()))
 		}
 
-		var ret = [AudioOutput]()
+		var ret = [MPDOutput]()
 		var output = mpd_recv_output(connection)
 		while output != nil {
 			guard let tmpName = mpd_output_get_name(output) else {
@@ -827,7 +827,7 @@ final class MPDConnection {
 				continue
 			}
 
-			let o = AudioOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
+			let o = MPDOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
 			ret.append(o)
 			mpd_output_free(output)
 			output = mpd_recv_output(connection)
@@ -836,7 +836,7 @@ final class MPDConnection {
 		return .success(ret)
 	}
 
-	func toggleOutput(_ output: AudioOutput) -> Result<Bool, MPDConnectionError> {
+	func toggleOutput(_ output: MPDOutput) -> Result<Bool, MPDConnectionError> {
 		let ret = output.enabled ? mpd_run_disable_output(connection, UInt32(output.id)) : mpd_run_enable_output(connection, UInt32(output.id))
 		if ret {
 			return .success(true)
@@ -854,12 +854,12 @@ final class MPDConnection {
 	}
 
 	// MARK: - Directories
-	func getDirectoryListAtPath(_ path: String?) -> Result<[MpdEntity], MPDConnectionError> {
+	func getDirectoryListAtPath(_ path: String?) -> Result<[MPDEntity], MPDConnectionError> {
 		if mpd_send_list_files(connection, path) == false {
 			return .failure(MPDConnectionError(.getRootDirectoryListError, getLastErrorMessageForConnection()))
 		}
 
-		var list = [MpdEntity]()
+		var list = [MPDEntity]()
 
 		var entity = mpd_recv_entity(connection)
 		while entity != nil {
@@ -869,7 +869,7 @@ final class MPDConnection {
 					if let tmp = mpd_directory_get_path(dir) {
 						let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp), count: Int(strlen(tmp)), deallocator: .none)
 						if let name = String(data: dataTemp, encoding: .utf8) {
-							list.append(MpdEntity(name: name, type: mpdEntityTypeToEntityType(ent_type, name)))
+							list.append(MPDEntity(name: name, type: mpdEntityTypeToEntityType(ent_type, name)))
 						}
 					}
 				}
@@ -877,7 +877,7 @@ final class MPDConnection {
 				if let tmp = mpd_entity_get_song(entity) {
 					if let track = trackFromMPDSongObject(tmp) {
 						if track.uri != ".DS_Store" {
-							list.append(MpdEntity(name: track.uri, type: mpdEntityTypeToEntityType(ent_type, track.uri)))
+							list.append(MPDEntity(name: track.uri, type: mpdEntityTypeToEntityType(ent_type, track.uri)))
 						}
 					}
 				}
@@ -1005,7 +1005,7 @@ final class MPDConnection {
 		}
 	}
 
-	private func mpdEntityTypeToEntityType(_ type: mpd_entity_type, _ name: String) -> MpdEntityType {
+	private func mpdEntityTypeToEntityType(_ type: mpd_entity_type, _ name: String) -> MPDEntityType {
 		let imgSuffixes = ["bmp", "gif", "jpeg", "jpg", "png", "tif", "tiff"]
 		if imgSuffixes.contains(where: name.contains) {
 			return .image

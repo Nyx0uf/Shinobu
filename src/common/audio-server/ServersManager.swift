@@ -15,7 +15,7 @@ final class ServersManager {
 			Logger.shared.log(type: .information, message: "No servers registered yet")
 		}
 
-		return servers
+		return servers.sorted(by: {$0.name < $1.name})
 	}
 
 	func handleServer(_ server: ShinobuServer) {

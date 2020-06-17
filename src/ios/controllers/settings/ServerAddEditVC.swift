@@ -2,7 +2,7 @@ import UIKit
 
 private let headerSectionHeight: CGFloat = 32
 
-final class ServerAddVC: NYXTableViewController {
+final class ServerAddEditVC: NYXTableViewController {
 	// MARK: - Private properties
 	// MPD Server name
 	private var tfMPDName: UITextField!
@@ -25,7 +25,7 @@ final class ServerAddVC: NYXTableViewController {
 	// Indicate that the keyboard is visible, flag
 	private var keyboardVisible = false
 	// Zero conf VC
-	private var zeroConfVC = ZeroConfBrowserVC()
+	private var zeroConfVC: ZeroConfBrowserVC?
 	// Cache size
 	private var cacheSize: Int = 0
 	// MPD Data source
@@ -34,14 +34,18 @@ final class ServerAddVC: NYXTableViewController {
 	private let serversManager: ServersManager
 
 	// MARK: - Initializers
-	init(style: UITableView.Style, mpdBridge: MPDBridge) {
+	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
 		self.serversManager = ServersManager()
 
-		super.init(style: style)
+		super.init(style: .grouped)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
+
+	deinit {
+		NotificationCenter.default.removeObserver(self)
+	}
 
 	// MARK: - UIViewController
 	override func viewDidLoad() {
@@ -230,9 +234,15 @@ final class ServerAddVC: NYXTableViewController {
 	}
 
 	@objc private func browserZeroConfAction(_ sender: Any?) {
-		zeroConfVC.delegate = self
-		zeroConfVC.selectedServer = selectedServer
-		navigationController?.pushViewController(zeroConfVC, animated: true)
+		if zeroConfVC == nil {
+			zeroConfVC = ZeroConfBrowserVC()
+		}
+
+		if let zvc = zeroConfVC {
+			zvc.delegate = self
+			zvc.selectedServer = selectedServer
+			navigationController?.pushViewController(zvc, animated: true)
+		}
 	}
 
 	// MARK: - Notifications
@@ -369,7 +379,7 @@ final class ServerAddVC: NYXTableViewController {
 }
 
 // MARK: - ZeroConfBrowserVCDelegate
-extension ServerAddVC: ZeroConfBrowserVCDelegate {
+extension ServerAddEditVC: ZeroConfBrowserVCDelegate {
 	func audioServerDidChange(with server: ShinobuServer) {
 		clearCache(confirm: false)
 		selectedServer = server
@@ -377,7 +387,7 @@ extension ServerAddVC: ZeroConfBrowserVCDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension ServerAddVC {
+extension ServerAddEditVC {
 	override func numberOfSections(in tableView: UITableView) -> Int {
 		return 3
 	}
@@ -499,7 +509,7 @@ extension ServerAddVC {
 }
 
 // MARK: - UITableViewDelegate
-extension ServerAddVC {
+extension ServerAddEditVC {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
@@ -512,7 +522,7 @@ extension ServerAddVC {
 
 			guard let server = selectedServer else { return }
 
-			let avc = AudioOutputsListVC(mpdServer: server.mpd)
+			let avc = OutputsListVC(mpdServer: server.mpd)
 			avc.modalPresentationStyle = .popover
 			if let popController = avc.popoverPresentationController {
 				popController.permittedArrowDirections = .up
@@ -548,7 +558,7 @@ extension ServerAddVC {
 }
 
 // MARK: - UITextFieldDelegate
-extension ServerAddVC: UITextFieldDelegate {
+extension ServerAddEditVC: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		if textField === tfMPDName {
 			tfMPDHostname.becomeFirstResponder()
@@ -570,19 +580,19 @@ extension ServerAddVC: UITextFieldDelegate {
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
-extension ServerAddVC: UIPopoverPresentationControllerDelegate {
+extension ServerAddEditVC: UIPopoverPresentationControllerDelegate {
 	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
 		.none
 	}
 }
 
-extension ServerAddVC: Themed {
+extension ServerAddEditVC: Themed {
 	func applyTheme(_ theme: Theme) {
 	}
 }
 
 // MARK: - UIAdaptivePresentationControllerDelegate
-extension ServerAddVC: UIAdaptivePresentationControllerDelegate {
+extension ServerAddEditVC: UIAdaptivePresentationControllerDelegate {
 	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
 		updateFields()
 	}

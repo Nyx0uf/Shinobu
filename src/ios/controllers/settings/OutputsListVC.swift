@@ -1,11 +1,9 @@
 import UIKit
 
-final class AudioOutputsListVC: NYXTableViewController {
-	// MARK: - Public properties
-	// List of artists
-	var outputs = [AudioOutput]()
-
+final class OutputsListVC: NYXTableViewController {
 	// MARK: - Private properties
+	// List of outputs available
+	private var outputs = [MPDOutput]()
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.audiooutput"
 	// MPD server
@@ -82,7 +80,7 @@ final class AudioOutputsListVC: NYXTableViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension AudioOutputsListVC {
+extension OutputsListVC {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		handleEmptyView(tableView: tableView, isEmpty: outputs.isEmpty)
 		return outputs.count
@@ -109,7 +107,7 @@ extension AudioOutputsListVC {
 }
 
 // MARK: - UITableViewDelegate
-extension AudioOutputsListVC {
+extension OutputsListVC {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
 			tableView.deselectRow(at: indexPath, animated: true)
@@ -138,7 +136,7 @@ extension AudioOutputsListVC {
 	}
 }
 
-extension AudioOutputsListVC: Themed {
+extension OutputsListVC: Themed {
 	func applyTheme(_ theme: Theme) {
 	}
 }

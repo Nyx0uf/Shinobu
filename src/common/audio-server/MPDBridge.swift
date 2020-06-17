@@ -610,7 +610,7 @@ final class MPDBridge {
 	}
 
 	// MARK: - Directories
-	func getDirectoryListAtPath(_ path: String?, callback: @escaping ([MpdEntity]) -> Void) {
+	func getDirectoryListAtPath(_ path: String?, callback: @escaping ([MPDEntity]) -> Void) {
 		guard MPDConnection.isValid(connection) else { return }
 
 		queue.async { [weak self] in

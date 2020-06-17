@@ -12,8 +12,8 @@ final class DirectoriesVC: NYXViewController {
 	// MARK: - Private properties
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.dir"
-	//
-	private var items = [MpdEntity]()
+	// Data source
+	private var items = [MPDEntity]()
 
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge, path: String?) {
@@ -84,7 +84,7 @@ final class DirectoriesVC: NYXViewController {
 	}
 
 	@objc func showSettingsAction(_ sender: Any?) {
-		let settingsVC = SettingsVC(style: .insetGrouped)
+		let settingsVC = SettingsVC()
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
 		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
