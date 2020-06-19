@@ -60,7 +60,7 @@ class NYXTableViewController: UITableViewController {
 		super.init(style: style)
 	}
 
-	required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+	required init?(coder: NSCoder) { fatalError("no coder") }
 
 	override func viewDidLoad() {
 		super.viewDidLoad()

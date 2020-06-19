@@ -76,7 +76,9 @@ final class MusicalEntityCollectionViewCell: UICollectionViewCell {
 
 		self.imageView = UIImageView(frame: CGRect(.zero, frame.width, frame.height - 20))
 		self.imageView.isAccessibilityElement = false
-		self.imageView.enableCorners(withDivisor: 4)
+		self.imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		self.imageView.layer.cornerRadius = frame.width / 4
+		self.imageView.layer.masksToBounds = true
 		self.contentView.addSubview(self.imageView)
 
 		self.label = UILabel(frame: CGRect(0, self.imageView.maxY, frame.width, 20))

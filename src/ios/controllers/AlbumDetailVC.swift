@@ -28,7 +28,7 @@ final class AlbumDetailVC: NYXViewController {
 		self.view.frame = CGRect(.zero, view.width, view.height - heightForMiniPlayer())
 
 		// Color under navbar
-		var defaultHeight: CGFloat = UIDevice.current.isiPhoneX() ? 88 : 64
+		var defaultHeight: CGFloat = UIDevice.current.isPhoneX() ? 88 : 64
 		if navigationController == nil {
 			defaultHeight = 0
 		} else {

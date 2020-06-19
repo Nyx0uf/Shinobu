@@ -654,7 +654,7 @@ final class MPDBridge {
 			// Using mpd_pretty_db.py script
 			if strongSelf.usePrettyDB && type == .albums {
 				let albumsWithPath = PrettyDBManager.albums()
-				if albumsWithPath.count > 0 {
+				if albumsWithPath.isEmpty == false {
 					let set = CharacterSet(charactersIn: ".?!:;/+=-*'\"")
 					let good = albumsWithPath.sorted(by: { $0.name.trimmingCharacters(in: set) < $1.name.trimmingCharacters(in: set) })
 					strongSelf._albums = good

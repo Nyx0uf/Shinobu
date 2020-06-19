@@ -1,6 +1,6 @@
 import Foundation
 
-final class PrettyDBManager {
+struct PrettyDBManager {
 	static func albums() -> [Album] {
 		let serversManager = ServersManager()
 		guard let server = serversManager.getSelectedServer()?.covers else {
@@ -33,32 +33,25 @@ final class PrettyDBManager {
 
 		_ = semaphore.wait(timeout: .distantFuture)
 
-		guard let resp = response, resp.statusCode == 200 else {
-			return []
-		}
-
-		if error != nil {
-			return []
-		}
-
-		guard let json = data else {
+		guard let resp = response, resp.statusCode == 200, let jsonData = data else {
+			Logger.shared.log(error: error!)
 			return []
 		}
 
 		do {
-			let data2 = try JSONSerialization.jsonObject(with: json, options: [])
-			guard let albs = data2 as? [[String: String]] else {
+			let json = try JSONSerialization.jsonObject(with: jsonData, options: [])
+			guard let albumsJson = json as? [[String: String]] else {
 				return []
 			}
 
 			var albums = [Album]()
-			for album in albs {
-				guard let name = album["name"], let path = album["path"] else { continue }
-				let year = album["year"] ?? ""
-				let artist = album["artist"] ?? ""
-				let genre = album["genre"] ?? ""
-				let alo = Album(name: name, path: path, artist: artist, genre: genre, year: year)
-				albums.append(alo)
+			for albumJson in albumsJson {
+				guard let name = albumJson["name"], let path = albumJson["path"] else { continue }
+				let year = albumJson["year"] ?? ""
+				let artist = albumJson["artist"] ?? ""
+				let genre = albumJson["genre"] ?? ""
+				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
+				albums.append(album)
 			}
 
 			return albums

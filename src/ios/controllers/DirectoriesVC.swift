@@ -44,7 +44,7 @@ final class DirectoriesVC: NYXViewController {
 			navigationItem.leftBarButtonItems = [serversButton, settingsButton]
 		}
 
-		var miniHeight = CGFloat(44)
+		var miniHeight = CGFloat(64)
 		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
 		}
@@ -87,6 +87,7 @@ final class DirectoriesVC: NYXViewController {
 		let settingsVC = SettingsVC()
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
+		nvc.modalTransitionStyle = .flipHorizontal
 		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
 	}
 
@@ -216,5 +217,20 @@ extension DirectoriesVC: Themed {
 extension DirectoriesVC: UIAdaptivePresentationControllerDelegate {
 	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
+	}
+
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return self.modalStyleForController(controller)
+	}
+
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+		return self.modalStyleForController(controller)
+	}
+
+	private func modalStyleForController(_ controller: UIPresentationController) -> UIModalPresentationStyle {
+		guard let nvc = controller.presentedViewController as? NYXNavigationController else { return .automatic }
+		guard let tvc = nvc.topViewController else { return .automatic }
+
+		return tvc.isKind(of: SettingsVC.self) ? .fullScreen : .automatic
 	}
 }

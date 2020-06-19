@@ -15,19 +15,19 @@ final class ZeroConfExplorer: NSObject {
 
 	// MARK: - Private properties
 	// Zeroconf browser
-	private var serviceBrowser: NetServiceBrowser!
+	private var serviceBrowser: NetServiceBrowser
 
 	// MARK: - Initializer
 	override init() {
+		self.serviceBrowser = NetServiceBrowser()
+
 		super.init()
 
-		self.serviceBrowser = NetServiceBrowser()
 		self.serviceBrowser.delegate = self
 	}
 
 	deinit {
 		self.serviceBrowser.delegate = nil
-		self.serviceBrowser = nil
 	}
 
 	// MARK: - Public
@@ -58,7 +58,7 @@ final class ZeroConfExplorer: NSObject {
 		String.isNullOrWhiteSpace(server.hostname) == false && server.port != 0
 	}
 
-	#if targetEnvironment(simulator)
+#if targetEnvironment(simulator)
 	private static func getIPAddress() -> String {
         var address: String?
         var ifaddr: UnsafeMutablePointer<ifaddrs>?
@@ -87,7 +87,7 @@ final class ZeroConfExplorer: NSObject {
         }
         return address ?? ""
     }
-	#endif
+#endif
 }
 
 // MARK: - NetServiceBrowserDelegate

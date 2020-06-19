@@ -162,6 +162,7 @@ final class LibraryVC: MusicalCollectionVC {
 		let settingsVC = SettingsVC()
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
+		nvc.modalTransitionStyle = .flipHorizontal
 		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
 	}
 
@@ -400,5 +401,20 @@ extension LibraryVC {
 extension LibraryVC {
 	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
+	}
+
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return self.modalStyleForController(controller)
+	}
+
+	override func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+		return self.modalStyleForController(controller)
+	}
+
+	private func modalStyleForController(_ controller: UIPresentationController) -> UIModalPresentationStyle {
+		guard let nvc = controller.presentedViewController as? NYXNavigationController else { return .automatic }
+		guard let tvc = nvc.topViewController else { return .automatic }
+
+		return tvc.isKind(of: SettingsVC.self) ? .fullScreen : .automatic
 	}
 }

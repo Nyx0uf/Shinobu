@@ -75,7 +75,7 @@ extension UIView {
 	}
 
 	public func circleize() {
-		layer.cornerRadius = self.width / 2
+		layer.cornerRadius = width / 2
 		layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		clipsToBounds = true
 	}

@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 
 final class OperationManager {
 	// Singletion instance
@@ -20,7 +19,6 @@ final class OperationManager {
 
 	func addOperations(_ operations: [Operation], waitUntilFinished: Bool = false) {
 		operationQueue.addOperations(operations, waitUntilFinished: waitUntilFinished)
-
 	}
 
 	func cancelAllOperations() {
