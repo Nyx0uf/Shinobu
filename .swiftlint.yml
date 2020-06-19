@@ -10,5 +10,6 @@ disabled_rules:
   - force_try
   - force_cast
   - implicit_getter
+  - orphaned_doc_comment
 excluded:
   - src/common/libmpdclient
