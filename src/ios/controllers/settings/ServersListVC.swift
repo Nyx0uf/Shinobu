@@ -130,7 +130,7 @@ final class ServersListVC: NYXTableViewController {
 
 	private func createCacheDirectory(for name: String) {
 		do {
-			guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else { return }
+			let cachesDirectoryURL = FileManager.default.cachesDirectory()
 
 			let coversDirectoryName = "covers_\(name)"
 			AppDefaults.coversDirectory = coversDirectoryName

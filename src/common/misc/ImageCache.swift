@@ -24,10 +24,7 @@ final class ImageCache {
 			callback?(success)
 		}
 
-		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else {
-			success = false
-			return
-		}
+		let cachesDirectoryURL = FileManager.default.cachesDirectory()
 		guard let coversDirectoryName = AppDefaults.coversDirectory else {
 			success = false
 			return

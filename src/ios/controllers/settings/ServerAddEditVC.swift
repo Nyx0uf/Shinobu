@@ -334,7 +334,7 @@ final class ServerAddEditVC: NYXTableViewController {
 	}
 
 	private func updateCacheLabel() {
-		guard let cachesDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).last else { return }
+		let cachesDirectoryURL = FileManager.default.cachesDirectory()
 		DispatchQueue.global().async {
 			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 			DispatchQueue.main.async {

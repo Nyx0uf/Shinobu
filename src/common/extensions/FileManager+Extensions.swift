@@ -23,4 +23,9 @@ extension FileManager {
 
 		return result
 	}
+
+	func cachesDirectory() -> URL {
+		// That's ok cachesDirectory should always return smth
+		return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+	}
 }

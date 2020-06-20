@@ -107,6 +107,7 @@
 		43D86E93234A14CA0083C522 /* TypeChoiceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D86E92234A14CA0083C522 /* TypeChoiceVC.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
+		43DBE585249CE3A90044F331 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00E21EB42B4009A3BBF /* FileManager+Extensions.swift */; };
 		43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */; };
 		43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43DC9F20225CBC1600C6A8E5 /* ShinobuThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */; };
@@ -1010,6 +1011,7 @@
 				4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */,
 				431C05BC23DB14BA000B844F /* Cache.swift in Sources */,
 				439ED9B6225D246F007F2F45 /* Theme.swift in Sources */,
+				43DBE585249CE3A90044F331 /* FileManager+Extensions.swift in Sources */,
 				43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */,
 				43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */,
 				43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */,
