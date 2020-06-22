@@ -22,7 +22,7 @@ def create_version(new_version: str) -> bool:
     all_git_tags = syscall("git tag").split('\n')
     pv = version.parse(new_version)
     for t in all_git_tags:
-        if pv <= version.parse(t[1:]):
+        if pv <= version.parse(t):
             print(f"[!] ERROR: Version {new_version} <= {t}")
             return False
     # git tag
