@@ -3,8 +3,8 @@
 
 """
 read the mpd music directory to get albums, paths, albumartist, genre, year and create a json file
-* Only supports FLAC / MP3 / M4A (ALAC / AAC)
-* pip install mutagen
+* Only supports AAC / ALAC / FLAC / MP3
+* pip(3) install mutagen
 """
 
 import os
@@ -14,6 +14,7 @@ import multiprocessing
 import threading
 import queue
 import json
+from pathlib import Path
 from typing import List
 import mutagen
 import mutagen.mp3
@@ -21,18 +22,18 @@ import mutagen.easymp4
 
 class Album:
     """Very small representation of an album"""
-    def __init__(self, song: str, fullpath: str, songpath: str):
+    def __init__(self, song: Path, fullpath: Path, songpath: Path):
         self.name = ""
-        self.path = str(songpath.replace(fullpath, ""))
+        self.path = str(songpath).replace(str(fullpath), "")
         self.year = None
         self.genre = None
         self.artist = None
         if self.path[0] != "/":
             self.path = f"/{self.path}"
 
-        if song.endswith(".mp3"):
+        if song.suffix == ".mp3":
             infos = mutagen.mp3.EasyMP3(song)
-        elif song.endswith(".m4a"):
+        elif song.suffix == ".m4a":
             infos = mutagen.easymp4.EasyMP4(song)
         else:
             infos = mutagen.File(song)
@@ -70,56 +71,56 @@ class Album:
     def __hash__(self):
         return hash(self.name + self.path)
 
-def walk_directory(path: str) -> queue.Queue:
+def walk_directory(path: Path, allowed_suffixes=[".flac", ".m4a", ".mp3"]) -> queue.Queue:
     """walk directory at `path`"""
     ret = queue.Queue()
     for root, _, files in os.walk(path):
         for f in files:
-            path = os.path.join(root, f)
-            _, ext = os.path.splitext(path)
-            if ext in [".flac", ".m4a", ".mp3"]:
-                ret.put(path)
+            p = Path(root) / f
+            if p.suffix in allowed_suffixes:
+                ret.put(p)
     return ret
 
-def albums_from_songs(queue: queue.Queue, albums: List[Album], done: List[str], fullpath: str):
+def albums_from_songs(queue: queue.Queue, albums: List[Album], done: List[Path], fullpath: Path):
     """Create an album from a song file"""
     while queue.empty() is False:
-        infile = queue.get()
-        song_path = os.path.dirname(infile)
+        infile: Path = queue.get()
+        song_path = infile.parent
         if song_path not in done:
             alb = Album(infile, fullpath, song_path)
             albums.append(alb)
             done.append(song_path)
         queue.task_done()
 
-def json_dump(path: str, albums: List[Album]):
+def json_dump(path: Path, albums: List[Album]):
     """Dumps `albums` in _mpd.json at `path`"""
-    with open(os.path.join(path, "_mpd.json"), 'w') as outfile:
+    with open(path, 'w') as outfile:
         json.dump([a.__dict__ for a in albums], outfile)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", action="store", dest="d", type=str, default=None, help="MPD directory (same as music_directory in mpd config file)")
+    parser.add_argument("mpd_directory", type=Path, help="MPD directory (same as music_directory in mpd config file)")
     args = parser.parse_args()
 
     # Sanity checks
-    if args.d is None or os.path.isdir(args.d) is False:
-        print(f"Invalid argument : {args.d}")
+    path = args.mpd_directory.resolve()
+    if path.exists() is False or path.is_dir() is False:
+        print(f"[!] Invalid argument : {path}")
         sys.exit(-1)
 
     # Get all songs
-    songs_queue = walk_directory(os.path.abspath(args.d))
+    songs_queue = walk_directory(path)
 
     # Create albums from songs
     albums_dup: List[Album] = []
-    paths_done: List[str] = []
+    paths_done: List[Path] = []
     for i in range(multiprocessing.cpu_count()):
-        th = threading.Thread(target=albums_from_songs, args=(songs_queue, albums_dup, paths_done, args.d,))
-        th.daemon = True
+        th = threading.Thread(target=albums_from_songs, daemon=True, args=(songs_queue, albums_dup, paths_done, path,))
         th.start()
     songs_queue.join()
+
     # Make unique
     albums: List[Album] = list(dict.fromkeys(albums_dup))
 
     # Save as json
-    json_dump(args.d, albums)
+    json_dump(path / "_mpd.json", albums)
