@@ -261,10 +261,8 @@ final class MPDBridge {
 			var path: String?
 			if let song = mpd_recv_song(strongSelf.connection.connection) {
 				if let uri = mpd_song_get_uri(song) {
-					let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: uri), count: Int(strlen(uri)), deallocator: .none)
-					if let name = String(data: dataTemp, encoding: .utf8) {
-						path = URL(fileURLWithPath: name).deletingLastPathComponent().path
-					}
+					let name = String(cString: uri)
+					path = URL(fileURLWithPath: name).deletingLastPathComponent().path
 				}
 			}
 

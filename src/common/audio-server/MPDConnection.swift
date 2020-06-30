@@ -166,20 +166,19 @@ final class MPDConnection {
 				pair = mpd_recv_pair_tag(connection, tagType)
 				continue
 			}
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-			if let name = String(data: dataTemp, encoding: .utf8) {
-				switch displayType {
-				case .albums:
-					list.append(Album(name: name))
-				case .artists:
-					list.append(Artist(name: name))
-				case .albumsartists:
-					list.append(Artist(name: name))
-				case .genres:
-					list.append(Genre(name: name))
-				default:
-					raise(0)
-				}
+			let name = String(cString: value)
+
+			switch displayType {
+			case .albums:
+				list.append(Album(name: name))
+			case .artists:
+				list.append(Artist(name: name))
+			case .albumsartists:
+				list.append(Artist(name: name))
+			case .genres:
+				list.append(Genre(name: name))
+			default:
+				raise(0)
 			}
 
 			mpd_return_pair(connection, pair)
@@ -212,11 +211,10 @@ final class MPDConnection {
 				pair = mpd_recv_pair_tag(connection, MPD_TAG_ALBUM)
 				continue
 			}
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-			if let name = String(data: dataTemp, encoding: .utf8) {
-				if let album = delegate?.albumMatchingName(name) {
-					list.append(album)
-				}
+
+			let name = String(cString: value)
+			if let album = delegate?.albumMatchingName(name) {
+				list.append(album)
 			}
 
 			mpd_return_pair(connection, pair)
@@ -254,11 +252,10 @@ final class MPDConnection {
 				pair = mpd_recv_pair_tag(connection, MPD_TAG_ALBUM)
 				continue
 			}
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-			if let name = String(data: dataTemp, encoding: .utf8) {
-				if let album = delegate?.albumMatchingName(name) {
-					list.append(album)
-				}
+
+			let name = String(cString: value)
+			if let album = delegate?.albumMatchingName(name) {
+				list.append(album)
 			}
 
 			mpd_return_pair(connection, pair)
@@ -291,10 +288,7 @@ final class MPDConnection {
 				pair = mpd_recv_pair_tag(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST)
 				continue
 			}
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-			if let name = String(data: dataTemp, encoding: .utf8) {
-				list.append(Artist(name: name))
-			}
+			list.append(Artist(name: String(cString: value)))
 
 			mpd_return_pair(connection, pair)
 			pair = mpd_recv_pair_tag(connection, isAlbumArtist ? MPD_TAG_ALBUM_ARTIST : MPD_TAG_ARTIST)
@@ -318,13 +312,10 @@ final class MPDConnection {
 			return .failure(MPDConnectionError(.searchError, getLastErrorMessageForConnection()))
 		}
 
-		var path: String?
+		var path = ""
 		if let song = mpd_recv_song(connection) {
 			if let uri = mpd_song_get_uri(song) {
-				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: uri), count: Int(strlen(uri)), deallocator: .none)
-				if let name = String(data: dataTemp, encoding: .utf8) {
-					path = URL(fileURLWithPath: name).deletingLastPathComponent().path
-				}
+				path = String(cString: uri)
 			}
 		}
 
@@ -332,7 +323,7 @@ final class MPDConnection {
 			return .failure(MPDConnectionError(.searchError, getLastErrorMessageForConnection()))
 		}
 
-		return .success(path ?? "")
+		return .success(path)
 	}
 
 	func getTracksForAlbum(_ album: Album) -> Result<[Track], MPDConnectionError> {
@@ -440,10 +431,7 @@ final class MPDConnection {
 		let tmpArtist = mpd_recv_pair_tag(connection, MPD_TAG_ALBUM_ARTIST)
 		if tmpArtist != nil {
 			if let value = tmpArtist?.pointee.value {
-				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-				if let name = String(data: dataTemp, encoding: .utf8) {
-					metadatas["artist"] = name
-				}
+				metadatas["artist"] = String(cString: value)
 			}
 			mpd_return_pair(connection, tmpArtist)
 		}
@@ -469,10 +457,7 @@ final class MPDConnection {
 				if l > 4 {
 					l = 4
 				}
-				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: l, deallocator: .none)
-				if let year = String(data: dataTemp, encoding: .utf8) {
-					metadatas["year"] = year
-				}
+				metadatas["year"] = String(cString: value)
 			}
 
 			mpd_return_pair(connection, tmpDate)
@@ -495,10 +480,7 @@ final class MPDConnection {
 		let tmpGenre = mpd_recv_pair_tag(connection, MPD_TAG_GENRE)
 		if tmpGenre != nil {
 			if let value = tmpGenre?.pointee.value {
-				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: Int(strlen(value)), deallocator: .none)
-				if let genre = String(data: dataTemp, encoding: .utf8) {
-					metadatas["genre"] = genre
-				}
+				metadatas["genre"] = String(cString: value)
 			}
 
 			mpd_return_pair(connection, tmpGenre)
@@ -521,9 +503,8 @@ final class MPDConnection {
 		var playlist = mpd_recv_playlist(connection)
 		while playlist != nil {
 			if let tmpPath = mpd_playlist_get_path(playlist) {
-				if let name = String(cString: tmpPath, encoding: .utf8) {
-					list.append(Playlist(name: name))
-				}
+				let name = String(cString: tmpPath)
+				list.append(Playlist(name: name))
 			}
 
 			playlist = mpd_recv_playlist(connection)
@@ -792,13 +773,9 @@ final class MPDConnection {
 			guard let tmpAlbumName = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) else {
 				return .failure(MPDConnectionError(.getStatusError, getLastErrorMessageForConnection()))
 			}
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpAlbumName), count: Int(strlen(tmpAlbumName)), deallocator: .none)
-			if let name = String(data: dataTemp, encoding: .utf8) {
-				if let album = delegate?.albumMatchingName(name) {
-					return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: album, PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
-				} else {
-					return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: Album(name: name), PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
-				}
+			let name = String(cString: tmpAlbumName)
+			if let album = delegate?.albumMatchingName(name) {
+				return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: album, PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
 			}
 
 			return .failure(MPDConnectionError(.getStatusError, Message(content: "No matching album found.", type: .error)))
@@ -820,12 +797,7 @@ final class MPDConnection {
 			}
 
 			let id = Int(mpd_output_get_id(output))
-
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpName), count: Int(strlen(tmpName)), deallocator: .none)
-			guard let name = String(data: dataTemp, encoding: .utf8) else {
-				mpd_output_free(output)
-				continue
-			}
+			let name = String(cString: tmpName)
 
 			let o = MPDOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
 			ret.append(o)
@@ -867,10 +839,8 @@ final class MPDConnection {
 			if ent_type == MPD_ENTITY_TYPE_DIRECTORY {
 				if let dir = mpd_entity_get_directory(entity) {
 					if let tmp = mpd_directory_get_path(dir) {
-						let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmp), count: Int(strlen(tmp)), deallocator: .none)
-						if let name = String(data: dataTemp, encoding: .utf8) {
-							list.append(MPDEntity(name: name, type: mpdEntityTypeToEntityType(ent_type, name)))
-						}
+						let name = String(cString: tmp)
+						list.append(MPDEntity(name: name, type: mpdEntityTypeToEntityType(ent_type, name)))
 					}
 				}
 			} else if ent_type == MPD_ENTITY_TYPE_SONG {
@@ -904,12 +874,8 @@ final class MPDConnection {
 		}
 
 		if let errorMessage = mpd_connection_get_error_message(connection) {
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: errorMessage), count: Int(strlen(errorMessage)), deallocator: .none)
-			if let msg = String(data: dataTemp, encoding: .utf8) {
-				return Message(content: msg, type: .error)
-			} else {
-				return Message(content: "unable to get error message", type: .error)
-			}
+			let msg = String(cString: errorMessage)
+			return Message(content: msg, type: .error)
 		}
 
 		return Message(content: "no error message", type: .error)
@@ -920,16 +886,11 @@ final class MPDConnection {
 		guard let tmpURI = mpd_song_get_uri(song) else {
 			return nil
 		}
-		let dataTmp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpURI), count: Int(strlen(tmpURI)), deallocator: .none)
-		guard let uri = String(data: dataTmp, encoding: .utf8) else {
-			return nil
-		}
+		let uri = String(cString: tmpURI)
 		// title
 		var title = ""
 		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_TITLE, 0) {
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpPtr), count: Int(strlen(tmpPtr)), deallocator: .none)
-			let tmpString = String(data: dataTemp, encoding: .utf8)
-			title = tmpString ?? ""
+			title = String(cString: tmpPtr)
 		} else {
 			let bla = uri.components(separatedBy: "/")
 			if let filename = bla.last {
@@ -941,25 +902,18 @@ final class MPDConnection {
 		// artist
 		var artist = ""
 		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0) {
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpPtr), count: Int(strlen(tmpPtr)), deallocator: .none)
-			let tmpString = String(data: dataTemp, encoding: .utf8)
-			artist = tmpString ?? ""
+			artist = String(cString: tmpPtr)
 		}
 		// album name
 		var albumName = ""
 		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) {
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpPtr), count: Int(strlen(tmpPtr)), deallocator: .none)
-			let tmpString = String(data: dataTemp, encoding: .utf8)
-			albumName = tmpString ?? ""
+			albumName = String(cString: tmpPtr)
 		}
 		// track number
 		var trackNumber = "0"
 		if let tmpPtr = mpd_song_get_tag(song, MPD_TAG_TRACK, 0) {
-			let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: tmpPtr), count: Int(strlen(tmpPtr)), deallocator: .none)
-			if let tmpString = String(data: dataTemp, encoding: .utf8) {
-				if let number = tmpString.components(separatedBy: "/").first {
-					trackNumber = number
-				}
+			if let number = String(cString: tmpPtr).components(separatedBy: "/").first {
+				trackNumber = number
 			}
 		}
 		// duration
