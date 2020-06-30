@@ -412,9 +412,17 @@ extension LibraryVC {
 	}
 
 	private func modalStyleForController(_ controller: UIPresentationController) -> UIModalPresentationStyle {
-		guard let nvc = controller.presentedViewController as? NYXNavigationController else { return .automatic }
+		guard let nvc = controller.presentedViewController as? NYXNavigationController else {
+			return controller.presentedViewController.isKind(of: TypeChoiceVC.self) ? .none : .automatic
+		}
 		guard let tvc = nvc.topViewController else { return .automatic }
 
-		return tvc.isKind(of: SettingsVC.self) ? .fullScreen : .automatic
+		if tvc.isKind(of: SettingsVC.self) {
+			return .fullScreen
+		} else if tvc.isKind(of: TypeChoiceVC.self) {
+			return .none
+		} else {
+			return .automatic
+		}
 	}
 }
