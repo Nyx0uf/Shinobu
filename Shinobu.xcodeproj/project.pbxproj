@@ -1289,7 +1289,7 @@
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
-					"-Wl,-no_uuid",
+					"-Wl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1390,7 +1390,7 @@
 				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
-					"-Wl,-no_uuid",
+					"-Wl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
 				PRODUCT_NAME = ShinobuWidget;
