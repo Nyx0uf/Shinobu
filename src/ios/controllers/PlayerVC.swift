@@ -108,7 +108,7 @@ final class PlayerVC: NYXViewController {
 		blurEffectView.contentView.addSubview(progress)
 
 		// Cover view
-		coverView.frame = CGRect(miniCoverMargin, miniCoverMargin, miniCoverSize, miniCoverSize)
+		coverView.frame = CGRect(miniCoverMargin, (miniHeight - miniCoverSize) / 2, miniCoverSize, miniCoverSize)
 		coverView.isUserInteractionEnabled = true
 		coverView.layer.shadowColor = UIColor(rgb: 0x222222).cgColor
 		coverView.layer.shadowRadius = 1
@@ -592,7 +592,7 @@ final class PlayerVC: NYXViewController {
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
 				self.view.y = UIScreen.main.bounds.height - miniHeight
 
-				self.coverView.frame = CGRect(miniCoverMargin, miniCoverMargin, miniCoverSize, miniCoverSize)
+				self.coverView.frame = CGRect(miniCoverMargin, (miniHeight - miniCoverSize) / 2, miniCoverSize, miniCoverSize)
 				self.coverView.layer.shadowOpacity = 0
 				self.coverView.layer.masksToBounds = true
 
