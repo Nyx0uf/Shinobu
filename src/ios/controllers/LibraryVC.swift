@@ -380,9 +380,7 @@ extension LibraryVC {
 				guard let randomAlbum = entities.randomElement() as? Album else { return }
 				self?.mpdBridge.playAlbum(randomAlbum, shuffle: false, loop: false)
 
-				guard let url = randomAlbum.localCoverURL else { return }
-
-				if let image = UIImage.loadFromFileURL(url) {
+				if let image = randomAlbum.asset(ofSize: .large) {
 					DispatchQueue.main.async {
 						let size = CGSize(256, 256)
 						let imageView = UIImageView(frame: CGRect((UIScreen.main.bounds.width - size.width) / 2, (UIScreen.main.bounds.height - size.height) / 2, size))

@@ -48,9 +48,9 @@ struct AppDefaults {
 		}
 	}
 
-	static var coversDirectory: String? {
+	static var coversDirectory: String {
 		get {
-			return string(for: Key.coversDirectory)
+			return string(for: Key.coversDirectory) ?? "covers"
 		}
 		set {
 			setString(for: Key.coversDirectory, newValue)

@@ -47,10 +47,6 @@ final class SearchVC: NYXViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -223,13 +219,9 @@ extension SearchVC: UITableViewDataSource {
 			ent = album
 
 			if serversManager.getSelectedServer()?.covers != nil {
-				if let coverURL = album.localCoverURL {
-					if let cover = UIImage.loadFromFileURL(coverURL) {
-						img = cover.smartCropped(toSize: CGSize(40, 40), highQuality: false, screenScale: true)!
-						highlight = false
-					} else {
-						img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-					}
+				if let cover = album.asset(ofSize: .small) {
+					img = cover
+					highlight = false
 				} else {
 					img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
 				}
@@ -474,7 +466,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
 			albumsartistsResults.removeAll()
-			tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .fade)
+			tableView.reloadSections(IndexSet([1, 2, 3]), with: .fade)
 			return
 		}
 		guard let searchText = text else { return }
@@ -489,7 +481,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
 		}
 
-		tableView.reloadSections(IndexSet(arrayLiteral: 0, 1, 2), with: .none)
+		tableView.reloadSections(IndexSet([1, 2, 3]), with: .none)
 	}
 }
 

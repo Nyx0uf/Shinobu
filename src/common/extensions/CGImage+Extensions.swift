@@ -53,7 +53,7 @@ extension CGImage {
 		// Source & destination vImage buffers
 		guard let format = vImage_CGImageFormat(cgImage: self) else { return nil }
 		guard var sourceBuffer = try? vImage_Buffer(cgImage: self, format: format) else { return nil }
-		guard var destinationBuffer = try? vImage_Buffer(width: Int(fitSize.width * UIScreen.main.scale), height: Int(fitSize.height * UIScreen.main.scale), bitsPerPixel: format.bitsPerPixel) else { return nil }
+		guard var destinationBuffer = try? vImage_Buffer(width: Int(fitSize.width), height: Int(fitSize.height), bitsPerPixel: format.bitsPerPixel) else { return nil }
 
 		defer {
 			destinationBuffer.free()

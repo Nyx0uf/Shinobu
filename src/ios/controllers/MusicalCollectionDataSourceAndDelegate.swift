@@ -100,16 +100,16 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 	}
 
 	// MARK: - Private
-	private func downloadCoverForAlbum(_ album: Album, _ indexPath: IndexPath, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) {
+	private func downloadCoverForAlbum(_ album: Album, _ indexPath: IndexPath, callback: ((_ large: UIImage?, _ medium: UIImage?, _ small: UIImage?) -> Void)?) {
 		if downloadOperations[indexPath] != nil {
 			return
 		}
 
-		var cop = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
-		cop.processCallback = { (cover, thumbnail) in
+		var cop = CoverOperations(album: album)
+		cop.processCallback = { (large, medium, small) in
 			self.downloadOperations.removeValue(forKey: indexPath)
 			if let block = callback {
-				block(cover, thumbnail)
+				block(large, medium, small)
 			}
 		}
 		downloadOperations[indexPath] = cop
@@ -126,12 +126,9 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 
 		// Get local URL for cover
 		guard serversManager.getSelectedServer()?.covers != nil else { return }
-		guard let coverURL = album.localCoverURL else {
-			Logger.shared.log(type: .error, message: "No cover file URL for \(album)") // should not happen
-			return
-		}
 
-		if let cover = UIImage.loadFromFileURL(coverURL) {
+		//if let cover = UIImage.loadFromFileURL(album.localCoverURL) {
+		if let cover = album.asset(ofSize: .medium) {
 			cell.image = cover
 			ImageCache.shared[album.uniqueIdentifier] = cover
 		} else {
@@ -139,21 +136,19 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 				return
 			}
 
-			let imgWidth = AppDefaults.coversSize
-			let cropSize = CGSize(imgWidth, imgWidth)
 			if album.path != nil {
-				downloadCoverForAlbum(album, indexPath, cropSize: cropSize) { (_, thumbnail) in
+				downloadCoverForAlbum(album, indexPath) { (_, medium, _) in
 					DispatchQueue.main.async {
-						self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+						self.delegate.coverDownloaded(medium, forItemAtIndexPath: indexPath)
 					}
 				}
 			} else {
 				let dwi = mpdBridge.getPathForAlbum2(album) { (success, _) in
 					self.pathsOperation.removeValue(forKey: indexPath)
 					if success {
-						self.downloadCoverForAlbum(album, indexPath, cropSize: cropSize) { (_, thumbnail) in
+						self.downloadCoverForAlbum(album, indexPath) { (_, medium, _) in
 							DispatchQueue.main.async {
-								self.delegate.coverDownloaded(thumbnail, forItemAtIndexPath: indexPath)
+								self.delegate.coverDownloaded(medium, forItemAtIndexPath: indexPath)
 							}
 						}
 					}

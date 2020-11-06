@@ -42,6 +42,7 @@ final class SettingsVC: NYXTableViewController {
 		navigationItem.leftBarButtonItem = closeButton
 
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: separatorMargin, bottom: 0, right: separatorMargin)
+		tableView.rowHeight = 44 // Mandatory for positionning below
 
 		// Set target/actions
 		sColumns.addTarget(self, action: #selector(toggleColumnsAction(_:)), for: .valueChanged)

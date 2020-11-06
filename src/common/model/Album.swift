@@ -1,5 +1,11 @@
 import UIKit
 
+enum AssetSize: String {
+	case small = "s"
+	case medium = "m"
+	case large = "l"
+}
+
 final class Album: MusicalEntity {
 	// MARK: - Public properties
 	// Album artist
@@ -15,10 +21,13 @@ final class Album: MusicalEntity {
 	// Album UUID
 	private(set) var uniqueIdentifier: String
 	// Local URL for the cover
-	private(set) lazy var localCoverURL: URL? = {
+	private(set) lazy var localCoverURL: URL = {
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		guard let coverDirectoryPath = AppDefaults.coversDirectory else { return nil }
-		return cachesDirectoryURL.appendingPathComponent(coverDirectoryPath, isDirectory: true).appendingPathComponent(self.uniqueIdentifier + ".jpg")
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(AppDefaults.coversDirectory, isDirectory: true).appendingPathComponent(self.uniqueIdentifier)
+		if FileManager.default.fileExists(atPath: coversDirectoryURL.absoluteString) == false {
+			try! FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+		}
+		return coversDirectoryURL
 	}()
 
 	// MARK: - Initializers
@@ -40,6 +49,12 @@ final class Album: MusicalEntity {
 	override public func hash(into hasher: inout Hasher) {
 		let value = name.djb2() ^ Int32(genre.hashValue) ^ Int32(year.hashValue)
 		hasher.combine(value)
+	}
+
+	// MARK: - Public
+	func asset(ofSize size: AssetSize) -> UIImage? {
+		let assetUrl = self.localCoverURL.appendingPathComponent("\(size.rawValue).jpg")
+		return UIImage.loadFromFileURL(assetUrl)
 	}
 }
 

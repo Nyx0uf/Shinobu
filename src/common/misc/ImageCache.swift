@@ -25,11 +25,7 @@ final class ImageCache {
 		}
 
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		guard let coversDirectoryName = AppDefaults.coversDirectory else {
-			success = false
-			return
-		}
-		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(coversDirectoryName)
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(AppDefaults.coversDirectory)
 
 		do {
 			try FileManager.default.removeItem(at: coversDirectoryURL)

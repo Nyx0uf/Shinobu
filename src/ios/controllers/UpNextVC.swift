@@ -16,10 +16,6 @@ final class UpNextVC: NYXTableViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()

@@ -6,7 +6,8 @@ extension UIImage {
 	func smartCropped(toSize fitSize: CGSize, highQuality: Bool = false, screenScale: Bool = false) -> UIImage? {
 		guard let imgRef = cgImage else { return nil }
 
-		if let cropped = imgRef.smartCropped(toSize: fitSize, highQuality: highQuality) {
+		let cropSize = screenScale ? fitSize * UIScreen.main.scale : fitSize
+		if let cropped = imgRef.smartCropped(toSize: cropSize, highQuality: highQuality) {
 			return UIImage(cgImage: cropped, scale: screenScale ? UIScreen.main.scale : scale, orientation: imageOrientation)
 		}
 

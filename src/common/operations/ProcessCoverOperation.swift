@@ -6,21 +6,18 @@ final class ProcessCoverOperation: Operation {
 	// Image data
 	var data: Data?
 	// Custom completion block
-	var callback: ((UIImage, UIImage) -> Void)?
+	var callback: ((UIImage?, UIImage?, UIImage?) -> Void)?
 
 	// MARK: - Private properties
 	// Album
 	private let album: Album
 	// Size of the thumbnail to create
-	private let cropSize: CGSize
-	// Should save thumbnail flag
-	private var save = true
+	private let cropSizes: [AssetSize: CGSize]
 
 	// MARK: - Initializers
-	init(album: Album, cropSize: CGSize, save: Bool) {
+	init(album: Album, cropSizes: [AssetSize: CGSize]) {
 		self.album = album
-		self.cropSize = cropSize
-		self.save = save
+		self.cropSizes = cropSizes
 	}
 
 	// MARK: - Override
@@ -41,24 +38,19 @@ final class ProcessCoverOperation: Operation {
 			return
 		}
 
-		guard let thumbnail = cover.smartCropped(toSize: cropSize) else {
-			Logger.shared.log(type: .error, message: "Failed to create thumbnail for <\(album.name)>")
-			return
-		}
-
-		guard let saveURL = album.localCoverURL else {
-			Logger.shared.log(type: .error, message: "Invalid cover url for <\(album.name)>")
-			return
-		}
-
-		if save {
-			if thumbnail.save(url: saveURL) == false {
-				Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+		var images = [AssetSize: UIImage?]()
+		for (assetSize, cropSize) in cropSizes {
+			let cropped = cover.smartCropped(toSize: cropSize, highQuality: false, screenScale: true)
+			if let thumbnail = cropped {
+				if thumbnail.save(url: album.localCoverURL.appendingPathComponent(assetSize.rawValue + ".jpg")) == false {
+					Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+				}
 			}
+			images[assetSize] = cropped
 		}
 
 		if let block = callback {
-			block(cover, thumbnail)
+			block(images[.large] ?? nil, images[.medium] ?? nil, images[.small] ?? nil)
 		}
 	}
 

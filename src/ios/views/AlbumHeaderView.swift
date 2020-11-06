@@ -85,14 +85,8 @@ final class AlbumHeaderView: UIView {
 	func updateHeaderWithAlbum(_ album: Album) {
 		// Set cover
 		var image: UIImage?
-		if let coverURL = album.localCoverURL {
-			if let cover = UIImage.loadFromFileURL(coverURL) {
-				image = cover
-			} else {
-				let string = album.name
-				let bgColor = UIColor(rgb: string.djb2())
-				image = UIImage.fromString(string, font: UIFont(name: "Chalkduster", size: coverSize.width / 4)!, fontColor: bgColor.inverted(), backgroundColor: bgColor, maxSize: coverSize)
-			}
+		if let cover = album.asset(ofSize: .large) {
+			image = imageView.size == .zero ? cover : cover.smartCropped(toSize: imageView.size)
 		} else {
 			let string = album.name
 			let bgColor = UIColor(rgb: string.djb2())

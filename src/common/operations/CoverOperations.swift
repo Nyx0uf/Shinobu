@@ -4,14 +4,10 @@ struct CoverOperations {
 	//
 	var downloadCallback: ((Data) -> Void)?
 	//
-	var processCallback: ((UIImage, UIImage) -> Void)?
+	var processCallback: ((UIImage?, UIImage?, UIImage?) -> Void)?
 	// MARK: - Private properties
 	// Album
 	private let album: Album
-	// Optional crop size
-	private let cropSize: CGSize
-	// Save processed image
-	private let saveProcessed: Bool
 	// Save original file to disk
 	private let saveOriginal = false
 	//
@@ -19,13 +15,11 @@ struct CoverOperations {
 	private var bridgeOperation: BlockOperation
 	private var processOperation: ProcessCoverOperation
 
-	init(album: Album, cropSize: CGSize, saveProcessed: Bool) {
+	init(album: Album) {
 		self.album = album
-		self.cropSize = cropSize
-		self.saveProcessed = saveProcessed
 
 		self.downloadOperation = DownloadCoverOperation(album: album)
-		self.processOperation = ProcessCoverOperation(album: album, cropSize: cropSize, save: saveProcessed)
+		self.processOperation = ProcessCoverOperation(album: album, cropSizes: CoverOperations.cropSizes())
 		self.bridgeOperation = BlockOperation { [weak processOperation, weak downloadOperation] in
 			processOperation?.data = downloadOperation?.downloadedData
 		}
@@ -44,5 +38,12 @@ struct CoverOperations {
 		downloadOperation.cancel()
 		bridgeOperation.cancel()
 		processOperation.cancel()
+	}
+
+	private static func cropSizes() -> [AssetSize: CGSize] {
+		return [.small: CGSize(48, 48),
+				.medium: CGSize(AppDefaults.coversSize, AppDefaults.coversSize),
+				.large: CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)]
+
 	}
 }

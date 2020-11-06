@@ -35,10 +35,6 @@ final class TracksListTableView: UITableView {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
 	// MARK: - Private
 	@objc func playingTrackChangedNotification(_ notification: Notification) {
 		reloadData()

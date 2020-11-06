@@ -71,10 +71,6 @@ final class PlayerVC: NYXViewController {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -405,33 +401,28 @@ final class PlayerVC: NYXViewController {
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let album = userInfos[PLAYER_ALBUM_KEY] as? Album else { return }
 
 		// Update cover if from another album (playlist case)
-		let coverSize = CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)
-		if album.path != nil {
-			var cop = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
-			cop.processCallback = { (cover, thumbnail) in
-				DispatchQueue.main.async {
-					self.imgCover = thumbnail
-					UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
-						(self.view as? UIImageView)?.image = cover
-						self.lblTrack.text = track.name
-						self.sliderTrack.label.text = track.name
-						self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
-						self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
-						self.lblArtist.text = track.artist
-						self.lblAlbum.text = album.name
-					}, completion: nil)
-					self.updatePlayPauseState()
-				}
+		if let cover = album.asset(ofSize: .large) {
+			DispatchQueue.main.async {
+				self.imgCover = cover
+				UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+					(self.view as? UIImageView)?.image = cover
+					self.lblTrack.text = track.name
+					self.sliderTrack.label.text = track.name
+					self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
+					self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
+					self.lblArtist.text = track.artist
+					self.lblAlbum.text = album.name
+				}, completion: nil)
+				self.updatePlayPauseState()
 			}
-			cop.submit()
 		} else {
 			mpdBridge.getPathForAlbum(album) {
-				var cop = CoverOperations(album: album, cropSize: coverSize, saveProcessed: false)
-				cop.processCallback = { (cover, thumbnail) in
+				var cop = CoverOperations(album: album)
+				cop.processCallback = { (large, medium, small) in
 					DispatchQueue.main.async {
-						self.imgCover = thumbnail
+						self.imgCover = large
 						UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
-							(self.view as? UIImageView)?.image = cover
+							(self.view as? UIImageView)?.image = large
 							self.lblTrack.text = track.name
 							self.sliderTrack.label.text = track.name
 							self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)

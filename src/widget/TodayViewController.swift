@@ -105,38 +105,25 @@ final class TodayViewController: UIViewController, NCWidgetProviding {
 	}
 
 	private func handleCoverForAlbum(_ album: Album) {
-		guard let coverURL = album.localCoverURL else {
-			return
-		}
-
-		if let cover = UIImage.loadFromFileURL(coverURL) {
-			imageView.image = cover
+		if let cover = album.asset(ofSize: .large) {
+			imageView.image = imageView.frame.size == .zero ? cover : cover.smartCropped(toSize: imageView.frame.size)
 		} else {
-			let imgWidth = AppDefaults.coversSize
-			let cropSize = CGSize(imgWidth, imgWidth)
-			if album.path != nil {
-				downloadCoverForAlbum(album, cropSize: cropSize) { (_: UIImage, thumbnail: UIImage) in
+			mpdBridge.getPathForAlbum(album) {
+				self.downloadCoverForAlbum(album) { (large: UIImage?, _: UIImage?, _: UIImage?) in
+					let tmp = large?.smartCropped(toSize: self.imageView.frame.size)
 					DispatchQueue.main.async {
-						self.imageView.image = thumbnail
-					}
-				}
-			} else {
-				mpdBridge.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album, cropSize: cropSize) { (_: UIImage, thumbnail: UIImage) in
-						DispatchQueue.main.async {
-							self.imageView.image = thumbnail
-						}
+						self.imageView.image = tmp
 					}
 				}
 			}
 		}
 	}
 
-	private func downloadCoverForAlbum(_ album: Album, cropSize: CGSize, callback: ((_ cover: UIImage, _ thumbnail: UIImage) -> Void)?) {
-		var cop = CoverOperations(album: album, cropSize: cropSize, saveProcessed: true)
-		cop.processCallback = { (cover: UIImage, thumbnail: UIImage) in
+	private func downloadCoverForAlbum(_ album: Album, callback: ((_ large: UIImage?, _ medium: UIImage?, _ small: UIImage?) -> Void)?) {
+		var cop = CoverOperations(album: album)
+		cop.processCallback = { (large: UIImage?, medium: UIImage?, small: UIImage?) in
 			if let block = callback {
-				block(cover, thumbnail)
+				block(large, medium, small)
 			}
 		}
 
