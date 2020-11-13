@@ -34,7 +34,9 @@ struct PrettyDBManager {
 		_ = semaphore.wait(timeout: .distantFuture)
 
 		guard let resp = response, resp.statusCode == 200, let jsonData = data else {
-			Logger.shared.log(error: error!)
+			if let err = error {
+				Logger.shared.log(error: err)
+			}
 			return []
 		}
 

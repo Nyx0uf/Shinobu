@@ -418,7 +418,7 @@ final class PlayerVC: NYXViewController {
 		} else {
 			mpdBridge.getPathForAlbum(album) {
 				var cop = CoverOperations(album: album)
-				cop.processCallback = { (large, medium, small) in
+				cop.processCallback = { (large, _, _) in
 					DispatchQueue.main.async {
 						self.imgCover = large
 						UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
