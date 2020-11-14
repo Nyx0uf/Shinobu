@@ -218,11 +218,11 @@ private extension AppDefaults {
 	}
 
 	static func string(for key: String) -> String? {
-		return UserDefaults.standard.string(forKey: key)
+		return AppDefaults.shared.string(forKey: key)
 	}
 
 	static func setString(for key: String, _ value: String?) {
-		UserDefaults.standard.set(value, forKey: key)
+		AppDefaults.shared.set(value, forKey: key)
 	}
 
 	// MARK: - Custom types
