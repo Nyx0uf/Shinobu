@@ -134,6 +134,8 @@ final class MPDConnection {
 			}
 		}
 
+		mpd_connection_set_keepalive(connection, true)
+
 		isConnected = true
 		return .success(true)
 	}
