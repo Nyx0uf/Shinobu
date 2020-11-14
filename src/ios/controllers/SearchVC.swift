@@ -250,7 +250,7 @@ extension SearchVC: UITableViewDataSource {
 				self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 						}
 					}
@@ -259,7 +259,7 @@ extension SearchVC: UITableViewDataSource {
 				self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 					guard let strongSelf = self else { return }
 					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
 				}
@@ -363,7 +363,7 @@ extension SearchVC: UITableViewDelegate {
 					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 						}
 					}
@@ -372,7 +372,7 @@ extension SearchVC: UITableViewDelegate {
 					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
 						}
 					}
@@ -392,7 +392,7 @@ extension SearchVC: UITableViewDelegate {
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 						}
 					}
@@ -401,7 +401,7 @@ extension SearchVC: UITableViewDelegate {
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 							strongSelf.mpdBridge.playTracks(arr, shuffle: true, loop: false)
 						}
 					}

@@ -133,7 +133,7 @@ extension ZeroConfBrowserVC {
 
 extension ZeroConfBrowserVC: ZeroConfExplorerDelegate {
 	internal func didFindServer(_ server: ShinobuServer) {
-		servers = zeroConfExplorer.services.map { $0.value }
+		servers = zeroConfExplorer.services.map(\.value)
 		tableView.reloadData()
 		// Navigation bar title
 		self.title = "\(servers.count) \(NYXLocalizedString(servers.count == 1 ? "lbl_header_server_zeroconf" : "lbl_header_servers_zeroconf"))"

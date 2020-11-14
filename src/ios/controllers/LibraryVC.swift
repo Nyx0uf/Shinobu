@@ -119,7 +119,7 @@ final class LibraryVC: MusicalCollectionVC {
 				mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 					guard let strongSelf = self else { return }
 					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
 				}
@@ -128,7 +128,7 @@ final class LibraryVC: MusicalCollectionVC {
 				mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 					guard let strongSelf = self else { return }
 					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-						let arr = artist.albums.compactMap { $0.tracks }.flatMap { $0 }
+						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
 						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
 				}
@@ -137,7 +137,7 @@ final class LibraryVC: MusicalCollectionVC {
 				mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
 					guard let strongSelf = self else { return }
 					strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-						let arr = genre.albums.compactMap { $0.tracks }.flatMap { $0 }
+						let arr = genre.albums.compactMap(\.tracks).flatMap { $0 }
 						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
 				}
