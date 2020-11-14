@@ -172,7 +172,7 @@ struct ShinobuWidget: Widget {
 			ShinobuWidgetEntryView(entry: entry, mpdBridge: mpdBridge)
 		}
 		.configurationDisplayName("Shinobu")
-		.description("This is an example widget.")
+		.description("Displays the currently playing song")
 		.supportedFamilies([.systemSmall, .systemMedium])
 	}
 }
