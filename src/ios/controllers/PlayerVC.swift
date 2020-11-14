@@ -244,6 +244,7 @@ final class PlayerVC: NYXViewController {
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
+		sliderVolume.alpha = 0
 		blurEffectView.contentView.addSubview(sliderVolume)
 
 		// Next track
