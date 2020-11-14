@@ -315,7 +315,8 @@ final class MPDConnection {
 		var path = ""
 		if let song = mpd_recv_song(connection) {
 			if let uri = mpd_song_get_uri(song) {
-				path = String(cString: uri)
+				let tmp = String(cString: uri)
+				path = URL(fileURLWithPath: tmp).deletingLastPathComponent().path
 			}
 		}
 
