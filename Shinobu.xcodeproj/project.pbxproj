@@ -9,26 +9,18 @@
 /* Begin PBXBuildFile section */
 		430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */; };
 		430141E22229307300C68075 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
-		43147ED7227B410400486588 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
-		43147ED8227B415300486588 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
 		431C05BB23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
-		431C05BC23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
 		431C05BE23DB1B35000B844F /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */; };
 		431C05C023DCAECC000B844F /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BF23DCAECC000B844F /* SearchVC.swift */; };
-		4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
 		433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
-		433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
 		433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
-		433EAE2222C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
 		434A169D24756A89001AB0AC /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
-		434A169E24756A89001AB0AC /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
 		434A16A024780329001AB0AC /* SearchResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169F24780329001AB0AC /* SearchResultTableViewCell.swift */; };
 		434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434E517521D56CF000CD88F7 /* AppDelegate.swift */; };
 		434E518021D56CFA00CD88F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 		434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
 		434E518621D570D400CD88F7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 434E518821D570D400CD88F7 /* LaunchScreen.storyboard */; };
 		435715F922AE6625001ED982 /* PrettyDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435715F822AE6625001ED982 /* PrettyDBManager.swift */; };
-		435715FA22AE7810001ED982 /* PrettyDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435715F822AE6625001ED982 /* PrettyDBManager.swift */; };
 		4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358AFF821EB41E2009A3BBF /* NYXControllers.swift */; };
 		4358B01B21EB42B4009A3BBF /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
 		4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */; };
@@ -79,24 +71,64 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
-		43616E482494E661002D6442 /* ld-hook in Resources */ = {isa = PBXBuildFile; fileRef = 43616E462494E661002D6442 /* ld-hook */; };
+		4365C0D4255E80BD00B8E926 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4365C0D3255E80BD00B8E926 /* WidgetKit.framework */; };
+		4365C0D6255E80BD00B8E926 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4365C0D5255E80BD00B8E926 /* SwiftUI.framework */; };
+		4365C0D9255E80BD00B8E926 /* Shinobu_widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4365C0D8255E80BD00B8E926 /* Shinobu_widget.swift */; };
+		4365C0DC255E80BF00B8E926 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4365C0DB255E80BF00B8E926 /* Assets.xcassets */; };
+		4365C0E2255E80BF00B8E926 /* Shinobu_Widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		4365C0F8255E84CC00B8E926 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
+		4365C118255E8FA300B8E926 /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
+		4365C11B255E8FA400B8E926 /* MPDBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDBridge.swift */; };
+		4365C11C255E8FA600B8E926 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
+		4365C11F255E8FA800B8E926 /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
+		4365C122255E8FAA00B8E926 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
+		4365C125255E8FAB00B8E926 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
+		4365C12A255E904200B8E926 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03321EB44C4009A3BBF /* Album.swift */; };
+		4365C12D255E904400B8E926 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03421EB44C4009A3BBF /* Artist.swift */; };
+		4365C130255E904500B8E926 /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03121EB44C4009A3BBF /* Genre.swift */; };
+		4365C133255E904600B8E926 /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03221EB44C4009A3BBF /* MusicalEntity.swift */; };
+		4365C134255E904700B8E926 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03521EB44C4009A3BBF /* Playlist.swift */; };
+		4365C137255E904900B8E926 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03021EB44C4009A3BBF /* Track.swift */; };
+		4365C13A255E905800B8E926 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00A21EB42B4009A3BBF /* String+Extensions.swift */; };
+		4365C13D255E906600B8E926 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00E21EB42B4009A3BBF /* FileManager+Extensions.swift */; };
+		4365C140255E907700B8E926 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
+		4365C143255E907900B8E926 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
+		4365C146255E909400B8E926 /* PrettyDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435715F822AE6625001ED982 /* PrettyDBManager.swift */; };
+		4365C149255E909A00B8E926 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
+		4365C14C255E909B00B8E926 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04221EB44E2009A3BBF /* Logger.swift */; };
+		4365C14F255E909F00B8E926 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03F21EB44E2009A3BBF /* ImageCache.swift */; };
+		4365C152255E90A900B8E926 /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */; };
+		4365C155255E90AB00B8E926 /* NotificationCenter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01021EB42B4009A3BBF /* NotificationCenter+Extensions.swift */; };
+		4365C158255E90B500B8E926 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04B21EB44E2009A3BBF /* Duration.swift */; };
+		4365C15B255E90BF00B8E926 /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01121EB42B4009A3BBF /* Number+Extensions.swift */; };
+		4365C15E255E90CA00B8E926 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */; };
+		4365C161255E90D700B8E926 /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
+		4365C164255E90D900B8E926 /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
+		4365C165255E90DA00B8E926 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00F21EB42B4009A3BBF /* CGPoint+Extensions.swift */; };
+		4365C168255E90DC00B8E926 /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */; };
+		4365C169255E90DD00B8E926 /* CGSize+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00921EB42B4009A3BBF /* CGSize+Extensions.swift */; };
+		4365C16C255E90E200B8E926 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00B21EB42B4009A3BBF /* UIColor+Extensions.swift */; };
+		4365C16F255E90E400B8E926 /* UIDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00D21EB42B4009A3BBF /* UIDevice+Extensions.swift */; };
+		4365C170255E90E500B8E926 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00821EB42B4009A3BBF /* UIView+Extensions.swift */; };
+		4365C173255E90E700B8E926 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */; };
+		4365C177255E90EA00B8E926 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */; };
+		4365C17A255E912300B8E926 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
+		4365C182255ECB8F00B8E926 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
+		4365C194255ED2DC00B8E926 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
+		4365C197255ED2DE00B8E926 /* DownloadCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */; };
+		4365C198255ED2DF00B8E926 /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
+		4365C19B255ED2EB00B8E926 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
 		43793091226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
-		43793092226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
-		439ED9B6225D246F007F2F45 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
 		43B0EE7F227099D200F35115 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
 		43B81FC623B2624C008E8F95 /* DirectoriesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */; };
-		43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00C21EB42B4009A3BBF /* UIImage+Extensions.swift */; };
-		43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00521EB42B4009A3BBF /* CGContext+Extensions.swift */; };
-		43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */; };
 		43B8BAAB22564E980033EA5D /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAA22564E980033EA5D /* Button.swift */; };
 		43B8BAAE2257BE120033EA5D /* TitlesIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAD2257BE120033EA5D /* TitlesIndexView.swift */; };
 		43B8BAB02257BF840033EA5D /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAF2257BF840033EA5D /* LetterView.swift */; };
 		43BF596422BBE99B006F2AA3 /* UpNextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BF596322BBE99B006F2AA3 /* UpNextTableViewCell.swift */; };
 		43C3E8032260C36B00F6F058 /* ThreadedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */; };
-		43C3E8042260C36B00F6F058 /* ThreadedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8022260C36B00F6F058 /* ThreadedDictionary.swift */; };
 		43C3E806226224CB00F6F058 /* PlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E805226224CB00F6F058 /* PlayerVC.swift */; };
 		43C3E808226262F900F6F058 /* ContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E807226262F900F6F058 /* ContainerVC.swift */; };
 		43C3E80A2265BEEC00F6F058 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C3E8092265BEEC00F6F058 /* Slider.swift */; };
@@ -107,53 +139,24 @@
 		43D86E93234A14CA0083C522 /* TypeChoiceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D86E92234A14CA0083C522 /* TypeChoiceVC.swift */; };
 		43DBD7FC22203501009B3B68 /* ServersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FB22203501009B3B68 /* ServersListVC.swift */; };
 		43DBD80022203C01009B3B68 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
-		43DBE585249CE3A90044F331 /* FileManager+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00E21EB42B4009A3BBF /* FileManager+Extensions.swift */; };
 		43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1B225CBB5C00C6A8E5 /* Theming.swift */; };
 		43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1D225CBBB700C6A8E5 /* Theme.swift */; };
 		43DC9F20225CBC1600C6A8E5 /* ShinobuThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F1F225CBC1600C6A8E5 /* ShinobuThemeProvider.swift */; };
 		43DC9F22225CBCE300C6A8E5 /* SubscribableValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DC9F21225CBCE300C6A8E5 /* SubscribableValue.swift */; };
 		43DEA1E02432263D007DCAB8 /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DEA1DF2432263D007DCAB8 /* SearchField.swift */; };
 		43E31299226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
-		43E3129A226F16DE00985C0B /* CGImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E31298226F16DE00985C0B /* CGImage+Extensions.swift */; };
 		43E571DC22B92DD3003C1E5E /* UpNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E571DB22B92DD3003C1E5E /* UpNextVC.swift */; };
 		43EF1AA8232922B100A2FE10 /* UIApplication+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */; };
 		43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */; };
-		43FAE59E224E5D45006843E9 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43FAE59D224E5D45006843E9 /* NotificationCenter.framework */; };
-		43FAE5A1224E5D45006843E9 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FAE5A0224E5D45006843E9 /* TodayViewController.swift */; };
-		43FAE5A4224E5D45006843E9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43FAE5A2224E5D45006843E9 /* MainInterface.storyboard */; };
-		43FAE5A8224E5D45006843E9 /* ShinobuWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 43FAE59B224E5D45006843E9 /* ShinobuWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		43FAE5AE224E5DDA006843E9 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03321EB44C4009A3BBF /* Album.swift */; };
-		43FAE5AF224E5DDA006843E9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03421EB44C4009A3BBF /* Artist.swift */; };
-		43FAE5B0224E5DDA006843E9 /* Genre.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03121EB44C4009A3BBF /* Genre.swift */; };
-		43FAE5B1224E5DDA006843E9 /* MusicalEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03221EB44C4009A3BBF /* MusicalEntity.swift */; };
-		43FAE5B2224E5DDA006843E9 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03521EB44C4009A3BBF /* Playlist.swift */; };
-		43FAE5B3224E5DDA006843E9 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03021EB44C4009A3BBF /* Track.swift */; };
-		43FAE5B4224E5DE5006843E9 /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04B21EB44E2009A3BBF /* Duration.swift */; };
-		43FAE5B5224E5DED006843E9 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00A21EB42B4009A3BBF /* String+Extensions.swift */; };
-		43FAE5B7224E5DF9006843E9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04221EB44E2009A3BBF /* Logger.swift */; };
-		43FAE5B8224E5DFD006843E9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
-		43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00F21EB42B4009A3BBF /* CGPoint+Extensions.swift */; };
-		43FAE5BA224E5E0A006843E9 /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01221EB42B4009A3BBF /* CGRect+Extensions.swift */; };
-		43FAE5BB224E5E0A006843E9 /* CGSize+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B00921EB42B4009A3BBF /* CGSize+Extensions.swift */; };
-		43FAE5BC224E5E35006843E9 /* liblibmpdclient-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */; };
-		43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01821EB42B4009A3BBF /* CoverServer.swift */; };
-		43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01721EB42B4009A3BBF /* MPDServer.swift */; };
-		43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01621EB42B4009A3BBF /* MPDConnection.swift */; };
-		43FAE5C0224E5F73006843E9 /* MPDBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01921EB42B4009A3BBF /* MPDBridge.swift */; };
-		43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServersManager.swift */; };
-		43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */; };
-		43FAE5C4224E5FB5006843E9 /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */; };
-		43FAE5C5224E5FCE006843E9 /* NotificationCenter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01021EB42B4009A3BBF /* NotificationCenter+Extensions.swift */; };
-		43FAE5C8224E69FB006843E9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434E517B21D56CFA00CD88F7 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		43FAE5A6224E5D45006843E9 /* PBXContainerItemProxy */ = {
+		4365C0E0255E80BF00B8E926 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43E89D8F21CC36E00033E501 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 43FAE59A224E5D45006843E9;
-			remoteInfo = Widget;
+			remoteGlobalIDString = 4365C0D1255E80BD00B8E926;
+			remoteInfo = "Shinobu-widgetExtension";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -164,7 +167,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				43FAE5A8224E5D45006843E9 /* ShinobuWidget.appex in Embed App Extensions */,
+				4365C0E2255E80BF00B8E926 /* Shinobu_Widget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,6 +291,21 @@
 		4358B08F21EB9CD1009A3BBF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4358B09121EB9CD5009A3BBF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43616E462494E661002D6442 /* ld-hook */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "ld-hook"; sourceTree = "<group>"; };
+		4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Shinobu_Widget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4365C0D3255E80BD00B8E926 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		4365C0D5255E80BD00B8E926 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		4365C0D8255E80BD00B8E926 /* Shinobu_widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shinobu_widget.swift; sourceTree = "<group>"; };
+		4365C0DB255E80BF00B8E926 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4365C0DD255E80BF00B8E926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4365C17F255EA18E00B8E926 /* Shinobu_Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shinobu_Widget.entitlements; sourceTree = "<group>"; };
+		4365C1A4255EE0D600B8E926 /* fingerprint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fingerprint.h; sourceTree = "<group>"; };
+		4365C1A5255EE0D600B8E926 /* iaf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iaf.h; sourceTree = "<group>"; };
+		4365C1A6255EE0D600B8E926 /* partition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = partition.h; sourceTree = "<group>"; };
+		4365C1A7255EE0D600B8E926 /* replay_gain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = replay_gain.h; sourceTree = "<group>"; };
+		4365C1A8255EE0D600B8E926 /* kvlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kvlist.h; sourceTree = "<group>"; };
+		4365C1A9255EE0D600B8E926 /* neighbor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = neighbor.h; sourceTree = "<group>"; };
+		4365C1AA255EE0D600B8E926 /* binary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = binary.h; sourceTree = "<group>"; };
+		4365C1AB255EE0D600B8E926 /* mount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mount.h; sourceTree = "<group>"; };
 		43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessCoverOperation.swift; sourceTree = "<group>"; };
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
@@ -316,33 +334,29 @@
 		43DEA1DF2432263D007DCAB8 /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
 		43E31298226F16DE00985C0B /* CGImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+Extensions.swift"; sourceTree = "<group>"; };
 		43E571DB22B92DD3003C1E5E /* UpNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpNextVC.swift; sourceTree = "<group>"; };
-		43E89D9721CC36E00033E501 /* Shinobu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		43E89D9721CC36E00033E501 /* Shinobu_App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shinobu_App.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Extensions.swift"; sourceTree = "<group>"; };
 		43FAE595224E2981006843E9 /* NYXNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NYXNavigationTitleView.swift; sourceTree = "<group>"; };
-		43FAE59B224E5D45006843E9 /* ShinobuWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShinobuWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FAE59D224E5D45006843E9 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
-		43FAE5A0224E5D45006843E9 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
-		43FAE5A3224E5D45006843E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		43FAE5A5224E5D45006843E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		43FAE5C6224E6528006843E9 /* Shinobu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shinobu.entitlements; sourceTree = "<group>"; };
-		43FAE5C7224E6582006843E9 /* ShinobuWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShinobuWidget.entitlements; sourceTree = "<group>"; };
+		43FAE5C6224E6528006843E9 /* Shinobu_App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shinobu_App.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4365C0CF255E80BD00B8E926 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4365C0D6255E80BD00B8E926 /* SwiftUI.framework in Frameworks */,
+				4365C0D4255E80BD00B8E926 /* WidgetKit.framework in Frameworks */,
+				4365C0F8255E84CC00B8E926 /* liblibmpdclient-ios.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		43E89D9421CC36E00033E501 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		43FAE598224E5D45006843E9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				43FAE59E224E5D45006843E9 /* NotificationCenter.framework in Frameworks */,
-				43FAE5BC224E5E35006843E9 /* liblibmpdclient-ios.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +384,14 @@
 		434E513021D56BF400CD88F7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				4365C1AA255EE0D600B8E926 /* binary.h */,
+				4365C1A4255EE0D600B8E926 /* fingerprint.h */,
+				4365C1A5255EE0D600B8E926 /* iaf.h */,
+				4365C1A8255EE0D600B8E926 /* kvlist.h */,
+				4365C1AB255EE0D600B8E926 /* mount.h */,
+				4365C1A9255EE0D600B8E926 /* neighbor.h */,
+				4365C1A6255EE0D600B8E926 /* partition.h */,
+				4365C1A7255EE0D600B8E926 /* replay_gain.h */,
 				434E518221D56EA300CD88F7 /* liblibmpdclient-ios.a */,
 				434E513121D56BF400CD88F7 /* connection.h */,
 				434E513221D56BF400CD88F7 /* protocol.h */,
@@ -458,8 +480,7 @@
 			children = (
 				434E517D21D56CFA00CD88F7 /* common */,
 				434E517A21D56CFA00CD88F7 /* ios */,
-				439ED9B8225E08D6007F2F45 /* widget */,
-				434E517F21D56CFA00CD88F7 /* tvos */,
+				4365C0EB255E818800B8E926 /* widget */,
 			);
 			path = rsrc;
 			sourceTree = "<group>";
@@ -470,7 +491,7 @@
 				434E517B21D56CFA00CD88F7 /* Assets.xcassets */,
 				434E517C21D56CFA00CD88F7 /* Info.plist */,
 				434E518821D570D400CD88F7 /* LaunchScreen.storyboard */,
-				43FAE5C6224E6528006843E9 /* Shinobu.entitlements */,
+				43FAE5C6224E6528006843E9 /* Shinobu_App.entitlements */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -482,13 +503,6 @@
 				43616E462494E661002D6442 /* ld-hook */,
 			);
 			path = common;
-			sourceTree = "<group>";
-		};
-		434E517F21D56CFA00CD88F7 /* tvos */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = tvos;
 			sourceTree = "<group>";
 		};
 		4358AFF721EB41E2009A3BBF /* controllers */ = {
@@ -630,6 +644,16 @@
 			path = views;
 			sourceTree = "<group>";
 		};
+		4365C0EB255E818800B8E926 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				4365C0DD255E80BF00B8E926 /* Info.plist */,
+				4365C0DB255E80BF00B8E926 /* Assets.xcassets */,
+				4365C17F255EA18E00B8E926 /* Shinobu_Widget.entitlements */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
 		4384ECD62250E18800F3140C /* settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -649,16 +673,6 @@
 				4358AFF821EB41E2009A3BBF /* NYXControllers.swift */,
 			);
 			path = global;
-			sourceTree = "<group>";
-		};
-		439ED9B8225E08D6007F2F45 /* widget */ = {
-			isa = PBXGroup;
-			children = (
-				43FAE5A5224E5D45006843E9 /* Info.plist */,
-				43FAE5A2224E5D45006843E9 /* MainInterface.storyboard */,
-				43FAE5C7224E6582006843E9 /* ShinobuWidget.entitlements */,
-			);
-			path = widget;
 			sourceTree = "<group>";
 		};
 		43B8BAAC2257A4B80033EA5D /* MusicalCollectionView */ = {
@@ -709,8 +723,8 @@
 		43E89D9821CC36E00033E501 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				43E89D9721CC36E00033E501 /* Shinobu.app */,
-				43FAE59B224E5D45006843E9 /* ShinobuWidget.appex */,
+				43E89D9721CC36E00033E501 /* Shinobu_App.app */,
+				4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -719,6 +733,8 @@
 			isa = PBXGroup;
 			children = (
 				43FAE59D224E5D45006843E9 /* NotificationCenter.framework */,
+				4365C0D3255E80BD00B8E926 /* WidgetKit.framework */,
+				4365C0D5255E80BD00B8E926 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -726,7 +742,7 @@
 		43FAE5AD224E5D7E006843E9 /* widget */ = {
 			isa = PBXGroup;
 			children = (
-				43FAE5A0224E5D45006843E9 /* TodayViewController.swift */,
+				4365C0D8255E80BD00B8E926 /* Shinobu_widget.swift */,
 			);
 			path = widget;
 			sourceTree = "<group>";
@@ -734,9 +750,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		43E89D9621CC36E00033E501 /* Shinobu */ = {
+		4365C0D1255E80BD00B8E926 /* Shinobu_Widget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 43E89DA921CC36E10033E501 /* Build configuration list for PBXNativeTarget "Shinobu" */;
+			buildConfigurationList = 4365C0E3255E80BF00B8E926 /* Build configuration list for PBXNativeTarget "Shinobu_Widget" */;
+			buildPhases = (
+				4365C0CE255E80BD00B8E926 /* Sources */,
+				4365C0CF255E80BD00B8E926 /* Frameworks */,
+				4365C18F255ED0F100B8E926 /* Script: increase build number */,
+				4365C0D0255E80BD00B8E926 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Shinobu_Widget;
+			productName = "Shinobu-widgetExtension";
+			productReference = 4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		43E89D9621CC36E00033E501 /* Shinobu_App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43E89DA921CC36E10033E501 /* Build configuration list for PBXNativeTarget "Shinobu_App" */;
 			buildPhases = (
 				43781B4F22B156A400ACE098 /* SwiftLint */,
 				43E89D9321CC36E00033E501 /* Sources */,
@@ -748,30 +782,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				43FAE5A7224E5D45006843E9 /* PBXTargetDependency */,
+				4365C0E1255E80BF00B8E926 /* PBXTargetDependency */,
 			);
-			name = Shinobu;
+			name = Shinobu_App;
 			productName = Shinobu;
-			productReference = 43E89D9721CC36E00033E501 /* Shinobu.app */;
+			productReference = 43E89D9721CC36E00033E501 /* Shinobu_App.app */;
 			productType = "com.apple.product-type.application";
-		};
-		43FAE59A224E5D45006843E9 /* Shinobu-Widget */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 43FAE5AB224E5D45006843E9 /* Build configuration list for PBXNativeTarget "Shinobu-Widget" */;
-			buildPhases = (
-				4348C59223279A1F00A87A16 /* SwiftLint */,
-				43FAE597224E5D45006843E9 /* Sources */,
-				43FAE598224E5D45006843E9 /* Frameworks */,
-				43FAE599224E5D45006843E9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Shinobu-Widget";
-			productName = Widget;
-			productReference = 43FAE59B224E5D45006843E9 /* ShinobuWidget.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -779,21 +795,16 @@
 		43E89D8F21CC36E00033E501 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Benjamin;
 				TargetAttributes = {
+					4365C0D1255E80BD00B8E926 = {
+						CreatedOnToolsVersion = 12.2;
+					};
 					43E89D9621CC36E00033E501 = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
-					};
-					43FAE59A224E5D45006843E9 = {
-						CreatedOnToolsVersion = 10.2;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -816,13 +827,22 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				43E89D9621CC36E00033E501 /* Shinobu */,
-				43FAE59A224E5D45006843E9 /* Shinobu-Widget */,
+				43E89D9621CC36E00033E501 /* Shinobu_App */,
+				4365C0D1255E80BD00B8E926 /* Shinobu_Widget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4365C0D0255E80BD00B8E926 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4365C0DC255E80BF00B8E926 /* Assets.xcassets in Resources */,
+				4365C182255ECB8F00B8E926 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		43E89D9521CC36E00033E501 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -833,20 +853,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		43FAE599224E5D45006843E9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				43FAE5A4224E5D45006843E9 /* MainInterface.storyboard in Resources */,
-				43616E482494E661002D6442 /* ld-hook in Resources */,
-				43FAE5C8224E69FB006843E9 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4348C59223279A1F00A87A16 /* SwiftLint */ = {
+		4365C18F255ED0F100B8E926 /* Script: increase build number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -855,14 +865,14 @@
 			);
 			inputPaths = (
 			);
-			name = SwiftLint;
+			name = "Script: increase build number";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/widget/Info.plist\n";
 		};
 		43781B4F22B156A400ACE098 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -903,6 +913,54 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4365C0CE255E80BD00B8E926 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4365C0D9255E80BD00B8E926 /* Shinobu_widget.swift in Sources */,
+				4365C164255E90D900B8E926 /* CGImage+Extensions.swift in Sources */,
+				4365C168255E90DC00B8E926 /* CGRect+Extensions.swift in Sources */,
+				4365C19B255ED2EB00B8E926 /* OperationManager.swift in Sources */,
+				4365C197255ED2DE00B8E926 /* DownloadCoverOperation.swift in Sources */,
+				4365C194255ED2DC00B8E926 /* CoverOperations.swift in Sources */,
+				4365C198255ED2DF00B8E926 /* ProcessCoverOperation.swift in Sources */,
+				4365C169255E90DD00B8E926 /* CGSize+Extensions.swift in Sources */,
+				4365C165255E90DA00B8E926 /* CGPoint+Extensions.swift in Sources */,
+				4365C118255E8FA300B8E926 /* CoverServer.swift in Sources */,
+				4365C161255E90D700B8E926 /* CGContext+Extensions.swift in Sources */,
+				4365C11C255E8FA600B8E926 /* MPDConnection.swift in Sources */,
+				4365C16C255E90E200B8E926 /* UIColor+Extensions.swift in Sources */,
+				4365C16F255E90E400B8E926 /* UIDevice+Extensions.swift in Sources */,
+				4365C12D255E904400B8E926 /* Artist.swift in Sources */,
+				4365C130255E904500B8E926 /* Genre.swift in Sources */,
+				4365C173255E90E700B8E926 /* UIViewController+Extensions.swift in Sources */,
+				4365C17A255E912300B8E926 /* Theme.swift in Sources */,
+				4365C177255E90EA00B8E926 /* UIScrollView+Extensions.swift in Sources */,
+				4365C170255E90E500B8E926 /* UIView+Extensions.swift in Sources */,
+				4365C133255E904600B8E926 /* MusicalEntity.swift in Sources */,
+				4365C134255E904700B8E926 /* Playlist.swift in Sources */,
+				4365C15B255E90BF00B8E926 /* Number+Extensions.swift in Sources */,
+				4365C137255E904900B8E926 /* Track.swift in Sources */,
+				4365C15E255E90CA00B8E926 /* UIImage+Extensions.swift in Sources */,
+				4365C14F255E909F00B8E926 /* ImageCache.swift in Sources */,
+				4365C155255E90AB00B8E926 /* NotificationCenter+Extensions.swift in Sources */,
+				4365C152255E90A900B8E926 /* Notification+Extensions.swift in Sources */,
+				4365C13D255E906600B8E926 /* FileManager+Extensions.swift in Sources */,
+				4365C12A255E904200B8E926 /* Album.swift in Sources */,
+				4365C125255E8FAB00B8E926 /* ShinobuServer.swift in Sources */,
+				4365C14C255E909B00B8E926 /* Logger.swift in Sources */,
+				4365C13A255E905800B8E926 /* String+Extensions.swift in Sources */,
+				4365C158255E90B500B8E926 /* Duration.swift in Sources */,
+				4365C122255E8FAA00B8E926 /* ServersManager.swift in Sources */,
+				4365C11F255E8FA800B8E926 /* MPDServer.swift in Sources */,
+				4365C149255E909A00B8E926 /* Message.swift in Sources */,
+				4365C140255E907700B8E926 /* AppDefaults.swift in Sources */,
+				4365C143255E907900B8E926 /* Cache.swift in Sources */,
+				4365C11B255E8FA400B8E926 /* MPDBridge.swift in Sources */,
+				4365C146255E909400B8E926 /* PrettyDBManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		43E89D9321CC36E00033E501 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1000,58 +1058,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		43FAE597224E5D45006843E9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				433EAE1F22C3BA9F009AE208 /* ThreadedObject.swift in Sources */,
-				435715FA22AE7810001ED982 /* PrettyDBManager.swift in Sources */,
-				43147ED8227B415300486588 /* OperationManager.swift in Sources */,
-				43147ED7227B410400486588 /* CoverOperations.swift in Sources */,
-				4324DA43225E23B3000FC209 /* UIColor+Extensions.swift in Sources */,
-				431C05BC23DB14BA000B844F /* Cache.swift in Sources */,
-				439ED9B6225D246F007F2F45 /* Theme.swift in Sources */,
-				43DBE585249CE3A90044F331 /* FileManager+Extensions.swift in Sources */,
-				43B8BAA92254EFBE0033EA5D /* DownloadCoverOperation.swift in Sources */,
-				43B8BAA82254EF060033EA5D /* CGContext+Extensions.swift in Sources */,
-				43B8BAA72254EEEE0033EA5D /* UIImage+Extensions.swift in Sources */,
-				43FAE5C5224E5FCE006843E9 /* NotificationCenter+Extensions.swift in Sources */,
-				43FAE5C4224E5FB5006843E9 /* Notification+Extensions.swift in Sources */,
-				43FAE5BD224E5F73006843E9 /* CoverServer.swift in Sources */,
-				43FAE5BE224E5F73006843E9 /* MPDServer.swift in Sources */,
-				43FAE5BF224E5F73006843E9 /* MPDConnection.swift in Sources */,
-				43FAE5C0224E5F73006843E9 /* MPDBridge.swift in Sources */,
-				43FAE5C2224E5F73006843E9 /* ServersManager.swift in Sources */,
-				43FAE5C3224E5F73006843E9 /* ShinobuServer.swift in Sources */,
-				43E3129A226F16DE00985C0B /* CGImage+Extensions.swift in Sources */,
-				434A169E24756A89001AB0AC /* AppDefaults.swift in Sources */,
-				43C3E8042260C36B00F6F058 /* ThreadedDictionary.swift in Sources */,
-				43FAE5B9224E5E0A006843E9 /* CGPoint+Extensions.swift in Sources */,
-				43FAE5BA224E5E0A006843E9 /* CGRect+Extensions.swift in Sources */,
-				43FAE5BB224E5E0A006843E9 /* CGSize+Extensions.swift in Sources */,
-				43793092226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */,
-				43FAE5B8224E5DFD006843E9 /* Message.swift in Sources */,
-				43FAE5B7224E5DF9006843E9 /* Logger.swift in Sources */,
-				43FAE5B5224E5DED006843E9 /* String+Extensions.swift in Sources */,
-				43FAE5B4224E5DE5006843E9 /* Duration.swift in Sources */,
-				43FAE5AE224E5DDA006843E9 /* Album.swift in Sources */,
-				43FAE5AF224E5DDA006843E9 /* Artist.swift in Sources */,
-				43FAE5B0224E5DDA006843E9 /* Genre.swift in Sources */,
-				43FAE5B1224E5DDA006843E9 /* MusicalEntity.swift in Sources */,
-				43FAE5B2224E5DDA006843E9 /* Playlist.swift in Sources */,
-				43FAE5B3224E5DDA006843E9 /* Track.swift in Sources */,
-				433EAE2222C3BBA3009AE208 /* ThreadedArray.swift in Sources */,
-				43FAE5A1224E5D45006843E9 /* TodayViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		43FAE5A7224E5D45006843E9 /* PBXTargetDependency */ = {
+		4365C0E1255E80BF00B8E926 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 43FAE59A224E5D45006843E9 /* Shinobu-Widget */;
-			targetProxy = 43FAE5A6224E5D45006843E9 /* PBXContainerItemProxy */;
+			target = 4365C0D1255E80BD00B8E926 /* Shinobu_Widget */;
+			targetProxy = 4365C0E0255E80BF00B8E926 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1074,17 +1087,69 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		43FAE5A2224E5D45006843E9 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				43FAE5A3224E5D45006843E9 /* Base */,
-			);
-			name = MainInterface.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4365C0E4255E80BF00B8E926 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3VD3GSF4M4;
+				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = (
+					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
+					"-Wl",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.Shinobu.Shinobu-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4365C0E5255E80BF00B8E926 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3VD3GSF4M4;
+				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.Shinobu.Shinobu-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		43E89DA721CC36E10033E501 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1157,7 +1222,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LLVM_LTO = YES_THIN;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1236,7 +1301,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LLVM_LTO = YES_THIN;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -1266,7 +1331,7 @@
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
 				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES_AGGRESSIVE;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu.entitlements;
+				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
@@ -1277,7 +1342,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1319,7 +1384,7 @@
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
 				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES_AGGRESSIVE;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu.entitlements;
+				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_OPTIMIZATION_LEVEL = s;
@@ -1330,7 +1395,7 @@
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				INFOPLIST_FILE = rsrc/ios/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1351,113 +1416,18 @@
 			};
 			name = Release;
 		};
-		43FAE5A9224E5D45006843E9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
-				CLANG_STATIC_ANALYZER_MODE = deep;
-				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
-				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
-				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
-				CLANG_WARN_CXX0X_EXTENSIONS = YES;
-				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
-				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
-				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES_AGGRESSIVE;
-				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				CODE_SIGN_ENTITLEMENTS = rsrc/widget/ShinobuWidget.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3VD3GSF4M4;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PEDANTIC = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = rsrc/widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/src/common/libmpdclient/src",
-				);
-				MARKETING_VERSION = 1.1;
-				OTHER_LDFLAGS = (
-					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
-					"-Wl",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
-				PRODUCT_NAME = ShinobuWidget;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG WIDGET";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		43FAE5AA224E5D45006843E9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
-				CLANG_STATIC_ANALYZER_MODE = deep;
-				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
-				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
-				CLANG_WARN_ATOMIC_IMPLICIT_SEQ_CST = YES;
-				CLANG_WARN_CXX0X_EXTENSIONS = YES;
-				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
-				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
-				CLANG_WARN_OBJC_INTERFACE_IVARS = YES;
-				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
-				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES_AGGRESSIVE;
-				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
-				CODE_SIGN_ENTITLEMENTS = rsrc/widget/ShinobuWidget.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3VD3GSF4M4;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PEDANTIC = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = rsrc/widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/src/common/libmpdclient/src",
-				);
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.Widget;
-				PRODUCT_NAME = ShinobuWidget;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WIDGET;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4365C0E3255E80BF00B8E926 /* Build configuration list for PBXNativeTarget "Shinobu_Widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4365C0E4255E80BF00B8E926 /* Debug */,
+				4365C0E5255E80BF00B8E926 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		43E89D9221CC36E00033E501 /* Build configuration list for PBXProject "Shinobu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1467,20 +1437,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		43E89DA921CC36E10033E501 /* Build configuration list for PBXNativeTarget "Shinobu" */ = {
+		43E89DA921CC36E10033E501 /* Build configuration list for PBXNativeTarget "Shinobu_App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				43E89DAA21CC36E10033E501 /* Debug */,
 				43E89DAB21CC36E10033E501 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		43FAE5AB224E5D45006843E9 /* Build configuration list for PBXNativeTarget "Shinobu-Widget" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				43FAE5A9224E5D45006843E9 /* Debug */,
-				43FAE5AA224E5D45006843E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

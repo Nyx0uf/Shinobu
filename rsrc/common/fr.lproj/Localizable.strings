@@ -121,3 +121,5 @@
 "lbl_search_library" = "Rechercher dans la bibliothèque";
 "lbl_search" = "Rechercher des";
 "lbl_contextualsearch" = "Recherche contextuelle";
+
+"widget_track_title" = "Titre";

@@ -121,3 +121,5 @@
 "lbl_search_library" = "Search library";
 "lbl_search" = "Search";
 "lbl_contextualsearch" = "Contextual search";
+
+"widget_track_title" = "Track title";

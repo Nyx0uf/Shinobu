@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1020"
+   LastUpgradeVersion = "1220"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "43FAE59A224E5D45006843E9"
-               BuildableName = "ShinobuWidget.appex"
-               BlueprintName = "Shinobu-Widget"
+               BlueprintIdentifier = "4365C0D1255E80BD00B8E926"
+               BuildableName = "Shinobu_Widget.appex"
+               BlueprintName = "Shinobu_Widget"
                ReferencedContainer = "container:Shinobu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "43E89D9621CC36E00033E501"
-               BuildableName = "Shinobu.app"
-               BlueprintName = "Shinobu"
+               BuildableName = "Shinobu_App.app"
+               BlueprintName = "Shinobu_App"
                ReferencedContainer = "container:Shinobu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,15 +42,6 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "43FAE59A224E5D45006843E9"
-            BuildableName = "ShinobuWidget.appex"
-            BlueprintName = "Shinobu-Widget"
-            ReferencedContainer = "container:Shinobu.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
       </Testables>
    </TestAction>
@@ -71,12 +62,38 @@
          BundleIdentifier = "com.apple.springboard">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "43FAE59A224E5D45006843E9"
-            BuildableName = "ShinobuWidget.appex"
-            BlueprintName = "Shinobu-Widget"
+            BlueprintIdentifier = "4365C0D1255E80BD00B8E926"
+            BuildableName = "Shinobu_Widget.appex"
+            BlueprintName = "Shinobu_Widget"
             ReferencedContainer = "container:Shinobu.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "43E89D9621CC36E00033E501"
+            BuildableName = "Shinobu_App.app"
+            BlueprintName = "Shinobu_App"
+            ReferencedContainer = "container:Shinobu.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "_XCWidgetKind"
+            value = ""
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetDefaultView"
+            value = "timeline"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "_XCWidgetFamily"
+            value = "medium"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -90,8 +107,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "43E89D9621CC36E00033E501"
-            BuildableName = "Shinobu.app"
-            BlueprintName = "Shinobu"
+            BuildableName = "Shinobu_App.app"
+            BlueprintName = "Shinobu_App"
             ReferencedContainer = "container:Shinobu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

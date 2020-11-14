@@ -26,6 +26,8 @@ extension FileManager {
 
 	func cachesDirectory() -> URL {
 		// That's ok cachesDirectory should always return smth
-		return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		//return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.shinobu.settings")!
+		return containerURL
 	}
 }

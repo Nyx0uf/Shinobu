@@ -41,17 +41,16 @@ struct PrettyDBManager {
 		}
 
 		do {
-			let json = try JSONSerialization.jsonObject(with: jsonData, options: [])
-			guard let albumsJson = json as? [[String: String]] else {
+			guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [[String: Any]] else {
 				return []
 			}
 
 			var albums = [Album]()
-			for albumJson in albumsJson {
-				guard let name = albumJson["name"], let path = albumJson["path"] else { continue }
-				let year = albumJson["year"] ?? ""
-				let artist = albumJson["artist"] ?? ""
-				let genre = albumJson["genre"] ?? ""
+			for albumJson in json {
+				guard let name = albumJson["name"] as? String, let path = albumJson["path"] as? String else { continue }
+				let year = albumJson["year"] as? String ?? ""
+				let artist = albumJson["artist"] as? String ?? ""
+				let genre = albumJson["genre"] as? String ?? ""
 				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(album)
 			}

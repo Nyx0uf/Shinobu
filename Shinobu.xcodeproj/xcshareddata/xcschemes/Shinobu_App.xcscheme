@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "43E89D9621CC36E00033E501"
-               BuildableName = "Shinobu.app"
-               BlueprintName = "Shinobu"
+               BuildableName = "Shinobu_App.app"
+               BlueprintName = "Shinobu_App"
                ReferencedContainer = "container:Shinobu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,8 +31,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "43E89D9621CC36E00033E501"
-            BuildableName = "Shinobu.app"
-            BlueprintName = "Shinobu"
+            BuildableName = "Shinobu_App.app"
+            BlueprintName = "Shinobu_App"
             ReferencedContainer = "container:Shinobu.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,8 +55,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "43E89D9621CC36E00033E501"
-            BuildableName = "Shinobu.app"
-            BlueprintName = "Shinobu"
+            BuildableName = "Shinobu_App.app"
+            BlueprintName = "Shinobu_App"
             ReferencedContainer = "container:Shinobu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -72,8 +72,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "43E89D9621CC36E00033E501"
-            BuildableName = "Shinobu.app"
-            BlueprintName = "Shinobu"
+            BuildableName = "Shinobu_App.app"
+            BlueprintName = "Shinobu_App"
             ReferencedContainer = "container:Shinobu.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
