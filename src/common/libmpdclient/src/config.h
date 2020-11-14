@@ -11,11 +11,13 @@
 
 #define DEFAULT_SOCKET "/var/run/mpd/socket"
 
-#define ENABLE_TCP 1
+#define ENABLE_TCP
 
-#define HAVE_GETADDRINFO 1
+#define HAVE_GETADDRINFO
+
+#define HAVE_STRNDUP
 
 #define PACKAGE "libmpdclient"
 
-#define VERSION "2.13"
+#define VERSION "2.16"
 

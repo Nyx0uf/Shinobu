@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 #ifndef MPD_IASYNC_H
 #define MPD_IASYNC_H
 
-#include "async.h"
+#include <mpd/async.h>
 
 struct mpd_error_info;
 
@@ -43,5 +43,16 @@ struct mpd_error_info;
 bool
 mpd_async_copy_error(const struct mpd_async *async,
 		     struct mpd_error_info *dest);
+
+/**
+ * Sets the object's error condition.
+ *
+ * @return true if there was no error in #async, false if an error
+ * condition is stored in #async; the #error is only set if there was no error
+ * previously present
+ */
+bool
+mpd_async_set_error(struct mpd_async *async, enum mpd_error error,
+		    const char *error_message);
 
 #endif

@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -36,10 +36,11 @@
 #ifndef MPD_SYNC_H
 #define MPD_SYNC_H
 
-#include "compiler.h"
+#include <mpd/compiler.h>
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include <stddef.h>
 
 struct timeval;
 struct mpd_async;
@@ -70,5 +71,16 @@ mpd_sync_flush(struct mpd_async *async, const struct timeval *tv);
  */
 char *
 mpd_sync_recv_line(struct mpd_async *async, const struct timeval *tv);
+
+/**
+ * Synchronous wrapper for mpd_async_recv_raw() which waits until at
+ * least one byte was received (or an error has occurred).
+ *
+ * @return the number of bytes copied to the destination buffer or 0
+ * on error
+ */
+size_t
+mpd_sync_recv_raw(struct mpd_async *async, const struct timeval *tv,
+		  void *dest, size_t length);
 
 #endif

@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -29,11 +29,16 @@
 #ifndef MPD_INTERNAL_H
 #define MPD_INTERNAL_H
 
-#include "pair.h"
+#include <mpd/pair.h>
 
 #include "ierror.h"
 
+/* for struct timeval */
+#ifdef _WIN32
+#include <winsock2.h>
+#else
 #include <sys/time.h>
+#endif
 
 /**
  * This opaque object represents a connection to a MPD server.  Call

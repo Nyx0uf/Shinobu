@@ -26,27 +26,24 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef LIBMPDCLIENT_RESOLVER_H
-#define LIBMPDCLIENT_RESOLVER_H
+#ifndef MPD_INTERNAL_AUDIO_FORMAT_H
+#define MPD_INTERNAL_AUDIO_FORMAT_H
 
-#include <stddef.h>
+#include <mpd/audio_format.h>
 
-struct resolver;
+#include <stdbool.h>
 
-struct resolver_address {
-	int family;
-	int protocol;
-	size_t addrlen;
-	const struct sockaddr *addr;
-};
-
-struct resolver *
-resolver_new(const char *host, unsigned port);
+struct mpd_audio_format;
 
 void
-resolver_free(struct resolver *resolver);
+mpd_parse_audio_format(struct mpd_audio_format *audio_format, const char *p);
 
-const struct resolver_address *
-resolver_next(struct resolver *resolver);
+static inline bool
+mpd_audio_format_is_empty(const struct mpd_audio_format *audio_format)
+{
+	return audio_format->sample_rate == 0 &&
+		audio_format->bits == MPD_SAMPLE_FORMAT_UNDEFINED &&
+		audio_format->channels == 0;
+}
 
 #endif

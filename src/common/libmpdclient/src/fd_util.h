@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
 #ifndef FD_UTIL_H
 #define FD_UTIL_H
 
-#include "socket.h"
+#include <mpd/socket.h>
 
 /**
  * Wrapper for socket(), which sets the CLOEXEC and the NONBLOCK flag

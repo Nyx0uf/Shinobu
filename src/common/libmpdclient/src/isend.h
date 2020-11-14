@@ -1,5 +1,5 @@
 /* libmpdclient
-   (c) 2003-2017 The Music Player Daemon Project
+   (c) 2003-2019 The Music Player Daemon Project
    This project's homepage is: http://www.musicpd.org
 
    Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,14 @@ mpd_send_range_command(struct mpd_connection *connection, const char *command,
 		       unsigned arg1, unsigned arg2);
 
 /**
+ * Send command with one string argument followed by a range argument.
+ */
+bool
+mpd_send_s_range_command(struct mpd_connection *connection,
+			 const char *command, const char *arg1,
+			 unsigned start, unsigned end);
+
+/**
  * Send command with one integer argument followed by a range argument.
  */
 bool
@@ -94,6 +102,10 @@ bool
 mpd_send_range_u_command(struct mpd_connection *connection,
 			 const char *command,
 			 unsigned start, unsigned end, unsigned arg2);
+bool
+mpd_send_u_frange_command(struct mpd_connection *connection,
+			  const char *command, unsigned arg1,
+			  float start, float end);
 
 bool
 mpd_send_ll_command(struct mpd_connection *connection, const char *command,

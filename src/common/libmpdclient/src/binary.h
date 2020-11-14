@@ -13,6 +13,10 @@
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 
+   - Neither the name of the Music Player Daemon nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
    ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -26,27 +30,22 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef LIBMPDCLIENT_RESOLVER_H
-#define LIBMPDCLIENT_RESOLVER_H
+/*! \file
+ * \brief MPD client library
+ *
+ * Do not include this header directly.  Use mpd/client.h instead.
+ */
+
+#ifndef MPD_BINARY_H
+#define MPD_BINARY_H
 
 #include <stddef.h>
 
-struct resolver;
-
-struct resolver_address {
-	int family;
-	int protocol;
-	size_t addrlen;
-	const struct sockaddr *addr;
+struct mpd_binary {
+        /** the binary data */
+        void *data;
+        /** the size of the binary data */
+        size_t size;
 };
-
-struct resolver *
-resolver_new(const char *host, unsigned port);
-
-void
-resolver_free(struct resolver *resolver);
-
-const struct resolver_address *
-resolver_next(struct resolver *resolver);
 
 #endif
