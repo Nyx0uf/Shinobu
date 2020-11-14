@@ -43,7 +43,7 @@ def create_ipa(configuration='Release') -> bool:
     # Create xcarchive
     path_build = "build"
     path_xcarchive = f"{path_build}/Shinobu.xcarchive"
-    os.system(f"xcodebuild -project Shinobu.xcodeproj -scheme shinobu-ios -sdk iphoneos -configuration {configuration} archive -archivePath {path_xcarchive}")
+    os.system(f"xcodebuild -project Shinobu.xcodeproj -scheme Shinobu_App -sdk iphoneos -configuration {configuration} archive -archivePath {path_xcarchive}")
     # create ipa from the xcarchive
     os.system(f"xcodebuild -exportArchive -archivePath {path_xcarchive} -exportOptionsPlist utils/export_options.plist -exportPath {path_build}")
     # Re-swap libmpdclient
