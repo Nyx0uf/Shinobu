@@ -47,10 +47,10 @@ struct PrettyDBManager {
 
 			var albums = [Album]()
 			for albumJson in json {
-				guard let name = albumJson["name"] as? String, let path = albumJson["path"] as? String else { continue }
-				let year = albumJson["year"] as? String ?? ""
-				let artist = albumJson["artist"] as? String ?? ""
-				let genre = albumJson["genre"] as? String ?? ""
+				guard let name = albumJson["n"] as? String, let path = albumJson["p"] as? String else { continue }
+				let year = albumJson["y"] as? String ?? ""
+				let artist = albumJson["a"] as? String ?? ""
+				let genre = albumJson["g"] as? String ?? ""
 				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(album)
 			}

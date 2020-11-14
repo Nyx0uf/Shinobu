@@ -889,7 +889,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "xcrun agvtool next-version -all\n";
+			shellScript = "#xcrun agvtool next-version -all\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1079,7 +1079,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4448;
+				CURRENT_PROJECT_VERSION = 4454;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1112,7 +1112,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4448;
+				CURRENT_PROJECT_VERSION = 4454;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1316,7 +1316,7 @@
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4448;
+				CURRENT_PROJECT_VERSION = 4454;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -1370,7 +1370,7 @@
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4448;
+				CURRENT_PROJECT_VERSION = 4454;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
