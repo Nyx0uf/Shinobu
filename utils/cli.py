@@ -25,10 +25,15 @@ def create_version(new_version: str) -> bool:
         if pv <= version.parse(t):
             print(f"[!] ERROR: Version {new_version} <= {t}")
             return False
+
+    # Edit pbxproj
+    os.system(f"xcrun agvtool new-marketing-version {new_version}")
+    # Commit
+    os.system("git add rsrc/ios/Info.plist rsrc/widget/Info.plist Shinobu.xcodeproj")
+    os.system(f"git commit -m 'version {new_version}'")
     # git tag
     os.system(f'git tag -a {new_version} -m "Version {new_version}"')
 
-    # TODO: Edit pbxproj
     return True
 
 def push_to_git():

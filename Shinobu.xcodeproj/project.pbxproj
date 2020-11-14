@@ -756,7 +756,6 @@
 			buildPhases = (
 				4365C0CE255E80BD00B8E926 /* Sources */,
 				4365C0CF255E80BD00B8E926 /* Frameworks */,
-				4365C18F255ED0F100B8E926 /* Script: increase build number */,
 				4365C0D0255E80BD00B8E926 /* Resources */,
 			);
 			buildRules = (
@@ -856,24 +855,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4365C18F255ED0F100B8E926 /* Script: increase build number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Script: increase build number";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/widget/Info.plist\n";
-		};
 		43781B4F22B156A400ACE098 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -908,7 +889,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist)\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/ios/Info.plist\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}\"/rsrc/widget/Info.plist\n";
+			shellScript = "xcrun agvtool next-version -all\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1098,6 +1079,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4448;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1107,7 +1089,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
 					"-Wl",
@@ -1130,6 +1112,7 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/widget/Shinobu_Widget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4448;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				INFOPLIST_FILE = rsrc/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
@@ -1139,7 +1122,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.Shinobu.Shinobu-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1333,6 +1316,7 @@
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4448;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -1351,7 +1335,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
 					"-Wl",
@@ -1386,6 +1370,7 @@
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				CODE_SIGN_ENTITLEMENTS = rsrc/ios/Shinobu_App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4448;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -1404,7 +1389,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/src/common/libmpdclient/src",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
