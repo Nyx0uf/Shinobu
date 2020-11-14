@@ -81,8 +81,8 @@ extension UpNextVC {
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = track.name
 		cell.lblArtistAlbum.text = "\(track.artist)"
-		let minutes = track.duration.minutesRepresentation().minutes
-		let seconds = track.duration.minutesRepresentation().seconds
+		let minutes = track.duration.minutes
+		let seconds = track.duration.seconds
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
 		let v = UIView()

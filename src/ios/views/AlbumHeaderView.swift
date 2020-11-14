@@ -104,7 +104,7 @@ final class AlbumHeaderView: UIView {
 		if let tracks = album.tracks {
 			stra += "\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))\n"
 			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
-			let minutes = total.seconds / 60
+			let minutes = total.value / 60
 			stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))\n"
 		}
 		accessibilityLabel = stra

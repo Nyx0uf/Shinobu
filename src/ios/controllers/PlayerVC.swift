@@ -377,7 +377,7 @@ final class PlayerVC: NYXViewController {
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let elapsed = userInfos[PLAYER_ELAPSED_KEY] as? Int else { return }
 
 		if isMinified { // Components to update when minified
-			progress.width = (CGFloat(elapsed) * (view.width - coverView.width)) / CGFloat(track.duration.seconds)
+			progress.width = (CGFloat(elapsed) * (view.width - coverView.width)) / CGFloat(track.duration.value)
 			guard let isRandom = userInfos[PLAYER_RANDOM_KEY] as? Bool else { return }
 			doubleTap.isEnabled = isRandom == false
 		} else { // Components to update when full screen
@@ -387,7 +387,7 @@ final class PlayerVC: NYXViewController {
 				sliderTrack.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderTrack.value * 100) / sliderTrack.maximumValue))%"
 			}
 
-			let elapsedDuration = Duration(seconds: elapsed)
+			let elapsedDuration = Duration(seconds: UInt(elapsed))
 			let remainingDuration = track.duration - elapsedDuration
 			lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
 			lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
@@ -409,7 +409,7 @@ final class PlayerVC: NYXViewController {
 					(self.view as? UIImageView)?.image = cover
 					self.lblTrack.text = track.name
 					self.sliderTrack.label.text = track.name
-					self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
+					self.sliderTrack.maximumValue = CGFloat(track.duration.value)
 					self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
 					self.lblArtist.text = track.artist
 					self.lblAlbum.text = album.name
@@ -426,7 +426,7 @@ final class PlayerVC: NYXViewController {
 							(self.view as? UIImageView)?.image = large
 							self.lblTrack.text = track.name
 							self.sliderTrack.label.text = track.name
-							self.sliderTrack.maximumValue = CGFloat(track.duration.seconds)
+							self.sliderTrack.maximumValue = CGFloat(track.duration.value)
 							self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
 							self.lblArtist.text = track.artist
 							self.lblAlbum.text = album.name

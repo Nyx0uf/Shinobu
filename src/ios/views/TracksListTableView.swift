@@ -61,8 +61,8 @@ extension TracksListTableView: UITableViewDataSource {
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
 		cell.lblTitle.text = track.name
-		let minutes = track.duration.minutesRepresentation().minutes
-		let seconds = track.duration.minutesRepresentation().seconds
+		let minutes = track.duration.minutes
+		let seconds = track.duration.seconds
 		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
 
 		let currentTrack = myDelegate?.getCurrentTrack()

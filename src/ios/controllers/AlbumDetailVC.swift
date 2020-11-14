@@ -88,7 +88,7 @@ final class AlbumDetailVC: NYXViewController {
 	override func updateNavigationTitle() {
 		if let tracks = album.tracks {
 			let total = tracks.reduce(Duration(seconds: 0)) { $0 + $1.duration }
-			let minutes = total.seconds / 60
+			let minutes = total.value / 60
 			titleView.setMainText("\(tracks.count) \(tracks.count == 1 ? NYXLocalizedString("lbl_track") : NYXLocalizedString("lbl_tracks"))", detailText: "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes"))")
 		} else {
 			titleView.setMainText("0 \(NYXLocalizedString("lbl_tracks"))", detailText: nil)
