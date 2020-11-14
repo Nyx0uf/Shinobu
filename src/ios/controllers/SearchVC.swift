@@ -466,7 +466,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
 			albumsartistsResults.removeAll()
-			tableView.reloadSections(IndexSet([1, 2, 3]), with: .fade)
+			tableView.reloadSections(IndexSet([0, 1, 2]), with: .fade)
 			return
 		}
 		guard let searchText = text else { return }
@@ -481,7 +481,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
 		}
 
-		tableView.reloadSections(IndexSet([1, 2, 3]), with: .none)
+		tableView.reloadSections(IndexSet([0, 1, 2]), with: .none)
 	}
 }
 
