@@ -35,9 +35,7 @@ extension UIImage {
 			return false
 		}
 
-		CGImageDestinationSetProperties(destination, [kCGImageDestinationLossyCompressionQuality as String: 0.75] as CFDictionary)
-
-		CGImageDestinationAddImage(destination, cgImage, nil)
+		CGImageDestinationAddImage(destination, cgImage, [kCGImageDestinationLossyCompressionQuality as String: 0.75] as CFDictionary)
 
 		return CGImageDestinationFinalize(destination)
 	}
