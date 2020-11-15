@@ -42,8 +42,7 @@ extension UIImage {
 
 	class func loadFromFileURL(_ url: URL) -> UIImage? {
 		guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-		let props = [kCGImageSourceShouldCache as String: true]
-		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, props as CFDictionary?) else { return nil }
+		guard let imageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, [kCGImageSourceShouldCache as String: true] as CFDictionary?) else { return nil }
 		return UIImage(cgImage: imageRef)
 	}
 
