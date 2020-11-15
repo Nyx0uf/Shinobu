@@ -10,6 +10,10 @@ struct Duration {
 	let minutes: UInt
 	// Seconds representation
 	let seconds: UInt
+	// MM:SS
+	lazy var minutesDescription: String = {
+		return "\(self.minutes):\(self.seconds < 10 ? "0" : "")\(self.seconds)"
+	}()
 
 	// MARK: - Initializers
 	init(seconds: UInt) {
@@ -20,11 +24,6 @@ struct Duration {
 		self.minutes = secs / 60
 		secs -= minutes * 60
 		self.seconds = secs
-	}
-
-	// MARK: - Public
-	func minutesRepresentationAsString(_ delim: String = ":") -> String {
-		return "\(self.minutes)\(delim)\(self.seconds < 10 ? "0" : "")\(self.seconds)"
 	}
 }
 

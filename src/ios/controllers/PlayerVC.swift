@@ -387,10 +387,10 @@ final class PlayerVC: NYXViewController {
 				sliderTrack.accessibilityLabel = "\(NYXLocalizedString("lbl_track_position")) : \(Int((sliderTrack.value * 100) / sliderTrack.maximumValue))%"
 			}
 
-			let elapsedDuration = Duration(seconds: UInt(elapsed))
-			let remainingDuration = track.duration - elapsedDuration
-			lblElapsedDuration.text = elapsedDuration.minutesRepresentationAsString()
-			lblRemainingDuration.text = "-\(remainingDuration.minutesRepresentationAsString())"
+			var elapsedDuration = Duration(seconds: UInt(elapsed))
+			var remainingDuration = track.duration - elapsedDuration
+			lblElapsedDuration.text = elapsedDuration.minutesDescription
+			lblRemainingDuration.text = "-\(remainingDuration.minutesDescription)"
 
 			updateRandomAndRepeatState()
 		}

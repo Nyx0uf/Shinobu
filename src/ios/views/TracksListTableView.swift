@@ -61,9 +61,7 @@ extension TracksListTableView: UITableViewDataSource {
 		let track = tracks[indexPath.row]
 		cell.lblTrack.text = String(track.trackNumber)
 		cell.lblTitle.text = track.name
-		let minutes = track.duration.minutes
-		let seconds = track.duration.seconds
-		cell.lblDuration.text = "\(minutes):\(seconds < 10 ? "0" : "")\(seconds)"
+		cell.lblDuration.text = track.duration.minutesDescription
 
 		let currentTrack = myDelegate?.getCurrentTrack()
 		if currentTrack != nil && currentTrack == track {
@@ -78,11 +76,11 @@ extension TracksListTableView: UITableViewDataSource {
 
 		// Accessibility
 		var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
-		if minutes > 0 {
-			stra += "\(minutes) \(minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
+		if track.duration.minutes > 0 {
+			stra += "\(track.duration.minutes) \(track.duration.minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
 		}
-		if seconds > 0 {
-			stra += "\(seconds) \(seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
+		if track.duration.seconds > 0 {
+			stra += "\(track.duration.seconds) \(track.duration.seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
 		}
 		cell.accessibilityLabel = stra
 
