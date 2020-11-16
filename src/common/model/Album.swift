@@ -42,6 +42,8 @@ final class Album: MusicalEntity {
 		self.year = year
 		self.path = path
 		self.uniqueIdentifier = path.sha256()
+		// below also yield an unique string since an album path is unique, and is almost 10x faster
+		//self.uniqueIdentifier = path.unicodeScalars.map { .init($0.value, radix: 16) } .joined()
 		super.init(name: name)
 	}
 

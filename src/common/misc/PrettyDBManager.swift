@@ -45,6 +45,7 @@ struct PrettyDBManager {
 				return []
 			}
 
+			//let start = CFAbsoluteTimeGetCurrent()
 			var albums = [Album]()
 			for albumJson in json {
 				guard let name = albumJson["n"] as? String, let path = albumJson["p"] as? String else { continue }
@@ -54,6 +55,23 @@ struct PrettyDBManager {
 				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(album)
 			}
+			//let end = CFAbsoluteTimeGetCurrent()
+			//print("\(end - start)s")
+
+//			var albums = [Album]()
+//			var lock = os_unfair_lock_s()
+//			_ = DispatchQueue.global(qos: .userInitiated)
+//			DispatchQueue.concurrentPerform(iterations: json.count) { idx in
+//				let albumJson = json[idx]
+//				guard let name = albumJson["n"] as? String, let path = albumJson["p"] as? String else { return }
+//				let year = albumJson["y"] as? String ?? ""
+//				let artist = albumJson["a"] as? String ?? ""
+//				let genre = albumJson["g"] as? String ?? ""
+//				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
+//				os_unfair_lock_lock(&lock)
+//				albums.append(album)
+//				os_unfair_lock_unlock(&lock)
+//			}
 
 			return albums
 		} catch {

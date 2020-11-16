@@ -13,7 +13,7 @@ final class ImageCache {
 		self.cache = Cache<String, UIImage>()
 		self.cache.countLimit = 60
 		// URL cache
-		URLCache.shared = URLCache(memoryCapacity: 4.MB(), diskCapacity: 32.MB(), diskPath: nil)
+		URLCache.shared = URLCache(memoryCapacity: 4.MB, diskCapacity: 32.MB, diskPath: nil)
 	}
 
 	// MARK: - Public

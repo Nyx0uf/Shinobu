@@ -1,13 +1,9 @@
 import Foundation
 
 extension Int {
-	func KB() -> Int {
-		self * 1024
-	}
+	var KB: Int { self * 1024 }
 
-	func MB() -> Int {
-		self * 1048576
-	}
+	var MB: Int { self * 1048576 }
 }
 
 // MARK: - Clamp
