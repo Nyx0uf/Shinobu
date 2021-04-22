@@ -2,7 +2,6 @@
 "lbl_ok" = "OK";
 "lbl_optional" = "Optional";
 "lbl_by" = "by";
-"lbl_played" = "played";
 "lbl_megabytes" = "MB";
 "lbl_error" = "Error";
 "lbl_enabled" = "Enabled";
@@ -20,8 +19,6 @@
 "lbl_seconds" = "seconds";
 "lbl_play" = "Play";
 "lbl_pause" = "Pause";
-"lbl_next_track" = "Next track";
-"lbl_previous_track" = "Previous track";
 "lbl_volume" = "Volume";
 "lbl_track_position" = "Track position";
 "lbl_random_enable" = "Enable random";
@@ -32,13 +29,9 @@
 "lbl_header_server_zeroconf" = "server found";
 "lbl_header_servers_zeroconf" = "servers found";
 "lbl_search_zeroconf" = "Search nearby servers";
-"lbl_version" = "Version";
 "lbl_behaviour" = "Behaviour";
 "lbl_search" = "Search";
 "lbl_fuzzysearch" = "Fuzzy search";
-"lbl_troubleshoot" = "Troubleshooting";
-"lbl_enable_logging" = "Enable logging";
-"lbl_send_logs" = "Send logs";
 "lbl_volume_control_disabled" = "Volume control is disabled";
 "lbl_update_db" = "Update database";
 
@@ -50,9 +43,6 @@
 "lbl_alert_servercfg_error_name" = "The name of the server must be specified";
 "lbl_alert_purge_cache_title" = "Images cache deletion";
 "lbl_alert_purge_cache_msg" = "Do you really want to proceed ?";
-"lbl_alert_server_need_check" = "Check your configuration";
-"lbl_alert_logsexport_fail_msg" = "Exporting logs failed";
-"lbl_alert_nomailaccount_msg" = "No email account configured";
 "lbl_alert_update_mpd_failed" = "Failed to update MPD database";
 "lbl_alert_update_mpd_succeeded" = "Successfully updated MPD database";
 
@@ -64,29 +54,22 @@
 "lbl_server_no_output_enabled" = "No outputs enabled";
 "lbl_server_no_output_available" = "No outputs available";
 "lbl_server_defaultname" = "My MPD Server";
-"lbl_server_coverurl" = "URL";
 "lbl_server_covername" = "Cover filename";
 "lbl_server_coverclearcache" = "Clear cache";
 "lbl_server_section_cover" = "Cover Art";
 "lbl_server_section_server" = "MPD server";
 
-"lbl_section_home" = "Library";
-"lbl_section_server" = "MPD Server";
 "lbl_section_settings" = "Settings";
-"lbl_section_database" = "Database";
 
 "lbl_pref_shaketoplayrandom" = "Shake to play random album";
 "lbl_pref_useprettydb" = "Use pretty_mpd_db";
 "lbl_pref_appearance" = "Appearance";
 "lbl_pref_columns" = "Number of columns";
-"lbl_pref_theme_light" = "Light theme";
-"lbl_pref_theme_dark" = "Dark theme";
 "lbl_pref_tint_color" = "Tint color";
 "lbl_pref_browse_by_dir" = "Browse by directories";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
-"lbl_genre" = "Genre";
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artist";
 "lbl_artists" = "Artists";
@@ -94,8 +77,6 @@
 "lbl_albumartists" = "Album artists";
 "lbl_playlist" = "Playlist";
 "lbl_playlists" = "Playlists";
-"lbl_song" = "Song";
-"lbl_songs" = "Songs";
 "lbl_add_to_playlist" = "Add to playlist";
 "lbl_remove_from_playlist" = "Remove from the playlist";
 "lbl_create_playlist" = "Create a new playlist";
@@ -110,11 +91,6 @@
 "lbl_message_no_mpd_server" = "No MPD server configured";
 
 "lbl_header_server_list" = "Server";
-"lbl_header_servers_list" = "Servers";
-"lbl_current_selected_server" = "the current selected server";
-"lbl_current_selected_server_not" = "not the current selected server";
-"lbl_add_mpd_server" = "Add a server";
-"lbl_add_one" = "Add one";
 "lbl_no_zc_servers" = "No server found";
 "lbl_no_outputs" = "No outputs";
 "lbl_no_search_results" = "No results";
