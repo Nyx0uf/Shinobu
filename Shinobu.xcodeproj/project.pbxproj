@@ -122,6 +122,9 @@
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
 		43A654D0224BAC860056A55A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
+		43AFA0AD2563E30E0022C11F /* PlayerVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */; };
+		43AFA0B3256417250022C11F /* LibraryVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFA0B2256417250022C11F /* LibraryVC_ipad.swift */; };
+		43AFA0B7256417970022C11F /* MusicalCollectionVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43AFA0B6256417970022C11F /* MusicalCollectionVC_ipad.swift */; };
 		43B0EE7F227099D200F35115 /* CoverOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0EE7E227099D200F35115 /* CoverOperations.swift */; };
 		43B81FC623B2624C008E8F95 /* DirectoriesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */; };
 		43B8BAAB22564E980033EA5D /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B8BAAA22564E980033EA5D /* Button.swift */; };
@@ -310,6 +313,9 @@
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVC_ipad.swift; sourceTree = "<group>"; };
+		43AFA0B2256417250022C11F /* LibraryVC_ipad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryVC_ipad.swift; sourceTree = "<group>"; };
+		43AFA0B6256417970022C11F /* MusicalCollectionVC_ipad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC_ipad.swift; sourceTree = "<group>"; };
 		43B0EE7E227099D200F35115 /* CoverOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoverOperations.swift; sourceTree = "<group>"; };
 		43B81FC523B2624C008E8F95 /* DirectoriesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoriesVC.swift; sourceTree = "<group>"; };
 		43B8BAAA22564E980033EA5D /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
@@ -508,6 +514,7 @@
 		4358AFF721EB41E2009A3BBF /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				43AFA0AB2563E2EF0022C11F /* ipad */,
 				4384ECD72250E1B000F3140C /* global */,
 				4384ECD62250E18800F3140C /* settings */,
 				4358B06521EB47A7009A3BBF /* AlbumDetailVC.swift */,
@@ -673,6 +680,16 @@
 				4358AFF821EB41E2009A3BBF /* NYXControllers.swift */,
 			);
 			path = global;
+			sourceTree = "<group>";
+		};
+		43AFA0AB2563E2EF0022C11F /* ipad */ = {
+			isa = PBXGroup;
+			children = (
+				43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */,
+				43AFA0B2256417250022C11F /* LibraryVC_ipad.swift */,
+				43AFA0B6256417970022C11F /* MusicalCollectionVC_ipad.swift */,
+			);
+			path = ipad;
 			sourceTree = "<group>";
 		};
 		43B8BAAC2257A4B80033EA5D /* MusicalCollectionView */ = {
@@ -984,6 +1001,7 @@
 				4358B05921EB44E2009A3BBF /* Duration.swift in Sources */,
 				4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */,
 				43A654D0224BAC860056A55A /* Message.swift in Sources */,
+				43AFA0B3256417250022C11F /* LibraryVC_ipad.swift in Sources */,
 				4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */,
 				4358B07121EB47A8009A3BBF /* PlaylistsAddVC.swift in Sources */,
 				4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */,
@@ -1015,6 +1033,7 @@
 				431C05C023DCAECC000B844F /* SearchVC.swift in Sources */,
 				4358B07321EB47A8009A3BBF /* LibraryVC.swift in Sources */,
 				43DC9F1E225CBBB700C6A8E5 /* Theme.swift in Sources */,
+				43AFA0B7256417970022C11F /* MusicalCollectionVC_ipad.swift in Sources */,
 				430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */,
 				430141E22229307300C68075 /* ServersManager.swift in Sources */,
 				4358B01F21EB42B4009A3BBF /* CGSize+Extensions.swift in Sources */,
@@ -1024,6 +1043,7 @@
 				43C3E808226262F900F6F058 /* ContainerVC.swift in Sources */,
 				4358B05021EB44E2009A3BBF /* Logger.swift in Sources */,
 				43C3E80A2265BEEC00F6F058 /* Slider.swift in Sources */,
+				43AFA0AD2563E30E0022C11F /* PlayerVC_ipad.swift in Sources */,
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,

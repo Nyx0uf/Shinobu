@@ -31,7 +31,7 @@ final class ShinobuServerTableViewCell: UITableViewCell {
 		super.layoutSubviews()
 
 		label.frame = CGRect(16, (64 - 32) / 2, 144, 32)
-		toggle.frame = CGRect(UIScreen.main.bounds.width - 16 - toggle.width, (64 - toggle.height) / 2, toggle.size)
+		toggle.frame = CGRect(self.contentView.width - 16 - toggle.width, (64 - toggle.height) / 2, toggle.size)
 	}
 
 	override func setSelected(_ selected: Bool, animated: Bool) {

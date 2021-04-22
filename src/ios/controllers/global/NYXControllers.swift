@@ -32,14 +32,14 @@ final class NYXNavigationController: UINavigationController, Themed {
 		if let topViewController = topViewController {
 			return topViewController.supportedInterfaceOrientations
 		}
-		return .all
+		return UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
 		if let topViewController = topViewController {
 			return topViewController.preferredInterfaceOrientationForPresentation
 		}
-		return .portrait
+		return UIDevice.current.isPad() ? .landscapeLeft : .portrait
 	}
 
 	func applyTheme(_ theme: Theme) {
