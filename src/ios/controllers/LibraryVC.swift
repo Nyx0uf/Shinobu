@@ -59,7 +59,7 @@ final class LibraryVC: MusicalCollectionVC {
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
-			if let server = ServersManager().getSelectedServer() {
+			if let server = ServerManager().getServer() {
 				// Data source
 				mpdBridge.server = server.mpd
 				let resultDataSource = mpdBridge.initialize()
@@ -152,8 +152,8 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Buttons actions
 	@objc func showServersListAction(_ sender: Any?) {
-		let serversListVC = ServersListVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: serversListVC)
+		let serverVC = ServerVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: serverVC)
 		nvc.presentationController?.delegate = self
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}

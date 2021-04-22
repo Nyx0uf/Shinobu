@@ -8,7 +8,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 # FEATURES
 
-- Multi-server support (Can register many servers but control one at a time)
+- Multi-server support (only on the branch **feat/multi-servers**)
 - Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
 - Search, *global* or *contextual*, *normal* or *fuzzy*
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
@@ -21,16 +21,13 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - Normal & Dark modes, 5 tint colors (blue, green, pink, orange, yellow)
 - 🇬🇧 and 🇫🇷 localized
 
-
 # TODO
 
 - iPad version
 - Apple TV version
 - An App icon, I have 0 design skills, if someone wants to help
 
-
 ![screenshot](https://static.whine.fr/images/2019/shinobu2.gif)
-
 
 # INSTALLATION
 
@@ -42,11 +39,9 @@ To install **Shinobu** you will need macOS, so you have two choices, either you 
 4. Plug your iPhone and hit the Build & Run button.
 5. Head to the [wiki](https://github.com/Nyx0uf/shinobu/wiki) for app settings and configuration help.
 
-
 # ISSUES
 
 Please open an [issue](https://github.com/Nyx0uf/shinobu/issues).
-
 
 # LICENSE
 

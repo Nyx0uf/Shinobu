@@ -29,7 +29,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// MPD servers manager
-	private let serversManager: ServersManager
+	private let serverManager: ServerManager
 	// Items splitted by section title
 	private(set) var orderedItems = [String: [MusicalEntity]]()
 	// Items splitted by section title
@@ -44,7 +44,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 		self.mpdBridge = mpdBridge
 		self.musicalEntityType = type
 		self.delegate = delegate
-		self.serversManager = ServersManager()
+		self.serverManager = ServerManager()
 	}
 
 	// MARK: - Public
@@ -125,9 +125,9 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 		}
 
 		// Get local URL for cover
-		guard serversManager.getSelectedServer()?.covers != nil else { return }
+		guard serverManager.getServer()?.covers != nil else { return }
 
-		//if let cover = UIImage.loadFromFileURL(album.localCoverURL) {
+		// if let cover = UIImage.loadFromFileURL(album.localCoverURL) {
 		if let cover = album.asset(ofSize: .medium) {
 			cell.image = cover
 			ImageCache.shared[album.uniqueIdentifier] = cover

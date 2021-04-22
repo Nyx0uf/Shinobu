@@ -28,7 +28,7 @@ final class MessageView: UIView {
 
 		super.init(frame: frame)
 
-		//self.isUserInteractionEnabled = true
+		// self.isUserInteractionEnabled = true
 		self.isAccessibilityElement = false
 
 		self.imageView = UIImageView(frame: CGRect(8, statusHeight + (40 - 24) / 2, 24, 24))

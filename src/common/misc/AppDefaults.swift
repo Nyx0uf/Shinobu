@@ -7,8 +7,7 @@ struct AppDefaults {
 
 	private struct Key {
 		static let firstRunDate = "firstRunDate"
-		static let servers = "servers"
-		static let selectedServerName = "selectedServerName"
+		static let server = "server"
 		static let coversDirectory = "coversDirectory"
 		static let coversSize = "coversSize"
 		static let pref_fuzzySearch = "pref_fuzzySearch"
@@ -30,21 +29,12 @@ struct AppDefaults {
 		return true
 	}()
 
-	static var servers: Data? {
+	static var server: Data? {
 		get {
-			return data(for: Key.servers)
+			return data(for: Key.server)
 		}
 		set {
-			setData(for: Key.servers, newValue)
-		}
-	}
-
-	static var selectedServerName: String? {
-		get {
-			return string(for: Key.selectedServerName)
-		}
-		set {
-			setString(for: Key.selectedServerName, newValue)
+			setData(for: Key.server, newValue)
 		}
 	}
 
@@ -149,7 +139,6 @@ struct AppDefaults {
 
 	static func registerDefaults() {
 		let defaultsValues: [String: Any] = [
-			Key.selectedServerName: "",
 			Key.coversDirectory: "",
 			Key.coversSize: Double(180),
 			Key.lastTypeLibrary: MusicalEntityType.albums.rawValue,

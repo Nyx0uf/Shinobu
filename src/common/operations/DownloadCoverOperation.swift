@@ -32,7 +32,7 @@ final class DownloadCoverOperation: Operation {
 	// URL
 	private var coverURL: URL?
 	// Server manager
-	private let serversManager: ServersManager
+	private let serverManager: ServerManager
 	// Album
 	private let album: Album
 	// Save data flag
@@ -44,7 +44,7 @@ final class DownloadCoverOperation: Operation {
 	init(album: Album, save: Bool = true) {
 		self.album = album
 		self.save = save
-		self.serversManager = ServersManager()
+		self.serverManager = ServerManager()
 	}
 
 	// MARK: - Override
@@ -64,7 +64,7 @@ final class DownloadCoverOperation: Operation {
 		}
 
 		// No mpd server configured, abort
-		guard let server = serversManager.getSelectedServer()?.covers else {
+		guard let server = serverManager.getServer()?.covers else {
 			Logger.shared.log(type: .error, message: "No cover server")
 			isFinished = true
 			return
@@ -94,7 +94,7 @@ final class DownloadCoverOperation: Operation {
 extension DownloadCoverOperation: URLSessionDataDelegate {
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
 		if isCancelled {
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -105,7 +105,7 @@ extension DownloadCoverOperation: URLSessionDataDelegate {
 
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		if isCancelled {
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return

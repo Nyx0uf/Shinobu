@@ -7,7 +7,7 @@ final class SearchVC: NYXViewController {
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// Servers managerto get covers
-	private let serversManager: ServersManager
+	private let serverManager: ServerManager
 	// Blurred background view
 	private let blurEffectView = UIVisualEffectView()
 	// Search view (searchbar + tableview)
@@ -40,7 +40,7 @@ final class SearchVC: NYXViewController {
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
-		self.serversManager = ServersManager()
+		self.serverManager = ServerManager()
 
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -218,7 +218,7 @@ extension SearchVC: UITableViewDataSource {
 			let album = albumsResults[indexPath.row]
 			ent = album
 
-			if serversManager.getSelectedServer()?.covers != nil {
+			if serverManager.getServer()?.covers != nil {
 				if let cover = album.asset(ofSize: .small) {
 					img = cover
 					highlight = false
