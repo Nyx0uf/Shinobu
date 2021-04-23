@@ -19,7 +19,7 @@ final class LibraryVC: MusicalCollectionVC {
 		super.viewDidLoad()
 
 		// Servers button
-		let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServersListAction(_:)))
+		let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServerSettingAction(_:)))
 		serversButton.accessibilityLabel = NYXLocalizedString("lbl_header_server_list")
 		// Settings button
 		let settingsButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-settings"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
@@ -52,7 +52,7 @@ final class LibraryVC: MusicalCollectionVC {
 	// MARK: - Private
 	private func handleFirstLaunch() {
 		if AppDefaults.isFirstRun == true {
-			showServersListAction(nil)
+			showServerSettingAction(nil)
 		}
 	}
 
@@ -79,13 +79,6 @@ final class LibraryVC: MusicalCollectionVC {
 				}
 			}
 		}
-
-		// Deselect cell
-//		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
-//			for indexPath in idxs {
-//				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
-//			}
-//		}
 
 		// When entity type menu was displayed
 		if navMenuDisplayed == false {
@@ -151,7 +144,7 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	// MARK: - Buttons actions
-	@objc func showServersListAction(_ sender: Any?) {
+	@objc func showServerSettingAction(_ sender: Any?) {
 		let serverVC = ServerVC(mpdBridge: mpdBridge)
 		let nvc = NYXNavigationController(rootViewController: serverVC)
 		nvc.presentationController?.delegate = self
@@ -397,9 +390,13 @@ extension LibraryVC {
 
 // MARK: - UIAdaptivePresentationControllerDelegate
 extension LibraryVC {
-	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+	func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
 	}
+
+//	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+//		checkInit()
+//	}
 
 	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
 		return self.modalStyleForController(controller)

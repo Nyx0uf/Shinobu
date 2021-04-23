@@ -163,10 +163,16 @@ final class ServerVC: NYXTableViewController {
 			let editAction = UIAlertAction(title: NYXLocalizedString("lbl_modify"), style: .cancel)
 			alertController.addAction(editAction)
 			alertController.addAction(UIAlertAction(title: NYXLocalizedString("lbl_close"), style: .destructive, handler: { _ in
+				if let pvc = self.navigationController?.presentationController {
+					pvc.delegate?.presentationControllerWillDismiss?(pvc)
+				}
 				self.navigationController?.dismiss(animated: true, completion: nil)
 			}))
 			navigationController?.present(alertController, animated: true, completion: nil)
 		} else {
+			if let pvc = self.navigationController?.presentationController {
+				pvc.delegate?.presentationControllerWillDismiss?(pvc)
+			}
 			self.navigationController?.dismiss(animated: true, completion: nil)
 		}
 	}
