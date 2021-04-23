@@ -139,7 +139,7 @@ struct AppDefaults {
 
 	static func registerDefaults() {
 		let defaultsValues: [String: Any] = [
-			Key.coversDirectory: "",
+			Key.coversDirectory: "covers",
 			Key.coversSize: Double(180),
 			Key.lastTypeLibrary: MusicalEntityType.albums.rawValue,
 			Key.lastTypeGenre: MusicalEntityType.albums.rawValue,

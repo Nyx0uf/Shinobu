@@ -57,5 +57,5 @@ extension ShinobuServer: CustomStringConvertible {
 }
 
 func == (lhs: ShinobuServer, rhs: ShinobuServer) -> Bool {
-	lhs.mpd == rhs.mpd
+	lhs.mpd == rhs.mpd && lhs.covers == rhs.covers
 }
