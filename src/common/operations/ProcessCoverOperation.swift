@@ -22,6 +22,13 @@ final class ProcessCoverOperation: Operation {
 
 	// MARK: - Override
 	override func main() {
+		var images = [AssetSize: UIImage?]()
+		defer {
+			if let block = callback {
+				block(images[.large] ?? nil, images[.medium] ?? nil, images[.small] ?? nil)
+			}
+		}
+
 		// Operation is cancelled, abort
 		if isCancelled {
 			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
@@ -38,7 +45,6 @@ final class ProcessCoverOperation: Operation {
 			return
 		}
 
-		var images = [AssetSize: UIImage?]()
 		for (assetSize, cropSize) in cropSizes {
 			let cropped = cover.smartCropped(toSize: cropSize, highQuality: false, screenScale: true)
 			if let thumbnail = cropped {
@@ -47,10 +53,6 @@ final class ProcessCoverOperation: Operation {
 				}
 			}
 			images[assetSize] = cropped
-		}
-
-		if let block = callback {
-			block(images[.large] ?? nil, images[.medium] ?? nil, images[.small] ?? nil)
 		}
 	}
 
