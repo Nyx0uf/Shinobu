@@ -8,7 +8,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 # FEATURES
 
-- Multi-server support (only on the branch **feat/multi-servers**)
+- Multi-server support (only on the branch [feat/multi-servers](https://github.com/Nyx0uf/shinobu/tree/feat/multi-servers))
 - Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
 - Search, *global* or *contextual*, *normal* or *fuzzy*
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
