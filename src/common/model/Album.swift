@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 enum AssetSize: String {
 	case small = "s"
@@ -23,7 +24,7 @@ final class Album: MusicalEntity {
 	// Local URL for the cover
 	private(set) lazy var localCoverURL: URL = {
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(AppDefaults.coversDirectory, isDirectory: true).appendingPathComponent(self.uniqueIdentifier)
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(Defaults[.coversDirectory], isDirectory: true).appendingPathComponent(self.uniqueIdentifier)
 		if FileManager.default.fileExists(atPath: coversDirectoryURL.absoluteString) == false {
 			try! FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
 		}

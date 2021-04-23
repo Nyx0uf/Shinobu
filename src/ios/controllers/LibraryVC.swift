@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class LibraryVC: MusicalCollectionVC {
 	// MARK: - Private properties
@@ -9,7 +10,7 @@ final class LibraryVC: MusicalCollectionVC {
 	override init(mpdBridge: MPDBridge) {
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeLibrary, delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: Defaults[.lastTypeLibrary], delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -51,7 +52,7 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Private
 	private func handleFirstLaunch() {
-		if AppDefaults.isFirstRun == true {
+		if Defaults.isFirstRun == true {
 			showServerSettingAction(nil)
 		}
 	}
@@ -298,7 +299,7 @@ final class LibraryVC: MusicalCollectionVC {
 			return
 		}
 
-		AppDefaults.lastTypeLibrary = type
+		Defaults[.lastTypeLibrary] = type
 
 		// Refresh view
 		mpdBridge.entitiesForType(type) { (entities) in
@@ -365,7 +366,7 @@ extension LibraryVC {
 
 	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
-			if AppDefaults.pref_shakeToPlayRandom == false {
+			if Defaults[.pref_shakeToPlayRandom] == false {
 				return
 			}
 

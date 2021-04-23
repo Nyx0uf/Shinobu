@@ -3,12 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		430141E022283BB200C68075 /* ShinobuServerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */; };
 		430141E22229307300C68075 /* ServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430141E12229307300C68075 /* ServerManager.swift */; };
+		43076F71263318AF00F445B5 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 43076F70263318AF00F445B5 /* Defaults */; };
+		43076F7526331AA000F445B5 /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 43076F7426331AA000F445B5 /* Defaults */; };
 		431C05BB23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
 		431C05BE23DB1B35000B844F /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */; };
 		431C05C023DCAECC000B844F /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BF23DCAECC000B844F /* SearchVC.swift */; };
@@ -344,6 +346,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43076F7526331AA000F445B5 /* Defaults in Frameworks */,
 				4365C0D6255E80BD00B8E926 /* SwiftUI.framework in Frameworks */,
 				4365C0D4255E80BD00B8E926 /* WidgetKit.framework in Frameworks */,
 				4365C0F8255E84CC00B8E926 /* liblibmpdclient-ios.a in Frameworks */,
@@ -354,6 +357,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43076F71263318AF00F445B5 /* Defaults in Frameworks */,
 				434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -760,6 +764,9 @@
 			dependencies = (
 			);
 			name = Shinobu_Widget;
+			packageProductDependencies = (
+				43076F7426331AA000F445B5 /* Defaults */,
+			);
 			productName = "Shinobu-widgetExtension";
 			productReference = 4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -781,6 +788,9 @@
 				4365C0E1255E80BF00B8E926 /* PBXTargetDependency */,
 			);
 			name = Shinobu_App;
+			packageProductDependencies = (
+				43076F70263318AF00F445B5 /* Defaults */,
+			);
 			productName = Shinobu;
 			productReference = 43E89D9721CC36E00033E501 /* Shinobu_App.app */;
 			productType = "com.apple.product-type.application";
@@ -819,6 +829,9 @@
 				fr,
 			);
 			mainGroup = 43E89D8E21CC36E00033E501;
+			packageReferences = (
+				43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */,
+			);
 			productRefGroup = 43E89D9821CC36E00033E501 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1440,6 +1453,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/Defaults";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		43076F70263318AF00F445B5 /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
+		};
+		43076F7426331AA000F445B5 /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 43E89D8F21CC36E00033E501 /* Project object */;
 }

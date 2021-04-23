@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class ImageCache {
 	// MARK: - Public properties
@@ -25,7 +26,7 @@ final class ImageCache {
 		}
 
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(AppDefaults.coversDirectory)
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(Defaults[.coversDirectory])
 
 		do {
 			try FileManager.default.removeItem(at: coversDirectoryURL)

@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class GenreDetailVC: MusicalCollectionVC {
 	// MARK: - Public properties
@@ -15,7 +16,7 @@ final class GenreDetailVC: MusicalCollectionVC {
 
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeGenre, delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: Defaults[.lastTypeGenre], delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -68,7 +69,7 @@ final class GenreDetailVC: MusicalCollectionVC {
 			return
 		}
 
-		AppDefaults.lastTypeGenre = type
+		Defaults[.lastTypeGenre] = type
 		switch type {
 		case .albums:
 			mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in

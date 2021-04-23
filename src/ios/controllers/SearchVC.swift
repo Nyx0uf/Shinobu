@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 private let margin = CGFloat(10)
 
@@ -471,7 +472,7 @@ extension SearchVC: SearchFieldDelegate {
 		}
 		guard let searchText = text else { return }
 
-		if AppDefaults.pref_fuzzySearch {
+		if Defaults[.pref_fuzzySearch] {
 			albumsResults = albums.filter { $0.name.fuzzySearch(withString: searchText) }
 			artistsResults = artists.filter { $0.name.fuzzySearch(withString: searchText) }
 			albumsartistsResults = albumsartists.filter { $0.name.fuzzySearch(withString: searchText) }

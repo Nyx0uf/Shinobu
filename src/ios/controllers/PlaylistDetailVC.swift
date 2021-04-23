@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class PlaylistDetailVC: NYXViewController {
 	// MARK: - Private properties
@@ -36,7 +37,7 @@ final class PlaylistDetailVC: NYXViewController {
 		}
 
 		// Album header view
-		let coverSize = AppDefaults.coversSize
+		let coverSize = Defaults[.coversSize]
 		headerView = UIImageView(frame: CGRect(0, navigationController?.navigationBar.frame.maxY ?? defaultHeight, view.width, coverSize))
 		view.addSubview(headerView)
 

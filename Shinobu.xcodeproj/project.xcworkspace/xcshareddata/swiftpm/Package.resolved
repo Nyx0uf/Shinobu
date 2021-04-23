@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Defaults",
+        "repositoryURL": "https://github.com/sindresorhus/Defaults",
+        "state": {
+          "branch": null,
+          "revision": "229dea452fee8d2205f56a12e5c21dfec00948f2",
+          "version": "4.2.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

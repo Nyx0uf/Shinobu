@@ -4,7 +4,7 @@ struct Theme {
 	var tintColor: UIColor
 }
 
-public enum TintColorType: Int, CaseIterable {
+public enum TintColorType: Int, CaseIterable, Codable {
 	case blue = 1
 	case green = 2
 	case pink = 3

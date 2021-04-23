@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 struct CoverOperations {
 	//
@@ -42,7 +43,7 @@ struct CoverOperations {
 
 	private static func cropSizes() -> [AssetSize: CGSize] {
 		return [.small: CGSize(48, 48),
-				.medium: CGSize(AppDefaults.coversSize, AppDefaults.coversSize),
+				.medium: CGSize(Defaults[.coversSize], Defaults[.coversSize]),
 				.large: CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)]
 
 	}

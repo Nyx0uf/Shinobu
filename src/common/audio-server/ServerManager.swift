@@ -1,4 +1,5 @@
 import Foundation
+import Defaults
 
 final class ServerManager {
 	// MARK: - Public
@@ -11,7 +12,7 @@ final class ServerManager {
 		let encoder = JSONEncoder()
 		do {
 			let newServersAsData = try encoder.encode(server)
-			AppDefaults.server = newServersAsData
+			Defaults[.server] = newServersAsData
 		} catch let error {
 			Logger.shared.log(error: error)
 		}
@@ -20,7 +21,7 @@ final class ServerManager {
 	func getServer() -> ShinobuServer? {
 		let decoder = JSONDecoder()
 		var server: ShinobuServer?
-		if let serversAsData = AppDefaults.server {
+		if let serversAsData = Defaults[.server] {
 			do {
 				server = try decoder.decode(ShinobuServer.self, from: serversAsData)
 			} catch let error {

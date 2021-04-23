@@ -151,7 +151,6 @@ struct ShinobuWidget: Widget {
 	private var mpdBridge = MPDBridge(usePrettyDB: true, isDirectoryBased: false)
 
 	init() {
-		AppDefaults.registerDefaults()
 		Logger.shared.initialize()
 
 		if let server = ServerManager().getServer() {

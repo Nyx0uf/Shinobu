@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class ContainerVC: UIViewController {
 	// MARK: - Private properties
@@ -57,9 +58,9 @@ final class ContainerVC: UIViewController {
 			directoriesVC = nil
 		}
 
-		self.mpdBridge = MPDBridge(usePrettyDB: AppDefaults.pref_usePrettyDB, isDirectoryBased: AppDefaults.pref_browseByDirectory)
+		self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
 
-		if AppDefaults.pref_browseByDirectory == false {
+		if Defaults[.pref_browseByDirectory] == false {
 			libraryVC = LibraryVC(mpdBridge: mpdBridge)
 			navController = NYXNavigationController(rootViewController: libraryVC)
 		} else {
