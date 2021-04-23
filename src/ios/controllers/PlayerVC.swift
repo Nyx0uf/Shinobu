@@ -112,6 +112,7 @@ final class PlayerVC: NYXViewController {
 		coverView.layer.cornerRadius = 5
 		coverView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		coverView.layer.masksToBounds = true
+		coverView.backgroundColor = UIColor(rgb: 0x222222)
 		blurEffectView.contentView.addSubview(coverView)
 
 		// Next button
