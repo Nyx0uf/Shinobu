@@ -27,7 +27,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 - Apple TV version
 - An App icon, I have 0 design skills, if someone wants to help
 
-![screenshot](https://static.whine.fr/images/2019/shinobu2.gif)
+![screenshot](https://static.whine.fr/images/2019/shinobu.jpg)
 
 # INSTALLATION
 
