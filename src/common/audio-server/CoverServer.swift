@@ -1,6 +1,8 @@
 import Foundation
+import Logging
 
 private let SLASH = Character("/")
+private let logger = Logger(label: "logger.coverserver")
 
 struct CoverServer: Codable, Equatable {
 	// Coding keys
@@ -37,18 +39,18 @@ struct CoverServer: Codable, Equatable {
 	// MARK: - Public
 	public func coverURLForPath(_ path: String) -> URL? {
 		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName) {
-			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
+			logger.error("The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
 			return nil
 		}
 
 		guard var urlComponents = URLComponents(string: hostname) else {
-			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
+			logger.error("Unable to create URL components for <\(hostname)>")
 			return nil
 		}
 		urlComponents.port = Int(port)
 
 		guard let urlHostname = URL(string: hostname) else {
-			Logger.shared.log(type: .error, message: "Unable to create URL hostname for <\(hostname)>")
+			logger.error("Unable to create URL hostname for <\(hostname)>")
 			return nil
 		}
 		var urlPath = urlHostname.path
@@ -72,7 +74,7 @@ struct CoverServer: Codable, Equatable {
 		urlComponents.path = urlPath
 
 		guard let tmpURL = urlComponents.url else {
-			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
+			logger.error("URL error <\(urlComponents.description)>")
 			return nil
 		}
 
@@ -92,19 +94,19 @@ struct CoverServer: Codable, Equatable {
 
 	public func URLWithPath(_ path: String) -> URL? {
 		if String.isNullOrWhiteSpace(hostname) || String.isNullOrWhiteSpace(coverName) {
-			Logger.shared.log(type: .error, message: "The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
+			logger.error("The web server configured is invalid. hostname = \(hostname) coverName = \(coverName)")
 			return nil
 		}
 
 		guard var urlComponents = URLComponents(string: hostname) else {
-			Logger.shared.log(type: .error, message: "Unable to create URL components for <\(hostname)>")
+			logger.error("Unable to create URL components for <\(hostname)>")
 			return nil
 		}
 		urlComponents.port = Int(port)
 		urlComponents.path = "\(path.first != nil && path.first! != "/" ? "/" : "")\(path)" // force / suffix
 
 		guard let tmpURL = urlComponents.url else {
-			Logger.shared.log(type: .error, message: "URL error <\(urlComponents.description)>")
+			logger.error("URL error <\(urlComponents.description)>")
 			return nil
 		}
 

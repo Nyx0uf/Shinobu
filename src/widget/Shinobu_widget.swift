@@ -151,8 +151,6 @@ struct ShinobuWidget: Widget {
 	private var mpdBridge = MPDBridge(usePrettyDB: true, isDirectoryBased: false)
 
 	init() {
-		Logger.shared.initialize()
-
 		if let server = ServerManager().getServer() {
 			// Data source
 			mpdBridge.server = server.mpd

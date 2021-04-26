@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 
 struct PrettyDBManager {
 	static func albums() -> [Album] {
@@ -35,7 +36,7 @@ struct PrettyDBManager {
 
 		guard let resp = response, resp.statusCode == 200, let jsonData = data else {
 			if let err = error {
-				Logger.shared.log(error: err)
+				Logger(label: "logger.prettydbmanager").error(Logger.Message(stringLiteral: err.localizedDescription))
 			}
 			return []
 		}

@@ -49,7 +49,6 @@
 		4358B03B21EB44C5009A3BBF /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03521EB44C4009A3BBF /* Playlist.swift */; };
 		4358B04C21EB44E2009A3BBF /* DownloadCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */; };
 		4358B04D21EB44E2009A3BBF /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03F21EB44E2009A3BBF /* ImageCache.swift */; };
-		4358B05021EB44E2009A3BBF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04221EB44E2009A3BBF /* Logger.swift */; };
 		4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */; };
 		4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */; };
 		4358B05621EB44E2009A3BBF /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
@@ -73,6 +72,8 @@
 		4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08121EB47C2009A3BBF /* MusicalCollectionView.swift */; };
 		4358B08B21EB47C2009A3BBF /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B08221EB47C2009A3BBF /* MessageView.swift */; };
 		4358B08E21EB9CD1009A3BBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4358B09021EB9CD1009A3BBF /* Localizable.strings */; };
+		436042BF2635BDAA0098DCF5 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 436042BE2635BDAA0098DCF5 /* Logging */; };
+		436042C52635C3A10098DCF5 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 436042C42635C3A10098DCF5 /* Logging */; };
 		4365C0D4255E80BD00B8E926 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4365C0D3255E80BD00B8E926 /* WidgetKit.framework */; };
 		4365C0D6255E80BD00B8E926 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4365C0D5255E80BD00B8E926 /* SwiftUI.framework */; };
 		4365C0D9255E80BD00B8E926 /* Shinobu_widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4365C0D8255E80BD00B8E926 /* Shinobu_widget.swift */; };
@@ -97,7 +98,6 @@
 		4365C143255E907900B8E926 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
 		4365C146255E909400B8E926 /* PrettyDBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435715F822AE6625001ED982 /* PrettyDBManager.swift */; };
 		4365C149255E909A00B8E926 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A654CF224BAC860056A55A /* Message.swift */; };
-		4365C14C255E909B00B8E926 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04221EB44E2009A3BBF /* Logger.swift */; };
 		4365C14F255E909F00B8E926 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03F21EB44E2009A3BBF /* ImageCache.swift */; };
 		4365C152255E90A900B8E926 /* Notification+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */; };
 		4365C155255E90AB00B8E926 /* NotificationCenter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B01021EB42B4009A3BBF /* NotificationCenter+Extensions.swift */; };
@@ -266,7 +266,6 @@
 		4358B03521EB44C4009A3BBF /* Playlist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadCoverOperation.swift; sourceTree = "<group>"; };
 		4358B03F21EB44E2009A3BBF /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
-		4358B04221EB44E2009A3BBF /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4358B04321EB44E2009A3BBF /* ZeroConfExplorer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZeroConfExplorer.swift; sourceTree = "<group>"; };
 		4358B04421EB44E2009A3BBF /* Notification+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Notification+Extensions.swift"; sourceTree = "<group>"; };
 		4358B04821EB44E2009A3BBF /* OperationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperationManager.swift; sourceTree = "<group>"; };
@@ -350,6 +349,7 @@
 				4365C0D6255E80BD00B8E926 /* SwiftUI.framework in Frameworks */,
 				4365C0D4255E80BD00B8E926 /* WidgetKit.framework in Frameworks */,
 				4365C0F8255E84CC00B8E926 /* liblibmpdclient-ios.a in Frameworks */,
+				436042C52635C3A10098DCF5 /* Logging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +357,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				436042BF2635BDAA0098DCF5 /* Logging in Frameworks */,
 				43076F71263318AF00F445B5 /* Defaults in Frameworks */,
 				434E518321D56EA300CD88F7 /* liblibmpdclient-ios.a in Frameworks */,
 			);
@@ -610,7 +611,6 @@
 				431C05BA23DB14BA000B844F /* Cache.swift */,
 				4358B04B21EB44E2009A3BBF /* Duration.swift */,
 				4358B03F21EB44E2009A3BBF /* ImageCache.swift */,
-				4358B04221EB44E2009A3BBF /* Logger.swift */,
 				43A654CF224BAC860056A55A /* Message.swift */,
 				4358B04821EB44E2009A3BBF /* OperationManager.swift */,
 				435715F822AE6625001ED982 /* PrettyDBManager.swift */,
@@ -766,6 +766,7 @@
 			name = Shinobu_Widget;
 			packageProductDependencies = (
 				43076F7426331AA000F445B5 /* Defaults */,
+				436042C42635C3A10098DCF5 /* Logging */,
 			);
 			productName = "Shinobu-widgetExtension";
 			productReference = 4365C0D2255E80BD00B8E926 /* Shinobu_Widget.appex */;
@@ -790,6 +791,7 @@
 			name = Shinobu_App;
 			packageProductDependencies = (
 				43076F70263318AF00F445B5 /* Defaults */,
+				436042BE2635BDAA0098DCF5 /* Logging */,
 			);
 			productName = Shinobu;
 			productReference = 43E89D9721CC36E00033E501 /* Shinobu_App.app */;
@@ -831,6 +833,7 @@
 			mainGroup = 43E89D8E21CC36E00033E501;
 			packageReferences = (
 				43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */,
+				436042BD2635BDAA0098DCF5 /* XCRemoteSwiftPackageReference "swift-log" */,
 			);
 			productRefGroup = 43E89D9821CC36E00033E501 /* Products */;
 			projectDirPath = "";
@@ -939,7 +942,6 @@
 				4365C13D255E906600B8E926 /* FileManager+Extensions.swift in Sources */,
 				4365C12A255E904200B8E926 /* Album.swift in Sources */,
 				4365C125255E8FAB00B8E926 /* ShinobuServer.swift in Sources */,
-				4365C14C255E909B00B8E926 /* Logger.swift in Sources */,
 				4365C13A255E905800B8E926 /* String+Extensions.swift in Sources */,
 				4365C158255E90B500B8E926 /* Duration.swift in Sources */,
 				4365C122255E8FAA00B8E926 /* ServerManager.swift in Sources */,
@@ -1031,7 +1033,6 @@
 				433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */,
 				43793091226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */,
 				43C3E808226262F900F6F058 /* ContainerVC.swift in Sources */,
-				4358B05021EB44E2009A3BBF /* Logger.swift in Sources */,
 				43C3E80A2265BEEC00F6F058 /* Slider.swift in Sources */,
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
@@ -1463,6 +1464,14 @@
 				minimumVersion = 4.2.2;
 			};
 		};
+		436042BD2635BDAA0098DCF5 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1475,6 +1484,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 43076F6F263318AF00F445B5 /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
+		};
+		436042BE2635BDAA0098DCF5 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 436042BD2635BDAA0098DCF5 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+		436042C42635C3A10098DCF5 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 436042BD2635BDAA0098DCF5 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

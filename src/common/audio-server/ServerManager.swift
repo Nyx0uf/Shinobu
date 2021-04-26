@@ -1,7 +1,11 @@
 import Foundation
 import Defaults
+import Logging
 
 final class ServerManager {
+	// Logger
+	private let logger = Logger(label: "logger.servermanager")
+
 	// MARK: - Public
 	func handleServer(_ server: ShinobuServer) {
 		let current = getServer()
@@ -14,7 +18,7 @@ final class ServerManager {
 			let newServersAsData = try encoder.encode(server)
 			Defaults[.server] = newServersAsData
 		} catch let error {
-			Logger.shared.log(error: error)
+			logger.error(Logger.Message(stringLiteral: error.localizedDescription))
 		}
 	}
 
@@ -25,10 +29,10 @@ final class ServerManager {
 			do {
 				server = try decoder.decode(ShinobuServer.self, from: serversAsData)
 			} catch let error {
-				Logger.shared.log(type: .information, message: "Failed to decode servers: \(error.localizedDescription)")
+				logger.info("Failed to decode servers: \(error.localizedDescription)")
 			}
 		} else {
-			Logger.shared.log(type: .information, message: "No servers registered yet")
+			logger.info("No servers registered yet")
 		}
 		return server
 	}

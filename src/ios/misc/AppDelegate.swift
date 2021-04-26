@@ -6,8 +6,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		// Init settings
-		Logger.shared.initialize()
 
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.rootViewController = ContainerVC()

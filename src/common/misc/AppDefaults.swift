@@ -1,7 +1,8 @@
 import UIKit
 import Defaults
 
-let extensionDefaults = UserDefaults(suiteName: "group.shinobu.settings")!
+let APP_GROUP_NAME = "group.shinobu.settings"
+let extensionDefaults = UserDefaults(suiteName: APP_GROUP_NAME)!
 
 extension Defaults.Keys {
 	static let firstRunDate = Key<Date?>("firstRunDate", default: nil, suite: extensionDefaults)

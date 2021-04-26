@@ -1,5 +1,6 @@
 import UIKit
 import MPDCLIENT
+import Logging
 
 final class MPDBridge {
 	// MARK: - Public properties
@@ -31,6 +32,8 @@ final class MPDBridge {
 	private var currentState = PlayerState(status: .unknown, isRandom: false, isRepeat: false)
 	//
 	private var usePrettyDB = false
+	// Logger
+	private let logger = Logger(label: "logger.mpdbridge")
 
 	// MARK: - Initializers
 	init(usePrettyDB: Bool, isDirectoryBased: Bool) {
@@ -217,7 +220,7 @@ final class MPDBridge {
 			}
 
 			if dwi!.isCancelled {
-				Logger.shared.log(string: "cancelling work item for <\(album)>")
+				strongSelf.logger.info("cancelling work item for <\(album)>")
 				callback(false, nil)
 				return
 			}
@@ -228,7 +231,7 @@ final class MPDBridge {
 			}
 
 			if dwi!.isCancelled {
-				Logger.shared.log(string: "cancelling work item for [mpd_search_db_songs] <\(album)>")
+				strongSelf.logger.info("cancelling work item for [mpd_search_db_songs] <\(album)>")
 				mpd_search_cancel(strongSelf.connection.connection)
 				callback(false, nil)
 				return
@@ -240,7 +243,7 @@ final class MPDBridge {
 			}
 
 			if dwi!.isCancelled {
-				Logger.shared.log(string: "cancelling work item for [mpd_search_add_tag_constraint] <\(album)>")
+				strongSelf.logger.info("cancelling work item for [mpd_search_add_tag_constraint] <\(album)>")
 				mpd_search_cancel(strongSelf.connection.connection)
 				callback(false, nil)
 				return
@@ -252,7 +255,7 @@ final class MPDBridge {
 			}
 
 			if dwi!.isCancelled {
-				Logger.shared.log(string: "cancelling work item for [mpd_search_commit] <\(album)>")
+				strongSelf.logger.info("cancelling work item for [mpd_search_commit] <\(album)>")
 				mpd_response_finish(strongSelf.connection.connection)
 				callback(false, nil)
 				return
@@ -694,7 +697,7 @@ final class MPDBridge {
 			let result = try connection.getPlayerInfos(matchAlbum: self.isDirectoryBased == false)
 			switch result {
 			case .failure(let error):
-				Logger.shared.log(message: error.message)
+				logger.error(Logger.Message(stringLiteral: error.message.description))
 			case .success(let result):
 				guard let infos = result else { return }
 				let status = infos[PLAYER_STATUS_KEY] as! Int
@@ -719,7 +722,7 @@ final class MPDBridge {
 				NotificationCenter.default.postOnMainThreadAsync(name: .currentPlayingTrack, object: nil, userInfo: infos)
 			}
 		} catch let error {
-			Logger.shared.log(error: error)
+			logger.error(Logger.Message(stringLiteral: error.localizedDescription))
 		}
 	}
 

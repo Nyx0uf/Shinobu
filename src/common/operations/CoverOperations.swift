@@ -1,5 +1,6 @@
 import UIKit
 import Defaults
+import Logging
 
 struct CoverOperations {
 	//
@@ -15,12 +16,14 @@ struct CoverOperations {
 	private var downloadOperation: DownloadCoverOperation
 	private var bridgeOperation: BlockOperation
 	private var processOperation: ProcessCoverOperation
+	// Logger
+	private let logger = Logger(label: "logger.coveroperations")
 
 	init(album: Album) {
 		self.album = album
 
-		self.downloadOperation = DownloadCoverOperation(album: album)
-		self.processOperation = ProcessCoverOperation(album: album, cropSizes: CoverOperations.cropSizes())
+		self.downloadOperation = DownloadCoverOperation(logger: logger, album: album)
+		self.processOperation = ProcessCoverOperation(logger: logger, album: album, cropSizes: CoverOperations.cropSizes())
 		self.bridgeOperation = BlockOperation { [weak processOperation, weak downloadOperation] in
 			processOperation?.data = downloadOperation?.downloadedData
 		}

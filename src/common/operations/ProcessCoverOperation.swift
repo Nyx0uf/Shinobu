@@ -1,5 +1,6 @@
 import UIKit
 import Foundation
+import Logging
 
 final class ProcessCoverOperation: Operation {
 	// MARK: - Public properties
@@ -13,11 +14,14 @@ final class ProcessCoverOperation: Operation {
 	private let album: Album
 	// Size of the thumbnail to create
 	private let cropSizes: [AssetSize: CGSize]
+	// Logger
+	private let logger: Logger
 
 	// MARK: - Initializers
-	init(album: Album, cropSizes: [AssetSize: CGSize]) {
+	init(logger: Logger, album: Album, cropSizes: [AssetSize: CGSize]) {
 		self.album = album
 		self.cropSizes = cropSizes
+		self.logger = logger
 	}
 
 	// MARK: - Override
@@ -31,17 +35,17 @@ final class ProcessCoverOperation: Operation {
 
 		// Operation is cancelled, abort
 		if isCancelled {
-			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			logger.info("Operation cancelled for <\(album.name)>")
 			return
 		}
 
 		guard let imageData = data else {
-			Logger.shared.log(type: .error, message: "No data <\(album.name)>")
+			logger.error("No data <\(album.name)>")
 			return
 		}
 
 		guard let cover = UIImage(data: imageData) else {
-			Logger.shared.log(type: .error, message: "Invalid cover data for <\(album.name)> (\(imageData.count)b)")
+			logger.error("Invalid cover data for <\(album.name)> (\(imageData.count)b)")
 			return
 		}
 
@@ -49,7 +53,7 @@ final class ProcessCoverOperation: Operation {
 			let cropped = cover.smartCropped(toSize: cropSize, highQuality: false, screenScale: true)
 			if let thumbnail = cropped {
 				if thumbnail.save(url: album.localCoverURL.appendingPathComponent(assetSize.rawValue + ".jpg")) == false {
-					Logger.shared.log(type: .error, message: "Failed to save cover for <\(album.name)>")
+					logger.error("Failed to save cover for <\(album.name)>")
 				}
 			}
 			images[assetSize] = cropped
