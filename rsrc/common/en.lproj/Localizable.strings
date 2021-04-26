@@ -104,5 +104,6 @@
 "lbl_contextualsearch" = "Contextual search";
 "lbl_touch_to_maximize" = "Touch to maximize";
 "lbl_touch_to_minimize" = "Touch to minimize";
+"lbl_change_displaytype" = "Change display type";
 
 "widget_track_title" = "Track title";

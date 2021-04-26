@@ -103,5 +103,6 @@
 "lbl_contextualsearch" = "Recherche contextuelle";
 "lbl_touch_to_maximize" = "Toucher pour agrandir";
 "lbl_touch_to_minimize" = "Toucher pour réduire";
+"lbl_change_displaytype" = "Changer le type d'affichage";
 
 "widget_track_title" = "Titre";
