@@ -10,6 +10,7 @@
 "lbl_save" = "Save";
 "lbl_close" = "Close";
 "lbl_modify" = "Modify";
+"lbl_clear_search" = "Clear search field";
 
 "lbl_track" = "track";
 "lbl_tracks" = "tracks";

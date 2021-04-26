@@ -71,6 +71,7 @@ final class SearchVC: NYXViewController {
 		searchField.delegate = self
 		searchField.placeholder = NYXLocalizedString("lbl_search_library")
 		searchField.cancelButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
+		searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 		searchView.addSubview(searchField)
 		searchView.layer.cornerRadius = 10
 		searchView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
@@ -463,11 +464,13 @@ extension SearchVC: SearchFieldDelegate {
 
 	func textDidChange(text: String?) {
 		adjustSearchView()
+
 		if String.isNullOrWhiteSpace(text) {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
 			albumsartistsResults.removeAll()
 			tableView.reloadSections(IndexSet([0, 1, 2]), with: .fade)
+			searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 			return
 		}
 		guard let searchText = text else { return }
@@ -482,6 +485,7 @@ extension SearchVC: SearchFieldDelegate {
 			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
 		}
 
+		searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_clear_search")
 		tableView.reloadSections(IndexSet([0, 1, 2]), with: .none)
 	}
 }

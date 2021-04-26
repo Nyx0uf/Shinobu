@@ -10,6 +10,7 @@
 "lbl_save" = "Enregistrer";
 "lbl_close" = "Fermer";
 "lbl_modify" = "Modifier";
+"lbl_clear_search" = "Effacer le champ de recherche";
 
 "lbl_track" = "piste";
 "lbl_tracks" = "pistes";

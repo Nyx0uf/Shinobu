@@ -278,6 +278,7 @@ final class PlayerVC: NYXViewController {
 		tapableView.isUserInteractionEnabled = true
 		tapableView.frame = CGRect(.zero, btnPlay.x, miniBaseHeight)
 		tapableView.isAccessibilityElement = true
+		tapableView.accessibilityLabel = NYXLocalizedString("lbl_touch_to_maximize")
 		view.addSubview(tapableView)
 
 		// Single tap to request full player view
