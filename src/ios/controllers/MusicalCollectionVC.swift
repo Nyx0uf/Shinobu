@@ -45,7 +45,7 @@ class MusicalCollectionVC: NYXViewController, TypeChoiceVCDelegate {
 
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
-		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search_library")
 		navigationItem.rightBarButtonItems = [searchButton]
 
 		// Searchbar

@@ -224,7 +224,7 @@ final class LibraryVC: MusicalCollectionVC {
 	private func updateNavigationButtons() {
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
-		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search_library")
 		if dataSource.musicalEntityType == .playlists {
 			// Create playlist button
 			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
