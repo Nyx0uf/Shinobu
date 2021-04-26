@@ -4,8 +4,6 @@ private let headerSectionHeight: CGFloat = 32
 
 final class ServerVC: NYXTableViewController {
 	// MARK: - Private properties
-	// MPD Server name
-	private var tfMPDName: UITextField!
 	// MPD Server hostname
 	private var tfMPDHostname: UITextField!
 	// MPD Server port
@@ -63,13 +61,6 @@ final class ServerVC: NYXTableViewController {
 		let closeButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-close"), style: .plain, target: self, action: #selector(closeAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 		navigationItem.leftBarButtonItem = closeButton
-
-		tfMPDName = UITextField()
-		tfMPDName.translatesAutoresizingMaskIntoConstraints = false
-		tfMPDName.textAlignment = .left
-		tfMPDName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-		tfMPDName.tintColor = themeProvider.currentTheme.tintColor
-		tfMPDName.placeholder = NYXLocalizedString("lbl_server_defaultname")
 
 		tfMPDHostname = UITextField()
 		tfMPDHostname.translatesAutoresizingMaskIntoConstraints = false
@@ -222,12 +213,6 @@ final class ServerVC: NYXTableViewController {
 	private func validateSettingsAction() -> NYXAlertController? {
 		view.endEditing(true)
 
-		// Check server name
-		guard let serverName = tfMPDName.text, serverName.count > 0 else {
-			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message: NYXLocalizedString("lbl_alert_servercfg_error_name"), preferredStyle: .alert)
-			return alertController
-		}
-
 		// Check MPD hostname / ip
 		guard let ipa = tfMPDHostname.text, ipa.count > 0 else {
 			let alertController = NYXAlertController(title: NYXLocalizedString("lbl_alert_servercfg_error"), message: NYXLocalizedString("lbl_alert_servercfg_error_host"), preferredStyle: .alert)
@@ -247,22 +232,19 @@ final class ServerVC: NYXTableViewController {
 		}
 
 		let mpdServer = MPDServer(hostname: ipa, port: port, password: password)
-		let cnn = MPDConnection(mpdServer)
-		let result = cnn.connect()
-		switch result {
-		case .failure:
-			break
-		case .success:
-			if selectedServer != nil {
-				selectedServer?.mpd = mpdServer
-				if selectedServer?.name != serverName {
-					selectedServer?.name = serverName
+		if mpdServer != selectedServer?.mpd { // Server changed
+			let cnn = MPDConnection(mpdServer)
+			let result = cnn.connect()
+			switch result {
+			case .failure:
+				break
+			case .success:
+				if selectedServer == nil { // No server configured
+					selectedServer = ShinobuServer(name: "server", mpd: mpdServer)
+				} else { // Server changed, update
+					selectedServer?.mpd = mpdServer
 				}
-			} else {
-				selectedServer = ShinobuServer(name: serverName, mpd: mpdServer)
 			}
-
-			serverManager.handleServer(selectedServer!)
 			cnn.disconnect()
 
 			updateOutputsLabel()
@@ -302,7 +284,6 @@ final class ServerVC: NYXTableViewController {
 
 	private func updateFields() {
 		if let server = selectedServer {
-			tfMPDName.text = server.name
 			tfMPDHostname.text = server.mpd.hostname
 			tfMPDPort.text = String(server.mpd.port)
 			tfMPDPassword.text = server.mpd.password
@@ -313,7 +294,6 @@ final class ServerVC: NYXTableViewController {
 
 			updateOutputsLabel()
 		} else {
-			tfMPDName.text = ""
 			tfMPDHostname.text = ""
 			tfMPDPort.text = "6600"
 			tfMPDPassword.text = ""
@@ -353,7 +333,7 @@ final class ServerVC: NYXTableViewController {
 			DispatchQueue.main.async {
 				self.cacheSize = size
 				if self.navigationController?.visibleViewController === self {
-					self.tableView.reloadRows(at: [IndexPath(row: 3, section: 2)], with: .none)
+					self.tableView.reloadRows(at: [IndexPath(row: 3, section: 1)], with: .none)
 				}
 			}
 		}
@@ -402,16 +382,14 @@ extension ServerVC: ZeroConfBrowserVCDelegate {
 // MARK: - UITableViewDataSource
 extension ServerVC {
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return 3
+		return 2
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0:
-			return 1
-		case 1:
 			return 5
-		case 2:
+		case 1:
 			return 4
 		default:
 			return 0
@@ -425,12 +403,6 @@ extension ServerVC {
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
 
 			if indexPath.section == 0 {
-				if indexPath.row == 0 {
-					cell?.selectionStyle = .none
-					cell?.contentView.addSubview(tfMPDName)
-					tfMPDName.frame = CGRect(16, 0, UIScreen.main.bounds.width - 32, 44)
-				}
-			} else if indexPath.section == 1 {
 				if indexPath.row == 0 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_host")
 					cell?.selectionStyle = .none
@@ -491,10 +463,6 @@ extension ServerVC {
 
 		if indexPath.section == 0 {
 			if indexPath.row == 0 {
-				tfMPDName.frame = CGRect(16, 0, UIScreen.main.bounds.width - 32, 44)
-			}
-		} else if indexPath.section == 1 {
-			if indexPath.row == 0 {
 				tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 1 {
 				tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
@@ -528,7 +496,7 @@ extension ServerVC {
 			tableView.deselectRow(at: indexPath, animated: true)
 		})
 
-		if indexPath.section == 1 && indexPath.row == 3 {
+		if indexPath.section == 0 && indexPath.row == 3 {
 			guard let cell = tableView.cellForRow(at: indexPath) else {
 				return
 			}
@@ -544,7 +512,7 @@ extension ServerVC {
 				popController.delegate = self
 				present(avc, animated: true, completion: nil)
 			}
-		} else if indexPath.section == 1 && indexPath.row == 4 {
+		} else if indexPath.section == 0 && indexPath.row == 4 {
 			mpdBridge.updateDatabase { (succeeded) in
 				DispatchQueue.main.async {
 					if succeeded == false {
@@ -554,15 +522,13 @@ extension ServerVC {
 					}
 				}
 			}
-		} else if indexPath.section == 2 && indexPath.row == 3 {
+		} else if indexPath.section == 1 && indexPath.row == 3 {
 			clearCache(confirm: true)
 		}
 	}
 
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if section == 0 {
-			return NYXLocalizedString("lbl_server_name").uppercased()
-		} else if section == 1 {
 			return NYXLocalizedString("lbl_server_section_server").uppercased()
 		} else {
 			return NYXLocalizedString("lbl_server_section_cover").uppercased()
@@ -573,9 +539,7 @@ extension ServerVC {
 // MARK: - UITextFieldDelegate
 extension ServerVC: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		if textField === tfMPDName {
-			tfMPDHostname.becomeFirstResponder()
-		} else if textField === tfMPDHostname {
+		if textField === tfMPDHostname {
 			tfMPDPort.becomeFirstResponder()
 		} else if textField === tfMPDPort {
 			tfMPDPassword.becomeFirstResponder()
