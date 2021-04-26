@@ -20,6 +20,10 @@
 "lbl_play" = "Play";
 "lbl_pause" = "Pause";
 "lbl_volume" = "Volume";
+"lbl_previous_track" = "Previous track";
+"lbl_next_track" = "Next track";
+"lbl_stop" = "Sop playback";
+"lbl_upnext" = "Up next";
 "lbl_track_position" = "Track position";
 "lbl_random_enable" = "Enable random";
 "lbl_random_disable" = "Disable random";
@@ -98,5 +102,7 @@
 "lbl_search_library" = "Search library";
 "lbl_search" = "Search";
 "lbl_contextualsearch" = "Contextual search";
+"lbl_touch_to_maximize" = "Touch to maximize";
+"lbl_touch_to_minimize" = "Touch to minimize";
 
 "widget_track_title" = "Track title";

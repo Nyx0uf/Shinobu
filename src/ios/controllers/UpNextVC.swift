@@ -20,10 +20,12 @@ final class UpNextVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let done = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(doneAction(_:)))
-		navigationItem.leftBarButtonItem = done
+		let closeButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(doneAction(_:)))
+		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
+		navigationItem.leftBarButtonItem = closeButton
 
 		titleView.setMainText("Up Next", detailText: nil)
+		titleView.isAccessibilityElement = false
 
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 	}
@@ -88,6 +90,16 @@ extension UpNextVC {
 		let v = UIView()
 		v.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
 		cell.selectedBackgroundView = v
+
+		// Accessibility
+		var stra = "\(NYXLocalizedString("lbl_track")) \(track.trackNumber), \(track.name)\n"
+		if track.duration.minutes > 0 {
+			stra += "\(track.duration.minutes) \(track.duration.minutes == 1 ? NYXLocalizedString("lbl_minute") : NYXLocalizedString("lbl_minutes")) "
+		}
+		if track.duration.seconds > 0 {
+			stra += "\(track.duration.seconds) \(track.duration.seconds == 1 ? NYXLocalizedString("lbl_second") : NYXLocalizedString("lbl_seconds"))"
+		}
+		cell.accessibilityLabel = stra
 
 		return cell
 	}

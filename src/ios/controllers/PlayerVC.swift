@@ -120,6 +120,7 @@ final class PlayerVC: NYXViewController {
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		btnNext.isAccessibilityElement = true
 		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnNext.accessibilityLabel = NYXLocalizedString("lbl_next_track")
 		blurEffectView.contentView.addSubview(btnNext)
 
 		// Previous button
@@ -128,6 +129,7 @@ final class PlayerVC: NYXViewController {
 		btnPrevious.isAccessibilityElement = true
 		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnPrevious.alpha = 0
+		btnPrevious.accessibilityLabel = NYXLocalizedString("lbl_previous_track")
 		blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play / Pause button
@@ -143,12 +145,16 @@ final class PlayerVC: NYXViewController {
 		btnStop.addTarget(mpdBridge, action: #selector(MPDBridge.stop), for: .touchUpInside)
 		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnStop.alpha = 0
+		btnStop.isAccessibilityElement = true
+		btnStop.accessibilityLabel = NYXLocalizedString("lbl_stop")
 		blurEffectView.contentView.addSubview(btnStop)
 
 		// Queue button
 		btnQueue.frame = CGRect(marginX, view.height - miniHeight, btnSize, btnSize)
 		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
 		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnQueue.isAccessibilityElement = true
+		btnQueue.accessibilityLabel = NYXLocalizedString("lbl_upnext")
 		blurEffectView.contentView.addSubview(btnQueue)
 
 		// Track label (minified)
@@ -231,6 +237,7 @@ final class PlayerVC: NYXViewController {
 		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		btnRepeat.alpha = 0
+		btnRepeat.isAccessibilityElement = true
 		self.blurEffectView.contentView.addSubview(btnRepeat)
 
 		// Random button
@@ -238,6 +245,7 @@ final class PlayerVC: NYXViewController {
 		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		btnRandom.alpha = 0
+		btnRandom.isAccessibilityElement = true
 		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Slider volume
@@ -246,6 +254,7 @@ final class PlayerVC: NYXViewController {
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
 		sliderVolume.alpha = 0
+		sliderVolume.isAccessibilityElement = true
 		blurEffectView.contentView.addSubview(sliderVolume)
 
 		// Next track
@@ -268,6 +277,7 @@ final class PlayerVC: NYXViewController {
 		// tapableView
 		tapableView.isUserInteractionEnabled = true
 		tapableView.frame = CGRect(.zero, btnPlay.x, miniBaseHeight)
+		tapableView.isAccessibilityElement = true
 		view.addSubview(tapableView)
 
 		// Single tap to request full player view
@@ -572,6 +582,7 @@ final class PlayerVC: NYXViewController {
 				self.sliderVolume.alpha = 1
 
 				self.tapableView.frame = self.coverView.frame
+				self.tapableView.accessibilityLabel = NYXLocalizedString("lbl_touch_to_minimize")
 
 				self.progress.alpha = 0
 			}, completion: { (_) in
@@ -597,6 +608,7 @@ final class PlayerVC: NYXViewController {
 				self.lblAlbumArtist.frame = CGRect(self.coverView.maxX + 8, self.lblTrack.maxY + 2, self.lblTrack.width, 16)
 
 				self.tapableView.frame = CGRect(.zero, self.btnPlay.x, miniBaseHeight)
+				self.tapableView.accessibilityLabel = NYXLocalizedString("lbl_touch_to_maximize")
 
 				self.lblAlbumArtist.alpha = 1
 				self.lblTrack.alpha = 1

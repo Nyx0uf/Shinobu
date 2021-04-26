@@ -20,6 +20,10 @@
 "lbl_play" = "Lire";
 "lbl_pause" = "Mettre en pause";
 "lbl_volume" = "Volume";
+"lbl_previous_track" = "Piste précédente";
+"lbl_next_track" = "Piste suivante";
+"lbl_stop" = "Arrêter la lecture";
+"lbl_upnext" = "À venir";
 "lbl_track_position" = "Position de la piste";
 "lbl_random_enable" = "Activer l'aléatoire";
 "lbl_random_disable" = "Désactiver l'aléatoire";
@@ -97,5 +101,7 @@
 "lbl_search_library" = "Rechercher dans la bibliothèque";
 "lbl_search" = "Rechercher des";
 "lbl_contextualsearch" = "Recherche contextuelle";
+"lbl_touch_to_maximize" = "Toucher pour agrandir";
+"lbl_touch_to_minimize" = "Toucher pour réduire";
 
 "widget_track_title" = "Titre";

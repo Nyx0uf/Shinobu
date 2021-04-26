@@ -1105,7 +1105,7 @@
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
 					"-Wl",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.Shinobu.Shinobu-widget";
+				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1135,7 +1135,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
 				MARKETING_VERSION = 1.2.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "fr.whine.Shinobu.Shinobu-widget";
+				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
