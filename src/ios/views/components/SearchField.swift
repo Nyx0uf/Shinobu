@@ -1,6 +1,6 @@
 import UIKit
 
-protocol SearchFieldDelegate: class {
+protocol SearchFieldDelegate: AnyObject {
 	func searchFieldTextDidBeginEditing()
 	func searchFieldTextDidEndEditing()
 	func textDidChange(text: String?)

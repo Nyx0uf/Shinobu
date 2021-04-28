@@ -1,6 +1,6 @@
 import UIKit
 
-protocol TracksListTableViewDelegate: class {
+protocol TracksListTableViewDelegate: AnyObject {
 	func getCurrentTrack() -> Track?
 }
 

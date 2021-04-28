@@ -1,6 +1,6 @@
 import UIKit
 
-protocol ZeroConfBrowserVCDelegate: class {
+protocol ZeroConfBrowserVCDelegate: AnyObject {
 	func audioServerDidChange(with server: ShinobuServer)
 }
 

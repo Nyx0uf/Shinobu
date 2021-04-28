@@ -1,6 +1,6 @@
 import UIKit
 
-protocol MusicalCollectionDataSourceAndDelegateDelegate: class {
+protocol MusicalCollectionDataSourceAndDelegateDelegate: AnyObject {
 	func isSearching(actively: Bool) -> Bool
 	func didSelectEntity(_ entity: AnyObject)
 	func coverDownloaded(_ cover: UIImage?, forItemAtIndexPath indexPath: IndexPath)

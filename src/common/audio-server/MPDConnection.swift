@@ -41,7 +41,7 @@ struct MPDEntity {
 	let type: MPDEntityType
 }
 
-protocol MPDConnectionDelegate: class {
+protocol MPDConnectionDelegate: AnyObject {
 	func albumMatchingName(_ name: String) -> Album?
 }
 

@@ -1,7 +1,7 @@
 import Foundation
 import Logging
 
-protocol ZeroConfExplorerDelegate: class {
+protocol ZeroConfExplorerDelegate: AnyObject {
 	func didFindServer(_ server: ShinobuServer)
 }
 

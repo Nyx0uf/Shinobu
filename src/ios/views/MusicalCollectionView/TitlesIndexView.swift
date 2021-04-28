@@ -1,6 +1,6 @@
 import UIKit
 
-protocol TitlesIndexViewDelegate: class {
+protocol TitlesIndexViewDelegate: AnyObject {
 	func didSelectIndex(_ index: Int)
 	func didScrollToIndex(_ index: Int)
 }
