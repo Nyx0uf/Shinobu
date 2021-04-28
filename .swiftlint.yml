@@ -11,5 +11,6 @@ disabled_rules:
   - force_cast
   - implicit_getter
   - orphaned_doc_comment
+  - comment_spacing
 excluded:
   - src/common/libmpdclient
