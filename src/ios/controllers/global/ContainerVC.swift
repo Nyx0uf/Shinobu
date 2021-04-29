@@ -71,8 +71,15 @@ final class ContainerVC: UIViewController {
 				libraryVC_ipad = nil
 			}
 
-			//let spc = UISplitViewController()
-			//spc.det
+			self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
+
+			libraryVC_ipad = LibraryVCIPAD(mpdBridge: mpdBridge)
+			playerVC_ipad = PlayerVCIPAD(mpdBridge: mpdBridge)
+
+			let spc = UISplitViewController()
+			spc.viewControllers = [libraryVC_ipad, playerVC_ipad]
+
+			self.add(spc)
 
 		} else {
 			if playerVC != nil {

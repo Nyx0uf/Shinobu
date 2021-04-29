@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 class MusicalCollectionVCIPAD: NYXViewController, TypeChoiceVCDelegate {
 	// MARK: - Public properties
@@ -117,7 +118,7 @@ class MusicalCollectionVCIPAD: NYXViewController, TypeChoiceVCDelegate {
 
 	// MARK: - Actions
 	@objc func showSearchBarAction(_ sender: Any?) {
-		if AppDefaults.pref_contextualSearch {
+		if Defaults[.pref_contextualSearch] {
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
 				self.searchView.alpha = 1
 				self.searchBar.becomeFirstResponder()
@@ -216,7 +217,7 @@ extension MusicalCollectionVCIPAD: UISearchBarDelegate {
 			return
 		}
 
-		if AppDefaults.pref_fuzzySearch {
+		if Defaults[.pref_fuzzySearch] {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.fuzzySearch(withString: searchText) })
 		} else {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.lowercased().contains(searchText.lowercased()) })
@@ -260,17 +261,17 @@ extension MusicalCollectionVCIPAD: MusicalCollectionDataSourceAndDelegateDelegat
 			} else {
 				self.mpdBridge.rename(playlist: playlist, withNewName: textField.text!) { (result) in
 					switch result {
-						case .failure(let error):
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
 							}
-						case .success:
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: .playlists)
-									self.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}

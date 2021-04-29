@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 	// MARK: - Private properties
@@ -9,7 +10,7 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 	override init(mpdBridge: MPDBridge) {
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeLibrary, delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: Defaults[.lastTypeLibrary], delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -51,7 +52,7 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 
 	// MARK: - Private
 	private func handleFirstLaunch() {
-		if AppDefaults.isFirstRun == true {
+		if Defaults.isFirstRun == true {
 			showServersListAction(nil)
 		}
 	}
@@ -59,23 +60,23 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
-			if let server = ServersManager().getSelectedServer() {
+			if let server = ServerManager().getServer() {
 				// Data source
 				mpdBridge.server = server.mpd
 				let resultDataSource = mpdBridge.initialize()
 				switch resultDataSource {
-					case .failure(let error):
-						MessageView.shared.showWithMessage(message: error.message)
-					case .success:
-						mpdBridge.getAllEntities {
-							self.mpdBridge.entitiesForType(self.dataSource.musicalEntityType) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-									self.updateNavigationTitle()
-									self.updateNavigationButtons()
-								}
+				case .failure(let error):
+					MessageView.shared.showWithMessage(message: error.message)
+				case .success:
+					mpdBridge.getAllEntities {
+						self.mpdBridge.entitiesForType(self.dataSource.musicalEntityType) { (entities) in
+							DispatchQueue.main.async {
+								self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
+								self.updateNavigationTitle()
+								self.updateNavigationButtons()
 							}
 						}
+					}
 				}
 			}
 		}
@@ -111,49 +112,49 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 
 		if let indexPath = collectionView.collectionView.indexPathForItem(at: gest.location(in: collectionView.collectionView)) {
 			switch dataSource.musicalEntityType {
-				case .albums:
-					let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
-					mpdBridge.playAlbum(album, shuffle: false, loop: false)
-				case .artists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
+			case .albums:
+				let album = dataSource.currentItemAtIndexPath(indexPath) as! Album
+				mpdBridge.playAlbum(album, shuffle: false, loop: false)
+			case .artists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .albumsartists:
-					let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
-					mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
+				}
+			case .albumsartists:
+				let artist = dataSource.currentItemAtIndexPath(indexPath) as! Artist
+				mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .genres:
-					let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
-					mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
-							let arr = genre.albums.compactMap(\.tracks).flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
-						}
+				}
+			case .genres:
+				let genre = dataSource.currentItemAtIndexPath(indexPath) as! Genre
+				mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
+					guard let strongSelf = self else { return }
+					strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
+						let arr = genre.albums.compactMap(\.tracks).flatMap { $0 }
+						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
 					}
-				case .playlists:
-					let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
-					mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
-				default:
-					break
+				}
+			case .playlists:
+				let playlist = dataSource.currentItemAtIndexPath(indexPath) as! Playlist
+				mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
+			default:
+				break
 			}
 		}
 	}
 
 	// MARK: - Buttons actions
 	@objc func showServersListAction(_ sender: Any?) {
-		let serversListVC = ServersListVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: serversListVC)
+		let serverVC = ServerVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: serverVC)
 		nvc.presentationController?.delegate = self
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
@@ -179,17 +180,17 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 			} else {
 				self.mpdBridge.createPlaylist(named: textField.text!) { (result) in
 					switch result {
-						case .failure(let error):
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
 							}
-						case .success:
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: .playlists)
-									self.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}
@@ -208,18 +209,18 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 		mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
 			var title = ""
 			switch self.dataSource.musicalEntityType {
-				case .albums:
-					title = NYXLocalizedString("lbl_albums")
-				case .artists:
-					title = NYXLocalizedString("lbl_artists")
-				case .albumsartists:
-					title = NYXLocalizedString("lbl_albumartists")
-				case .genres:
-					title = NYXLocalizedString("lbl_genres")
-				case .playlists:
-					title = NYXLocalizedString("lbl_playlists")
-				default:
-					break
+			case .albums:
+				title = NYXLocalizedString("lbl_albums")
+			case .artists:
+				title = NYXLocalizedString("lbl_artists")
+			case .albumsartists:
+				title = NYXLocalizedString("lbl_albumartists")
+			case .genres:
+				title = NYXLocalizedString("lbl_genres")
+			case .playlists:
+				title = NYXLocalizedString("lbl_playlists")
+			default:
+				break
 			}
 			DispatchQueue.main.async {
 				self.titleView.setMainText(title, detailText: "(\(entities.count))")
@@ -254,17 +255,17 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 			} else {
 				self.mpdBridge.rename(playlist: playlist, withNewName: textField.text!) { (result) in
 					switch result {
-						case .failure(let error):
+					case .failure(let error):
+						DispatchQueue.main.async {
+							MessageView.shared.showWithMessage(message: error.message)
+						}
+					case .success:
+						self.mpdBridge.entitiesForType(.playlists) { (entities) in
 							DispatchQueue.main.async {
-								MessageView.shared.showWithMessage(message: error.message)
+								self.setItems(entities, forMusicalEntityType: .playlists)
+								self.updateNavigationTitle()
 							}
-						case .success:
-							self.mpdBridge.entitiesForType(.playlists) { (entities) in
-								DispatchQueue.main.async {
-									self.setItems(entities, forMusicalEntityType: .playlists)
-									self.updateNavigationTitle()
-								}
-							}
+						}
 					}
 				}
 			}
@@ -305,7 +306,7 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 			return
 		}
 
-		AppDefaults.lastTypeLibrary = type
+		Defaults[.lastTypeLibrary] = type
 
 		// Refresh view
 		mpdBridge.entitiesForType(type) { (entities) in
@@ -324,23 +325,23 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 extension LibraryVCIPAD {
 	override func didSelectEntity(_ entity: AnyObject) {
 		switch dataSource.musicalEntityType {
-			case .albums:
-				let avc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(avc, animated: true)
-			case .artists:
-				let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(avc, animated: true)
-			case .albumsartists:
-				let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(avc, animated: true)
-			case .genres:
-				let gvc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(gvc, animated: true)
-			case .playlists:
-				let pvc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
-				navigationController?.pushViewController(pvc, animated: true)
-			default:
-				break
+		case .albums:
+			let avc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .artists:
+			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .albumsartists:
+			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(avc, animated: true)
+		case .genres:
+			let gvc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(gvc, animated: true)
+		case .playlists:
+			let pvc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
+			navigationController?.pushViewController(pvc, animated: true)
+		default:
+			break
 		}
 	}
 
@@ -348,17 +349,17 @@ extension LibraryVCIPAD {
 		self.mpdBridge.deletePlaylist(named: (playlist as! Playlist).name) { [weak self] (result) in
 			guard let strongSelf = self else { return }
 			switch result {
-				case .failure(let error):
+			case .failure(let error):
+				DispatchQueue.main.async {
+					MessageView.shared.showWithMessage(message: error.message)
+				}
+			case .success:
+				strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
 					DispatchQueue.main.async {
-						MessageView.shared.showWithMessage(message: error.message)
+						strongSelf.setItems(entities, forMusicalEntityType: .playlists)
+						strongSelf.updateNavigationTitle()
 					}
-				case .success:
-					strongSelf.mpdBridge.entitiesForType(.playlists) { (entities) in
-						DispatchQueue.main.async {
-							strongSelf.setItems(entities, forMusicalEntityType: .playlists)
-							strongSelf.updateNavigationTitle()
-						}
-					}
+				}
 			}
 		}
 	}
@@ -372,7 +373,7 @@ extension LibraryVCIPAD {
 
 	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
-			if AppDefaults.pref_shakeToPlayRandom == false {
+			if Defaults[.pref_shakeToPlayRandom] == false {
 				return
 			}
 
