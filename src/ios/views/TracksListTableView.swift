@@ -14,8 +14,6 @@ final class TracksListTableView: UITableView {
 			}
 		}
 	}
-	// Cell identifier
-	private let cellIdentifier = "fr.whine.shinobu.cell.track"
 	//
 	weak var myDelegate: TracksListTableViewDelegate?
 
@@ -23,7 +21,7 @@ final class TracksListTableView: UITableView {
 		super.init(frame: frame, style: style)
 
 		self.dataSource = self
-		self.register(TrackTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+		self.register(TrackTableViewCell.self, forCellReuseIdentifier: TrackTableViewCell.reuseIdentifier)
 		self.separatorStyle = .none
 		self.separatorInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
 		self.rowHeight = 44
@@ -48,7 +46,7 @@ extension TracksListTableView: UITableViewDataSource {
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TrackTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: TrackTableViewCell.reuseIdentifier, for: indexPath) as! TrackTableViewCell
 
 		cell.isEvenCell = indexPath.row.isMultiple(of: 2)
 		cell.lblTitle.textColor = .label

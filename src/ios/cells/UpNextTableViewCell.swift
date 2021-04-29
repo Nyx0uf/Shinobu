@@ -1,6 +1,6 @@
 import UIKit
 
-final class UpNextTableViewCell: UITableViewCell {
+final class UpNextTableViewCell: UITableViewCell, ReuseIdentifying {
 	// MARK: - Public properties
 	// Track number
 	private(set) var lblTrack = UILabel()

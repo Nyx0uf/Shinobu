@@ -27,6 +27,8 @@ final class UpNextVC: NYXTableViewController {
 		titleView.setMainText("Up Next", detailText: nil)
 		titleView.isAccessibilityElement = false
 
+		tableView.register(UpNextTableViewCell.self, forCellReuseIdentifier: UpNextTableViewCell.reuseIdentifier)
+
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 	}
 
@@ -76,7 +78,7 @@ extension UpNextVC {
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = UpNextTableViewCell(style: .default, reuseIdentifier: "fr.whine.shinobu.cell.upnext")
+		let cell = tableView.dequeueReusableCell(withIdentifier: UpNextTableViewCell.reuseIdentifier, for: indexPath) as! UpNextTableViewCell
 		cell.backgroundColor = .systemBackground
 		cell.contentView.backgroundColor = cell.backgroundColor
 
