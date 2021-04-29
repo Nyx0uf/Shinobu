@@ -27,6 +27,6 @@ final class InteractableImageView: UIImageView {
 	}
 }
 
-protocol InteractableImageViewDelegate: class {
+protocol InteractableImageViewDelegate: AnyObject {
 	func didTap()
 }

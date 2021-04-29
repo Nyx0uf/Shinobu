@@ -46,6 +46,8 @@ final class NYXNavigationTitleView: UIButton {
 		self.label.textAlignment = .center
 		self.addSubview(self.label)
 
+		self.accessibilityLabel = NYXLocalizedString("lbl_change_displaytype")
+
 		initializeTheming()
 	}
 

@@ -46,6 +46,9 @@ extension MusicalEntityType: CustomStringConvertible {
 	}
 }
 
+extension MusicalEntityType: Codable {
+}
+
 class MusicalEntity: Hashable {
 	// MARK: - Public properties
 	// Name

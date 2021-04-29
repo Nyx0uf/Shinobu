@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 private let tintButtonSize = CGFloat(32)
 private let separatorMargin = CGFloat(16)
@@ -58,7 +59,7 @@ final class SettingsVC: NYXTableViewController {
 		var x = view.width - (tintButtonSize * count) - (margin * count) - separatorMargin
 		for c in TintColorType.allCases {
 			let btn = ColorButton(frame: CGRect(x, (tableView.rowHeight - tintButtonSize) / 2, tintButtonSize, tintButtonSize), tintColorType: c)
-			btn.isSelected = c == AppDefaults.pref_tintColor
+			btn.isSelected = c == Defaults[.pref_tintColor]
 			btn.addTarget(self, action: #selector(toggleTintColorAction(_:)), for: .touchUpInside)
 			colorsButton.append(btn)
 
@@ -87,7 +88,7 @@ final class SettingsVC: NYXTableViewController {
 	@objc private func toggleTintColorAction(_ sender: ColorButton?) {
 		guard let button = sender else { return }
 
-		AppDefaults.pref_tintColor = button.tintColorType
+		Defaults[.pref_tintColor] = button.tintColorType
 
 		themeProvider.currentTheme.tintColor = colorForTintColorType(button.tintColorType)
 		themeProvider.currentTheme = themeProvider.currentTheme
@@ -96,7 +97,7 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	@objc private func toggleColumnsAction(_ sender: Any?) {
-		AppDefaults.pref_numberOfColumns = sColumns.selectedSegmentIndex + 2
+		Defaults[.pref_numberOfColumns] = sColumns.selectedSegmentIndex + 2
 
 		// Need to erase downloaded cover because the size will change
 		ImageCache.shared.clear(nil)
@@ -105,16 +106,15 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	@objc private func toggleUsePrettyDBAction(_ sender: Any?) {
-		AppDefaults.pref_usePrettyDB.toggle()
+		Defaults[.pref_usePrettyDB].toggle()
 	}
 
 	@objc private func toggleBrowseDirAction(_ sender: Any?) {
-		let browseByDir = AppDefaults.pref_browseByDirectory
-		AppDefaults.pref_browseByDirectory = !browseByDir
+		Defaults[.pref_browseByDirectory].toggle()
 
 		// Album doesn't meen a thing in directory mode, so disable shake
-		if browseByDir {
-			AppDefaults.pref_shakeToPlayRandom = false
+		if Defaults[.pref_browseByDirectory] {
+			Defaults[.pref_shakeToPlayRandom] = false
 			swShake.isOn = false
 		}
 		swShake.isEnabled = !swDirectory.isOn
@@ -123,15 +123,15 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	@objc private func toggleShakeToPlayAction(_ sender: Any?) {
-		AppDefaults.pref_shakeToPlayRandom.toggle()
+		Defaults[.pref_shakeToPlayRandom].toggle()
 	}
 
 	@objc private func toggleContextualSearchAction(_ sender: Any?) {
-		AppDefaults.pref_contextualSearch.toggle()
+		Defaults[.pref_contextualSearch].toggle()
 	}
 
 	@objc private func toggleFuzzySearchAction(_ sender: Any?) {
-		AppDefaults.pref_fuzzySearch.toggle()
+		Defaults[.pref_fuzzySearch].toggle()
 	}
 
 	@objc private func closeAction(_ sender: Any?) {
@@ -266,25 +266,25 @@ extension SettingsVC {
 		if indexPath.section == 0 {
 			if indexPath.row == 0 {
 				for btn in colorsButton {
-					btn.isSelected = btn.tintColorType == AppDefaults.pref_tintColor
+					btn.isSelected = btn.tintColorType == Defaults[.pref_tintColor]
 				}
 			} else if indexPath.row == 1 {
-				sColumns.selectedSegmentIndex = AppDefaults.pref_numberOfColumns - 2
+				sColumns.selectedSegmentIndex = Defaults[.pref_numberOfColumns] - 2
 			}
 		} else if indexPath.section == 1 {
 			if indexPath.row == 0 {
-				swPrettyDB.isOn = AppDefaults.pref_usePrettyDB
+				swPrettyDB.isOn = Defaults[.pref_usePrettyDB]
 			} else if indexPath.row == 1 {
-				swDirectory.isOn = AppDefaults.pref_browseByDirectory
+				swDirectory.isOn = Defaults[.pref_browseByDirectory]
 			} else if indexPath.row == 2 {
-				swShake.isOn = AppDefaults.pref_shakeToPlayRandom
+				swShake.isOn = Defaults[.pref_shakeToPlayRandom]
 				swShake.isEnabled = !swDirectory.isOn
 			}
 		} else if indexPath.section == 2 {
 			if indexPath.row == 0 {
-				swContextualSearch.isOn = AppDefaults.pref_contextualSearch
+				swContextualSearch.isOn = Defaults[.pref_contextualSearch]
 			} else if indexPath.row == 1 {
-				swFuzzySearch.isOn = AppDefaults.pref_fuzzySearch
+				swFuzzySearch.isOn = Defaults[.pref_fuzzySearch]
 			}
 		} else {
 			if indexPath.row == 0 {

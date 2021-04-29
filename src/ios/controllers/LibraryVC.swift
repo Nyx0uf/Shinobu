@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class LibraryVC: MusicalCollectionVC {
 	// MARK: - Private properties
@@ -9,7 +10,7 @@ final class LibraryVC: MusicalCollectionVC {
 	override init(mpdBridge: MPDBridge) {
 		super.init(mpdBridge: mpdBridge)
 
-		dataSource = MusicalCollectionDataSourceAndDelegate(type: AppDefaults.lastTypeLibrary, delegate: self, mpdBridge: mpdBridge)
+		dataSource = MusicalCollectionDataSourceAndDelegate(type: Defaults[.lastTypeLibrary], delegate: self, mpdBridge: mpdBridge)
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
@@ -19,7 +20,7 @@ final class LibraryVC: MusicalCollectionVC {
 		super.viewDidLoad()
 
 		// Servers button
-		let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServersListAction(_:)))
+		let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServerSettingAction(_:)))
 		serversButton.accessibilityLabel = NYXLocalizedString("lbl_header_server_list")
 		// Settings button
 		let settingsButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-settings"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
@@ -51,15 +52,15 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Private
 	private func handleFirstLaunch() {
-		if AppDefaults.isFirstRun == true {
-			showServersListAction(nil)
+		if Defaults.isFirstRun == true {
+			showServerSettingAction(nil)
 		}
 	}
 
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
-			if let server = ServersManager().getSelectedServer() {
+			if let server = ServerManager().getServer() {
 				// Data source
 				mpdBridge.server = server.mpd
 				let resultDataSource = mpdBridge.initialize()
@@ -79,13 +80,6 @@ final class LibraryVC: MusicalCollectionVC {
 				}
 			}
 		}
-
-		// Deselect cell
-//		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
-//			for indexPath in idxs {
-//				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
-//			}
-//		}
 
 		// When entity type menu was displayed
 		if navMenuDisplayed == false {
@@ -151,9 +145,9 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	// MARK: - Buttons actions
-	@objc func showServersListAction(_ sender: Any?) {
-		let serversListVC = ServersListVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: serversListVC)
+	@objc func showServerSettingAction(_ sender: Any?) {
+		let serverVC = ServerVC(mpdBridge: mpdBridge)
+		let nvc = NYXNavigationController(rootViewController: serverVC)
 		nvc.presentationController?.delegate = self
 		navigationController?.present(nvc, animated: true, completion: nil)
 	}
@@ -230,7 +224,7 @@ final class LibraryVC: MusicalCollectionVC {
 	private func updateNavigationButtons() {
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
-		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search_library")
 		if dataSource.musicalEntityType == .playlists {
 			// Create playlist button
 			let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
@@ -305,7 +299,7 @@ final class LibraryVC: MusicalCollectionVC {
 			return
 		}
 
-		AppDefaults.lastTypeLibrary = type
+		Defaults[.lastTypeLibrary] = type
 
 		// Refresh view
 		mpdBridge.entitiesForType(type) { (entities) in
@@ -372,7 +366,7 @@ extension LibraryVC {
 
 	override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
 		if motion == .motionShake {
-			if AppDefaults.pref_shakeToPlayRandom == false {
+			if Defaults[.pref_shakeToPlayRandom] == false {
 				return
 			}
 
@@ -397,9 +391,13 @@ extension LibraryVC {
 
 // MARK: - UIAdaptivePresentationControllerDelegate
 extension LibraryVC {
-	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+	func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
 	}
+
+//	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+//		checkInit()
+//	}
 
 	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
 		return self.modalStyleForController(controller)

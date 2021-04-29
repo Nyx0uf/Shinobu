@@ -1,6 +1,7 @@
 import Foundation
+import Logging
 
-protocol ZeroConfExplorerDelegate: class {
+protocol ZeroConfExplorerDelegate: AnyObject {
 	func didFindServer(_ server: ShinobuServer)
 }
 
@@ -16,6 +17,8 @@ final class ZeroConfExplorer: NSObject {
 	// MARK: - Private properties
 	// Zeroconf browser
 	private var serviceBrowser: NetServiceBrowser
+	// Logger
+	private let logger = Logger(label: "logger.zeroconfexplorer")
 
 	// MARK: - Initializer
 	override init() {
@@ -101,7 +104,7 @@ extension ZeroConfExplorer: NetServiceBrowserDelegate {
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String: NSNumber]) {
-		Logger.shared.log(type: .error, message: "ZeroConf didNotSearch : \(errorDict)")
+		logger.error("ZeroConf didNotSearch : \(errorDict)")
 	}
 
 	func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {

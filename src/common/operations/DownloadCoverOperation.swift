@@ -1,5 +1,6 @@
 import UIKit
 import Foundation
+import Logging
 
 final class DownloadCoverOperation: Operation {
 	// MARK: - Public properties
@@ -32,46 +33,49 @@ final class DownloadCoverOperation: Operation {
 	// URL
 	private var coverURL: URL?
 	// Server manager
-	private let serversManager: ServersManager
+	private let serverManager: ServerManager
 	// Album
 	private let album: Album
 	// Save data flag
 	private var save = true
 	// Task
 	private var sessionTask: URLSessionDataTask?
+	// Logger
+	private let logger: Logger
 
 	// MARK: - Initializers
-	init(album: Album, save: Bool = true) {
+	init(logger: Logger, album: Album, save: Bool = true) {
 		self.album = album
 		self.save = save
-		self.serversManager = ServersManager()
+		self.serverManager = ServerManager()
+		self.logger = logger
 	}
 
 	// MARK: - Override
 	override func start() {
 		// Operation is cancelled, abort
 		if isCancelled {
-			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			logger.info("Operation cancelled for <\(album.name)>")
 			isFinished = true
 			return
 		}
 
 		// No path for album, abort
 		guard let path = album.path else {
-			Logger.shared.log(type: .error, message: "No path defined for album <\(album.name)>")
+			logger.error("No path defined for album <\(album.name)>")
 			isFinished = true
 			return
 		}
 
 		// No mpd server configured, abort
-		guard let server = serversManager.getSelectedServer()?.covers else {
-			Logger.shared.log(type: .error, message: "No cover server")
+		guard let server = serverManager.getServer()?.covers else {
+			logger.error("No cover server")
 			isFinished = true
 			return
 		}
 
 		guard let finalURL = server.coverURLForPath(path) else {
-			Logger.shared.log(type: .error, message: "Unable to create URL for <\(path)>")
+			logger.error("Unable to create URL for <\(path)>")
 			isFinished = true
 			return
 		}
@@ -94,7 +98,7 @@ final class DownloadCoverOperation: Operation {
 extension DownloadCoverOperation: URLSessionDataDelegate {
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
 		if isCancelled {
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -105,7 +109,7 @@ extension DownloadCoverOperation: URLSessionDataDelegate {
 
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		if isCancelled {
-			//Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -115,14 +119,14 @@ extension DownloadCoverOperation: URLSessionDataDelegate {
 
 	func urlSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		if isCancelled {
-			Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
+			logger.info("Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
 		}
 
 		if let err = error {
-			Logger.shared.log(type: .error, message: "Failed to receive response: \(err.localizedDescription)")
+			logger.error("Failed to receive response: \(err.localizedDescription)")
 		}
 
 		isFinished = true

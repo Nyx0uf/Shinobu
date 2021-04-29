@@ -6,7 +6,7 @@ private let btnSize = CGFloat(24)
 private let cellHeight = CGFloat(54)
 private let imageViewSize = CGFloat(40)
 
-final class SearchResultTableViewCell: UITableViewCell {
+final class SearchResultTableViewCell: UITableViewCell, ReuseIdentifying {
 	// MARK: - Public properties
 	// Image
 	private(set) var imgView = UIImageView()

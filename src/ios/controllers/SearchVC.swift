@@ -1,13 +1,22 @@
 import UIKit
+import Defaults
 
 private let margin = CGFloat(10)
+
+fileprivate enum SearchSection: Int, CaseIterable {
+	case albums
+	case artists
+	case albumartists
+}
+fileprivate typealias SearchDataSource = UITableViewDiffableDataSource<SearchSection, MusicalEntity>
+fileprivate typealias SearchSnapshot = NSDiffableDataSourceSnapshot<SearchSection, MusicalEntity>
 
 final class SearchVC: NYXViewController {
 	// MARK: - Private properties
 	// MPD Data source
 	private let mpdBridge: MPDBridge
 	// Servers managerto get covers
-	private let serversManager: ServersManager
+	private let serverManager: ServerManager
 	// Blurred background view
 	private let blurEffectView = UIVisualEffectView()
 	// Search view (searchbar + tableview)
@@ -16,6 +25,8 @@ final class SearchVC: NYXViewController {
 	private var searchField: SearchField!
 	// Tableview for results
 	private var tableView: UITableView! = nil
+	// Table data source
+	private lazy var dataSource = makeDataSource()
 	// All MPD albums
 	private var albums = [Album]()
 	// All MPD artists
@@ -40,7 +51,7 @@ final class SearchVC: NYXViewController {
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
-		self.serversManager = ServersManager()
+		self.serverManager = ServerManager()
 
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -70,16 +81,16 @@ final class SearchVC: NYXViewController {
 		searchField.delegate = self
 		searchField.placeholder = NYXLocalizedString("lbl_search_library")
 		searchField.cancelButton.addTarget(self, action: #selector(closeAction(_:)), for: .touchUpInside)
+		searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 		searchView.addSubview(searchField)
 		searchView.layer.cornerRadius = 10
 		searchView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		searchView.clipsToBounds = true
 
 		tableView = UITableView(frame: CGRect(0, searchField.maxY, searchView.width, searchView.height - searchField.height), style: .plain)
-		tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "fr.whine.shinobu.cell.search")
+		tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.reuseIdentifier)
 		tableView.rowHeight = 54
 		tableView.separatorStyle = .none
-		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.tableFooterView = UIView()
 		searchView.addSubview(tableView)
@@ -111,6 +122,8 @@ final class SearchVC: NYXViewController {
 		})
 
 		_ = searchField.becomeFirstResponder()
+
+		applySnapshot(animatingDifferences: false)
 	}
 
 	// MARK: - Buttons actions
@@ -182,93 +195,85 @@ final class SearchVC: NYXViewController {
 			}
 		}
 	}
-}
 
-// MARK: - UITableViewDataSource
-extension SearchVC: UITableViewDataSource {
-	func numberOfSections(in tableView: UITableView) -> Int {
-		return 3
-	}
+	private func makeDataSource() -> SearchDataSource {
+		let dataSource = SearchDataSource(
+			tableView: tableView,
+			cellProvider: { (tableView, indexPath, musicalEntity) ->
+				UITableViewCell? in
+				let cell = tableView.dequeueReusableCell(
+					withIdentifier: SearchResultTableViewCell.reuseIdentifier,
+					for: indexPath) as! SearchResultTableViewCell
 
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		handleEmptyView(tableView: tableView, isEmpty: (albumsResults.count + artistsResults.count + albumsartistsResults.count)  == 0)
+				cell.isEvenCell = indexPath.row.isMultiple(of: 2)
 
-		switch section {
-		case 0:
-			return albumsResults.count
-		case 1:
-			return artistsResults.count
-		case 2:
-			return albumsartistsResults.count
-		default:
-			return 0
-		}
-	}
+				let img: UIImage
+				var highlight = true
 
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "fr.whine.shinobu.cell.search", for: indexPath) as! SearchResultTableViewCell
-		cell.isEvenCell = indexPath.row.isMultiple(of: 2)
+				switch indexPath.section {
+				case 0:
+					let album = musicalEntity as! Album
 
-		let ent: MusicalEntity
-		let img: UIImage
-		var highlight = true
-
-		switch indexPath.section {
-		case 0:
-			let album = albumsResults[indexPath.row]
-			ent = album
-
-			if serversManager.getSelectedServer()?.covers != nil {
-				if let cover = album.asset(ofSize: .small) {
-					img = cover
-					highlight = false
-				} else {
-					img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-				}
-			} else {
-				img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-			}
-		case 1:
-			ent = artistsResults[indexPath.row]
-			img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
-		case 2:
-			ent = albumsartistsResults[indexPath.row]
-			img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
-		default:
-			return cell
-		}
-
-		cell.lblTitle.text = ent.name
-		cell.imgView.image = img
-		cell.imgView.highlightedImage = highlight ? img.withTintColor(themeProvider.currentTheme.tintColor) : img
-		cell.buttonAction = {
-			switch indexPath.section {
-			case 0:
-				self.mpdBridge.playAlbum(ent as! Album, shuffle: false, loop: false)
-			case 1:
-				let artist = ent as! Artist
-				self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
-						guard let strongSelf = self else { return }
-						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-							let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
-							strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+					if self.serverManager.getServer()?.covers != nil {
+						if let cover = album.asset(ofSize: .small) {
+							img = cover
+							highlight = false
+						} else {
+							img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
 						}
+					} else {
+						img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
 					}
-			case 2:
-				let artist = ent as! Artist
-				self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
-					guard let strongSelf = self else { return }
-					strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
-						let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
-						strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+				case 1:
+					img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
+				case 2:
+					img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
+				default:
+					return cell
+				}
+
+				cell.lblTitle.text = musicalEntity.name
+				cell.imgView.image = img
+				cell.imgView.highlightedImage = highlight ? img.withTintColor(self.themeProvider.currentTheme.tintColor) : img
+				cell.buttonAction = {
+					switch indexPath.section {
+					case 0:
+						self.mpdBridge.playAlbum(musicalEntity as! Album, shuffle: false, loop: false)
+					case 1:
+						let artist = musicalEntity as! Artist
+						self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
+							guard let strongSelf = self else { return }
+							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+								let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
+								strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+							}
+						}
+					case 2:
+						let artist = musicalEntity as! Artist
+						self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
+							guard let strongSelf = self else { return }
+							strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
+								let arr = artist.albums.compactMap(\.tracks).flatMap { $0 }
+								strongSelf.mpdBridge.playTracks(arr, shuffle: false, loop: false)
+							}
+						}
+					default:
+						return
 					}
 				}
-			default:
-				return
-			}
-		}
 
-		return cell
+				return cell
+			})
+		return dataSource
+	}
+
+	private func applySnapshot(animatingDifferences: Bool = true) {
+		var snapshot = SearchSnapshot()
+		snapshot.appendSections([.albums, .artists, .albumartists])
+		snapshot.appendItems(albumsResults, toSection: .albums)
+		snapshot.appendItems(artistsResults, toSection: .artists)
+		snapshot.appendItems(albumsartistsResults, toSection: .albumartists)
+		dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
 	}
 }
 
@@ -462,16 +467,18 @@ extension SearchVC: SearchFieldDelegate {
 
 	func textDidChange(text: String?) {
 		adjustSearchView()
+
 		if String.isNullOrWhiteSpace(text) {
 			albumsResults.removeAll()
 			artistsResults.removeAll()
 			albumsartistsResults.removeAll()
-			tableView.reloadSections(IndexSet([0, 1, 2]), with: .fade)
+			applySnapshot(animatingDifferences: true)
+			searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 			return
 		}
 		guard let searchText = text else { return }
 
-		if AppDefaults.pref_fuzzySearch {
+		if Defaults[.pref_fuzzySearch] {
 			albumsResults = albums.filter { $0.name.fuzzySearch(withString: searchText) }
 			artistsResults = artists.filter { $0.name.fuzzySearch(withString: searchText) }
 			albumsartistsResults = albumsartists.filter { $0.name.fuzzySearch(withString: searchText) }
@@ -481,7 +488,8 @@ extension SearchVC: SearchFieldDelegate {
 			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
 		}
 
-		tableView.reloadSections(IndexSet([0, 1, 2]), with: .none)
+		searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_clear_search")
+		applySnapshot(animatingDifferences: false)
 	}
 }
 

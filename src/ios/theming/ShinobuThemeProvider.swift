@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class ShinobuThemeProvider: ThemeProvider {
 	// MARK: - Singleton instance
@@ -18,7 +19,7 @@ final class ShinobuThemeProvider: ThemeProvider {
 
 	// MARK: - Initializers
 	init() {
-		let t = Theme(tintColor: colorForTintColorType(AppDefaults.pref_tintColor))
+		let t = Theme(tintColor: colorForTintColorType(Defaults[.pref_tintColor]))
 		theme = SubscribableValue<Theme>(value: t)
 	}
 

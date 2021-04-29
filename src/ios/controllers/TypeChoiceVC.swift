@@ -1,6 +1,6 @@
 import UIKit
 
-protocol TypeChoiceVCDelegate: class {
+protocol TypeChoiceVCDelegate: AnyObject {
 	func didSelectDisplayType(_ type: MusicalEntityType)
 }
 

@@ -1,4 +1,6 @@
 import UIKit
+import Defaults
+import Logging
 
 final class ImageCache {
 	// MARK: - Public properties
@@ -6,7 +8,10 @@ final class ImageCache {
 	static let shared = ImageCache()
 
 	// MARK: - Private properties
+	// Cache
 	private let cache: Cache<String, UIImage>
+	// Logger
+	private let logger = Logger(label: "logger.imagecache")
 
 	// MARK: - Initializers
 	init() {
@@ -25,7 +30,7 @@ final class ImageCache {
 		}
 
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(AppDefaults.coversDirectory)
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(Defaults[.coversDirectory])
 
 		do {
 			try FileManager.default.removeItem(at: coversDirectoryURL)
@@ -33,7 +38,7 @@ final class ImageCache {
 			URLCache.shared.removeAllCachedResponses()
 			cache.removeAllValues()
 		} catch _ {
-			Logger.shared.log(type: .error, message: "Can't delete cover cache")
+			logger.info("Can't delete cover cache")
 			success = false
 		}
 	}

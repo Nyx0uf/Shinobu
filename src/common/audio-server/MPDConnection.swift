@@ -1,5 +1,6 @@
 import MPDCLIENT
 import UIKit
+import Logging
 
 public let PLAYER_TRACK_KEY = "track"
 public let PLAYER_ALBUM_KEY = "album"
@@ -40,7 +41,7 @@ struct MPDEntity {
 	let type: MPDEntityType
 }
 
-protocol MPDConnectionDelegate: class {
+protocol MPDConnectionDelegate: AnyObject {
 	func albumMatchingName(_ name: String) -> Album?
 }
 
@@ -101,6 +102,8 @@ final class MPDConnection {
 	private(set) var connection: OpaquePointer?
 	// Timeout in seconds
 	private let timeout = UInt32(10)
+	// Logger
+	private let logger = Logger(label: "logger.mpdconnection")
 
 	// MARK: - Initializers
 	init(_ server: MPDServer) {
@@ -386,16 +389,16 @@ final class MPDConnection {
 
 		for track in list {
 			if mpd_search_db_songs(connection, true) == false {
-				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
+				logger.error(Logger.Message(stringLiteral: getLastErrorMessageForConnection().description))
 				continue
 			}
 			if mpd_search_add_uri_constraint(connection, MPD_OPERATOR_DEFAULT, track.uri) == false {
-				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
+				logger.error(Logger.Message(stringLiteral: getLastErrorMessageForConnection().description))
 				continue
 			}
 
 			if mpd_search_commit(connection) == false {
-				Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
+				logger.error(Logger.Message(stringLiteral: getLastErrorMessageForConnection().description))
 				continue
 			}
 
@@ -490,7 +493,7 @@ final class MPDConnection {
 		}
 
 		if mpd_connection_get_error(connection) != MPD_ERROR_SUCCESS || mpd_response_finish(connection) == false {
-			Logger.shared.log(type: .error, message: getLastErrorMessageForConnection().description)
+			logger.error(Logger.Message(stringLiteral: getLastErrorMessageForConnection().description))
 		}
 
 		return .success(metadatas)

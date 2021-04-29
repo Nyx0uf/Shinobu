@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 class MusicalCollectionVC: NYXViewController, TypeChoiceVCDelegate {
 	// MARK: - Public properties
@@ -44,7 +45,7 @@ class MusicalCollectionVC: NYXViewController, TypeChoiceVCDelegate {
 
 		// Search button
 		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
-		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
+		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search_library")
 		navigationItem.rightBarButtonItems = [searchButton]
 
 		// Searchbar
@@ -110,7 +111,7 @@ class MusicalCollectionVC: NYXViewController, TypeChoiceVCDelegate {
 
 	// MARK: - Actions
 	@objc func showSearchBarAction(_ sender: Any?) {
-		if AppDefaults.pref_contextualSearch {
+		if Defaults[.pref_contextualSearch] {
 			UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseOut, animations: {
 				self.searchView.alpha = 1
 				self.searchBar.becomeFirstResponder()
@@ -209,7 +210,7 @@ extension MusicalCollectionVC: UISearchBarDelegate {
 			return
 		}
 
-		if AppDefaults.pref_fuzzySearch {
+		if Defaults[.pref_fuzzySearch] {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.fuzzySearch(withString: searchText) })
 		} else {
 			dataSource.setSearchResults(dataSource.items.filter { $0.name.lowercased().contains(searchText.lowercased()) })

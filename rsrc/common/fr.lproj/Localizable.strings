@@ -2,7 +2,6 @@
 "lbl_ok" = "OK";
 "lbl_optional" = "Optionnel";
 "lbl_by" = "par";
-"lbl_played" = "joué";
 "lbl_megabytes" = "Mo";
 "lbl_error" = "Erreur";
 "lbl_enabled" = "Activé";
@@ -10,6 +9,8 @@
 "lbl_is" = "est";
 "lbl_save" = "Enregistrer";
 "lbl_close" = "Fermer";
+"lbl_modify" = "Modifier";
+"lbl_clear_search" = "Effacer le champ de recherche";
 
 "lbl_track" = "piste";
 "lbl_tracks" = "pistes";
@@ -19,9 +20,11 @@
 "lbl_seconds" = "secondes";
 "lbl_play" = "Lire";
 "lbl_pause" = "Mettre en pause";
-"lbl_next_track" = "Piste suivante";
-"lbl_previous_track" = "Piste précédente";
 "lbl_volume" = "Volume";
+"lbl_previous_track" = "Piste précédente";
+"lbl_next_track" = "Piste suivante";
+"lbl_stop" = "Arrêter la lecture";
+"lbl_upnext" = "À venir";
 "lbl_track_position" = "Position de la piste";
 "lbl_random_enable" = "Activer l'aléatoire";
 "lbl_random_disable" = "Désactiver l'aléatoire";
@@ -31,13 +34,9 @@
 "lbl_header_server_zeroconf" = "Serveur trouvé";
 "lbl_header_servers_zeroconf" = "Serveurs trouvés";
 "lbl_search_zeroconf" = "Chercher des serveurs à proximité";
-"lbl_version" = "Version";
 "lbl_behaviour" = "Comportement";
 "lbl_search" = "Recherche";
 "lbl_fuzzysearch" = "Recherche approximative";
-"lbl_troubleshoot" = "Dépannage";
-"lbl_enable_logging" = "Activer les logs";
-"lbl_send_logs" = "Envoyer les logs";
 "lbl_volume_control_disabled" = "Le contrôle du volume est désactivé";
 "lbl_update_db" = "MaJ base de données";
 
@@ -49,9 +48,6 @@
 "lbl_alert_servercfg_error_name" = "Le nom du serveur doit-être spécifié";
 "lbl_alert_purge_cache_title" = "Suppression du cache des images";
 "lbl_alert_purge_cache_msg" = "Êtes-vous sûr de vouloir procéder ?";
-"lbl_alert_server_need_check" = "Vérifiez votre configuration";
-"lbl_alert_logsexport_fail_msg" = "L'exportation des logs a échoué";
-"lbl_alert_nomailaccount_msg" = "Pas de compte mail configuré";
 "lbl_alert_update_mpd_failed" = "Echec de la mise-à-jour de la base de données MPD";
 "lbl_alert_update_mpd_succeeded" = "Base de données mise-à-jour avec succès";
 
@@ -63,29 +59,21 @@
 "lbl_server_no_output_enabled" = "Pas de sorties activées";
 "lbl_server_no_output_available" = "Pas de sorties disponibles";
 "lbl_server_defaultname" = "Mon serveur MPD";
-"lbl_server_coverurl" = "URL";
 "lbl_server_covername" = "Nom fichier";
 "lbl_server_coverclearcache" = "Vider le cache";
 "lbl_server_section_cover" = "Couverture";
 "lbl_server_section_server" = "Serveur MPD";
 
-"lbl_section_home" = "Bibliothèque";
-"lbl_section_server" = "Serveur MPD";
 "lbl_section_settings" = "Réglages";
-"lbl_section_database" = "Base de données";
-
 "lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
 "lbl_pref_useprettydb" = "Utiliser pretty_mpd_db";
 "lbl_pref_appearance" = "Apparence";
 "lbl_pref_columns" = "Nombre de colonnes";
-"lbl_pref_theme_light" = "Thème clair";
-"lbl_pref_theme_dark" = "Thème sombre";
 "lbl_pref_tint_color" = "Teinte";
 "lbl_pref_browse_by_dir" = "Navigation par dossiers";
 
 "lbl_album" = "Album";
 "lbl_albums" = "Albums";
-"lbl_genre" = "Genre";
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artiste";
 "lbl_artists" = "Artistes";
@@ -93,8 +81,6 @@
 "lbl_albumartists" = "Album artists";
 "lbl_playlist" = "Liste";
 "lbl_playlists" = "Listes";
-"lbl_song" = "Chanson";
-"lbl_songs" = "Chansons";
 "lbl_add_to_playlist" = "Ajouter à une liste de lecture";
 "lbl_remove_from_playlist" = "Supprimer de la liste de lecture";
 "lbl_create_playlist" = "Créer une nouvele liste de lecture";
@@ -109,17 +95,14 @@
 "lbl_message_no_mpd_server" = "Pas de serveur MPD configuré";
 
 "lbl_header_server_list" = "Serveur";
-"lbl_header_servers_list" = "Serveurs";
-"lbl_current_selected_server" = "le serveur sélectionné actuellement";
-"lbl_current_selected_server_not" = "actuellement désélectionné";
-"lbl_add_mpd_server" = "Ajouter un serveur";
-"lbl_add_one" = "En ajouter un";
 "lbl_no_zc_servers" = "Aucun serveur trouvé";
 "lbl_no_outputs" = "Aucune sortie";
 "lbl_no_search_results" = "Aucun résultat";
 "lbl_no_items" = "Rien n'à afficher :(";
 "lbl_search_library" = "Rechercher dans la bibliothèque";
-"lbl_search" = "Rechercher des";
 "lbl_contextualsearch" = "Recherche contextuelle";
+"lbl_touch_to_maximize" = "Toucher pour agrandir";
+"lbl_touch_to_minimize" = "Toucher pour réduire";
+"lbl_change_displaytype" = "Changer le type d'affichage";
 
 "widget_track_title" = "Titre";

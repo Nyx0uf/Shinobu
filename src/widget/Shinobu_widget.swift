@@ -151,10 +151,7 @@ struct ShinobuWidget: Widget {
 	private var mpdBridge = MPDBridge(usePrettyDB: true, isDirectoryBased: false)
 
 	init() {
-		AppDefaults.registerDefaults()
-		Logger.shared.initialize()
-
-		if let server = ServersManager().getSelectedServer() {
+		if let server = ServerManager().getServer() {
 			// Data source
 			mpdBridge.server = server.mpd
 			let resultDataSource = mpdBridge.initialize()
@@ -177,11 +174,11 @@ struct ShinobuWidget: Widget {
 	}
 }
 
-//struct ShinobuWidgetPreviews: PreviewProvider {
+// struct ShinobuWidgetPreviews: PreviewProvider {
 //	static var previews: some View {
 //		ShinobuWidgetEntryView(entry: SimpleEntry(date: Date(), trackTitle: "Becoming Insane", albumCover: UIImage(named: "placeholder")))
 //			.previewContext(WidgetPreviewContext(family: .systemSmall))
 //			.previewDisplayName("Small widget")
 //			.environment(\.colorScheme, .dark)
 //	}
-//}
+// }

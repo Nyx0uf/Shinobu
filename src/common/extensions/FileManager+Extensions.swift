@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 
 extension FileManager {
 	func sizeOfDirectoryAtURL(_ directoryURL: URL) -> Int {
@@ -18,7 +19,7 @@ extension FileManager {
 				}
 			}
 		} catch let error {
-			Logger.shared.log(type: .error, message: "Can't get directory size (\(error.localizedDescription))")
+			Logger(label: "logger.filemanager").error(Logger.Message(stringLiteral: error.localizedDescription))
 		}
 
 		return result
@@ -26,8 +27,8 @@ extension FileManager {
 
 	func cachesDirectory() -> URL {
 		// That's ok cachesDirectory should always return smth
-		//return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-		let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.shinobu.settings")!
+		// return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: APP_GROUP_NAME)!
 		return containerURL
 	}
 }

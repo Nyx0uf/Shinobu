@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 final class ContainerVC: UIViewController {
 	// MARK: - Private properties
@@ -71,18 +72,8 @@ final class ContainerVC: UIViewController {
 				libraryVC_ipad = nil
 			}
 
-			if AppDefaults.pref_browseByDirectory == false {
-				libraryVC_ipad = LibraryVCIPAD(mpdBridge: mpdBridge)
-				navController = NYXNavigationController(rootViewController: libraryVC_ipad)
-			} else {
-				directoriesVC = DirectoriesVC(mpdBridge: mpdBridge, path: nil)
-				navController = NYXNavigationController(rootViewController: directoriesVC)
-			}
-			self.add(navController)
-
-			playerVC_ipad = PlayerVCIPAD(mpdBridge: mpdBridge)
-			self.add(playerVC_ipad)
-		} else {
+		self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
+		else {
 			if playerVC != nil {
 				playerVC.remove()
 				playerVC = nil

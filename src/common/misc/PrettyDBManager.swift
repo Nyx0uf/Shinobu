@@ -1,9 +1,10 @@
 import Foundation
+import Logging
 
 struct PrettyDBManager {
 	static func albums() -> [Album] {
-		let serversManager = ServersManager()
-		guard let server = serversManager.getSelectedServer()?.covers else {
+		let serverManager = ServerManager()
+		guard let server = serverManager.getServer()?.covers else {
 			return []
 		}
 
@@ -35,7 +36,7 @@ struct PrettyDBManager {
 
 		guard let resp = response, resp.statusCode == 200, let jsonData = data else {
 			if let err = error {
-				Logger.shared.log(error: err)
+				Logger(label: "logger.prettydbmanager").error(Logger.Message(stringLiteral: err.localizedDescription))
 			}
 			return []
 		}
@@ -45,7 +46,7 @@ struct PrettyDBManager {
 				return []
 			}
 
-			//let start = CFAbsoluteTimeGetCurrent()
+			// let start = CFAbsoluteTimeGetCurrent()
 			var albums = [Album]()
 			for albumJson in json {
 				guard let name = albumJson["n"] as? String, let path = albumJson["p"] as? String else { continue }
@@ -55,8 +56,8 @@ struct PrettyDBManager {
 				let album = Album(name: name, path: path, artist: artist, genre: genre, year: year)
 				albums.append(album)
 			}
-			//let end = CFAbsoluteTimeGetCurrent()
-			//print("\(end - start)s")
+			// let end = CFAbsoluteTimeGetCurrent()
+			// print("\(end - start)s")
 
 //			var albums = [Album]()
 //			var lock = os_unfair_lock_s()
