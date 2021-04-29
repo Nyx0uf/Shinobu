@@ -57,7 +57,6 @@ final class ContainerVC: UIViewController {
 	// MARK: - Private
 	private func setupVCs() {
 		mpdBridge = nil
-		mpdBridge = MPDBridge(usePrettyDB: AppDefaults.pref_usePrettyDB, isDirectoryBased: true)
 
 		if UIDevice.current.isPad() {
 			if playerVC_ipad != nil {
@@ -72,8 +71,10 @@ final class ContainerVC: UIViewController {
 				libraryVC_ipad = nil
 			}
 
-		self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
-		else {
+			//let spc = UISplitViewController()
+			//spc.det
+
+		} else {
 			if playerVC != nil {
 				playerVC.remove()
 				playerVC = nil
@@ -89,7 +90,9 @@ final class ContainerVC: UIViewController {
 				directoriesVC = nil
 			}
 
-			if AppDefaults.pref_browseByDirectory == false {
+			self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
+
+			if Defaults[.pref_browseByDirectory] == false {
 				libraryVC = LibraryVC(mpdBridge: mpdBridge)
 				navController = NYXNavigationController(rootViewController: libraryVC)
 			} else {
