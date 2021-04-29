@@ -120,6 +120,7 @@
 		4365C197255ED2DE00B8E926 /* DownloadCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B03D21EB44E2009A3BBF /* DownloadCoverOperation.swift */; };
 		4365C198255ED2DF00B8E926 /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
 		4365C19B255ED2EB00B8E926 /* OperationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4358B04821EB44E2009A3BBF /* OperationManager.swift */; };
+		43662A9F263AB61B002BC074 /* ReuseIdentifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43662A9E263AB61B002BC074 /* ReuseIdentifying.swift */; };
 		43793091226A18FA00DD6F9C /* ProcessCoverOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */; };
 		4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */; };
 		4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */; };
@@ -306,6 +307,7 @@
 		4365C1A9255EE0D600B8E926 /* neighbor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = neighbor.h; sourceTree = "<group>"; };
 		4365C1AA255EE0D600B8E926 /* binary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = binary.h; sourceTree = "<group>"; };
 		4365C1AB255EE0D600B8E926 /* mount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mount.h; sourceTree = "<group>"; };
+		43662A9E263AB61B002BC074 /* ReuseIdentifying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseIdentifying.swift; sourceTree = "<group>"; };
 		43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessCoverOperation.swift; sourceTree = "<group>"; };
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
@@ -563,6 +565,7 @@
 				4358B00721EB42B4009A3BBF /* UIViewController+Extensions.swift */,
 				43EF1AA7232922B100A2FE10 /* UIApplication+Extensions.swift */,
 				431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */,
+				43662A9E263AB61B002BC074 /* ReuseIdentifying.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -961,6 +964,7 @@
 				43B8BAAE2257BE120033EA5D /* TitlesIndexView.swift in Sources */,
 				4358B04D21EB44E2009A3BBF /* ImageCache.swift in Sources */,
 				43C3E8112266009E00F6F058 /* ImagedLabel.swift in Sources */,
+				43662A9F263AB61B002BC074 /* ReuseIdentifying.swift in Sources */,
 				4358B03721EB44C5009A3BBF /* Genre.swift in Sources */,
 				4358B03921EB44C5009A3BBF /* Album.swift in Sources */,
 				43BF596422BBE99B006F2AA3 /* UpNextTableViewCell.swift in Sources */,
