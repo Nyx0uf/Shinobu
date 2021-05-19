@@ -481,7 +481,6 @@
 			children = (
 				4358B00321EB42B4009A3BBF /* common */,
 				434E517221D56CF000CD88F7 /* ios */,
-				43FAE5AD224E5D7E006843E9 /* widget */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -494,6 +493,7 @@
 				434E517321D56CF000CD88F7 /* misc */,
 				43DC9F1A225CBB3100C6A8E5 /* theming */,
 				4358B07921EB47C2009A3BBF /* views */,
+				43FAE5AD224E5D7E006843E9 /* widget */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -511,7 +511,6 @@
 			children = (
 				434E517D21D56CFA00CD88F7 /* common */,
 				434E517A21D56CFA00CD88F7 /* ios */,
-				4365C0EB255E818800B8E926 /* widget */,
 			);
 			path = rsrc;
 			sourceTree = "<group>";
@@ -519,10 +518,8 @@
 		434E517A21D56CFA00CD88F7 /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				434E517B21D56CFA00CD88F7 /* Assets.xcassets */,
-				434E517C21D56CFA00CD88F7 /* Info.plist */,
-				434E518821D570D400CD88F7 /* LaunchScreen.storyboard */,
-				43FAE5C6224E6528006843E9 /* Shinobu_App.entitlements */,
+				4395D0B626555D9B00FE7DAC /* iphone_ipad */,
+				4365C0EB255E818800B8E926 /* widget */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -704,6 +701,17 @@
 				4358AFF821EB41E2009A3BBF /* NYXControllers.swift */,
 			);
 			path = global;
+			sourceTree = "<group>";
+		};
+		4395D0B626555D9B00FE7DAC /* iphone_ipad */ = {
+			isa = PBXGroup;
+			children = (
+				434E517C21D56CFA00CD88F7 /* Info.plist */,
+				434E517B21D56CFA00CD88F7 /* Assets.xcassets */,
+				434E518821D570D400CD88F7 /* LaunchScreen.storyboard */,
+				43FAE5C6224E6528006843E9 /* Shinobu_App.entitlements */,
+			);
+			path = iphone_ipad;
 			sourceTree = "<group>";
 		};
 		43AFA0AB2563E2EF0022C11F /* ipad */ = {
@@ -1154,7 +1162,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4462;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
-				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				INFOPLIST_FILE = rsrc/ios/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1188,7 +1196,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4462;
 				DEVELOPMENT_TEAM = 3VD3GSF4M4;
-				INFOPLIST_FILE = rsrc/widget/Info.plist;
+				INFOPLIST_FILE = rsrc/ios/widget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1408,7 +1416,7 @@
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = rsrc/ios/Info.plist;
+				INFOPLIST_FILE = rsrc/ios/iphone_ipad/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1463,7 +1471,7 @@
 				GCC_WARN_PEDANTIC = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				INFOPLIST_FILE = rsrc/ios/Info.plist;
+				INFOPLIST_FILE = rsrc/ios/iphone_ipad/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
