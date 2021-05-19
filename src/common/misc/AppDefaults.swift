@@ -12,7 +12,7 @@ extension Defaults.Keys {
 	static let pref_fuzzySearch = Key<Bool>("pref_fuzzySearch", default: false, suite: extensionDefaults)
 	static let pref_shakeToPlayRandom = Key<Bool>("pref_shakeToPlayRandom", default: false, suite: extensionDefaults)
 	static let pref_browseByDirectory = Key<Bool>("pref_browseByDirectory", default: false, suite: extensionDefaults)
-	static let pref_numberOfColumns = Key<Int>("pref_numberOfColumns", default: 2, suite: extensionDefaults)
+	static let pref_numberOfColumns = Key<Int>("pref_numberOfColumns", default: UIDevice.current.isPad() ? 4 : 2, suite: extensionDefaults)
 	static let pref_tintColor = Key<TintColorType>("pref_tintColor", default: TintColorType.orange, suite: extensionDefaults)
 	static let pref_usePrettyDB = Key<Bool>("pref_usePrettyDB", default: true, suite: extensionDefaults)
 	static let pref_contextualSearch = Key<Bool>("pref_contextualSearch", default: false, suite: extensionDefaults)

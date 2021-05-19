@@ -399,6 +399,7 @@ extension ServerVC {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cellIdentifier = "\(indexPath.section):\(indexPath.row)"
 		var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+		let width = UIDevice.current.isPad() ? self.view.width : UIScreen.main.bounds.width
 		if cell == nil {
 			cell = UITableViewCell(style: .default, reuseIdentifier: cellIdentifier)
 
@@ -407,22 +408,22 @@ extension ServerVC {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_host")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDHostname)
-					tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfMPDHostname.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_port")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDPort)
-					tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfMPDPort.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_password")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfMPDPassword)
-					tfMPDPassword.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfMPDPassword.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 3 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_output")
 					cell?.selectionStyle = .none
 					cell?.addSubview(lblMPDOutput)
-					lblMPDOutput.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					lblMPDOutput.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 4 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_update_db")
 					cell?.textLabel?.textAlignment = .center
@@ -436,17 +437,17 @@ extension ServerVC {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_host")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBHostname)
-					tfWEBHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfWEBHostname.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 1 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_port")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBPort)
-					tfWEBPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfWEBPort.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 2 {
 					cell?.textLabel?.text = NYXLocalizedString("lbl_server_covername")
 					cell?.selectionStyle = .none
 					cell?.addSubview(tfWEBCoverName)
-					tfWEBCoverName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+					tfWEBCoverName.frame = CGRect(width - 144 - 16, 0, 144, 44)
 				} else if indexPath.row == 3 {
 					cell?.textLabel?.text = "\(NYXLocalizedString("lbl_server_coverclearcache")) (\(String(format: "%.2f", Double(cacheSize) / 1048576))\(NYXLocalizedString("lbl_megabytes")))"
 					cell?.textLabel?.textAlignment = .center
@@ -463,23 +464,23 @@ extension ServerVC {
 
 		if indexPath.section == 0 {
 			if indexPath.row == 0 {
-				tfMPDHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfMPDHostname.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 1 {
-				tfMPDPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfMPDPort.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 2 {
-				tfMPDPassword.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfMPDPassword.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 3 {
-				lblMPDOutput.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				lblMPDOutput.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 4 {
 				cell?.textLabel?.textColor = themeProvider.currentTheme.tintColor
 			}
 		} else {
 			if indexPath.row == 0 {
-				tfWEBHostname.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfWEBHostname.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 1 {
-				tfWEBPort.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfWEBPort.frame = CGRect(width - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 2 {
-				tfWEBCoverName.frame = CGRect(UIScreen.main.bounds.width - 144 - 16, 0, 144, 44)
+				tfWEBCoverName.frame = CGRect(width	 - 144 - 16, 0, 144, 44)
 			} else if indexPath.row == 3 {
 				cell?.textLabel?.textColor = themeProvider.currentTheme.tintColor
 			}

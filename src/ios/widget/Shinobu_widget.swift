@@ -1,5 +1,6 @@
 import WidgetKit
 import SwiftUI
+import Defaults
 
 struct Provider: TimelineProvider {
 	private var mpdBridge: MPDBridge
@@ -44,6 +45,7 @@ struct ShinobuWidgetEntryView: View {
 	@Environment(\.widgetFamily) private var widgetFamily
 	var entry: Provider.Entry
 	var mpdBridge: MPDBridge
+	var coversDirectory: URL
 
 	var body: some View {
 		if widgetFamily == .systemSmall {
@@ -104,17 +106,42 @@ struct ShinobuWidgetEntryView: View {
 	}
 
 	private func getAlbumCover() -> UIImage {
-		guard let album = entry.album else { return #imageLiteral(resourceName: "placeholder") }
-		guard album.name != "—" && album.path != "/" else { return #imageLiteral(resourceName: "placeholder") }
-		if let cover = album.asset(ofSize: .large) {
-			return cover
-		} else {
-			mpdBridge.getPathForAlbum(album) {
-				self.downloadCoverForAlbum(album) { (_, _, _) in
+		if mpdBridge.isDirectoryBased == true {
+			guard let track = entry.track else { return #imageLiteral(resourceName: "placeholder") }
 
+			let songURL = URL(fileURLWithPath: track.uri)
+			let dirPath = songURL.deletingLastPathComponent().absoluteString
+			let hashedUri = dirPath.sha256() + ".jpg"
+
+			let coverURL = coversDirectory.appendingPathComponent(hashedUri)
+			if let cover = UIImage.loadFromFileURL(coverURL) {
+				return cover
+			} else {
+				self.mpdBridge.getCoverForDirectoryAtPath(track.uri) { (data: Data) in
+					DispatchQueue.global().async {
+						guard let img = UIImage(data: data) else { return }
+
+						let cropSize = CoverOperations.cropSizes()[.large]!
+						if let cropped = img.smartCropped(toSize: cropSize, highQuality: false, screenScale: true) {
+							_ = cropped.save(url: coverURL)
+						}
+					}
 				}
+				return #imageLiteral(resourceName: "placeholder")
 			}
-			return #imageLiteral(resourceName: "placeholder")
+		} else {
+			guard let album = entry.album else { return #imageLiteral(resourceName: "placeholder") }
+			guard album.name != "—" && album.path != "/" else { return #imageLiteral(resourceName: "placeholder") }
+			if let cover = album.asset(ofSize: .large) {
+				return cover
+			} else {
+				mpdBridge.getPathForAlbum(album) {
+					self.downloadCoverForAlbum(album) { (_, _, _) in
+
+					}
+				}
+				return #imageLiteral(resourceName: "placeholder")
+			}
 		}
 	}
 
@@ -149,12 +176,13 @@ struct ImageOverlay: View {
 struct ShinobuWidget: Widget {
 	private let kind: String = "ShinobuWidget"
 	private var mpdBridge = MPDBridge(usePrettyDB: true, isDirectoryBased: false)
+	private var coversDirectory = FileManager.default.cachesDirectory().appendingPathComponent(Defaults[.coversDirectory], isDirectory: true)
 
 	init() {
 		if let server = ServerManager().getServer() {
 			// Data source
-			mpdBridge.server = server.mpd
-			let resultDataSource = mpdBridge.initialize()
+			self.mpdBridge.server = server.mpd
+			let resultDataSource = self.mpdBridge.initialize()
 			switch resultDataSource {
 			case .failure:
 				return
@@ -166,19 +194,10 @@ struct ShinobuWidget: Widget {
 
 	var body: some WidgetConfiguration {
 		StaticConfiguration(kind: kind, provider: Provider(mpdBridge: mpdBridge)) { entry in
-			ShinobuWidgetEntryView(entry: entry, mpdBridge: mpdBridge)
+			ShinobuWidgetEntryView(entry: entry, mpdBridge: mpdBridge, coversDirectory: coversDirectory)
 		}
 		.configurationDisplayName("Shinobu")
 		.description("Displays the currently playing song")
 		.supportedFamilies([.systemSmall, .systemMedium])
 	}
 }
-
-// struct ShinobuWidgetPreviews: PreviewProvider {
-//	static var previews: some View {
-//		ShinobuWidgetEntryView(entry: SimpleEntry(date: Date(), trackTitle: "Becoming Insane", albumCover: UIImage(named: "placeholder")))
-//			.previewContext(WidgetPreviewContext(family: .systemSmall))
-//			.previewDisplayName("Small widget")
-//			.environment(\.colorScheme, .dark)
-//	}
-// }

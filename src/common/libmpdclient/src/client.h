@@ -48,7 +48,9 @@
 
 // IWYU pragma: begin_exports
 
+#include "albumart.h"
 #include "audio_format.h"
+#include "binary.h"
 #include "capabilities.h"
 #include "connection.h"
 #include "database.h"

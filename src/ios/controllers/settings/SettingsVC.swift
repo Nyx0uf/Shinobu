@@ -10,7 +10,7 @@ final class SettingsVC: NYXTableViewController {
 	// Buttons for the tint color
 	private var colorsButton = [ColorButton]()
 	// Number of columns control
-	private var sColumns = UISegmentedControl(items: ["2", "3"])
+	private var sColumns = UIDevice.current.isPad() ? UISegmentedControl(items: ["4", "5"]) :  UISegmentedControl(items: ["2", "3"])
 	/// Section 1 - BEHAVIOUR
 	// Use mpd_pretty_db switch
 	private var swPrettyDB = UISwitch()
@@ -97,7 +97,8 @@ final class SettingsVC: NYXTableViewController {
 	}
 
 	@objc private func toggleColumnsAction(_ sender: Any?) {
-		Defaults[.pref_numberOfColumns] = sColumns.selectedSegmentIndex + 2
+		let diff = UIDevice.current.isPad() ? 4 : 2
+		Defaults[.pref_numberOfColumns] = sColumns.selectedSegmentIndex + diff
 
 		// Need to erase downloaded cover because the size will change
 		ImageCache.shared.clear(nil)
@@ -269,7 +270,8 @@ extension SettingsVC {
 					btn.isSelected = btn.tintColorType == Defaults[.pref_tintColor]
 				}
 			} else if indexPath.row == 1 {
-				sColumns.selectedSegmentIndex = Defaults[.pref_numberOfColumns] - 2
+				let diff = UIDevice.current.isPad() ? 4 : 2
+				sColumns.selectedSegmentIndex = Defaults[.pref_numberOfColumns] - diff
 			}
 		} else if indexPath.section == 1 {
 			if indexPath.row == 0 {

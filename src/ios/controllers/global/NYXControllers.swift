@@ -32,14 +32,14 @@ final class NYXNavigationController: UINavigationController, Themed {
 		if let topViewController = topViewController {
 			return topViewController.supportedInterfaceOrientations
 		}
-		return .all
+		return UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
 		if let topViewController = topViewController {
 			return topViewController.preferredInterfaceOrientationForPresentation
 		}
-		return .portrait
+		return UIDevice.current.isPad() ? .landscapeLeft : .portrait
 	}
 
 	func applyTheme(_ theme: Theme) {
@@ -70,7 +70,7 @@ class NYXTableViewController: UITableViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -78,6 +78,10 @@ class NYXTableViewController: UITableViewController {
 	}
 
 	func heightForMiniPlayer() -> CGFloat {
+		if UIDevice.current.isPad() {
+			return 0
+		}
+
 		var miniHeight = CGFloat(64)
 		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
@@ -98,7 +102,7 @@ class NYXViewController: UIViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -106,6 +110,10 @@ class NYXViewController: UIViewController {
 	}
 
 	func heightForMiniPlayer() -> CGFloat {
+		if UIDevice.current.isPad() {
+			return 0
+		}
+
 		var miniHeight = CGFloat(64)
 		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
@@ -118,7 +126,7 @@ class NYXAlertController: UIAlertController {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 }
 

@@ -44,10 +44,11 @@ struct CoverOperations {
 		processOperation.cancel()
 	}
 
-	private static func cropSizes() -> [AssetSize: CGSize] {
-		return [.small: CGSize(48, 48),
-				.medium: CGSize(Defaults[.coversSize], Defaults[.coversSize]),
-				.large: CGSize(UIScreen.main.bounds.width - 64, UIScreen.main.bounds.width - 64)]
-
+	public static func cropSizes() -> [AssetSize: CGSize] {
+		let smallSize = CGSize(48, 48)
+		let mediumSize = CGSize(Defaults[.coversSize], Defaults[.coversSize])
+		let w = UIDevice.current.isPad() ? ceil(UIScreen.main.bounds.width) - 64 : ceil(UIScreen.main.bounds.width * 0.333) - 32
+		let largeSize = CGSize(w, w)
+		return [.small: smallSize, .medium: mediumSize, .large: largeSize]
 	}
 }

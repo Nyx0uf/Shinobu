@@ -68,6 +68,17 @@ final class MusicalCollectionView: UIView {
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
 
+	override var frame: CGRect {
+		didSet {
+			if UIDevice.current.isPad() {
+				let widthIndexView = CGFloat(20)
+				self.collectionView.frame = CGRect(0, 0, frame.width - widthIndexView, frame.height)
+				self.indexView.frame = CGRect(self.collectionView.frame.width, 64, widthIndexView, frame.height - 64)
+				updateLayout()
+			}
+		}
+	}
+
 	func reloadData() {
 		collectionView.reloadData()
 	}

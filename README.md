@@ -11,6 +11,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 ## FEATURES
 
+- iPhone / iPad
 - Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
 - Search, *global* or *contextual*, *normal* or *fuzzy*
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
@@ -30,7 +31,6 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 ## TODO
 
-- iPad version
 - Apple TV version
 - An app icon. I have absolutely no design skills, if someone wants to help
 

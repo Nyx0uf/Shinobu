@@ -73,6 +73,7 @@ struct MPDConnectionError: Error {
 		case getOutputsError
 		case toggleOutput
 		case getRootDirectoryListError
+		case getDirectoryCoverError
 	}
 
 	let kind: Kind
@@ -463,7 +464,12 @@ final class MPDConnection {
 				if l > 4 {
 					l = 4
 				}
-				metadatas["year"] = String(cString: value)
+				let dataTemp = Data(bytesNoCopy: UnsafeMutableRawPointer(mutating: value), count: l, deallocator: .none)
+				if let year = String(data: dataTemp, encoding: .utf8) {
+					metadatas["year"] = year
+				} else {
+					metadatas["year"] = "0000"
+				}
 			}
 
 			mpd_return_pair(connection, tmpDate)
@@ -779,12 +785,17 @@ final class MPDConnection {
 			guard let tmpAlbumName = mpd_song_get_tag(song, MPD_TAG_ALBUM, 0) else {
 				return .failure(MPDConnectionError(.getStatusError, getLastErrorMessageForConnection()))
 			}
+
 			let name = String(cString: tmpAlbumName)
-			if let album = delegate?.albumMatchingName(name) {
+			if matchAlbum == true {
+				if let album = delegate?.albumMatchingName(name) {
+					return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: album, PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
+				}
+				return .failure(MPDConnectionError(.getStatusError, Message(content: "No matching album found.", type: .error)))
+			} else {
+				let album = Album(name: name)
 				return .success([PLAYER_TRACK_KEY: track, PLAYER_ALBUM_KEY: album, PLAYER_ELAPSED_KEY: Int(elapsed), PLAYER_STATUS_KEY: state, PLAYER_VOLUME_KEY: volume, PLAYER_REPEAT_KEY: loop, PLAYER_RANDOM_KEY: random])
 			}
-
-			return .failure(MPDConnectionError(.getStatusError, Message(content: "No matching album found.", type: .error)))
 		}
 	}
 
@@ -867,6 +878,19 @@ final class MPDConnection {
 		}
 
 		return .success(list)
+	}
+
+	func getCoverForDirectoryAtPath(_ path: String) -> Result<Data, MPDConnectionError> {
+		var buf: UnsafeMutablePointer<UInt8>?
+		let ret = mpd_run_albumart(connection, path, &buf)
+		if ret == -1 {
+			return .failure(MPDConnectionError(.getDirectoryCoverError, getLastErrorMessageForConnection()))
+		}
+
+		let data = Data(bytes: buf!, count: Int(ret))
+		free(buf)
+
+		return .success(data)
 	}
 
 	// MARK: - Private
