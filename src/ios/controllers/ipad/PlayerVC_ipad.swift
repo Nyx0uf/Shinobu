@@ -1,4 +1,5 @@
 import UIKit
+import Defaults
 
 private let btnSize = CGFloat(44)
 
@@ -48,6 +49,15 @@ final class PlayerVCIPAD: NYXViewController {
 	private let lblNextAlbumArtist = AutoScrollLabel()
 	// Current cover
 	private var imgCover: UIImage?
+	// Local URL for the cover
+	private(set) lazy var localCoverURL: URL = {
+		let cachesDirectoryURL = FileManager.default.cachesDirectory()
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(Defaults[.coversDirectory], isDirectory: true)
+		if FileManager.default.fileExists(atPath: coversDirectoryURL.absoluteString) == false {
+			try! FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+		}
+		return coversDirectoryURL
+	}()
 
 	init(mpdBridge: MPDBridge) {
 		self.mpdBridge = mpdBridge
@@ -65,9 +75,6 @@ final class PlayerVCIPAD: NYXViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		overrideUserInterfaceStyle = .dark
-		view.autoresizingMask = []
-
 		let width = ceil(UIScreen.main.bounds.width / 3)
 		let coverSize = width - 32
 		let marginLeft = CGFloat(16)
@@ -81,8 +88,29 @@ final class PlayerVCIPAD: NYXViewController {
 		blurEffectView.frame = view.bounds
 		view.addSubview(blurEffectView)
 
+		// Elapsed label
+		let sizeTimeLabels = CGSize(40, 16)
+		vev_elapsed.frame = CGRect(marginLeft, 40, sizeTimeLabels)
+		vev_elapsed.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
+		lblElapsedDuration.frame = vev_elapsed.bounds
+		lblElapsedDuration.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+		lblElapsedDuration.textColor = UIColor(rgb: 0xFFFFFF)
+		lblElapsedDuration.textAlignment = .left
+		vev_elapsed.contentView.addSubview(lblElapsedDuration)
+		blurEffectView.contentView.addSubview(vev_elapsed)
+
+		// Remaining label
+		vev_remaining.frame = CGRect(width - marginLeft - sizeTimeLabels.width, 40, sizeTimeLabels)
+		vev_remaining.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
+		lblRemainingDuration.frame = vev_remaining.bounds
+		lblRemainingDuration.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+		lblRemainingDuration.textColor = UIColor(rgb: 0xFFFFFF)
+		lblRemainingDuration.textAlignment = .right
+		vev_remaining.contentView.addSubview(lblRemainingDuration)
+		blurEffectView.contentView.addSubview(vev_remaining)
+
 		// Track pos & title (full)
-		sliderTrack.frame = CGRect(marginLeft, 32, width - 2 * marginLeft, 32)
+		sliderTrack.frame = CGRect(marginLeft, vev_remaining.maxY + 10, width - 2 * marginLeft, 32)
 		sliderTrack.addTarget(self, action: #selector(changeTrackPositionAction(_:)), for: .touchUpInside)
 		sliderTrack.label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
 		sliderTrack.label.textColor = UIColor(rgb: 0xFFFFFF)
@@ -114,7 +142,7 @@ final class PlayerVCIPAD: NYXViewController {
 
 		// Cover view
 		coverView.frame = CGRect(16, lblAlbum.maxY + 16, coverSize, coverSize)
-		coverView.backgroundColor = .red
+		coverView.backgroundColor = .black
 		coverView.isUserInteractionEnabled = true
 		coverView.layer.shadowColor = UIColor(rgb: 0x222222).cgColor
 		coverView.layer.shadowRadius = 1
@@ -153,32 +181,11 @@ final class PlayerVCIPAD: NYXViewController {
 		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnStop)
 
-		// Queue button
-		btnQueue.frame = CGRect(marginLeft, view.height - btnSize, btnSize, btnSize)
-		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
-		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
-		blurEffectView.contentView.addSubview(btnQueue)
-
-		// Elapsed label
-		let sizeTimeLabels = CGSize(40, 16)
-		vev_elapsed.frame = CGRect(marginLeft, 20, sizeTimeLabels)
-		vev_elapsed.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
-		lblElapsedDuration.frame = vev_elapsed.bounds
-		lblElapsedDuration.font = UIFont.systemFont(ofSize: 12, weight: .bold)
-		lblElapsedDuration.textColor = UIColor(rgb: 0xFFFFFF)
-		lblElapsedDuration.textAlignment = .left
-		vev_elapsed.contentView.addSubview(lblElapsedDuration)
-		blurEffectView.contentView.addSubview(vev_elapsed)
-
-		// Remaining label
-		vev_remaining.frame = CGRect(width - marginLeft - sizeTimeLabels.width, 20, sizeTimeLabels)
-		vev_remaining.effect = UIVibrancyEffect(blurEffect: UIBlurEffect(style: .dark))
-		lblRemainingDuration.frame = vev_remaining.bounds
-		lblRemainingDuration.font = UIFont.systemFont(ofSize: 12, weight: .bold)
-		lblRemainingDuration.textColor = UIColor(rgb: 0xFFFFFF)
-		lblRemainingDuration.textAlignment = .right
-		vev_remaining.contentView.addSubview(lblRemainingDuration)
-		blurEffectView.contentView.addSubview(vev_remaining)
+		// Random button
+		btnRandom.frame = CGRect(marginLeft, btnPlay.maxY + 16, btnSize, btnSize)
+		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
+		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Repeat button
 		btnRepeat.frame = CGRect(width - marginLeft - btnSize, btnPlay.maxY + 16, btnSize, btnSize)
@@ -186,18 +193,18 @@ final class PlayerVCIPAD: NYXViewController {
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnRepeat)
 
-		// Random button
-		btnRandom.frame = CGRect(marginLeft, btnPlay.maxY + 16, btnSize, btnSize)
-		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
-		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
-		blurEffectView.contentView.addSubview(btnRandom)
-
 		// Slider volume
-		sliderVolume.frame = CGRect(btnRandom.maxX + marginLeft, btnPlay.maxY + 16, btnRepeat.x - marginLeft - btnRandom.maxX - marginLeft, btnSize)
+		sliderVolume.frame = CGRect(marginLeft, btnRepeat.maxY + 16, width - 2 * marginLeft, 32)
 		sliderVolume.addTarget(self, action: #selector(changeVolumeAction(_:)), for: .touchUpInside)
 		sliderVolume.minimumValue = 0
 		sliderVolume.maximumValue = 100
 		blurEffectView.contentView.addSubview(sliderVolume)
+
+		// Queue button
+		btnQueue.frame = CGRect(marginLeft, view.height - btnSize, btnSize, btnSize)
+		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
+		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		blurEffectView.contentView.addSubview(btnQueue)
 
 		// Next track
 		lblNextTrack.frame = CGRect(btnQueue.maxX + marginLeft, btnQueue.y, width - btnQueue.maxX - marginLeft - marginLeft - marginLeft - btnSize, 20)
@@ -216,24 +223,6 @@ final class PlayerVCIPAD: NYXViewController {
 		lblNextAlbumArtist.isAccessibilityElement = false
 		blurEffectView.contentView.addSubview(lblNextAlbumArtist)
 
-		// tapableView
-		//tapableView.isUserInteractionEnabled = true
-		//tapableView.frame = CGRect(.zero, btnPlay.x, miniBaseHeight)
-		//view.addSubview(tapableView)
-
-		// Single tap to request full player view
-		//singleTap.numberOfTapsRequired = 1
-		//singleTap.numberOfTouchesRequired = 1
-		//singleTap.addTarget(self, action: #selector(singleTap(_:)))
-		//tapableView.addGestureRecognizer(singleTap)
-
-		// Double tap in minified view to directly show up next
-		//doubleTap.numberOfTapsRequired = 2
-		//doubleTap.numberOfTouchesRequired = 1
-		//doubleTap.addTarget(self, action: #selector(doubleTap(_:)))
-		//tapableView.addGestureRecognizer(doubleTap)
-		//singleTap.require(toFail: doubleTap)
-
 		// Useless motion effect
 		motionEffectX.minimumRelativeValue = 20
 		motionEffectX.maximumRelativeValue = -20
@@ -243,6 +232,10 @@ final class PlayerVCIPAD: NYXViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackNotification(_:)), name: .currentPlayingTrack, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playingTrackChangedNotification(_:)), name: .playingTrackChanged, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(playerStatusChangedNotification(_:)), name: .playerStatusChanged, object: nil)
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 	}
 
 	override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -290,7 +283,7 @@ final class PlayerVCIPAD: NYXViewController {
 	}
 
 	@objc func showUpNextAction(_ sender: Any?) {
-		let uvc = UpNextVC(mpdBridge: mpdBridge)
+		let uvc = UpNextVCIPAD(mpdBridge: mpdBridge)
 		let nvc = NYXNavigationController(rootViewController: uvc)
 		present(nvc, animated: true, completion: nil)
 	}
@@ -304,19 +297,6 @@ final class PlayerVCIPAD: NYXViewController {
 			NotificationCenter.default.postOnMainThreadAsync(name: .showAlbumNotification, object: album)
 		}
 	}
-
-	// MARK: - Gestures
-//	@objc func singleTap(_ gesture: UITapGestureRecognizer) {
-//		if gesture.state == .ended {
-//			toggleMinified()
-//		}
-//	}
-//
-//	@objc func doubleTap(_ gesture: UITapGestureRecognizer) {
-//		if gesture.state == .ended {
-//			showUpNextAction(nil)
-//		}
-//	}
 
 	// MARK: - Notifications
 	@objc func playingTrackNotification(_ aNotification: Notification?) {
@@ -342,6 +322,54 @@ final class PlayerVCIPAD: NYXViewController {
 		guard let notif = aNotification, let userInfos = notif.userInfo else { return }
 
 		guard let track = userInfos[PLAYER_TRACK_KEY] as? Track, let album = userInfos[PLAYER_ALBUM_KEY] as? Album else { return }
+
+		if mpdBridge.isDirectoryBased {
+			let songURL = URL(fileURLWithPath: track.uri)
+			let dirPath = songURL.deletingLastPathComponent().absoluteString
+			let hashedUri = dirPath.sha256() + ".jpg"
+
+			let coverURL = self.localCoverURL.appendingPathComponent(hashedUri)
+			if let cover = UIImage.loadFromFileURL(coverURL) {
+				DispatchQueue.main.async {
+					self.imgCover = cover
+					UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+						(self.view as? UIImageView)?.image = cover
+						self.sliderTrack.label.text = track.name
+						self.sliderTrack.maximumValue = CGFloat(track.duration.value)
+						self.lblArtist.text = track.artist
+						self.lblAlbum.text = album.name
+					}, completion: nil)
+					self.updatePlayPauseState()
+				}
+			} else {
+				self.mpdBridge.getCoverForDirectoryAtPath(track.uri) { [weak self] (data: Data) in
+					guard let strongSelf = self else { return }
+
+					DispatchQueue.global().async {
+						guard let img = UIImage(data: data) else { return }
+
+						let cropSize = CoverOperations.cropSizes()[.large]!
+						if let cropped = img.smartCropped(toSize: cropSize, highQuality: false, screenScale: true) {
+							DispatchQueue.main.async {
+								strongSelf.imgCover = cropped
+								UIView.transition(with: strongSelf.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+									(strongSelf.view as? UIImageView)?.image = cropped
+									strongSelf.sliderTrack.label.text = track.name
+									strongSelf.sliderTrack.maximumValue = CGFloat(track.duration.value)
+									strongSelf.lblArtist.text = track.artist
+									strongSelf.lblAlbum.text = album.name
+								}, completion: nil)
+								strongSelf.updatePlayPauseState()
+							}
+
+							_ = cropped.save(url: coverURL)
+						}
+					}
+				}
+			}
+
+			return
+		}
 
 		// Update cover if from another album (playlist case)
 		if let cover = album.asset(ofSize: .large) {

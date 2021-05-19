@@ -628,6 +628,21 @@ final class MPDBridge {
 		}
 	}
 
+	func getCoverForDirectoryAtPath(_ path: String, callback: @escaping (Data) -> Void) {
+		guard MPDConnection.isValid(connection) else { return }
+
+		queue.async { [weak self] in
+			guard let strongSelf = self else { return }
+			let result = strongSelf.connection.getCoverForDirectoryAtPath(path)
+			switch result {
+			case .failure:
+				break
+			case .success(let data):
+				callback(data)
+			}
+		}
+	}
+
 	// MARK: - Private
 	private func startTimer(_ interval: Int) {
 		timer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: queue)
@@ -697,7 +712,9 @@ final class MPDBridge {
 			let result = try connection.getPlayerInfos(matchAlbum: self.isDirectoryBased == false)
 			switch result {
 			case .failure(let error):
-				logger.error(Logger.Message(stringLiteral: error.message.description))
+				if self.isDirectoryBased == false {
+					logger.error(Logger.Message(stringLiteral: error.message.description))
+				}
 			case .success(let result):
 				guard let infos = result else { return }
 				let status = infos[PLAYER_STATUS_KEY] as! Int

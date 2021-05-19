@@ -19,6 +19,8 @@ final class ContainerVC: UIViewController {
 	private var playerVC_ipad: PlayerVCIPAD!
 	// Library VC for ipad
 	private var libraryVC_ipad: LibraryVCIPAD!
+	// Browse by directory VC for ipad
+	private var directoriesVC_ipad: DirectoriesVCIPAD!
 
 	init() {
 		super.init(nibName: nil, bundle: nil)
@@ -57,6 +59,7 @@ final class ContainerVC: UIViewController {
 	// MARK: - Private
 	private func setupVCs() {
 		mpdBridge = nil
+		mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
 
 		if UIDevice.current.isPad() {
 			if playerVC_ipad != nil {
@@ -70,17 +73,23 @@ final class ContainerVC: UIViewController {
 			if libraryVC_ipad != nil {
 				libraryVC_ipad = nil
 			}
+			if directoriesVC_ipad != nil {
+				directoriesVC_ipad = nil
+			}
 
-			self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
+			let width = ceil(UIScreen.main.bounds.width * 0.66666)
+			if Defaults[.pref_browseByDirectory] == false {
+				libraryVC_ipad = LibraryVCIPAD(mpdBridge: mpdBridge)
+				navController = NYXNavigationController(rootViewController: libraryVC_ipad)
+			} else {
+				directoriesVC_ipad = DirectoriesVCIPAD(mpdBridge: mpdBridge, path: nil)
+				navController = NYXNavigationController(rootViewController: directoriesVC_ipad)
+			}
+			navController.view.frame = CGRect(0, 0, width, UIScreen.main.bounds.height)
+			self.add(navController)
 
-			libraryVC_ipad = LibraryVCIPAD(mpdBridge: mpdBridge)
 			playerVC_ipad = PlayerVCIPAD(mpdBridge: mpdBridge)
-
-			let spc = UISplitViewController()
-			spc.viewControllers = [libraryVC_ipad, playerVC_ipad]
-
-			self.add(spc)
-
+			self.add(playerVC_ipad)
 		} else {
 			if playerVC != nil {
 				playerVC.remove()
@@ -96,8 +105,6 @@ final class ContainerVC: UIViewController {
 			if directoriesVC != nil {
 				directoriesVC = nil
 			}
-
-			self.mpdBridge = MPDBridge(usePrettyDB: Defaults[.pref_usePrettyDB], isDirectoryBased: Defaults[.pref_browseByDirectory])
 
 			if Defaults[.pref_browseByDirectory] == false {
 				libraryVC = LibraryVC(mpdBridge: mpdBridge)

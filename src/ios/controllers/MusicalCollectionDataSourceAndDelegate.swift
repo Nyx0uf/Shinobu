@@ -127,7 +127,6 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 		// Get local URL for cover
 		guard serverManager.getServer()?.covers != nil else { return }
 
-		// if let cover = UIImage.loadFromFileURL(album.localCoverURL) {
 		if let cover = album.asset(ofSize: .medium) {
 			cell.image = cover
 			ImageCache.shared[album.uniqueIdentifier] = cover
@@ -413,7 +412,5 @@ fileprivate final class MusicalCellPreviewViewController: UIViewController {
 		preferredContentSize = image != nil ? image!.size : .zero
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("no coder")
-    }
+    required init?(coder: NSCoder) { fatalError("no coder") }
 }

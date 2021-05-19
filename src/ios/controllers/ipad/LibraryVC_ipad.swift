@@ -81,13 +81,6 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 			}
 		}
 
-		// Deselect cell
-		//		if let idxs = collectionView.collectionView.indexPathsForSelectedItems {
-		//			for indexPath in idxs {
-		//				collectionView.collectionView.deselectItem(at: indexPath, animated: true)
-		//			}
-		//		}
-
 		// When entity type menu was displayed
 		if navMenuDisplayed == false {
 			// Refresh view
@@ -163,8 +156,7 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 		let settingsVC = SettingsVC()
 		let nvc = NYXNavigationController(rootViewController: settingsVC)
 		nvc.presentationController?.delegate = self
-		nvc.modalTransitionStyle = .flipHorizontal
-		UIApplication.shared.delegate?.window??.rootViewController?.present(nvc, animated: true, completion: nil)
+		navigationController?.present(nvc, animated: true, completion: nil)
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?) {
@@ -288,14 +280,14 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 	@objc func showArtist(_ aNotification: Notification) {
 		guard let artistName = aNotification.object as? String else { return }
 
-		let avc = AlbumsListVC(artist: Artist(name: artistName), isAlbumArtist: false, mpdBridge: mpdBridge)
+		let avc = AlbumsListVCIPAD(artist: Artist(name: artistName), isAlbumArtist: false, mpdBridge: mpdBridge)
 		navigationController?.pushViewController(avc, animated: true)
 	}
 
 	@objc func showAlbum(_ aNotification: Notification) {
 		guard let album = aNotification.object as? Album else { return }
 
-		let avc = AlbumDetailVC(album: album, mpdBridge: mpdBridge)
+		let avc = AlbumDetailVCIPAD(album: album, mpdBridge: mpdBridge)
 		navigationController?.pushViewController(avc, animated: true)
 	}
 
@@ -326,19 +318,19 @@ extension LibraryVCIPAD {
 	override func didSelectEntity(_ entity: AnyObject) {
 		switch dataSource.musicalEntityType {
 		case .albums:
-			let avc = AlbumDetailVC(album: entity as! Album, mpdBridge: mpdBridge)
+			let avc = AlbumDetailVCIPAD(album: entity as! Album, mpdBridge: mpdBridge)
 			navigationController?.pushViewController(avc, animated: true)
 		case .artists:
-			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
+			let avc = AlbumsListVCIPAD(artist: entity as! Artist, isAlbumArtist: false, mpdBridge: mpdBridge)
 			navigationController?.pushViewController(avc, animated: true)
 		case .albumsartists:
-			let avc = AlbumsListVC(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
+			let avc = AlbumsListVCIPAD(artist: entity as! Artist, isAlbumArtist: true, mpdBridge: mpdBridge)
 			navigationController?.pushViewController(avc, animated: true)
 		case .genres:
-			let gvc = GenreDetailVC(genre: entity as! Genre, mpdBridge: mpdBridge)
+			let gvc = GenreDetailVCIPAD(genre: entity as! Genre, mpdBridge: mpdBridge)
 			navigationController?.pushViewController(gvc, animated: true)
 		case .playlists:
-			let pvc = PlaylistDetailVC(playlist: entity as! Playlist, mpdBridge: mpdBridge)
+			let pvc = PlaylistDetailVCIPAD(playlist: entity as! Playlist, mpdBridge: mpdBridge)
 			navigationController?.pushViewController(pvc, animated: true)
 		default:
 			break
@@ -416,9 +408,7 @@ extension LibraryVCIPAD {
 		}
 		guard let tvc = nvc.topViewController else { return .automatic }
 
-		if tvc.isKind(of: SettingsVC.self) {
-			return .fullScreen
-		} else if tvc.isKind(of: TypeChoiceVC.self) {
+		if tvc.isKind(of: TypeChoiceVC.self) {
 			return .none
 		} else {
 			return .automatic

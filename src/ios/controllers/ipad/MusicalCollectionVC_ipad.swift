@@ -39,12 +39,6 @@ class MusicalCollectionVCIPAD: NYXViewController, TypeChoiceVCDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		overrideUserInterfaceStyle = .dark
-		view.autoresizingMask = []
-
-		let width = ceil(UIScreen.main.bounds.width * 0.66666)
-		self.view.frame = CGRect(0, 0, width, UIScreen.main.bounds.height)
-
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
 		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
@@ -67,7 +61,6 @@ class MusicalCollectionVCIPAD: NYXViewController, TypeChoiceVCDelegate {
 		}
 
 		// Collection view
-		self.view.frame = CGRect(.zero, view.width, view.height - heightForMiniPlayer())
 		collectionView = MusicalCollectionView(frame: view.bounds, musicalEntityType: dataSource.musicalEntityType)
 		collectionView.collectionView.delegate = dataSource
 		collectionView.collectionView.dataSource = dataSource
@@ -102,6 +95,8 @@ class MusicalCollectionVCIPAD: NYXViewController, TypeChoiceVCDelegate {
 			navigationController?.view.addSubview(searchView)
 			searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(dataSource.musicalEntityType.description.lowercased())"
 		}
+
+		collectionView.frame = view.bounds
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {

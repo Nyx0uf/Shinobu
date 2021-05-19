@@ -70,7 +70,7 @@ class NYXTableViewController: UITableViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -98,7 +98,7 @@ class NYXViewController: UIViewController {
 	}
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 
 	func updateNavigationTitle() {
@@ -118,7 +118,7 @@ class NYXAlertController: UIAlertController {
 	private var themedStatusBarStyle: UIStatusBarStyle?
 
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		[.portrait, .portraitUpsideDown]
+		UIDevice.current.isPad() ? [.landscapeLeft, .landscapeRight] : [.portrait, .portraitUpsideDown]
 	}
 }
 

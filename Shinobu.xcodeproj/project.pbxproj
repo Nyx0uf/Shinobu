@@ -14,6 +14,15 @@
 		431C05BB23DB14BA000B844F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BA23DB14BA000B844F /* Cache.swift */; };
 		431C05BE23DB1B35000B844F /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */; };
 		431C05C023DCAECC000B844F /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431C05BF23DCAECC000B844F /* SearchVC.swift */; };
+		4334A1B5264AAF820087CCE4 /* AlbumDetailVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1B4264AAF820087CCE4 /* AlbumDetailVC_ipad.swift */; };
+		4334A1BA264AB2090087CCE4 /* AlbumsListVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1B6264AB2090087CCE4 /* AlbumsListVC_ipad.swift */; };
+		4334A1BB264AB2090087CCE4 /* GenreDetailVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1B7264AB2090087CCE4 /* GenreDetailVC_ipad.swift */; };
+		4334A1BC264AB2090087CCE4 /* DirectoriesVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1B8264AB2090087CCE4 /* DirectoriesVC_ipad.swift */; };
+		4334A1BD264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1B9264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift */; };
+		4334A1BF264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1BE264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift */; };
+		4334A1C1264C0A840087CCE4 /* TracksListTableView_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1C0264C0A840087CCE4 /* TracksListTableView_ipad.swift */; };
+		4334A1C3264C0B700087CCE4 /* TrackTableViewCell_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1C2264C0B700087CCE4 /* TrackTableViewCell_ipad.swift */; };
+		4334A1C5264DA5430087CCE4 /* UpNextVC_ipad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334A1C4264DA5430087CCE4 /* UpNextVC_ipad.swift */; };
 		433EAE1E22C3BA9F009AE208 /* ThreadedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */; };
 		433EAE2122C3BBA3009AE208 /* ThreadedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */; };
 		434A169D24756A89001AB0AC /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434A169C24756A89001AB0AC /* AppDefaults.swift */; };
@@ -185,6 +194,15 @@
 		431C05BA23DB14BA000B844F /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		431C05BD23DB1B35000B844F /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		431C05BF23DCAECC000B844F /* SearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		4334A1B4264AAF820087CCE4 /* AlbumDetailVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumDetailVC_ipad.swift; sourceTree = "<group>"; };
+		4334A1B6264AB2090087CCE4 /* AlbumsListVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumsListVC_ipad.swift; sourceTree = "<group>"; };
+		4334A1B7264AB2090087CCE4 /* GenreDetailVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenreDetailVC_ipad.swift; sourceTree = "<group>"; };
+		4334A1B8264AB2090087CCE4 /* DirectoriesVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoriesVC_ipad.swift; sourceTree = "<group>"; };
+		4334A1B9264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistDetailVC_ipad.swift; sourceTree = "<group>"; };
+		4334A1BE264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumHeaderView_ipad.swift; sourceTree = "<group>"; };
+		4334A1C0264C0A840087CCE4 /* TracksListTableView_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksListTableView_ipad.swift; sourceTree = "<group>"; };
+		4334A1C2264C0B700087CCE4 /* TrackTableViewCell_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewCell_ipad.swift; sourceTree = "<group>"; };
+		4334A1C4264DA5430087CCE4 /* UpNextVC_ipad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpNextVC_ipad.swift; sourceTree = "<group>"; };
 		433EAE1D22C3BA9F009AE208 /* ThreadedObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedObject.swift; sourceTree = "<group>"; };
 		433EAE2022C3BBA3009AE208 /* ThreadedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadedArray.swift; sourceTree = "<group>"; };
 		434A169C24756A89001AB0AC /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
@@ -314,6 +332,7 @@
 		43793090226A18FA00DD6F9C /* ProcessCoverOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessCoverOperation.swift; sourceTree = "<group>"; };
 		4384ECD2224FD44000F3140C /* MusicalCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionVC.swift; sourceTree = "<group>"; };
 		4384ECD42250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalCollectionDataSourceAndDelegate.swift; sourceTree = "<group>"; };
+		4395D0B426550CCE00FE7DAC /* albumart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = albumart.h; sourceTree = "<group>"; };
 		43A654CF224BAC860056A55A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerVC_ipad.swift; sourceTree = "<group>"; };
 		43AFA0B2256417250022C11F /* LibraryVC_ipad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryVC_ipad.swift; sourceTree = "<group>"; };
@@ -395,6 +414,7 @@
 		434E513021D56BF400CD88F7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				4395D0B426550CCE00FE7DAC /* albumart.h */,
 				4365C1AA255EE0D600B8E926 /* binary.h */,
 				4365C1A4255EE0D600B8E926 /* fingerprint.h */,
 				4365C1A5255EE0D600B8E926 /* iaf.h */,
@@ -689,9 +709,18 @@
 		43AFA0AB2563E2EF0022C11F /* ipad */ = {
 			isa = PBXGroup;
 			children = (
-				43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */,
+				4334A1B4264AAF820087CCE4 /* AlbumDetailVC_ipad.swift */,
+				4334A1BE264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift */,
+				4334A1B6264AB2090087CCE4 /* AlbumsListVC_ipad.swift */,
+				4334A1B8264AB2090087CCE4 /* DirectoriesVC_ipad.swift */,
+				4334A1B7264AB2090087CCE4 /* GenreDetailVC_ipad.swift */,
 				43AFA0B2256417250022C11F /* LibraryVC_ipad.swift */,
 				43AFA0B6256417970022C11F /* MusicalCollectionVC_ipad.swift */,
+				43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */,
+				4334A1B9264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift */,
+				4334A1C0264C0A840087CCE4 /* TracksListTableView_ipad.swift */,
+				4334A1C2264C0B700087CCE4 /* TrackTableViewCell_ipad.swift */,
+				4334A1C4264DA5430087CCE4 /* UpNextVC_ipad.swift */,
 			);
 			path = ipad;
 			sourceTree = "<group>";
@@ -1001,6 +1030,7 @@
 				4384ECD3224FD44000F3140C /* MusicalCollectionVC.swift in Sources */,
 				4358B02521EB42B4009A3BBF /* CGPoint+Extensions.swift in Sources */,
 				43B8BAB02257BF840033EA5D /* LetterView.swift in Sources */,
+				4334A1BF264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift in Sources */,
 				4358B07421EB47A8009A3BBF /* SettingsVC.swift in Sources */,
 				4384ECD52250CE1500F3140C /* MusicalCollectionDataSourceAndDelegate.swift in Sources */,
 				43DC9F22225CBCE300C6A8E5 /* SubscribableValue.swift in Sources */,
@@ -1010,25 +1040,31 @@
 				43DC9F1C225CBB5C00C6A8E5 /* Theming.swift in Sources */,
 				4358B02721EB42B4009A3BBF /* Number+Extensions.swift in Sources */,
 				434A16A024780329001AB0AC /* SearchResultTableViewCell.swift in Sources */,
+				4334A1C3264C0B700087CCE4 /* TrackTableViewCell_ipad.swift in Sources */,
 				43D61F892351B42B00D4A2DD /* AwesomeButton.swift in Sources */,
 				434E517721D56CF000CD88F7 /* AppDelegate.swift in Sources */,
+				4334A1BB264AB2090087CCE4 /* GenreDetailVC_ipad.swift in Sources */,
 				4358B02C21EB42B4009A3BBF /* CoverServer.swift in Sources */,
 				4358B05921EB44E2009A3BBF /* Duration.swift in Sources */,
 				4358B08A21EB47C2009A3BBF /* MusicalCollectionView.swift in Sources */,
+				4334A1BC264AB2090087CCE4 /* DirectoriesVC_ipad.swift in Sources */,
 				43A654D0224BAC860056A55A /* Message.swift in Sources */,
 				43AFA0B3256417250022C11F /* LibraryVC_ipad.swift in Sources */,
 				4358B02821EB42B4009A3BBF /* CGRect+Extensions.swift in Sources */,
 				4358B07121EB47A8009A3BBF /* PlaylistsAddVC.swift in Sources */,
 				4358AFF921EB41E2009A3BBF /* NYXControllers.swift in Sources */,
+				4334A1C5264DA5430087CCE4 /* UpNextVC_ipad.swift in Sources */,
 				4358B05121EB44E2009A3BBF /* ZeroConfExplorer.swift in Sources */,
 				4358B07821EB47A8009A3BBF /* PlaylistDetailVC.swift in Sources */,
 				4358B01E21EB42B4009A3BBF /* UIView+Extensions.swift in Sources */,
 				4358B03821EB44C5009A3BBF /* MusicalEntity.swift in Sources */,
 				4358B08821EB47C2009A3BBF /* InteractableImageView.swift in Sources */,
+				4334A1BD264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift in Sources */,
 				43D86E93234A14CA0083C522 /* TypeChoiceVC.swift in Sources */,
 				43FAE596224E2981006843E9 /* NYXNavigationTitleView.swift in Sources */,
 				4358B02A21EB42B4009A3BBF /* MPDConnection.swift in Sources */,
 				4358B02D21EB42B4009A3BBF /* MPDBridge.swift in Sources */,
+				4334A1C1264C0A840087CCE4 /* TracksListTableView_ipad.swift in Sources */,
 				4358B07521EB47A8009A3BBF /* GenreDetailVC.swift in Sources */,
 				4358B03A21EB44C5009A3BBF /* Artist.swift in Sources */,
 				43DC9F20225CBC1600C6A8E5 /* ShinobuThemeProvider.swift in Sources */,
@@ -1039,6 +1075,7 @@
 				43EF1AA8232922B100A2FE10 /* UIApplication+Extensions.swift in Sources */,
 				4358B02B21EB42B4009A3BBF /* MPDServer.swift in Sources */,
 				43B8BAAB22564E980033EA5D /* Button.swift in Sources */,
+				4334A1B5264AAF820087CCE4 /* AlbumDetailVC_ipad.swift in Sources */,
 				4358B06021EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift in Sources */,
 				4358B01D21EB42B4009A3BBF /* UIViewController+Extensions.swift in Sources */,
 				4358B02121EB42B4009A3BBF /* UIColor+Extensions.swift in Sources */,
@@ -1059,6 +1096,7 @@
 				43C3E80A2265BEEC00F6F058 /* Slider.swift in Sources */,
 				43AFA0AD2563E30E0022C11F /* PlayerVC_ipad.swift in Sources */,
 				4358B08321EB47C2009A3BBF /* AutoScrollLabel.swift in Sources */,
+				4334A1BA264AB2090087CCE4 /* AlbumsListVC_ipad.swift in Sources */,
 				4358B05221EB44E2009A3BBF /* Notification+Extensions.swift in Sources */,
 				4358B06121EB473C009A3BBF /* TrackTableViewCell.swift in Sources */,
 				434A169D24756A89001AB0AC /* AppDefaults.swift in Sources */,
