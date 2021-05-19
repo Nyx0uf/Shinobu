@@ -87,6 +87,10 @@ final class DirectoriesVCIPAD: NYXViewController {
 		checkInit()
 	}
 
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+		[.landscapeLeft, .landscapeRight]
+	}
+
 	// MARK: - Overrides
 	override func updateNavigationTitle() {
 		DispatchQueue.main.async {

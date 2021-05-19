@@ -78,6 +78,10 @@ class NYXTableViewController: UITableViewController {
 	}
 
 	func heightForMiniPlayer() -> CGFloat {
+		if UIDevice.current.isPad() {
+			return 0
+		}
+
 		var miniHeight = CGFloat(64)
 		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
@@ -106,6 +110,10 @@ class NYXViewController: UIViewController {
 	}
 
 	func heightForMiniPlayer() -> CGFloat {
+		if UIDevice.current.isPad() {
+			return 0
+		}
+
 		var miniHeight = CGFloat(64)
 		if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
 			miniHeight += bottom
