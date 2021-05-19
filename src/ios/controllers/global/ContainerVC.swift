@@ -77,7 +77,6 @@ final class ContainerVC: UIViewController {
 				directoriesVC_ipad = nil
 			}
 
-			let width = ceil(UIScreen.main.bounds.width * 0.66666)
 			if Defaults[.pref_browseByDirectory] == false {
 				libraryVC_ipad = LibraryVCIPAD(mpdBridge: mpdBridge)
 				navController = NYXNavigationController(rootViewController: libraryVC_ipad)
@@ -85,7 +84,8 @@ final class ContainerVC: UIViewController {
 				directoriesVC_ipad = DirectoriesVCIPAD(mpdBridge: mpdBridge, path: nil)
 				navController = NYXNavigationController(rootViewController: directoriesVC_ipad)
 			}
-			navController.view.frame = CGRect(0, 0, width, UIScreen.main.bounds.height)
+			let primaryWidth = ceil(UIScreen.main.bounds.width * 0.66666)
+			navController.view.frame = CGRect(0, 0, primaryWidth, UIScreen.main.bounds.height)
 			self.add(navController)
 
 			playerVC_ipad = PlayerVCIPAD(mpdBridge: mpdBridge)
