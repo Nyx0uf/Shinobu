@@ -94,9 +94,9 @@ extension OutputsListVC {
 		cell.textLabel?.text = output.name
 		cell.textLabel?.textColor = .label
 		cell.textLabel?.highlightedTextColor = themeProvider.currentTheme.tintColor
-		cell.accessoryType = output.enabled ? .checkmark : .none
+		cell.accessoryType = output.isEnabled ? .checkmark : .none
 		cell.textLabel?.isAccessibilityElement = false
-		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.enabled ? "lbl_enabled" : "lbl_disabled"))"
+		cell.accessibilityLabel = "\(output.name) \(NYXLocalizedString("lbl_is")) \(NYXLocalizedString(output.isEnabled ? "lbl_enabled" : "lbl_disabled"))"
 
 		let view = UIView()
 		view.backgroundColor = themeProvider.currentTheme.tintColor.withAlphaComponent(0.2)
@@ -126,7 +126,7 @@ extension OutputsListVC {
 			case .failure:
 				break
 			case .success:
-				output.enabled.toggle()
+				output.isEnabled.toggle()
 				outputs[indexPath.row] = output
 				tableView.reloadRows(at: [indexPath], with: .fade)
 				NotificationCenter.default.postOnMainThreadAsync(name: .audioOutputConfigurationDidChange, object: nil)

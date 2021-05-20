@@ -26,7 +26,7 @@ struct PlayerState {
 struct MPDOutput {
 	let id: Int
 	let name: String
-	var enabled: Bool
+	var isEnabled: Bool
 }
 
 enum MPDEntityType: Int {
@@ -816,7 +816,7 @@ final class MPDConnection {
 			let id = Int(mpd_output_get_id(output))
 			let name = String(cString: tmpName)
 
-			let o = MPDOutput(id: id, name: name, enabled: mpd_output_get_enabled(output))
+			let o = MPDOutput(id: id, name: name, isEnabled: mpd_output_get_enabled(output))
 			ret.append(o)
 			mpd_output_free(output)
 			output = mpd_recv_output(connection)
@@ -826,7 +826,7 @@ final class MPDConnection {
 	}
 
 	func toggleOutput(_ output: MPDOutput) -> Result<Bool, MPDConnectionError> {
-		let ret = output.enabled ? mpd_run_disable_output(connection, UInt32(output.id)) : mpd_run_enable_output(connection, UInt32(output.id))
+		let ret = output.isEnabled ? mpd_run_disable_output(connection, UInt32(output.id)) : mpd_run_enable_output(connection, UInt32(output.id))
 		if ret {
 			return .success(true)
 		}

@@ -357,7 +357,7 @@ final class ServerVC: NYXTableViewController {
 					lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_available")
 					return
 				}
-				let enabledOutputs = outputs.filter(\.enabled)
+				let enabledOutputs = outputs.filter(\.isEnabled)
 				if enabledOutputs.isEmpty {
 					lblMPDOutput.text = NYXLocalizedString("lbl_server_no_output_enabled")
 					return
