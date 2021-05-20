@@ -27,7 +27,7 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 ## SCREENSHOTS
 
-![screenshot](https://static.whine.fr/images/2019/shinobu.jpg)
+![screenshot-iphone](https://static.whine.fr/images/2019/shinobu-iphone.jpg)![screenshot-ipad](https://static.whine.fr/images/2019/shinobu-ipad.jpg)
 
 ## TODO
 
