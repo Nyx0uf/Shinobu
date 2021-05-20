@@ -16,14 +16,12 @@ final class ZeroConfExplorer: NSObject {
 
 	// MARK: - Private properties
 	// Zeroconf browser
-	private var serviceBrowser: NetServiceBrowser
+	private var serviceBrowser = NetServiceBrowser()
 	// Logger
 	private let logger = Logger(label: "logger.zeroconfexplorer")
 
 	// MARK: - Initializer
 	override init() {
-		self.serviceBrowser = NetServiceBrowser()
-
 		super.init()
 
 		self.serviceBrowser.delegate = self

@@ -488,7 +488,6 @@
 		434E517221D56CF000CD88F7 /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				4358B05A21EB473C009A3BBF /* cells */,
 				4358AFF721EB41E2009A3BBF /* controllers */,
 				434E517321D56CF000CD88F7 /* misc */,
 				43DC9F1A225CBB3100C6A8E5 /* theming */,
@@ -559,11 +558,10 @@
 		4358B00321EB42B4009A3BBF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				4358B01321EB42B4009A3BBF /* audio-server */,
 				4358B00421EB42B4009A3BBF /* extensions */,
-				434E512F21D56BF400CD88F7 /* libmpdclient */,
 				4358B03E21EB44E2009A3BBF /* misc */,
 				4358B02F21EB44C4009A3BBF /* model */,
+				4358B01321EB42B4009A3BBF /* mpd */,
 				4358B03C21EB44E2009A3BBF /* operations */,
 			);
 			path = common;
@@ -594,9 +592,10 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
-		4358B01321EB42B4009A3BBF /* audio-server */ = {
+		4358B01321EB42B4009A3BBF /* mpd */ = {
 			isa = PBXGroup;
 			children = (
+				434E512F21D56BF400CD88F7 /* libmpdclient */,
 				4358B01821EB42B4009A3BBF /* CoverServer.swift */,
 				4358B01921EB42B4009A3BBF /* MPDBridge.swift */,
 				4358B01621EB42B4009A3BBF /* MPDConnection.swift */,
@@ -604,7 +603,7 @@
 				430141E12229307300C68075 /* ServerManager.swift */,
 				43DBD7FF22203C01009B3B68 /* ShinobuServer.swift */,
 			);
-			path = "audio-server";
+			path = mpd;
 			sourceTree = "<group>";
 		};
 		4358B02F21EB44C4009A3BBF /* model */ = {
@@ -650,6 +649,7 @@
 		4358B05A21EB473C009A3BBF /* cells */ = {
 			isa = PBXGroup;
 			children = (
+				43AE3CCD265681D7002D0583 /* ipad */,
 				4358B05C21EB473C009A3BBF /* MusicalEntityCollectionViewCell.swift */,
 				434A169F24780329001AB0AC /* SearchResultTableViewCell.swift */,
 				430141DF22283BB200C68075 /* ShinobuServerTableViewCell.swift */,
@@ -662,6 +662,8 @@
 		4358B07921EB47C2009A3BBF /* views */ = {
 			isa = PBXGroup;
 			children = (
+				43AE3CCC265681A3002D0583 /* ipad */,
+				4358B05A21EB473C009A3BBF /* cells */,
 				43C3E80B2265FECE00F6F058 /* components */,
 				43B8BAAC2257A4B80033EA5D /* MusicalCollectionView */,
 				4358B07D21EB47C2009A3BBF /* AlbumHeaderView.swift */,
@@ -714,11 +716,27 @@
 			path = iphone_ipad;
 			sourceTree = "<group>";
 		};
+		43AE3CCC265681A3002D0583 /* ipad */ = {
+			isa = PBXGroup;
+			children = (
+				4334A1BE264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift */,
+				4334A1C0264C0A840087CCE4 /* TracksListTableView_ipad.swift */,
+			);
+			path = ipad;
+			sourceTree = "<group>";
+		};
+		43AE3CCD265681D7002D0583 /* ipad */ = {
+			isa = PBXGroup;
+			children = (
+				4334A1C2264C0B700087CCE4 /* TrackTableViewCell_ipad.swift */,
+			);
+			path = ipad;
+			sourceTree = "<group>";
+		};
 		43AFA0AB2563E2EF0022C11F /* ipad */ = {
 			isa = PBXGroup;
 			children = (
 				4334A1B4264AAF820087CCE4 /* AlbumDetailVC_ipad.swift */,
-				4334A1BE264AC8B80087CCE4 /* AlbumHeaderView_ipad.swift */,
 				4334A1B6264AB2090087CCE4 /* AlbumsListVC_ipad.swift */,
 				4334A1B8264AB2090087CCE4 /* DirectoriesVC_ipad.swift */,
 				4334A1B7264AB2090087CCE4 /* GenreDetailVC_ipad.swift */,
@@ -726,8 +744,6 @@
 				43AFA0B6256417970022C11F /* MusicalCollectionVC_ipad.swift */,
 				43AFA0AC2563E30E0022C11F /* PlayerVC_ipad.swift */,
 				4334A1B9264AB2090087CCE4 /* PlaylistDetailVC_ipad.swift */,
-				4334A1C0264C0A840087CCE4 /* TracksListTableView_ipad.swift */,
-				4334A1C2264C0B700087CCE4 /* TrackTableViewCell_ipad.swift */,
 				4334A1C4264DA5430087CCE4 /* UpNextVC_ipad.swift */,
 			);
 			path = ipad;
@@ -1169,7 +1185,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/mpd/libmpdclient/src";
 				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
 					"-fuse-ld=$(PROJECT_DIR)/rsrc/common/ld-hook",
@@ -1179,7 +1195,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/mpd/libmpdclient/module";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1203,13 +1219,13 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/libmpdclient/src";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/common/mpd/libmpdclient/src";
 				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/mpd/libmpdclient/module";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1424,7 +1440,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/src/common/libmpdclient/src",
+					"$(PROJECT_DIR)/src/common/mpd/libmpdclient/src",
 				);
 				MARKETING_VERSION = 1.2.1;
 				OTHER_LDFLAGS = (
@@ -1434,7 +1450,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/mpd/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1479,12 +1495,12 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/src/common/libmpdclient/src",
+					"$(PROJECT_DIR)/src/common/mpd/libmpdclient/src",
 				);
 				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.whine.Shinobu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/libmpdclient/module";
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/src/common/mpd/libmpdclient/module";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;

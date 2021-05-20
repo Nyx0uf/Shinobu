@@ -1,7 +1,7 @@
 import UIKit
 
 final class LetterView: UIView {
-	// MARK: - Public roperties
+	// MARK: - Public properties
 	var letter = "" {
 		didSet {
 			self.letterLayer.string = letter
@@ -18,7 +18,7 @@ final class LetterView: UIView {
 		}
 	}
 
-	// MARK: - Private roperties
+	// MARK: - Private properties
 	// Blur effect selection
 	private var blurEffectView: UIVisualEffectView!
 	// Actual letter view

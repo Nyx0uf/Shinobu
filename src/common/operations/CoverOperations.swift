@@ -3,16 +3,17 @@ import Defaults
 import Logging
 
 struct CoverOperations {
-	//
+	// MARK: - Public properties
+	// Download operation callback
 	var downloadCallback: ((Data) -> Void)?
-	//
+	// Process image callback
 	var processCallback: ((UIImage?, UIImage?, UIImage?) -> Void)?
 	// MARK: - Private properties
 	// Album
 	private let album: Album
-	// Save original file to disk
+	// Flag: Save original file to disk
 	private let saveOriginal = false
-	//
+	// Operations
 	private var downloadOperation: DownloadCoverOperation
 	private var bridgeOperation: BlockOperation
 	private var processOperation: ProcessCoverOperation

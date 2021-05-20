@@ -98,7 +98,6 @@ final class DownloadCoverOperation: Operation {
 extension DownloadCoverOperation: URLSessionDataDelegate {
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (Foundation.URLSession.ResponseDisposition) -> Void) {
 		if isCancelled {
-			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
@@ -109,7 +108,6 @@ extension DownloadCoverOperation: URLSessionDataDelegate {
 
 	func urlSession(_ session: Foundation.URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		if isCancelled {
-			// Logger.shared.log(type: .information, message: "Operation cancelled for <\(album.name)>")
 			sessionTask?.cancel()
 			isFinished = true
 			return
