@@ -1,4 +1,6 @@
 import UIKit
+import Defaults
+import Logging
 
 final class DirectoriesVC: NYXViewController {
 	// MARK: - Public properties
@@ -6,14 +8,31 @@ final class DirectoriesVC: NYXViewController {
 	let mpdBridge: MPDBridge
 	// Selected path
 	let path: String?
-	// Table view
-	private(set) var tableView: UITableView!
 
 	// MARK: - Private properties
+	// Table view
+	private var tableView: UITableView!
+	// Image view for displaying cover file if any
+	private let imageView = UIImageView(frame: .zero)
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.dir"
-	// Data source
-	private var items = [MPDEntity]()
+	// All items in current folder
+	private var allItems = [MPDEntity]()
+	// Items displayed
+	private var songs = [MPDEntity]()
+	// Is an image present in the list of items
+	private var hasImage = false
+	// Local URL for the cover
+	private(set) lazy var localCoverURL: URL = {
+		let cachesDirectoryURL = FileManager.default.cachesDirectory()
+		let coversDirectoryURL = cachesDirectoryURL.appendingPathComponent(Defaults[.coversDirectory], isDirectory: true)
+		if FileManager.default.fileExists(atPath: coversDirectoryURL.absoluteString) == false {
+			try! FileManager.default.createDirectory(at: coversDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+		}
+		return coversDirectoryURL
+	}()
+	// Logger
+	private let logger = Logger(label: "logger.DirectoriesVC")
 
 	// MARK: - Initializers
 	init(mpdBridge: MPDBridge, path: String?) {
@@ -28,6 +47,7 @@ final class DirectoriesVC: NYXViewController {
 	// MARK: - UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		self.edgesForExtendedLayout = UIRectEdge()
 
 		// Remove back button label
 		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
@@ -58,6 +78,10 @@ final class DirectoriesVC: NYXViewController {
 		tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 		tableView.tableFooterView = UIView()
 		view.addSubview(tableView)
+
+		imageView.layer.cornerRadius = 10
+		imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
+		imageView.layer.masksToBounds = true
 
 		initializeTheming()
 	}
@@ -112,11 +136,19 @@ final class DirectoriesVC: NYXViewController {
 	}
 
 	private func refreshDirectories() {
-		mpdBridge.getDirectoryListAtPath(path) { [weak self] (entities) in
+		mpdBridge.getDirectoryListAtPath(path) { [weak self] (entities: [MPDEntity]) in
+			guard let strongSelf = self else { return }
 			DispatchQueue.main.async {
-				self?.items = entities
-				self?.tableView.reloadData()
-				self?.updateNavigationTitle()
+				let hasCover = entities.filter { $0.type == .image && $0.name.lowercased().contains("cover") }.isEmpty == false
+				strongSelf.hasImage = hasCover
+				strongSelf.allItems = entities
+				strongSelf.songs = entities.filter { $0.type == .song || $0.type == .directory }
+
+				strongSelf.handleCover()
+
+				strongSelf.tableView.reloadData()
+				strongSelf.updateNavigationTitle()
+				strongSelf.toggleCoverImage()
 			}
 		}
 	}
@@ -144,19 +176,72 @@ final class DirectoriesVC: NYXViewController {
 			tableView.separatorStyle = .singleLine
 		}
 	}
+
+	private func toggleCoverImage() {
+		if hasImage {
+			var miniHeight = CGFloat(64)
+			if let bottom = UIApplication.shared.mainWindow?.safeAreaInsets.bottom {
+				miniHeight += bottom
+			}
+
+			let size = (view.width / 3).rounded()
+			imageView.frame = CGRect(((view.width - size) / 2).rounded(), 10, size, size)
+			tableView.frame = CGRect(view.x, imageView.maxY + 10, view.width, view.height - (imageView.maxY + 10) - miniHeight)
+			view.insertSubview(imageView, at: 0)
+		} else {
+			imageView.removeFromSuperview()
+			tableView.frame = view.bounds
+		}
+	}
+
+	private func handleCover() {
+		if hasImage == false {
+			return
+		}
+
+		guard let aSong = songs.filter({ $0.type == .song }).first?.name else { return }
+
+		let songUri = self.path == nil ? aSong : self.path! + "/" + aSong
+		let coverUri = self.path == nil ? aSong : self.path!
+		let hashedUri = coverUri.sha256() + ".jpg"
+		let coverURL = self.localCoverURL.appendingPathComponent(hashedUri)
+		if let cover = UIImage.loadFromFileURL(coverURL) {
+			DispatchQueue.main.async {
+				self.imageView.image = cover
+			}
+		} else {
+			self.mpdBridge.getCoverForDirectoryAtPath(songUri) { [weak self] (data: Data) in
+				guard let strongSelf = self else { return }
+
+				DispatchQueue.global(qos: .userInteractive).async {
+					guard let img = UIImage(data: data) else { return }
+
+					let cropSize = CoverOperations.cropSizes()[.large]!
+					if let cropped = img.smartCropped(toSize: cropSize, highQuality: false, screenScale: true) {
+						DispatchQueue.main.async {
+							strongSelf.imageView.image = cropped
+						}
+						if cropped.save(url: coverURL) == false {
+							strongSelf.logger.error("Failed to save cover for <\(coverURL)>")
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 // MARK: - UITableViewDataSource
 extension DirectoriesVC: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		handleEmptyView(tableView: tableView, isEmpty: items.isEmpty)
-		return items.count
+		handleEmptyView(tableView: tableView, isEmpty: allItems.isEmpty)
+		return songs.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
 
-		let item = items[indexPath.row]
+		let item = songs[indexPath.row]
 
 		cell.textLabel?.text = item.name
 		cell.textLabel?.textColor = .label
@@ -180,7 +265,7 @@ extension DirectoriesVC: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension DirectoriesVC: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let item = items[indexPath.row]
+		let item = songs[indexPath.row]
 		if item.type == .directory {
 			let newPath = self.path == nil ? item.name : self.path! + "/" + item.name
 			let vc = DirectoriesVC(mpdBridge: mpdBridge, path: newPath)
@@ -197,7 +282,7 @@ extension DirectoriesVC: UITableViewDelegate {
 
 	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { _ in
-			let item = self.items[indexPath.row]
+			let item = self.songs[indexPath.row]
 			let rename = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { _ in
 				let path = self.path == nil ? item.name : self.path! + "/" + item.name
 				let track = Track(name: "", artist: "", duration: Duration(seconds: 0), trackNumber: 0, uri: path)
