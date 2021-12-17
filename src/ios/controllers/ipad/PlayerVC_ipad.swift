@@ -345,7 +345,7 @@ final class PlayerVCIPAD: NYXViewController {
 				self.mpdBridge.getCoverForDirectoryAtPath(track.uri) { [weak self] (data: Data) in
 					guard let strongSelf = self else { return }
 
-					DispatchQueue.global().async {
+					DispatchQueue.global(qos: .userInteractive).async {
 						guard let img = UIImage(data: data) else { return }
 
 						let cropSize = CoverOperations.cropSizes()[.large]!

@@ -328,7 +328,7 @@ final class ServerVC: NYXTableViewController {
 
 	private func updateCacheLabel() {
 		let cachesDirectoryURL = FileManager.default.cachesDirectory()
-		DispatchQueue.global().async {
+		DispatchQueue.global(qos: .background).async {
 			let size = FileManager.default.sizeOfDirectoryAtURL(cachesDirectoryURL)
 			DispatchQueue.main.async {
 				self.cacheSize = size

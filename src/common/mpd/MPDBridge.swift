@@ -39,7 +39,7 @@ final class MPDBridge {
 	init(usePrettyDB: Bool, isDirectoryBased: Bool) {
 		self.usePrettyDB = usePrettyDB
 		self.isDirectoryBased = isDirectoryBased
-		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.mpdbridge", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+		self.queue = DispatchQueue(label: "fr.whine.shinobu.queue.mpdbridge", qos: .utility, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)

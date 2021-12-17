@@ -118,7 +118,7 @@ struct ShinobuWidgetEntryView: View {
 				return cover
 			} else {
 				self.mpdBridge.getCoverForDirectoryAtPath(track.uri) { (data: Data) in
-					DispatchQueue.global().async {
+					DispatchQueue.global(qos: .userInteractive).async {
 						guard let img = UIImage(data: data) else { return }
 
 						let cropSize = CoverOperations.cropSizes()[.large]!

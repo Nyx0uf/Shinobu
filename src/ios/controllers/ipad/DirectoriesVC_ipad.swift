@@ -12,7 +12,7 @@ final class DirectoriesVCIPAD: NYXViewController {
 	// MARK: - Private properties
 	// Table view
 	private let tableView = UITableView(frame: .zero, style: .plain)
-	//
+	// Image view for displaying cover file if any
 	private let imageView = UIImageView(frame: .zero)
 	// Cell identifier
 	private let cellIdentifier = "fr.whine.shinobu.cell.dir"
@@ -206,7 +206,7 @@ final class DirectoriesVCIPAD: NYXViewController {
 			self.mpdBridge.getCoverForDirectoryAtPath(songUri) { [weak self] (data: Data) in
 				guard let strongSelf = self else { return }
 
-				DispatchQueue.global().async {
+				DispatchQueue.global(qos: .userInteractive).async {
 					guard let img = UIImage(data: data) else { return }
 
 					let cropSize = CoverOperations.cropSizes()[.large]!
