@@ -11,7 +11,7 @@ final class LetterView: UIView {
 	var isSelected = false {
 		didSet {
 			self.letterLayer.font = UIFont.systemFont(ofSize: self.big ? 16 : 12, weight: self.isSelected ? .black : .semibold)
-			self.letterLayer.foregroundColor = self.isSelected ? UIColor.black.cgColor : UIColor.secondaryLabel.cgColor
+			self.letterLayer.foregroundColor = self.isSelected ? UIColor.label.cgColor : UIColor.secondaryLabel.cgColor
 			if self.big {
 				self.blurEffectView.isHidden = !self.isSelected
 			}
@@ -35,7 +35,7 @@ final class LetterView: UIView {
 		if big {
 			self.enableCorners(withDivisor: 4)
 
-			self.blurEffectView = UIVisualEffectView()
+			self.blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
 			self.blurEffectView.frame = self.bounds
 			self.addSubview(self.blurEffectView)
 		}

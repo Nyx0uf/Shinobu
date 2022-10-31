@@ -123,12 +123,7 @@ final class TitlesIndexView: UIView {
 
 	// MARK: - Private
 	private func letterViewAtPoint(_ point: CGPoint) -> LetterView? {
-		for view in lettersView {
-			if view.frame.contains(point) {
-				return view
-			}
-		}
-		return nil
+		lettersView.first(where: { $0.frame.contains(point)})
 	}
 
 	// MARK: - Gestures
