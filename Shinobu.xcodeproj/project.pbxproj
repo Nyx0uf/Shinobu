@@ -114,7 +114,6 @@
 		43E1402E290FF45000F67A1A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43E14018290FF19B00F67A1A /* SwiftUI.framework */; };
 		43E14031290FF45000F67A1A /* ShinobuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E14030290FF45000F67A1A /* ShinobuWidget.swift */; };
 		43E14033290FF45100F67A1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43E14032290FF45100F67A1A /* Assets.xcassets */; };
-		43E14037290FF45100F67A1A /* ShinobuWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 43E1402C290FF45000F67A1A /* ShinobuWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		43E1403C290FF83400F67A1A /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43056C95290E7A620087C752 /* AppDefaults.swift */; };
 		43E1403D290FF83400F67A1A /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43056C98290E7A620087C752 /* Cache.swift */; };
 		43E1403E290FF83400F67A1A /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43056C9F290E7A620087C752 /* Duration.swift */; };
@@ -151,16 +150,6 @@
 		43E14062290FF99900F67A1A /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 43E14061290FF99900F67A1A /* Logging */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		43E14035290FF45100F67A1A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 43CA3C46290E6C5D00B47A8B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 43E1402B290FF45000F67A1A;
-			remoteInfo = ShinobuWidgetExtension;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		43E14026290FF19C00F67A1A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -168,7 +157,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				43E14037290FF45100F67A1A /* ShinobuWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -640,7 +628,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				43E14036290FF45100F67A1A /* PBXTargetDependency */,
 			);
 			name = Shinobu;
 			packageProductDependencies = (
@@ -905,14 +892,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		43E14036290FF45100F67A1A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 43E1402B290FF45000F67A1A /* ShinobuWidgetExtension */;
-			targetProxy = 43E14035290FF45100F67A1A /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		43056C8C290E76610087C752 /* Localizable.strings */ = {
