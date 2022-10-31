@@ -13,39 +13,39 @@ fileprivate typealias SearchSnapshot = NSDiffableDataSourceSnapshot<SearchSectio
 
 final class SearchVC: NYXViewController {
 	// MARK: - Private properties
-	// MPD Data source
+	/// MPD Data source
 	private let mpdBridge: MPDBridge
-	// Servers managerto get covers
+	/// Servers managerto get covers
 	private let serverManager: ServerManager
-	// Blurred background view
+	/// Blurred background view
 	private let blurEffectView = UIVisualEffectView()
-	// Search view (searchbar + tableview)
+	/// Search view (searchbar + tableview)
 	private let searchView = UIView()
-	// Custom search bar
+	/// Custom search bar
 	private var searchField: SearchField!
-	// Tableview for results
+	/// Tableview for results
 	private var tableView: UITableView! = nil
-	// Table data source
+	/// Table data source
 	private lazy var dataSource = makeDataSource()
-	// All MPD albums
+	/// All MPD albums
 	private var albums = [Album]()
-	// All MPD artists
+	/// All MPD artists
 	private var artists = [Artist]()
-	// All MPD album artists
+	/// All MPD album artists
 	private var albumsartists = [Artist]()
-	// Albums search results
+	/// Albums search results
 	private var albumsResults = [Album]()
-	// Artists search results
+	/// Artists search results
 	private var artistsResults = [Artist]()
-	// Album artists search results
+	/// Album artists search results
 	private var albumsartistsResults = [Artist]()
-	// Searching flag
+	/// Searching flag
 	private var searching = false
-	// Single tap gesture to dismiss
+	/// Single tap gesture to dismiss
 	private let singleTap = UITapGestureRecognizer()
-	// Frame of the keyboard when shown
+	/// Frame of the keyboard when shown
 	private var keyboardFrame = CGRect.zero
-	// Is the search view displayed at full height
+	/// Is the search view displayed at full height
 	private var isFullHeight = false
 
 	// MARK: - Initializers
@@ -206,24 +206,17 @@ final class SearchVC: NYXViewController {
 				cell.isEvenCell = indexPath.row.isMultiple(of: 2)
 
 				let img: UIImage
-				let highlight = true
+				var highlight = true
 
 				switch indexPath.section {
 				case 0:
-					//let album = musicalEntity as! Album
-
-//					if self.serverManager.getServer()?.covers != nil {
-//						if let cover = album.asset(ofSize: .small) {
-//							img = cover
-//							highlight = false
-//						} else {
-//							img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-//						}
-//					} else {
-//						img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-//					}
+					let album = musicalEntity as! Album
+					if let cover = album.asset(ofSize: .small) {
+						img = cover
+						highlight = false
+					} else {
 						img = #imageLiteral(resourceName: "search-res-album").withTintColor(.label)
-
+					}
 				case 1:
 					img = #imageLiteral(resourceName: "search-res-artist").withTintColor(.label)
 				case 2:
@@ -273,7 +266,9 @@ final class SearchVC: NYXViewController {
 		snapshot.appendItems(albumsResults, toSection: .albums)
 		snapshot.appendItems(artistsResults, toSection: .artists)
 		snapshot.appendItems(albumsartistsResults, toSection: .albumartists)
-		dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
+		// otherwide table header is not actualised ?
+		//dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
+		dataSource.applySnapshotUsingReloadData(snapshot)
 	}
 }
 
@@ -476,6 +471,7 @@ extension SearchVC: SearchFieldDelegate {
 			searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 			return
 		}
+
 		guard let searchText = text else { return }
 
 		if Defaults[.pref_fuzzySearch] {
@@ -483,12 +479,11 @@ extension SearchVC: SearchFieldDelegate {
 			artistsResults = artists.filter { $0.name.fuzzySearch(withString: searchText) }
 			albumsartistsResults = albumsartists.filter { $0.name.fuzzySearch(withString: searchText) }
 		} else {
-			albumsResults = albums.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-			artistsResults = artists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-			albumsartistsResults = albumsartists.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+			albumsResults = albums.filter { $0.name.localizedStandardContains(searchText) }
+			artistsResults = artists.filter { $0.name.localizedStandardContains(searchText) }
+			albumsartistsResults = albumsartists.filter { $0.name.localizedStandardContains(searchText) }
 		}
 
-		searchField.cancelButton.accessibilityLabel = NYXLocalizedString("lbl_clear_search")
-		applySnapshot(animatingDifferences: false)
+		applySnapshot(animatingDifferences: true)
 	}
 }
