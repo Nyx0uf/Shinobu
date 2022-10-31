@@ -30,8 +30,9 @@ I won't submit it to the App Store because I don't have 100€ to spare nor the 
 
 ## TODO
 
-- Apple TV version
-- An app icon. I have absolutely no design skills, if someone wants to help
+- Rewrite the libmpdclient bridge, because it is ugly
+- Apple TV version (probably never)
+- An nice app icon. I have absolutely no design skills, if someone wants to help
 
 ## INSTALLATION
 
