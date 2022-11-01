@@ -7,13 +7,13 @@
 
 I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
-I won't submit it to the App Store because I don't have 100€ to spare nor the time to deal with Apple's validation process. So if you want to use this app you will have to download the code and build it yourself.
+**Shinobu** is available on the App Store at the price of [5,99€](https://apps.apple.com/us/app/shinobu/id6443788422).
 
 ## FEATURES
 
 - iPhone / iPad
 - Browsing by *albums*, *artists*, *albums artists*, *genres*, *playlists*, or directly browsing the filesystem (your MPD directory).
-- Search, *global* or *contextual*, *normal* or *fuzzy*
+- Search
 - Playback control (*Play/Pause*, *Shuffle*, *Repeat*, *Track position*)
 - Volume control
 - Playlists management (Create / Delete / Add to / Remove from)
