@@ -7,7 +7,7 @@
 
 I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
-**Shinobu** is available on the App Store at the price of [5,99€](https://apps.apple.com/us/app/shinobu/id6443788422).
+**Shinobu** is available on the App Store at the price of [5,99€](https://apps.apple.com/us/app/shinobu/id6443788422), because putting it on the App Store cost 100€. If you prefer you can build it yourself, see below.
 
 ## FEATURES
 
@@ -20,8 +20,6 @@ I develop this app on my free time and for my personal need, you can ask for a f
 - VoiceOver compliant
 - Automatically find MPD server with Bonjour/Zeroconf
 - MPD outputs selection
-- Widgets (small and medium)
-- Multi-server support (not maintained anymore, on the branch [feat/multi-servers](https://github.com/Nyx0uf/shinobu/tree/feat/multi-servers))
 - 🇬🇧 and 🇫🇷 localized
 
 ## SCREENSHOTS
@@ -34,7 +32,7 @@ I develop this app on my free time and for my personal need, you can ask for a f
 - Apple TV version (probably never)
 - An nice app icon. I have absolutely no design skills, if someone wants to help
 
-## INSTALLATION
+## MANUAL INSTALLATION
 
 To install **Shinobu** you will need macOS, so you have two choices, either you have access to a Mac, or you run macOS on a Virtual Machine.
 
