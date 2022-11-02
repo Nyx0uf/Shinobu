@@ -4,13 +4,13 @@ import Logging
 
 final class ImageCache {
 	// MARK: - Public properties
-	// Singletion instance
+	/// Singletion instance
 	static let shared = ImageCache()
 
 	// MARK: - Private properties
-	// Cache
+	/// Cache
 	private let cache: Cache<String, UIImage>
-	// Logger
+	/// Logger
 	private let logger = Logger(label: "logger.imagecache")
 
 	// MARK: - Initializers

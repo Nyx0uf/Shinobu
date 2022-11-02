@@ -39,6 +39,8 @@
 "lbl_fuzzysearch" = "Recherche approximative";
 "lbl_volume_control_disabled" = "Le contrôle du volume est désactivé";
 "lbl_update_db" = "MaJ base de données";
+"lbl_nearby_servers" = "Serveurs proches";
+"lbl_resolving" = "Résolution…";
 
 "lbl_alert_playalbum_shuffle" = "Aléatoire";
 "lbl_alert_playalbum_addqueue" = "Ajouter à la liste";
@@ -63,9 +65,10 @@
 "lbl_server_coverclearcache" = "Vider le cache";
 "lbl_server_section_cover" = "Couverture";
 "lbl_server_section_server" = "Serveur MPD";
+"lbl_unnamed_server" = "Nouveau serveur";
 
 "lbl_section_settings" = "Réglages";
-"lbl_pref_shaketoplayrandom" = "Secouer pour jouer 1 album aléatoire";
+"lbl_pref_shaketoplayrandom" = "Secouer pour jouer un album aléatoire";
 "lbl_pref_useprettydb" = "Utiliser pretty_mpd_db";
 "lbl_pref_appearance" = "Apparence";
 "lbl_pref_columns" = "Nombre de colonnes";

@@ -39,6 +39,8 @@
 "lbl_fuzzysearch" = "Fuzzy search";
 "lbl_volume_control_disabled" = "Volume control is disabled";
 "lbl_update_db" = "Update database";
+"lbl_nearby_servers" = "Nearby servers";
+"lbl_resolving" = "Résolution…";
 
 "lbl_alert_playalbum_shuffle" = "Shuffle";
 "lbl_alert_playalbum_addqueue" = "Add to queue";
@@ -63,6 +65,7 @@
 "lbl_server_coverclearcache" = "Clear cache";
 "lbl_server_section_cover" = "Cover Art";
 "lbl_server_section_server" = "MPD server";
+"lbl_unnamed_server" = "Unnamed";
 
 "lbl_section_settings" = "Settings";
 

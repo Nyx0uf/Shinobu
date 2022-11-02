@@ -33,7 +33,7 @@ final class AlbumDetailVC: NYXViewController {
 			defaultHeight = 0
 		} else {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-			navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-play"), style: .done, target: self, action: #selector(playAlbumAction(sender:)))
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "play"), style: .plain, target: self, action: #selector(playAlbumAction(sender:)))
 		}
 
 		// Album header view

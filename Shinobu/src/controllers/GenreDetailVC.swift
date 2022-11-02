@@ -59,7 +59,6 @@ final class GenreDetailVC: MusicalCollectionVC {
 			break
 		}
 		titleView.setMainText(genre.name, detailText: detailText)
-		searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(dataSource.musicalEntityType.description.lowercased())"
 	}
 
 	// MARK: - TypeChoiceVCDelegate

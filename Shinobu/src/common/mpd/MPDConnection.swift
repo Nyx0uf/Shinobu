@@ -23,7 +23,7 @@ struct PlayerState {
 	let isRepeat: Bool
 }
 
-struct MPDOutput {
+struct MPDOutput: Identifiable {
 	let id: Int
 	let name: String
 	var isEnabled: Bool

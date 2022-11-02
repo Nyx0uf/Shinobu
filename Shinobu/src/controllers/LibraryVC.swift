@@ -1,11 +1,8 @@
 import UIKit
+import SwiftUI
 import Defaults
 
 final class LibraryVC: MusicalCollectionVC {
-	// MARK: - Private properties
-	/// Audio server changed flag
-	private var serverChanged = false
-
 	// MARK: - Initializers
 	override init(mpdBridge: MPDBridge) {
 		super.init(mpdBridge: mpdBridge)
@@ -19,13 +16,10 @@ final class LibraryVC: MusicalCollectionVC {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		// Servers button
-		let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServerSettingAction(_:)))
-		serversButton.accessibilityLabel = NYXLocalizedString("lbl_header_server_list")
 		// Settings button
-		let settingsButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-settings"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
+		let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
 		settingsButton.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
-		navigationItem.leftBarButtonItems = [serversButton, settingsButton]
+		navigationItem.leftBarButtonItems = [settingsButton]
 
 		NotificationCenter.default.addObserver(self, selector: #selector(audioServerConfigurationDidChange(_:)), name: .audioServerConfigurationDidChange, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(showArtist(_:)), name: .showArtistNotification, object: nil)
@@ -53,7 +47,7 @@ final class LibraryVC: MusicalCollectionVC {
 	// MARK: - Private
 	private func handleFirstLaunch() {
 		if Defaults[.isFirstRun] == true {
-			showServerSettingAction(nil)
+			showSettingsAction(nil)
 			Defaults[.isFirstRun] = false
 		}
 	}
@@ -61,25 +55,8 @@ final class LibraryVC: MusicalCollectionVC {
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
-			if let server = ServerManager().getServer() {
-				// Data source
-				mpdBridge.server = server
-				let resultDataSource = mpdBridge.initialize()
-				switch resultDataSource {
-				case .failure(let error):
-					MessageView.shared.showWithMessage(message: error.message)
-				case .success:
-					mpdBridge.getAllEntities {
-						self.mpdBridge.entitiesForType(self.dataSource.musicalEntityType) { (entities) in
-							DispatchQueue.main.async {
-								self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-								self.updateNavigationTitle()
-								self.updateNavigationButtons()
-							}
-						}
-					}
-				}
-			}
+			mpdBridge.server = ServerManager().getServer()
+			getLists()
 		}
 
 		// When entity type menu was displayed
@@ -93,8 +70,24 @@ final class LibraryVC: MusicalCollectionVC {
 					self.updateNavigationButtons()
 				}
 			}
-			navMenuDisplayed = false
-			serverChanged = false
+		}
+	}
+
+	private func getLists() {
+		let resultDataSource = mpdBridge.initialize()
+		switch resultDataSource {
+		case .failure(let error):
+			MessageView.shared.showWithMessage(message: error.message)
+		case .success:
+			mpdBridge.getAllEntities {
+				self.mpdBridge.entitiesForType(self.dataSource.musicalEntityType) { (entities) in
+					DispatchQueue.main.async {
+						self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
+						self.updateNavigationTitle()
+						self.updateNavigationButtons()
+					}
+				}
+			}
 		}
 	}
 
@@ -146,18 +139,10 @@ final class LibraryVC: MusicalCollectionVC {
 	}
 
 	// MARK: - Buttons actions
-	@objc func showServerSettingAction(_ sender: Any?) {
-		let serverVC = ServerVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: serverVC)
-		nvc.presentationController?.delegate = self
-		navigationController?.present(nvc, animated: true, completion: nil)
-	}
-
 	@objc func showSettingsAction(_ sender: Any?) {
-		let settingsVC = SettingsVC()
-		let nvc = NYXNavigationController(rootViewController: settingsVC)
-		nvc.presentationController?.delegate = self
-		navigationController?.present(nvc, animated: true, completion: nil)
+		let settingsView = SettingsView(dismissAction: { self.dismiss(animated: true, completion: nil) })
+		let hostingVC = UIHostingController(rootView: settingsView)
+		navigationController?.present(hostingVC, animated: true, completion: nil)
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?) {
@@ -223,7 +208,7 @@ final class LibraryVC: MusicalCollectionVC {
 
 	private func updateNavigationButtons() {
 		// Search button
-		let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
+		let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
 		searchButton.accessibilityLabel = NYXLocalizedString("lbl_search_library")
 		if dataSource.musicalEntityType == .playlists {
 			// Create playlist button
@@ -275,7 +260,9 @@ final class LibraryVC: MusicalCollectionVC {
 
 	// MARK: - Notifications
 	@objc func audioServerConfigurationDidChange(_ aNotification: Notification) {
-		serverChanged = true
+		ImageCache.shared.clear { (_) in }
+
+		getLists()
 	}
 
 	@objc func showArtist(_ aNotification: Notification) {
@@ -307,7 +294,6 @@ final class LibraryVC: MusicalCollectionVC {
 				self.setItems(entities, forMusicalEntityType: type)
 				self.updateNavigationTitle()
 				self.updateNavigationButtons()
-				self.searchBar.placeholder = "\(NYXLocalizedString("lbl_search")) \(type.description.lowercased())"
 				self.collectionView.collectionView.scrollToTop(animated: true)
 			}
 		}
@@ -394,10 +380,6 @@ extension LibraryVC {
 	func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
 		checkInit()
 	}
-
-//	func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-//		checkInit()
-//	}
 
 	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
 		return self.modalStyleForController(controller)

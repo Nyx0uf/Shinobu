@@ -1,113 +1,105 @@
 import UIKit
 
-private let marginFromCell = CGFloat(8)
-private let marginFromRounded = CGFloat(7)
-private let btnSize = CGFloat(24)
-private let cellHeight = CGFloat(54)
-private let imageViewSize = CGFloat(40)
-
 final class SearchResultTableViewCell: UITableViewCell, ReuseIdentifying {
 	// MARK: - Public properties
-	// Image
+	/// Image
 	private(set) var imgView = UIImageView()
-	// Disclosure indicator
-	private(set) var imgDisclosure = UIImageView()
-	// Track title
+	/// Track title
 	private(set) var lblTitle = UILabel()
-	// Play button callback
+	/// Play button callback
 	var buttonAction: (() -> Void) = {}
-	// Match background to even/odd cell index
+	/// Match background to even/odd cell index
 	var isEvenCell = false {
 		didSet {
-			if traitCollection.userInterfaceStyle == .dark {
-				roundedView.backgroundColor = isEvenCell ? UIColor(rgb: 0x121212) : .black
-			} else {
-				roundedView.backgroundColor = isEvenCell ? .secondarySystemGroupedBackground : .systemGroupedBackground
-			}
+			self.contentView.backgroundColor = isEvenCell ? UIColor(rgb: 0x121212) : .black
 		}
 	}
 	// MARK: - Private properties
-	// Rounded view
-	private var roundedView = UIView()
-	// Selected bg color
+	/// Selected bg color
 	private var overlayView = UIView()
-	// Play button
-	private var btnPlay = CellButtonPlay(type: .custom)
+	/// Play button
+	private var btnPlay = UIButton(type: .custom)
 
 	// MARK: - Initializers
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		self.backgroundColor = .clear
-		self.contentView.backgroundColor = .clear
+		self.backgroundColor = .black
+		self.contentView.backgroundColor = .black
 		self.selectionStyle = .none
 
-		self.roundedView.frame = CGRect(marginFromCell, 0, UIScreen.main.bounds.width - 2 * marginFromCell, cellHeight)
-		self.roundedView.layer.cornerRadius = 10
-		self.roundedView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-		self.roundedView.clipsToBounds = true
-		self.contentView.addSubview(self.roundedView)
-
-		self.imgView.frame = CGRect(marginFromRounded, marginFromRounded, imageViewSize, imageViewSize)
-		self.imgView.contentMode = .center
+		self.contentView.addSubview(self.imgView)
+		self.imgView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate(
+			[
+				self.imgView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+				self.imgView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8),
+				self.imgView.widthAnchor.constraint(equalToConstant: 38),
+				self.imgView.heightAnchor.constraint(equalToConstant: 38)
+			]
+		)
+		self.imgView.isAccessibilityElement = false
+		self.imgView.contentMode = .scaleAspectFit
 		self.imgView.layer.cornerRadius = 4
 		self.imgView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
 		self.imgView.clipsToBounds = true
-		self.roundedView.addSubview(self.imgView)
 
-		self.imgDisclosure = UIImageView(image: #imageLiteral(resourceName: "cell-disclosure").withTintColor(.secondaryLabel), highlightedImage: #imageLiteral(resourceName: "cell-disclosure").withTintColor(UIColor.shinobuTintColor))
-		self.roundedView.addSubview(self.imgDisclosure)
-
-		self.btnPlay.frame = CGRect(.zero, btnSize, btnSize)
-		self.btnPlay.bgColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
-		self.btnPlay.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.1)
-		self.btnPlay.selectedBackgroundColor = UIColor.shinobuTintColor.withAlphaComponent(0.2)
-		self.btnPlay.circleize()
-		self.btnPlay.setImage(#imageLiteral(resourceName: "search-cell-play").withTintColor(.secondaryLabel), for: .normal)
-		self.btnPlay.setImage(#imageLiteral(resourceName: "search-cell-play").withTintColor(UIColor.shinobuTintColor), for: .selected)
-		self.btnPlay.setImage(#imageLiteral(resourceName: "search-cell-play").withTintColor(UIColor.shinobuTintColor), for: .highlighted)
+		self.contentView.addSubview(self.btnPlay)
+		self.btnPlay.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate(
+			[
+				self.btnPlay.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+				self.btnPlay.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -8),
+				self.btnPlay.widthAnchor.constraint(equalToConstant: 38),
+				self.btnPlay.heightAnchor.constraint(equalToConstant: 38)
+			]
+		)
+		let imgPlay = UIImage(systemName: "play.circle")!
+		self.btnPlay.setImage(imgPlay.withTintColor(.white).withRenderingMode(.alwaysOriginal), for: .normal)
+		self.btnPlay.setImage(imgPlay.withTintColor(UIColor.shinobuTintColor).withRenderingMode(.alwaysOriginal), for: .selected)
+		self.btnPlay.setImage(imgPlay.withTintColor(UIColor.shinobuTintColor).withRenderingMode(.alwaysOriginal), for: .highlighted)
 		self.btnPlay.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-		self.roundedView.addSubview(self.btnPlay)
 
-		self.lblTitle.frame = CGRect(imgView.maxX + 8, 0, (roundedView.width - 16 - imgView.maxX), cellHeight)
+		self.contentView.addSubview(self.lblTitle)
+		self.lblTitle.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate(
+			[
+				self.lblTitle.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+				self.lblTitle.leadingAnchor.constraint(equalTo: self.imgView.trailingAnchor, constant: 8),
+				self.lblTitle.trailingAnchor.constraint(equalTo: self.btnPlay.leadingAnchor, constant: -8)
+			]
+		)
 		self.lblTitle.font = UIFont.systemFont(ofSize: 14, weight: .regular)
 		self.lblTitle.textAlignment = .left
 		self.lblTitle.textColor = .label
+		self.lblTitle.numberOfLines = 2
 		self.lblTitle.highlightedTextColor = UIColor.shinobuTintColor
-		self.roundedView.addSubview(self.lblTitle)
 
-		self.overlayView.frame = self.roundedView.frame
-		self.overlayView.layer.cornerRadius = 10
-		self.overlayView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner, .layerMaxXMinYCorner]
-		self.overlayView.clipsToBounds = true
+		self.overlayView.translatesAutoresizingMaskIntoConstraints = false
 		self.overlayView.backgroundColor = UIColor.shinobuTintColor.withAlphaComponent(0.2)
+		self.overlayView.isAccessibilityElement = false
 	}
 
 	required init?(coder aDecoder: NSCoder) { fatalError("no coder") }
-
-	// MARK: - UIView overrides
-	override func layoutSubviews() {
-		super.layoutSubviews()
-
-		roundedView.frame = CGRect(marginFromCell, 0, width - 2 * marginFromCell, cellHeight)
-		overlayView.frame = roundedView.bounds
-
-		let marginLbl = CGFloat(10)
-		imgView.frame = CGRect(marginFromRounded, marginFromRounded, imageViewSize, imageViewSize)
-		imgDisclosure.frame = CGRect((roundedView.width - imgDisclosure.width - marginFromRounded), (cellHeight - imgDisclosure.height) / 2, imgDisclosure.size).ceilled()
-		btnPlay.frame = CGRect((imgDisclosure.x - btnSize - marginLbl), (cellHeight - btnSize) / 2, btnSize, btnSize).ceilled()
-		lblTitle.frame = CGRect(imgView.maxX + marginLbl, 0, (btnPlay.x - imgView.maxX - 2 * marginLbl), cellHeight).ceilled()
-	}
 
 	override func setSelected(_ selected: Bool, animated: Bool) {
 		super.setSelected(selected, animated: animated)
 
 		lblTitle.isHighlighted = selected
-		imgDisclosure.isHighlighted = selected
 		imgView.isHighlighted = selected
 
-		if selected && overlayView.superview == nil {
-			roundedView.insertSubview(overlayView, belowSubview: imgView)
+		if selected {
+			if overlayView.superview == nil {
+				contentView.addSubview(overlayView)
+				NSLayoutConstraint.activate(
+					[
+						overlayView.topAnchor.constraint(equalTo: contentView.topAnchor),
+						overlayView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+						overlayView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+						overlayView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+					]
+				)
+			}
 		} else {
 			overlayView.removeFromSuperview()
 		}
@@ -117,11 +109,20 @@ final class SearchResultTableViewCell: UITableViewCell, ReuseIdentifying {
 		super.setHighlighted(highlighted, animated: animated)
 
 		lblTitle.isHighlighted = highlighted
-		imgDisclosure.isHighlighted = highlighted
 		imgView.isHighlighted = highlighted
 
-		if highlighted && overlayView.superview == nil {
-			roundedView.insertSubview(overlayView, belowSubview: imgView)
+		if highlighted {
+			if overlayView.superview == nil {
+				contentView.addSubview(overlayView)
+				NSLayoutConstraint.activate(
+					[
+						overlayView.topAnchor.constraint(equalTo: contentView.topAnchor),
+						overlayView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+						overlayView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+						overlayView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+					]
+				)
+			}
 		} else {
 			overlayView.removeFromSuperview()
 		}
@@ -130,49 +131,5 @@ final class SearchResultTableViewCell: UITableViewCell, ReuseIdentifying {
 	// MARK: - Private
 	@objc private func buttonPressed(_ sender: UIButton) {
 		buttonAction()
-	}
-}
-
-fileprivate final class CellButtonPlay: UIButton {
-	// MARK: - Public properties
-	// Selected & Highlighted color
-	var selectedBackgroundColor = UIColor.clear
-	// Background color
-	var bgColor: UIColor?
-
-	override var isSelected: Bool {
-		willSet {
-			if self.isSelected {
-				self.backgroundColor = self.selectedBackgroundColor
-			} else {
-				self.backgroundColor = self.bgColor
-			}
-		}
-
-		didSet {
-			if self.isSelected {
-				self.backgroundColor = self.selectedBackgroundColor
-			} else {
-				self.backgroundColor = self.bgColor
-			}
-		}
-	}
-
-	override var isHighlighted: Bool {
-		willSet {
-			if self.isHighlighted {
-				self.backgroundColor = self.selectedBackgroundColor
-			} else {
-				self.backgroundColor = self.bgColor
-			}
-		}
-
-		didSet {
-			if self.isHighlighted {
-				self.backgroundColor = self.selectedBackgroundColor
-			} else {
-				self.backgroundColor = self.bgColor
-			}
-		}
 	}
 }

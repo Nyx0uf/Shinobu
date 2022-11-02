@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Defaults
 import Logging
 
@@ -50,18 +51,13 @@ final class DirectoriesVC: NYXViewController {
 		self.edgesForExtendedLayout = UIRectEdge()
 
 		// Remove back button label
-		navigationController?.navigationBar.backIndicatorImage = #imageLiteral(resourceName: "btn-back")
-		navigationController?.navigationBar.backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "btn-back")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 		if path == nil {
-			// Servers button
-			let serversButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-server"), style: .plain, target: self, action: #selector(showServersListAction(_:)))
-			serversButton.accessibilityLabel = NYXLocalizedString("lbl_header_server_list")
 			// Settings button
-			let settingsButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-settings"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
+			let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(showSettingsAction(_:)))
 			settingsButton.accessibilityLabel = NYXLocalizedString("lbl_section_settings")
-			navigationItem.leftBarButtonItems = [serversButton, settingsButton]
+			navigationItem.leftBarButtonItems = [settingsButton]
 		}
 
 		var miniHeight = CGFloat(64)
@@ -98,35 +94,24 @@ final class DirectoriesVC: NYXViewController {
 	}
 
 	// MARK: - Buttons actions
-	@objc func showServersListAction(_ sender: Any?) {
-		let serverVC = ServerVC(mpdBridge: mpdBridge)
-		let nvc = NYXNavigationController(rootViewController: serverVC)
-		nvc.presentationController?.delegate = self
-		navigationController?.present(nvc, animated: true, completion: nil)
-	}
-
 	@objc func showSettingsAction(_ sender: Any?) {
-		let settingsVC = SettingsVC()
-		let nvc = NYXNavigationController(rootViewController: settingsVC)
-		nvc.presentationController?.delegate = self
-		nvc.modalTransitionStyle = .flipHorizontal
-		navigationController?.present(nvc, animated: true, completion: nil)
+		let settingsView = SettingsView(dismissAction: { self.dismiss(animated: true, completion: nil) })
+		let hostingVC = UIHostingController(rootView: settingsView)
+		navigationController?.present(hostingVC, animated: true, completion: nil)
 	}
 
 	// MARK: - Private
 	private func checkInit() {
 		// Initialize the mpd connection
 		if mpdBridge.server == nil {
-			if let server = ServerManager().getServer() {
-				// Data source
-				mpdBridge.server = server
-				let resultDataSource = mpdBridge.initialize()
-				switch resultDataSource {
-				case .failure(let error):
-					MessageView.shared.showWithMessage(message: error.message)
-				case .success:
-					refreshDirectories()
-				}
+			// Data source
+			mpdBridge.server = ServerManager().getServer()
+			let resultDataSource = mpdBridge.initialize()
+			switch resultDataSource {
+			case .failure(let error):
+				MessageView.shared.showWithMessage(message: error.message)
+			case .success:
+				refreshDirectories()
 			}
 		} else {
 			refreshDirectories()
@@ -306,9 +291,6 @@ extension DirectoriesVC: UIAdaptivePresentationControllerDelegate {
 	}
 
 	private func modalStyleForController(_ controller: UIPresentationController) -> UIModalPresentationStyle {
-		guard let nvc = controller.presentedViewController as? NYXNavigationController else { return .automatic }
-		guard let tvc = nvc.topViewController else { return .automatic }
-
 		return .automatic
 	}
 }

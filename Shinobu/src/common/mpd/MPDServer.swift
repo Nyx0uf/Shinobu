@@ -1,8 +1,7 @@
 import Foundation
 
-struct MPDServer: Codable, Equatable {
-	// Coding keys
-	private enum MPDServerCodingKeys: String, CodingKey {
+final class MPDServer: ObservableObject, Equatable, Identifiable, Hashable, Codable {
+	private enum CodingKeys: String, CodingKey {
 		case name
 		case hostname
 		case port
@@ -10,40 +9,51 @@ struct MPDServer: Codable, Equatable {
 	}
 
 	// MARK: - Public properties
-	// Server name
-	let name: String
-	// Server IP / hostname
-	let hostname: String
-	// Server port
-	let port: UInt16
-	// Server password
-	let password: String
+	/// Only used for list display
+	@Published var id: Int
+	/// Server name
+	@Published var name: String
+	/// Server IP / hostname
+	@Published var hostname: String
+	/// Server port
+	@Published var port: UInt16
+	/// Server password
+	@Published var password: String
 
 	// MARK: - Initializers
-	init(hostname: String, port: UInt16, password: String = "", name: String = "") {
+	init(id: Int, name: String, hostname: String, port: UInt16, password: String = "") {
+		self.id = id
 		self.name = name
 		self.hostname = hostname
 		self.port = port
 		self.password = password
 	}
 
-	init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: MPDServerCodingKeys.self)
+	convenience init(from decoder: Decoder) throws {
+		let values = try decoder.container(keyedBy: CodingKeys.self)
 		let na = try values.decode(String.self, forKey: .name)
 		let ho = try values.decode(String.self, forKey: .hostname)
 		let po = try values.decode(UInt16.self, forKey: .port)
 		let pa = try values.decode(String.self, forKey: .password)
 
-		self.init(hostname: ho, port: po, password: pa, name: na)
+		self.init(id: 0, name: na, hostname: ho, port: po, password: pa)
 	}
-}
 
-extension MPDServer: CustomStringConvertible {
-	var description: String {
-		"\(hostname):\(port)\n"
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(name, forKey: .name)
+		try container.encode(hostname, forKey: .hostname)
+		try container.encode(port, forKey: .port)
+		try container.encode(password, forKey: .password)
 	}
-}
 
-func == (lhs: MPDServer, rhs: MPDServer) -> Bool {
-	lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port && lhs.password == rhs.password
+	static func == (lhs: MPDServer, rhs: MPDServer) -> Bool {
+		lhs.name == rhs.name && lhs.hostname == rhs.hostname && lhs.port == rhs.port
+	}
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+		hasher.combine(hostname)
+		hasher.combine(port)
+	}
 }

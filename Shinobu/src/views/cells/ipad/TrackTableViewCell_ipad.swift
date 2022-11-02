@@ -13,11 +13,7 @@ final class TrackTableViewCellIPAD: UITableViewCell, ReuseIdentifying {
 	//
 	var isEvenCell = false {
 		didSet {
-			if traitCollection.userInterfaceStyle == .dark {
-				backgroundColor = isEvenCell ? .black : UIColor(rgb: 0x121212)
-			} else {
-				backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
-			}
+			backgroundColor = isEvenCell ? .black : UIColor(rgb: 0x121212)
 		}
 	}
 

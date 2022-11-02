@@ -40,10 +40,10 @@ final class SearchField: UIView {
 		let f = CGRect(frame.origin, frame.width, 44)
 		super.init(frame: f)
 
-		self.backgroundColor = traitCollection.userInterfaceStyle == .dark ? .black : .systemGroupedBackground
+		self.backgroundColor = .black
 
 		self.imageView.frame = CGRect(0, 0, f.height, f.height)
-		self.imageView.image = #imageLiteral(resourceName: "search-icon").withTintColor(.tertiaryLabel)
+		self.imageView.image = UIImage(systemName: "magnifyingglass")?.withTintColor(.tertiaryLabel)
 		self.imageView.contentMode = .center
 		self.addSubview(self.imageView)
 
@@ -54,7 +54,8 @@ final class SearchField: UIView {
 		self.addSubview(self.textField)
 
 		self.cancelButton.frame = CGRect(f.width - f.height, 0, f.height, f.height)
-		self.cancelButton.setImage(#imageLiteral(resourceName: "search-clear").withTintColor(UIColor.shinobuTintColor), for: .normal)
+		//self.cancelButton.setImage(#imageLiteral(resourceName: "search-clear").withTintColor(UIColor.shinobuTintColor), for: .normal)
+		self.cancelButton.setImage(UIImage(systemName: "xmark.circle.fill")?.withTintColor(UIColor.shinobuTintColor), for: .normal)
 		self.addSubview(self.cancelButton)
 	}
 

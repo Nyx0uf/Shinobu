@@ -2,20 +2,16 @@ import UIKit
 
 final class TrackTableViewCell: UITableViewCell, ReuseIdentifying {
 	// MARK: - Public properties
-	// Track number
+	/// Track number
 	private(set) var lblTrack = UILabel()
-	// Track title
+	/// Track title
 	private(set) var lblTitle = UILabel()
-	// Track duration
+	/// Track duration
 	private(set) var lblDuration = UILabel()
-	//
+	///
 	var isEvenCell = false {
 		didSet {
-			if traitCollection.userInterfaceStyle == .dark {
-				backgroundColor = isEvenCell ? .black : UIColor(rgb: 0x121212)
-			} else {
-				backgroundColor = isEvenCell ? .systemBackground : .secondarySystemBackground
-			}
+			backgroundColor = isEvenCell ? .black : UIColor(rgb: 0x121212)
 		}
 	}
 

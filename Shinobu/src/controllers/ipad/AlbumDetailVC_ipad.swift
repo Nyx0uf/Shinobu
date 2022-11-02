@@ -47,11 +47,11 @@ final class AlbumDetailVCIPAD: NYXViewController {
 			navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
 			// Search button
-			let searchButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-search"), style: .plain, target: self, action: #selector(showSearchBarAction(_:)))
+			let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBarAction(_:)))
 			searchButton.accessibilityLabel = NYXLocalizedString("lbl_search")
 
 			// Play button
-			let playButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-play"), style: .done, target: self, action: #selector(playAlbumAction(sender:)))
+			let playButton = UIBarButtonItem(image: UIImage(systemName: "play"), style: .plain, target: self, action: #selector(playAlbumAction(sender:)))
 			playButton.accessibilityLabel = NYXLocalizedString("lbl_play")
 			navigationItem.rightBarButtonItems = [searchButton, playButton]
 		}
