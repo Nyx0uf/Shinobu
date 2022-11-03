@@ -1,6 +1,6 @@
 import UIKit
 
-final class Button: UIControl {
+final class ControlButton: UIControl {
 	// MARK: - Public properties
 	// Selected & Highlighted color
 	private(set) var selectedTintColor = UIColor.clear

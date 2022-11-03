@@ -16,14 +16,13 @@ struct SettingsView: View {
 	/// Fuzzy search
 	@Default(.pref_fuzzySearch) var fuzzySearch
 	/// MPD server
-	@ObservedObject var mpdServerModel: MPDServer
+	@StateObject var mpdServerModel = ServerManager().getServer()
 	/// Dismiss callback from UIKit
 	var dismissAction: (() -> Void)
 
 	// MARK: - Initializer
 	init(dismissAction: @escaping (() -> Void)) {
 		self.dismissAction = dismissAction
-		self.mpdServerModel = ServerManager().getServer()
 	}
 
 	var body: some View {
@@ -77,15 +76,15 @@ struct SettingsView: View {
 						HStack(spacing: 8) {
 							Spacer()
 
-							SwiftUI.Button {
+							Button {
 								showingAlert = true
 							} label: {
 								Label(NYXLocalizedString("lbl_server_coverclearcache"), systemImage: "clear")
 									.foregroundColor(.red)
 							}
 							.alert(NYXLocalizedString("lbl_alert_purge_cache_title"), isPresented: $showingAlert, actions: {
-								SwiftUI.Button(NYXLocalizedString("lbl_cancel"), role: .cancel) { }
-								SwiftUI.Button(NYXLocalizedString("lbl_ok"), role: .destructive) {
+								Button(NYXLocalizedString("lbl_cancel"), role: .cancel) { }
+								Button(NYXLocalizedString("lbl_ok"), role: .destructive) {
 									ImageCache.shared.clear { (_) in }
 								}
 							}, message: {
@@ -116,7 +115,7 @@ struct SettingsView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					SwiftUI.Button(action: dismissAction) {
+					Button(action: dismissAction) {
 						Text(NYXLocalizedString("lbl_close"))
 					}
 				}

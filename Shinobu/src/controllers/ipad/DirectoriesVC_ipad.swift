@@ -224,7 +224,7 @@ extension DirectoriesVCIPAD: UITableViewDataSource {
 		cell.textLabel?.textColor = .label
 		cell.textLabel?.highlightedTextColor = UIColor.shinobuTintColor
 		cell.textLabel?.isAccessibilityElement = false
-		let image: UIImage? = item.type == .directory ? #imageLiteral(resourceName: "icon_folder") : (item.type == .song ? #imageLiteral(resourceName: "icon_note") : (item.type == .image ? #imageLiteral(resourceName: "icon_image") : nil))
+		let image: UIImage? = item.type == .directory ? UIImage(systemName: "folder")! : (item.type == .song ? UIImage(systemName: "music.note")! : (item.type == .image ? UIImage(systemName: "photo")! : nil))
 		cell.imageView?.image = image?.withTintColor(.label)
 		cell.imageView?.highlightedImage = image?.withTintColor(UIColor.shinobuTintColor)
 		cell.accessibilityLabel = item.name
@@ -260,7 +260,7 @@ extension DirectoriesVCIPAD: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		return UIContextMenuConfiguration(identifier: nil, previewProvider: nil, actionProvider: { _ in
 			let item = self.songs[indexPath.row]
-			let rename = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { _ in
+			let rename = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { _ in
 				let path = self.path == nil ? item.name : self.path! + "/" + item.name
 				let track = Track(name: "", artist: "", duration: Duration(seconds: 0), trackNumber: 0, uri: path)
 				self.mpdBridge.playTracks([track], shuffle: false, loop: false)

@@ -2,9 +2,9 @@ import Foundation
 
 public class ThreadedObject<V> {
 	// MARK: - Private properties
-	// Object
+	/// Object
 	private var value: V
-	// Concurrent queue
+	/// Concurrent queue
 	private var queue: DispatchQueue
 
 	init(_ value: V) {

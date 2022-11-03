@@ -175,7 +175,7 @@ extension AlbumDetailVCIPAD: UITableViewDelegate {
 			}
 			completionHandler(true)
 		}
-		action.image = #imageLiteral(resourceName: "btn-playlist-add").withTintColor(.label)
+		action.image = UIImage(systemName: "text.badge.plus")!
 		action.backgroundColor = UIColor.shinobuTintColor
 
 		return UISwipeActionsConfiguration(actions: [action])

@@ -217,7 +217,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDataSource {
 		case .albums:
 			handleCoverForCell(cell, at: indexPath, withAlbum: entity as! Album)
 		case .artists, .albumsartists:
-			cell.image = #imageLiteral(resourceName: "img-artists").withTintColor(.label)
+			cell.image = UIImage(systemName: "person.2")!
 		case .genres:
 			let string = entity.name[0..<2].uppercased()
 			let backgroundColor = UIColor(rgb: string.djb2())
@@ -272,22 +272,22 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 			switch self.musicalEntityType {
 			case .albums:
 				let album = self.currentItemAtIndexPath(indexPath) as! Album
-				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { (_) in
 					self.mpdBridge.playAlbum(album, shuffle: false, loop: false)
 				}
 
-				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: UIImage(systemName: "shuffle")!) { (_) in
 					self.mpdBridge.playAlbum(album, shuffle: true, loop: false)
 				}
 
-				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: UIImage(systemName: "plus")!) { (_) in
 					self.mpdBridge.addAlbumToQueue(album)
 				}
 
 				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
 			case .artists:
 				let artist = self.currentItemAtIndexPath(indexPath) as! Artist
-				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -296,7 +296,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: UIImage(systemName: "shuffle")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -305,7 +305,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: UIImage(systemName: "plus")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						for album in artist.albums {
@@ -317,7 +317,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 
 			case .albumsartists:
 				let artist = self.currentItemAtIndexPath(indexPath) as! Artist
-				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -326,7 +326,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: UIImage(systemName: "shuffle")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(artist.albums) { (tracks) in
@@ -335,7 +335,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: UIImage(systemName: "plus")!) { (_) in
 					self.mpdBridge.getAlbumsForArtist(artist, isAlbumArtist: true) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						for album in artist.albums {
@@ -346,7 +346,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
 			case .genres:
 				let genre = self.currentItemAtIndexPath(indexPath) as! Genre
-				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { (_) in
 					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
@@ -355,7 +355,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: UIImage(systemName: "shuffle")!) { (_) in
 					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						strongSelf.mpdBridge.getTracksForAlbums(genre.albums) { (tracks) in
@@ -364,7 +364,7 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 						}
 					}
 				}
-				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: #imageLiteral(resourceName: "btn-add").withRenderingMode(.alwaysTemplate)) { (_) in
+				let addQueueAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_addqueue"), image: UIImage(systemName: "plus")!) { (_) in
 					self.mpdBridge.getAlbumsForGenre(genre, firstOnly: false) { [weak self] (albums) in
 						guard let strongSelf = self else { return }
 						for album in genre.albums {
@@ -375,16 +375,16 @@ extension MusicalCollectionDataSourceAndDelegate: UICollectionViewDelegate {
 				return UIMenu(title: "", children: [playAction, shuffleAction, addQueueAction])
 			case.playlists:
 				let playlist = self.currentItemAtIndexPath(indexPath) as! Playlist
-				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: #imageLiteral(resourceName: "btn-play").withRenderingMode(.alwaysTemplate)) { (_) in
+				let playAction = UIAction(title: NYXLocalizedString("lbl_play"), image: UIImage(systemName: "play")!) { (_) in
 					self.mpdBridge.playPlaylist(playlist, shuffle: false, loop: false)
 				}
-				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: #imageLiteral(resourceName: "btn-random").withRenderingMode(.alwaysTemplate)) { (_) in
+				let shuffleAction = UIAction(title: NYXLocalizedString("lbl_alert_playalbum_shuffle"), image: UIImage(systemName: "shuffle")!) { (_) in
 					self.mpdBridge.playPlaylist(playlist, shuffle: true, loop: false)
 				}
-				let renameAction = UIAction(title: NYXLocalizedString("lbl_rename_playlist"), image: #imageLiteral(resourceName: "btn-edit").withRenderingMode(.alwaysTemplate)) { (_) in
+				let renameAction = UIAction(title: NYXLocalizedString("lbl_rename_playlist"), image: UIImage(systemName: "pencil")!) { (_) in
 					self.delegate?.shouldRenamePlaytlist(playlist)
 				}
-				let deleteAction = UIAction(title: NYXLocalizedString("lbl_delete_playlist"), image: #imageLiteral(resourceName: "btn-trash").withRenderingMode(.alwaysTemplate), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
+				let deleteAction = UIAction(title: NYXLocalizedString("lbl_delete_playlist"), image: UIImage(systemName: "trash")!, identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { (_) in
 					self.delegate?.shouldDeletePlaytlist(playlist)
 				}
 				return UIMenu(title: "", children: [playAction, shuffleAction, renameAction, deleteAction])

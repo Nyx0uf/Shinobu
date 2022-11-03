@@ -3,15 +3,15 @@ import AVFoundation
 
 final class MessageView: UIView {
 	// MARK: - Public properties
-	// Singletion instance
+	/// Singletion instance
 	static let shared = MessageView(frame: .zero)
-	// Message label
+	/// Message label
 	var label: UILabel!
-	// Image
+	/// Image
 	var imageView: UIImageView!
-	// Visible flag
+	/// Visible flag
 	private(set) var visible = false
-	// Timer (4sec)
+	/// Timer (4sec)
 	private var timer: DispatchSourceTimer! = nil
 
 	// MARK: - Initializers
@@ -70,16 +70,16 @@ final class MessageView: UIView {
 			switch message.type {
 			case .error:
 				self.backgroundColor = UIColor(rgb: 0x941100)
-				self.imageView.image = #imageLiteral(resourceName: "icon_error").withTintColor(UIColor(rgb: 0xFFFFFF))
+					self.imageView.image = UIImage(systemName: "exclamationmark.circle")!.withTintColor(.white)
 			case .warning:
 				self.backgroundColor = UIColor(rgb: 0xF3AF22)
-				self.imageView.image = #imageLiteral(resourceName: "icon_warning").withTintColor(UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = UIImage(systemName: "exclamationmark.triangle")!.withTintColor(.white)
 			case .information:
 				self.backgroundColor = UIColor(rgb: 0x0096FF)
-				self.imageView.image = #imageLiteral(resourceName: "icon_infos").withTintColor(UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = UIImage(systemName: "info.circle")!.withTintColor(.white)
 			case .success:
 				self.backgroundColor = UIColor(rgb: 0x008F00)
-				self.imageView.image = #imageLiteral(resourceName: "icon_success").withTintColor(UIColor(rgb: 0xFFFFFF))
+				self.imageView.image = UIImage(systemName: "checkmark.circle")!.withTintColor(.white)
 			}
 			self.label.backgroundColor = self.backgroundColor
 		}, completion: { (_) in

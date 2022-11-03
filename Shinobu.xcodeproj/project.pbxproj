@@ -100,7 +100,7 @@
 		43E14005290FE72300F67A1A /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD0290FE72300F67A1A /* Slider.swift */; };
 		43E14006290FE72300F67A1A /* LabeledSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD1290FE72300F67A1A /* LabeledSlider.swift */; };
 		43E14007290FE72300F67A1A /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD2290FE72300F67A1A /* SearchField.swift */; };
-		43E14008290FE72300F67A1A /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD3290FE72300F67A1A /* Button.swift */; };
+		43E14008290FE72300F67A1A /* ControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD3290FE72300F67A1A /* ControlButton.swift */; };
 		43E14009290FE72300F67A1A /* ImagedSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD4290FE72300F67A1A /* ImagedSlider.swift */; };
 		43E1400A290FE72300F67A1A /* TracksListTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD5290FE72300F67A1A /* TracksListTableView.swift */; };
 		43E1400B290FE72300F67A1A /* AlbumHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E13FD6290FE72300F67A1A /* AlbumHeaderView.swift */; };
@@ -257,7 +257,7 @@
 		43E13FD0290FE72300F67A1A /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		43E13FD1290FE72300F67A1A /* LabeledSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledSlider.swift; sourceTree = "<group>"; };
 		43E13FD2290FE72300F67A1A /* SearchField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
-		43E13FD3290FE72300F67A1A /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		43E13FD3290FE72300F67A1A /* ControlButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlButton.swift; sourceTree = "<group>"; };
 		43E13FD4290FE72300F67A1A /* ImagedSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagedSlider.swift; sourceTree = "<group>"; };
 		43E13FD5290FE72300F67A1A /* TracksListTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksListTableView.swift; sourceTree = "<group>"; };
 		43E13FD6290FE72300F67A1A /* AlbumHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumHeaderView.swift; sourceTree = "<group>"; };
@@ -567,7 +567,7 @@
 			children = (
 				43E13FCF290FE72300F67A1A /* AwesomeButton.swift */,
 				43E13FCE290FE72300F67A1A /* AutoScrollLabel.swift */,
-				43E13FD3290FE72300F67A1A /* Button.swift */,
+				43E13FD3290FE72300F67A1A /* ControlButton.swift */,
 				43E13FCD290FE72300F67A1A /* ImagedLabel.swift */,
 				43E13FD4290FE72300F67A1A /* ImagedSlider.swift */,
 				43E13FD1290FE72300F67A1A /* LabeledSlider.swift */,
@@ -770,7 +770,7 @@
 				43056CD2290E7A620087C752 /* UIViewController+Extensions.swift in Sources */,
 				43056CC3290E7A620087C752 /* ImageCache.swift in Sources */,
 				43056CD4290E7A620087C752 /* Notification+Extensions.swift in Sources */,
-				43E14008290FE72300F67A1A /* Button.swift in Sources */,
+				43E14008290FE72300F67A1A /* ControlButton.swift in Sources */,
 				43056CE2290E7A620087C752 /* ReuseIdentifying.swift in Sources */,
 				43056CE3290E7A620087C752 /* MPDConnection.swift in Sources */,
 				43056CC4290E7A620087C752 /* Settings.swift in Sources */,

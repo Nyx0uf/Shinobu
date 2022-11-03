@@ -32,7 +32,7 @@ final class PlaylistsAddVC: NYXTableViewController {
 		tableView.tableFooterView = UIView()
 
 		// Create playlist button
-		let createButton = UIBarButtonItem(image: #imageLiteral(resourceName: "btn-add"), style: .plain, target: self, action: #selector(createPlaylistAction(_:)))
+		let createButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createPlaylistAction(_:)))
 		createButton.accessibilityLabel = NYXLocalizedString("lbl_create_playlist")
 		navigationItem.rightBarButtonItems = [createButton]
 	}

@@ -62,7 +62,7 @@ struct ServerView: View {
 						Spacer()
 						Menu {
 							ForEach(availableOutputs) { output in
-								SwiftUI.Button {
+								Button {
 									toggleOutput(output)
 								} label: {
 									Text(output.name)
@@ -87,7 +87,7 @@ struct ServerView: View {
 
 			List(Array(bonjourExplorer.services.values)) { server in
 				Section(NYXLocalizedString("lbl_nearby_servers")) {
-					SwiftUI.Button {
+					Button {
 						bonjourExplorer.resolve(mpdServerModel: server) { model in
 							withAnimation {
 								mpdServerModel.name = model.name

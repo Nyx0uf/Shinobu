@@ -184,7 +184,7 @@ extension PlaylistDetailVC: UITableViewDelegate {
 
 			completionHandler(true)
 		}
-		action.image = #imageLiteral(resourceName: "btn-trash")
+		action.image = UIImage(systemName: "trash")!
 		action.backgroundColor = UIColor.shinobuTintColor
 
 		return UISwipeActionsConfiguration(actions: [action])

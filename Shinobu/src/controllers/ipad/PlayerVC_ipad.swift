@@ -17,19 +17,19 @@ final class PlayerVCIPAD: NYXViewController {
 	private let lblArtist = ImagedLabel()
 	private let lblAlbum = ImagedLabel()
 	// Play / Pause button
-	private let btnPlay = Button()
+	private let btnPlay = ControlButton()
 	// Next button
-	private let btnNext = Button()
+	private let btnNext = ControlButton()
 	// Previous button
-	private let btnPrevious = Button()
+	private let btnPrevious = ControlButton()
 	// Random button
-	private let btnRandom = Button()
+	private let btnRandom = ControlButton()
 	// Repeat button
-	private let btnRepeat = Button()
+	private let btnRepeat = ControlButton()
 	// Stop button
-	private let btnStop = Button()
+	private let btnStop = ControlButton()
 	// Show queue button
-	private let btnQueue = Button()
+	private let btnQueue = ControlButton()
 	// Elapsed time
 	private let vev_elapsed = UIVisualEffectView()
 	private let lblElapsedDuration = UILabel()
@@ -37,7 +37,7 @@ final class PlayerVCIPAD: NYXViewController {
 	private let vev_remaining = UIVisualEffectView()
 	private let lblRemainingDuration = UILabel()
 	// Volume control
-	private let sliderVolume = ImagedSlider(minImage: #imageLiteral(resourceName: "img-volume-mute"), midImage: #imageLiteral(resourceName: "img-volume-lo"), maxImage: #imageLiteral(resourceName: "img-volume-hi"))
+	private let sliderVolume = ImagedSlider(minImage: UIImage(systemName: "speaker")!, midImage: UIImage(systemName: "speaker.1")!, maxImage: UIImage(systemName: "speaker.3")!)
 	// Motion effects
 	private let motionEffectX = UIInterpolatingMotionEffect(keyPath: "center.x", type: .tiltAlongHorizontalAxis)
 	private let motionEffectY = UIInterpolatingMotionEffect(keyPath: "center.y", type: .tiltAlongVerticalAxis)
@@ -119,8 +119,8 @@ final class PlayerVCIPAD: NYXViewController {
 
 		// Artist (full)
 		lblArtist.frame = CGRect(sliderTrack.x, sliderTrack.maxY + 10, 100, 20)
-		lblArtist.image = #imageLiteral(resourceName: "img-mic").withTintColor(.white)
-		lblArtist.highlightedImage = #imageLiteral(resourceName: "img-mic").withTintColor(.label)
+		lblArtist.image = UIImage(systemName: "mic")!.withTintColor(.white).withRenderingMode(.alwaysOriginal)
+		lblArtist.highlightedImage = UIImage(systemName: "mic.fill")!.withTintColor(.label).withRenderingMode(.alwaysOriginal)
 		lblArtist.textColor = .secondaryLabel
 		lblArtist.highlightedTextColor = .label
 		lblArtist.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
@@ -131,8 +131,8 @@ final class PlayerVCIPAD: NYXViewController {
 		// Album (full)
 		lblAlbum.align = .right
 		lblAlbum.frame = CGRect(width - 100 - marginLeft, sliderTrack.maxY + 10, 100, 20)
-		lblAlbum.image = #imageLiteral(resourceName: "img-album").withTintColor(.white)
-		lblAlbum.highlightedImage = #imageLiteral(resourceName: "img-album").withTintColor(.label)
+		lblAlbum.image = UIImage(systemName: "opticaldisc")!.withTintColor(.white).withRenderingMode(.alwaysOriginal)
+		lblAlbum.highlightedImage = UIImage(systemName: "opticaldisc.fill")!.withTintColor(.label).withRenderingMode(.alwaysOriginal)
 		lblAlbum.textColor = .secondaryLabel
 		lblAlbum.highlightedTextColor = .label
 		lblAlbum.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
@@ -156,14 +156,14 @@ final class PlayerVCIPAD: NYXViewController {
 		btnNext.frame = CGRect(coverView.maxX - btnSize, coverView.frame.maxY + 10, btnSize, btnSize)
 		btnNext.addTarget(mpdBridge, action: #selector(MPDBridge.requestNextTrack), for: .touchUpInside)
 		btnNext.isAccessibilityElement = true
-		btnNext.setImage(#imageLiteral(resourceName: "btn-next"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnNext.setImage(UIImage(systemName: "forward.end")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnNext)
 
 		// Previous button
 		btnPrevious.frame = CGRect(marginLeft, coverView.frame.maxY + 10, btnSize, btnSize)
 		btnPrevious.addTarget(mpdBridge, action: #selector(MPDBridge.requestPreviousTrack), for: .touchUpInside)
 		btnPrevious.isAccessibilityElement = true
-		btnPrevious.setImage(#imageLiteral(resourceName: "btn-previous"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnPrevious.setImage(UIImage(systemName: "backward.end")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnPrevious)
 
 		// Play / Pause button
@@ -172,24 +172,24 @@ final class PlayerVCIPAD: NYXViewController {
 		btnPlay.addTarget(self, action: #selector(changePlaybackAction(_:)), for: .touchUpInside)
 		btnPlay.tag = PlayerStatus.stopped.rawValue
 		btnPlay.isAccessibilityElement = true
-		btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnPlay.setImage(UIImage(systemName: "play")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnPlay)
 
 		// Stop button
 		btnStop.frame = CGRect(btnPlay.maxX + marginLeft, btnPlay.y, btnSize, btnSize)
 		btnStop.addTarget(mpdBridge, action: #selector(MPDBridge.stop), for: .touchUpInside)
-		btnStop.setImage(#imageLiteral(resourceName: "btn-stop"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnStop.setImage(UIImage(systemName: "stop")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnStop)
 
 		// Random button
 		btnRandom.frame = CGRect(marginLeft, btnPlay.maxY + 16, btnSize, btnSize)
-		btnRandom.setImage(#imageLiteral(resourceName: "btn-random"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnRandom.setImage(UIImage(systemName: "shuffle")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRandom.addTarget(self, action: #selector(toggleRandomAction(_:)), for: .touchUpInside)
 		blurEffectView.contentView.addSubview(btnRandom)
 
 		// Repeat button
 		btnRepeat.frame = CGRect(width - marginLeft - btnSize, btnPlay.maxY + 16, btnSize, btnSize)
-		btnRepeat.setImage(#imageLiteral(resourceName: "btn-repeat"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnRepeat.setImage(UIImage(systemName: "repeat")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		btnRepeat.addTarget(self, action: #selector(toggleRepeatAction(_:)), for: .touchUpInside)
 		self.blurEffectView.contentView.addSubview(btnRepeat)
 
@@ -203,7 +203,7 @@ final class PlayerVCIPAD: NYXViewController {
 		// Queue button
 		btnQueue.frame = CGRect(marginLeft, view.height - btnSize, btnSize, btnSize)
 		btnQueue.addTarget(self, action: #selector(showUpNextAction(_:)), for: .touchUpInside)
-		btnQueue.setImage(#imageLiteral(resourceName: "img-queue"), tintColor: .secondaryLabel, selectedTintColor: .label)
+		btnQueue.setImage(UIImage(systemName: "music.note.list")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 		blurEffectView.contentView.addSubview(btnQueue)
 
 		// Next track
@@ -417,7 +417,7 @@ final class PlayerVCIPAD: NYXViewController {
 	private func updatePlayPauseState() {
 		let status = mpdBridge.getCurrentState().status
 		if status == .paused || status == .stopped {
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-play"), tintColor: .secondaryLabel, selectedTintColor: .label)
+			btnPlay.setImage(UIImage(systemName: "play")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_play")
 
 			DispatchQueue.global(qos: .userInteractive).async {
@@ -428,7 +428,7 @@ final class PlayerVCIPAD: NYXViewController {
 				}
 			}
 		} else {
-			btnPlay.setImage(#imageLiteral(resourceName: "btn-pause"), tintColor: .secondaryLabel, selectedTintColor: .label)
+			btnPlay.setImage(UIImage(systemName: "pause")!, tintColor: .secondaryLabel, selectedTintColor: .label)
 			btnPlay.accessibilityLabel = NYXLocalizedString("lbl_pause")
 
 			UIView.transition(with: coverView, duration: 0.35, options: .transitionCrossDissolve, animations: {
