@@ -14,11 +14,21 @@ final class MPDServer: ObservableObject, Equatable, Identifiable, Hashable, Coda
 	/// Server name
 	@Published var name: String
 	/// Server IP / hostname
-	@Published var hostname: String
+	@Published var hostname: String {
+		didSet {
+			changed = true
+		}
+	}
 	/// Server port
-	@Published var port: UInt16
+	@Published var port: UInt16 {
+		didSet {
+			changed = true
+		}
+	}
 	/// Server password
 	@Published var password: String
+	///
+	var changed = false
 
 	// MARK: - Initializers
 	init(id: Int, name: String, hostname: String, port: UInt16, password: String = "") {

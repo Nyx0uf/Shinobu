@@ -11,7 +11,7 @@ struct ServerView: View {
 
 	// MARK: - Public properties
 	/// Current MPD server
-	@ObservedObject var mpdServerModel: MPDServer
+	@ObservedObject var mpdServer: MPDServer
 
 	var body: some View {
 		VStack {
@@ -20,7 +20,7 @@ struct ServerView: View {
 					HStack(spacing: 8) {
 						Text(NYXLocalizedString("lbl_server_name"))
 						Spacer()
-						TextField(NYXLocalizedString("lbl_server_name"), text: $mpdServerModel.name)
+						TextField(NYXLocalizedString("lbl_server_name"), text: $mpdServer.name)
 							.multilineTextAlignment(.trailing)
 							.keyboardType(.default)
 							.font(.system(size: 17, weight: .semibold))
@@ -29,7 +29,7 @@ struct ServerView: View {
 					HStack(spacing: 8) {
 						Text(NYXLocalizedString("lbl_server_host"))
 						Spacer()
-						TextField(NYXLocalizedString("lbl_server_host"), text: $mpdServerModel.hostname, onCommit: {
+						TextField(NYXLocalizedString("lbl_server_host"), text: $mpdServer.hostname, onCommit: {
 							updateOutputsLabel()
 						})
 						.multilineTextAlignment(.trailing)
@@ -40,7 +40,7 @@ struct ServerView: View {
 					HStack(spacing: 8) {
 						Text(NYXLocalizedString("lbl_server_port"))
 						Spacer()
-						TextField(NYXLocalizedString("lbl_server_port"), value: $mpdServerModel.port, formatter: NumberFormatter(), onCommit: {
+						TextField(NYXLocalizedString("lbl_server_port"), value: $mpdServer.port, formatter: NumberFormatter(), onCommit: {
 							updateOutputsLabel()
 						})
 						.multilineTextAlignment(.trailing)
@@ -51,7 +51,7 @@ struct ServerView: View {
 					HStack(spacing: 8) {
 						Text(NYXLocalizedString("lbl_server_password"))
 						Spacer()
-						SecureField(NYXLocalizedString("lbl_server_password"), text: $mpdServerModel.password)
+						SecureField(NYXLocalizedString("lbl_server_password"), text: $mpdServer.password)
 							.multilineTextAlignment(.trailing)
 							.keyboardType(.default)
 							.font(.system(size: 17, weight: .semibold))
@@ -90,11 +90,11 @@ struct ServerView: View {
 					Button {
 						bonjourExplorer.resolve(mpdServerModel: server) { model in
 							withAnimation {
-								mpdServerModel.name = model.name
-								mpdServerModel.hostname = model.hostname
-								mpdServerModel.port = model.port
-								mpdServerModel.password = model.password
-								mpdServerModel.id = model.id
+								mpdServer.name = model.name
+								mpdServer.hostname = model.hostname
+								mpdServer.port = model.port
+								mpdServer.password = model.password
+								mpdServer.id = model.id
 								updateOutputsLabel()
 							}
 						}
@@ -140,7 +140,7 @@ struct ServerView: View {
 	}
 
 	private func updateOutputsLabel() {
-		let cnn = MPDConnection(mpdServerModel)
+		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
 		switch result {
 		case .failure:
@@ -174,7 +174,7 @@ struct ServerView: View {
 	private func toggleOutput(_ output: MPDOutput) {
 		guard var o = availableOutputs.first(where: { $0.id == output.id }) else { return }
 
-		let cnn = MPDConnection(mpdServerModel)
+		let cnn = MPDConnection(mpdServer)
 		let result = cnn.connect()
 		switch result {
 		case .failure:

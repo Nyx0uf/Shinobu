@@ -16,7 +16,7 @@ struct SettingsView: View {
 	/// Fuzzy search
 	@Default(.pref_fuzzySearch) var fuzzySearch
 	/// MPD server
-	@StateObject var mpdServerModel = ServerManager().getServer()
+	@StateObject var mpdServer = ServerManager().getServer()
 	/// Dismiss callback from UIKit
 	var dismissAction: (() -> Void)
 
@@ -30,10 +30,10 @@ struct SettingsView: View {
 			VStack {
 				List {
 					Section(header: Text("MPD")) {
-						NavigationLink(destination: ServerView(mpdServerModel: mpdServerModel), label: {
+						NavigationLink(destination: ServerView(mpdServer: mpdServer), label: {
 							HStack(spacing: 8) {
 								Image(systemName: "server.rack")
-								Text(mpdServerModel.name)
+								Text(mpdServer.name)
 							}
 						})
 					}
@@ -122,9 +122,14 @@ struct SettingsView: View {
 			}
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+		.onAppear {
+			mpdServer.changed = false
+		}
 		.onDisappear {
-			ServerManager().handleServer(mpdServerModel)
-			NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: mpdServerModel)
+			if mpdServer.changed {
+				ServerManager().handleServer(mpdServer)
+				NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: mpdServer)
+			}
 		}
 	}
 
