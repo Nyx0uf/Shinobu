@@ -135,9 +135,11 @@ struct ShinobuWidgetEntryView: View {
 			if let cover = album.asset(ofSize: .large) {
 				return cover
 			} else {
-				mpdBridge.getPathForAlbum(album) {
-					self.downloadCoverForAlbum(album) { (_, _, _) in
+				_ = mpdBridge.getPathForAlbum2(album) { success, _ in
+					if success {
+						self.downloadCoverForAlbum(album) { (_, _, _) in
 
+						}
 					}
 				}
 				return #imageLiteral(resourceName: "placeholder")

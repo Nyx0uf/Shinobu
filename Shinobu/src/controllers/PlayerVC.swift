@@ -427,24 +427,26 @@ final class PlayerVC: NYXViewController {
 				self.updatePlayPauseState()
 			}
 		} else {
-			mpdBridge.getPathForAlbum(album) {
-				var cop = CoverOperations(album: album, mpdBridge: self.mpdBridge)
-				cop.processCallback = { (large, _, _) in
-					DispatchQueue.main.async {
-						self.imgCover = large
-						UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
-							(self.view as? UIImageView)?.image = large
-							self.lblTrack.text = track.name
-							self.sliderTrack.label.text = track.name
-							self.sliderTrack.maximumValue = CGFloat(track.duration.value)
-							self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
-							self.lblArtist.text = track.artist
-							self.lblAlbum.text = album.name
-						}, completion: nil)
-						self.updatePlayPauseState()
+			_ = mpdBridge.getPathForAlbum2(album) { success, _ in
+				if success {
+					var cop = CoverOperations(album: album, mpdBridge: self.mpdBridge)
+					cop.processCallback = { (large, _, _) in
+						DispatchQueue.main.async {
+							self.imgCover = large
+							UIView.transition(with: self.view, duration: 0.35, options: .transitionCrossDissolve, animations: {
+								(self.view as? UIImageView)?.image = large
+								self.lblTrack.text = track.name
+								self.sliderTrack.label.text = track.name
+								self.sliderTrack.maximumValue = CGFloat(track.duration.value)
+								self.lblAlbumArtist.text = "\(track.artist) — \(album.name)"
+								self.lblArtist.text = track.artist
+								self.lblAlbum.text = album.name
+							}, completion: nil)
+							self.updatePlayPauseState()
+						}
 					}
+					cop.submit()
 				}
-				cop.submit()
 			}
 		}
 

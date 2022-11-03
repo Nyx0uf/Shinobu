@@ -135,7 +135,7 @@ final class MusicalCollectionDataSourceAndDelegate: NSObject {
 				return
 			}
 
-			if album.path != nil {
+			if album.path != nil && album.randomSongPath != nil {
 				downloadCoverForAlbum(album, indexPath) { (_, medium, _) in
 					DispatchQueue.main.async {
 						self.delegate.coverDownloaded(medium, forItemAtIndexPath: indexPath)
