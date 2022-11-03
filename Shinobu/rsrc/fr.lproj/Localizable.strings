@@ -80,8 +80,8 @@
 "lbl_genres" = "Genres";
 "lbl_artist" = "Artiste";
 "lbl_artists" = "Artistes";
-"lbl_albumartist" = "Album artist";
-"lbl_albumartists" = "Album artists";
+"lbl_albumartist" = "Album artiste";
+"lbl_albumartists" = "Album artistes";
 "lbl_playlist" = "Liste";
 "lbl_playlists" = "Listes";
 "lbl_add_to_playlist" = "Ajouter à une liste de lecture";

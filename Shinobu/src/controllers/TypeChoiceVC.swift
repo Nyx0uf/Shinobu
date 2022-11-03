@@ -50,7 +50,7 @@ extension TypeChoiceVC {
 		case .artists:
 			title = NYXLocalizedString("lbl_artists")
 		case .albumsartists:
-			title = NYXLocalizedString("lbl_albumartist")
+			title = NYXLocalizedString("lbl_albumartists")
 		case .genres:
 			title = NYXLocalizedString("lbl_genres")
 		case .playlists:
