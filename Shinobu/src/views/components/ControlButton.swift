@@ -40,55 +40,33 @@ final class ControlButton: UIControl {
 		}
 	}
 
-	override var isSelected: Bool {
-		willSet {
-			if self.isSelected {
-				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
-			} else {
-				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.withTintColor(self.tintColor)
-			}
-		}
-
-		didSet {
-			if self.isSelected {
-				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
-			} else {
-				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.withTintColor(self.tintColor)
-			}
-		}
-	}
-
 	override var isHighlighted: Bool {
 		willSet {
 			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
+			self.imageView.isHighlighted = self.isHighlighted
 		}
 
 		didSet {
 			if self.isHighlighted {
 				self.backgroundColor = self.selectedTintColor.withAlphaComponent(0.2)
-				self.imageView.image = self.image.withTintColor(self.selectedTintColor)
 			} else {
 				self.backgroundColor = UIColor.clear
-				self.imageView.image = self.image.withTintColor(self.tintColor)
 			}
+
+			self.imageView.isHighlighted = self.isHighlighted
 		}
 	}
 
 	// MARK: - Public
-	func setImage(_ img: UIImage, tintColor: UIColor, selectedTintColor: UIColor) {
-		self.image = img.withRenderingMode(.alwaysTemplate)
+	func setImage(_ img: UIImage, highlightedImage: UIImage, tintColor: UIColor, selectedTintColor: UIColor) {
+		image = img.withRenderingMode(.alwaysTemplate)
 		self.tintColor = tintColor
 		self.selectedTintColor = selectedTintColor
 		imageView.image = self.image.withTintColor(tintColor)
+		imageView.highlightedImage = highlightedImage
 	}
 }

@@ -58,19 +58,6 @@ final class LibraryVC: MusicalCollectionVC {
 			mpdBridge.server = ServerManager().getServer()
 			getLists()
 		}
-
-		// When entity type menu was displayed
-		if navMenuDisplayed == false {
-			// Refresh view
-			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
-				DispatchQueue.main.async {
-					self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-					self.collectionView.collectionView.scrollToTop(animated: true)
-					self.updateNavigationTitle()
-					self.updateNavigationButtons()
-				}
-			}
-		}
 	}
 
 	private func getLists() {

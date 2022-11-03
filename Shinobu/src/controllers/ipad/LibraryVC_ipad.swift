@@ -58,20 +58,6 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 			mpdBridge.server = ServerManager().getServer()
 			getLists()
 		}
-
-		// When entity type menu was displayed
-		if navMenuDisplayed == false {
-			// Refresh view
-			mpdBridge.entitiesForType(dataSource.musicalEntityType) { (entities) in
-				DispatchQueue.main.async {
-					self.setItems(entities, forMusicalEntityType: self.dataSource.musicalEntityType)
-					self.collectionView.collectionView.scrollToTop(animated: true)
-					self.updateNavigationTitle()
-					self.updateNavigationButtons()
-				}
-			}
-			navMenuDisplayed = false
-		}
 	}
 
 	private func getLists() {
@@ -143,7 +129,7 @@ final class LibraryVCIPAD: MusicalCollectionVCIPAD {
 	@objc func showSettingsAction(_ sender: Any?) {
 		let settingsView = SettingsView(dismissAction: { self.dismiss(animated: true, completion: nil) })
 		let hostingVC = UIHostingController(rootView: settingsView)
-		navigationController?.present(hostingVC, animated: true, completion: nil)
+		self.present(hostingVC, animated: true, completion: nil)
 	}
 
 	@objc func createPlaylistAction(_ sender: Any?) {

@@ -20,7 +20,7 @@ final class UpNextVC: NYXTableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		let closeButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(doneAction(_:)))
+		let closeButton = UIBarButtonItem(title: NYXLocalizedString("lbl_close"), style: .plain, target: self, action: #selector(doneAction(_:)))
 		closeButton.accessibilityLabel = NYXLocalizedString("lbl_close")
 		navigationItem.leftBarButtonItem = closeButton
 
