@@ -3,8 +3,8 @@
 [![Swift Version](https://img.shields.io/badge/Swift-5.7-orange.svg)](https://swift.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/Nyx0uf/shinobu/blob/master/LICENSE)
 
-**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server. It is designed to be fast and easy to use.
-It requires *iOS 15.1*.
+**Shinobu** is an iOS application to control a [MPD](http://www.musicpd.org/) server.  
+It is designed to be fast, easy to use and requires *iOS 15.1*.
 
 I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
