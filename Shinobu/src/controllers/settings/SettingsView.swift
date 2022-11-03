@@ -121,6 +121,7 @@ struct SettingsView: View {
 				}
 			}
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 		.onDisappear {
 			ServerManager().handleServer(mpdServerModel)
 			NotificationCenter.default.postOnMainThreadAsync(name: .audioServerConfigurationDidChange, object: mpdServerModel)
