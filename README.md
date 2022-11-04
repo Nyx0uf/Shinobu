@@ -8,7 +8,7 @@ It is designed to be fast, easy to use and requires *iOS 15.1*.
 
 I develop this app on my free time and for my personal need, you can ask for a feature but if I don't see the point I won't implement it.
 
-**Shinobu** is available on the App Store at the price of [5,99€](https://apps.apple.com/us/app/shinobu/id6443788422), because putting it on the App Store cost 100€. If you prefer you can build it yourself, see below.
+**Shinobu** is available on the App Store at the price of [5,99€](https://apps.apple.com/us/app/shinobu/id6443788422), because putting it on the App Store cost **100€**. If you prefer you can build it yourself, see below.
 
 ## FEATURES
 
