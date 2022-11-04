@@ -198,7 +198,11 @@ final class PlayerVC: NYXViewController {
 		lblAlbum.align = .right
 		lblAlbum.frame = CGRect(lblArtist.maxX + marginX, lblTrack.maxY, (width - 3 * marginX) / 2, 20)
 		lblAlbum.image = UIImage(systemName: "opticaldisc")!.withTintColor(.white).withRenderingMode(.alwaysOriginal)
-		lblAlbum.highlightedImage = UIImage(systemName: "opticaldisc.fill")!.withTintColor(.label).withRenderingMode(.alwaysOriginal)
+		if #available(iOS 16, *) {
+			lblAlbum.highlightedImage = UIImage(systemName: "opticaldisc.fill")!.withTintColor(.label).withRenderingMode(.alwaysOriginal)
+		} else {
+			lblAlbum.highlightedImage = UIImage(systemName: "opticaldisc")!.withTintColor(.label).withRenderingMode(.alwaysOriginal)
+		}
 		lblAlbum.textColor = .secondaryLabel
 		lblAlbum.highlightedTextColor = .label
 		lblAlbum.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
